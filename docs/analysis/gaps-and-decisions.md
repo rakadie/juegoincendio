@@ -30,3 +30,20 @@
 - Modo offline-first vs online-first en frontend.
 - Estrategia final de despliegue (proveedor cloud definitivo).
 
+## Actualización posterior (resuelta)
+
+Se cierran las decisiones pendientes con el marco MVP acordado:
+
+1. **Motor de simulación MVP:** grilla 2D con reglas celulares simples (sin física avanzada).
+2. **Modo de operación:** online-first con caché de tiles.
+3. **Despliegue objetivo:** Railway (backend + DB) y Vercel (frontend).
+
+## Gaps que aún quedan (ejecución)
+
+Aunque la documentación está completa, quedan gaps de implementación:
+
+- Definir especificaciones OpenAPI por módulo antes de generar código.
+- Implementar estructura real `src/domain`, `src/application`, `src/infrastructure`, `src/interfaces`.
+- Crear migraciones SQL PostGIS y validar índices espaciales con pruebas de rendimiento.
+- Materializar suites Vitest (unit, integración, e2e/API) con cobertura >80%.
+
