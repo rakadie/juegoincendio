@@ -285,17 +285,77 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     options: [
       {
         id: 'a',
-        text: 'Solo con autorización y en zonas permitidas',
-        recommended: true,
-        rationale: 'Ordena usos y reduce prácticas no seguras.',
-        impacts: [{ variableKey: 'confianzaVecinal', delta: 2 }]
+        text: 'Pueden recoger pinocha en cualquier lugar para limpiar el monte',
+        recommended: false,
+        rationale:
+          'Recoger sin autorización y sin zonificación puede generar riesgo y conflictos normativos.',
+        impacts: [{ variableKey: 'cumplimientoPreventivo', delta: -5 }]
       },
       {
         id: 'b',
-        text: 'Recogida libre en cualquier lugar para limpiar monte',
+        text: 'Pueden recogerla en los márgenes de las carreteras',
         recommended: false,
-        rationale: 'Puede generar impactos ambientales y conflictos normativos.',
-        impacts: [{ variableKey: 'confianzaVecinal', delta: -4 }]
+        rationale:
+          'Los márgenes viarios tienen condicionantes de seguridad y titularidad que requieren permiso.',
+        impacts: [{ variableKey: 'cumplimientoPreventivo', delta: -4 }]
+      },
+      {
+        id: 'c',
+        text: 'Puede coger leña en cualquier lugar, así evitan que haya material combustible',
+        recommended: false,
+        rationale:
+          'La retirada indiscriminada no sustituye la gestión autorizada y puede afectar al ecosistema.',
+        impacts: [
+          { variableKey: 'cumplimientoPreventivo', delta: -4 },
+          { variableKey: 'confianzaVecinal', delta: -1 }
+        ]
+      },
+      {
+        id: 'd',
+        text: 'Puede recogerla con autorización',
+        recommended: true,
+        rationale: 'La autorización permite control técnico, trazabilidad y condiciones de seguridad.',
+        impacts: [
+          { variableKey: 'cumplimientoPreventivo', delta: 6 },
+          { variableKey: 'confianzaVecinal', delta: 2 }
+        ]
+      },
+      {
+        id: 'e',
+        text: 'Puede recoger caña en cualquier lugar para evitar la propagación de las llamas',
+        recommended: false,
+        rationale:
+          'Aunque la caña influye en la continuidad del combustible, su retirada exige criterios y autorización.',
+        impacts: [{ variableKey: 'cumplimientoPreventivo', delta: -4 }]
+      },
+      {
+        id: 'f',
+        text: 'Puede recogerla en los cauces de barranco',
+        recommended: false,
+        rationale:
+          'Los cauces tienen regulación específica y riesgo hidrológico, por lo que no procede sin permiso.',
+        impacts: [
+          { variableKey: 'cumplimientoPreventivo', delta: -5 },
+          { variableKey: 'danosPotencialesVivienda', delta: 1 }
+        ]
+      },
+      {
+        id: 'g',
+        text: 'Puede recoger forraje en cualquier sitio, así ayuda a la limpieza de los terrenos',
+        recommended: false,
+        rationale: 'La recogida sin autorización puede incumplir normativa de uso y conservación.',
+        impacts: [{ variableKey: 'cumplimientoPreventivo', delta: -4 }]
+      },
+      {
+        id: 'h',
+        text: 'Puede recogerlo con autorización',
+        recommended: true,
+        rationale:
+          'La autorización ordena el aprovechamiento y mejora la seguridad en labores de recolección.',
+        impacts: [
+          { variableKey: 'cumplimientoPreventivo', delta: 6 },
+          { variableKey: 'continuidadSectorPrimario', delta: 2 }
+        ]
       }
     ]
   },
