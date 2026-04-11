@@ -13,6 +13,21 @@ npm run dev
 
 Este comando usa `tsx watch` y levanta el servidor HTTP del prototipo.
 
+### Nota para PowerShell en Windows
+
+Si aparece el error de políticas de ejecución con `npm.ps1` (PSSecurityException), puedes usar cualquiera de estas opciones:
+
+```powershell
+npm.cmd run dev
+```
+
+o habilitar scripts solo para la sesión actual:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+npm run dev
+```
+
 ## Arranque en producción (build + start)
 
 ```bash

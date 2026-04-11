@@ -217,21 +217,63 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     id: 's-004-quemas-agricolas',
     title: 'Gestión de quemas agrícolas',
     category: 'prevencion',
-    context: 'Un vecino pregunta cuándo puede realizar quemas agrícolas.',
+    context:
+      'Un vecino pregunta cómo gestionar una quema agrícola de forma legal y segura.',
     options: [
       {
         id: 'a',
-        text: 'Necesita pedir autorización y cumplir condiciones de seguridad',
-        recommended: true,
-        rationale: 'La quema controlada requiere marco autorizado y supervisión.',
-        impacts: [{ variableKey: 'cumplimientoPreventivo', delta: 7 }]
+        text: 'Solicitar autorización y confirmar que no existe prohibición activa por riesgo meteorológico',
+        recommended: false,
+        rationale: 'Es necesario, pero insuficiente sin planificación operativa completa.',
+        impacts: [{ variableKey: 'cumplimientoPreventivo', delta: 2 }]
       },
       {
         id: 'b',
-        text: 'Puede hacerlas en cualquier momento',
+        text: 'Realizarla solo en horario autorizado, con perímetro limpio y medios de extinción preparados',
         recommended: false,
-        rationale: 'Incrementa el riesgo e incumple protocolos de prevención.',
-        impacts: [{ variableKey: 'cumplimientoPreventivo', delta: -8 }]
+        rationale:
+          'Mejora el control, pero falta incluir vigilancia completa y criterio de suspensión.',
+        impacts: [
+          { variableKey: 'cumplimientoPreventivo', delta: 3 },
+          { variableKey: 'danosPotencialesVivienda', delta: -1 }
+        ]
+      },
+      {
+        id: 'c',
+        text: 'Comunicar inicio y fin a la autoridad competente cuando proceda y mantener vigilancia hasta extinción total',
+        recommended: false,
+        rationale: 'Aporta trazabilidad y seguridad, pero no cubre por sí sola todo el protocolo.',
+        impacts: [{ variableKey: 'confianzaVecinal', delta: 2 }]
+      },
+      {
+        id: 'd',
+        text: 'Aplicar protocolo completo: autorización previa, revisión meteorológica, horario permitido, perímetro limpio, medios de extinción, vigilancia continua y suspensión inmediata si cambian las condiciones',
+        recommended: true,
+        rationale:
+          'Integra requisitos administrativos y operativos para minimizar ignición y propagación.',
+        impacts: [
+          { variableKey: 'cumplimientoPreventivo', delta: 8 },
+          { variableKey: 'danosPotencialesVivienda', delta: -4 },
+          { variableKey: 'confianzaVecinal', delta: 2 }
+        ]
+      },
+      {
+        id: 'e',
+        text: 'Hacerla al atardecer sin autorización si el terreno está húmedo',
+        recommended: false,
+        rationale:
+          'Aunque haya humedad puntual, incumple normativa y mantiene riesgo de escape.',
+        impacts: [{ variableKey: 'cumplimientoPreventivo', delta: -7 }]
+      },
+      {
+        id: 'f',
+        text: 'Quemar restos en cualquier época si hay una manguera cerca',
+        recommended: false,
+        rationale: 'Normaliza prácticas inseguras y fuera de protocolo.',
+        impacts: [
+          { variableKey: 'cumplimientoPreventivo', delta: -8 },
+          { variableKey: 'danosPotencialesVivienda', delta: 5 }
+        ]
       }
     ]
   },

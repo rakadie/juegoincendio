@@ -29,6 +29,10 @@
 - Plan de scripts de ejecución: [docs/project/scripts-plan.md](project/scripts-plan.md)
 - Plan de transición documental a ejecución: [docs/project/transition-plan.md](project/transition-plan.md)
 
+## Migración de documentación histórica (TXT → MD)
+
+- Índice de documentos migrados desde `fuego/fuego/*.txt`: [docs/legacy/fuego/README.md](legacy/fuego/README.md)
+
 ## Plantillas técnicas
 
 - Plantilla PR: [docs/templates/pr-template.md](templates/pr-template.md)
