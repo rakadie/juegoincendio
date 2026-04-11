@@ -163,24 +163,114 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     options: [
       {
         id: 'a',
-        text: 'Cactus y lentiscos, evitando setos densos continuos',
-        recommended: true,
-        rationale: 'Suelen requerir menos agua y pueden planificarse con discontinuidad vegetal.',
-        impacts: [{ variableKey: 'cumplimientoPreventivo', delta: 4 }]
+        text: 'Bambú',
+        recommended: false,
+        rationale: 'Puede generar continuidad vegetal y acumulación de material seco.',
+        impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 4 }]
       },
       {
         id: 'b',
-        text: 'Bambú y palmeras de forma masiva',
-        recommended: false,
-        rationale: 'Puede generar continuidad y acumulación de material vegetal seco.',
-        impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 5 }]
+        text: 'Cactus',
+        recommended: true,
+        rationale: 'Puede integrarse con menor continuidad de combustible si se diseña con distancias.',
+        impacts: [
+          { variableKey: 'cumplimientoPreventivo', delta: 3 },
+          { variableKey: 'danosPotencialesVivienda', delta: -1 }
+        ]
       },
       {
         id: 'c',
-        text: 'Pitas y buganvillas sin distancias de seguridad',
+        text: 'Lentiscos',
+        recommended: true,
+        rationale: 'Bien gestionado y con discontinuidad vegetal, mejora el equilibrio de la finca.',
+        impacts: [{ variableKey: 'cumplimientoPreventivo', delta: 2 }]
+      },
+      {
+        id: 'd',
+        text: 'Pitas',
         recommended: false,
-        rationale: 'Sin diseño preventivo puede aumentar exposición en interfaz.',
+        rationale: 'Sin planificación de seguridad pueden aumentar exposición en la interfaz.',
+        impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 2 }]
+      },
+      {
+        id: 'e',
+        text: 'Palmeras',
+        recommended: false,
+        rationale: 'Puede generar continuidad y acumulación de material vegetal seco.',
+        impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 4 }]
+      },
+      {
+        id: 'f',
+        text: 'Buganvillas',
+        recommended: false,
+        rationale: 'Si se colocan de forma densa y sin separación, aumentan el riesgo en perímetros.',
         impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 3 }]
+      },
+      {
+        id: 'g',
+        text: 'Helecho',
+        recommended: false,
+        rationale:
+          'En condiciones secas puede comportarse como combustible fino y favorecer propagación.',
+        impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 4 }]
+      },
+      {
+        id: 'h',
+        text: 'Hibisco',
+        recommended: false,
+        rationale:
+          'Requiere diseño preventivo específico; en masa y sin distancias puede elevar exposición.',
+        impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 2 }]
+      }
+    ]
+  },
+  {
+    id: 's-002b-asesoramiento-terrenos',
+    title: 'Asesoramiento sobre terrenos colindantes',
+    category: 'prevencion',
+    context:
+      'En la finca de al lado te encuentras a otro vecino. Tiene varios terrenos y no sabe qué hacer con ellos. ¿Qué le aconsejas?',
+    options: [
+      {
+        id: 'a',
+        text: 'Que plante vegetación alrededor de las zonas urbanas',
+        recommended: false,
+        rationale:
+          'Plantar sin diseño preventivo en interfaz urbano-forestal puede aumentar la continuidad del combustible.',
+        impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 3 }]
+      },
+      {
+        id: 'b',
+        text: 'Que hable con los ganaderos del municipio para que sus animales limpien el terreno de malas hierbas cuando lo necesite',
+        recommended: true,
+        rationale:
+          'El pastoreo controlado ayuda a reducir la carga de combustible y mejora el mantenimiento periódico.',
+        impacts: [
+          { variableKey: 'cumplimientoPreventivo', delta: 5 },
+          { variableKey: 'continuidadSectorPrimario', delta: 3 }
+        ]
+      },
+      {
+        id: 'c',
+        text: 'Que si no quiere plantar, que deje crecer las plantas para que el terreno esté bonito',
+        recommended: false,
+        rationale:
+          'El crecimiento sin gestión preventiva puede elevar el riesgo de propagación del incendio.',
+        impacts: [
+          { variableKey: 'cumplimientoPreventivo', delta: -4 },
+          { variableKey: 'danosPotencialesVivienda', delta: 5 }
+        ]
+      },
+      {
+        id: 'd',
+        text: 'Que arriende los terrenos para uso agrícola',
+        recommended: true,
+        rationale:
+          'Un uso agrícola planificado evita el abandono del terreno y favorece su gestión continuada.',
+        impacts: [
+          { variableKey: 'cumplimientoPreventivo', delta: 4 },
+          { variableKey: 'continuidadSectorPrimario', delta: 4 }
+        ]
       }
     ]
   },
@@ -192,24 +282,32 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     options: [
       {
         id: 'a',
-        text: 'Desbrozando con una manguera preparada y vigilancia activa',
-        recommended: true,
-        rationale: 'Reduce riesgo al añadir medios inmediatos de primera respuesta.',
-        impacts: [{ variableKey: 'cumplimientoPreventivo', delta: 5 }]
-      },
-      {
-        id: 'b',
-        text: 'Cortando con radial en jardín',
+        text: 'Cortando con una radial en el jardín',
         recommended: false,
         rationale: 'Actividad de alto riesgo por posibles chispas.',
         impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 6 }]
       },
       {
-        id: 'c',
-        text: 'Cortando con radial en patio',
+        id: 'b',
+        text: 'Cortando con una radial en un patio',
         recommended: false,
         rationale: 'Sigue siendo de riesgo si no hay medidas estrictas.',
         impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 4 }]
+      },
+      {
+        id: 'c',
+        text: 'Desbrozando',
+        recommended: false,
+        rationale:
+          'Sin medidas adicionales, puede provocar igniciones por contacto con material seco.',
+        impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 3 }]
+      },
+      {
+        id: 'd',
+        text: 'Desbrozando con una manguera al lado',
+        recommended: true,
+        rationale: 'Reduce riesgo al añadir medios inmediatos de primera respuesta.',
+        impacts: [{ variableKey: 'cumplimientoPreventivo', delta: 5 }]
       }
     ]
   },
@@ -361,23 +459,51 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
   },
   {
     id: 's-006-hogueras-monte',
-    title: 'Hogueras en entorno forestal',
+    title: 'Hogueras o barbacoas en entorno forestal',
     category: 'prevencion',
-    context: 'Surge la duda de si es posible hacer hogueras durante actividades en el monte.',
+    context:
+      'Surge la duda de si es posible hacer hogueras o barbacoas durante actividades en el monte.',
     options: [
       {
         id: 'a',
-        text: 'Solo en zonas autorizadas y bajo condiciones permitidas',
-        recommended: true,
-        rationale: 'Minimiza igniciones y mantiene trazabilidad de control.',
-        impacts: [{ variableKey: 'cumplimientoPreventivo', delta: 4 }]
+        text: 'Sí, si la zona está limpia aunque haga calor o sea verano',
+        recommended: false,
+        rationale:
+          'La limpieza del entorno no sustituye la restricción por riesgo alto en periodos críticos.',
+        impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 4 }]
       },
       {
         id: 'b',
-        text: 'Sí, si la zona está limpia aunque sea verano',
+        text: 'Si estamos de acampada, en una zona limpia de matorral',
         recommended: false,
-        rationale: 'Contradice medidas preventivas en periodos críticos.',
-        impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 4 }]
+        rationale: 'La acampada no habilita por sí sola el uso de fuego en entorno forestal.',
+        impacts: [{ variableKey: 'cumplimientoPreventivo', delta: -3 }]
+      },
+      {
+        id: 'c',
+        text: 'Solo en las zonas autorizadas',
+        recommended: false,
+        rationale:
+          'Es condición necesaria, pero también deben cumplirse las condiciones meteorológicas y normativas vigentes.',
+        impacts: [{ variableKey: 'cumplimientoPreventivo', delta: 1 }]
+      },
+      {
+        id: 'd',
+        text: 'Solo es posible invierno',
+        recommended: false,
+        rationale:
+          'La autorización no depende únicamente de la estación, sino del riesgo y de la regulación activa.',
+        impacts: [{ variableKey: 'confianzaVecinal', delta: -1 }]
+      },
+      {
+        id: 'e',
+        text: 'Solo en zonas autorizadas y si las condiciones meteorológicas lo permiten',
+        recommended: true,
+        rationale: 'Es la opción más segura y alineada con prevención y control de igniciones.',
+        impacts: [
+          { variableKey: 'cumplimientoPreventivo', delta: 5 },
+          { variableKey: 'danosPotencialesVivienda', delta: -2 }
+        ]
       }
     ]
   },
