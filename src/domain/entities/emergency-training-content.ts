@@ -293,7 +293,7 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
       },
       {
         id: 'b',
-        text: 'Pueden recogerla en los márgenes de las carreteras',
+        text: 'Pueden recoger pinocha en los márgenes de las carreteras',
         recommended: false,
         rationale:
           'Los márgenes viarios tienen condicionantes de seguridad y titularidad que requieren permiso.',
@@ -312,7 +312,7 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
       },
       {
         id: 'd',
-        text: 'Puede recogerla con autorización',
+        text: 'Puede recoger leña con autorización',
         recommended: true,
         rationale: 'La autorización permite control técnico, trazabilidad y condiciones de seguridad.',
         impacts: [
@@ -330,7 +330,7 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
       },
       {
         id: 'f',
-        text: 'Puede recogerla en los cauces de barranco',
+        text: 'Puede recoger caña en los cauces de barranco',
         recommended: false,
         rationale:
           'Los cauces tienen regulación específica y riesgo hidrológico, por lo que no procede sin permiso.',
@@ -348,7 +348,7 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
       },
       {
         id: 'h',
-        text: 'Puede recogerlo con autorización',
+        text: 'Pueden recoger forraje con autorización',
         recommended: true,
         rationale:
           'La autorización ordena el aprovechamiento y mejora la seguridad en labores de recolección.',
@@ -389,17 +389,50 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     options: [
       {
         id: 'a',
-        text: 'Esperar indicaciones oficiales antes de evacuar',
-        recommended: true,
-        rationale: 'Evita movimientos descoordinados y mejora seguridad colectiva.',
-        impacts: [{ variableKey: 'confianzaVecinal', delta: 5 }]
+        text: 'Regar mi terreno antes de que lleguen las llamas',
+        recommended: false,
+        rationale:
+          'Puede exponer a la persona en un momento crítico y generar una falsa sensación de control.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: 2 },
+          { variableKey: 'confianzaVecinal', delta: -2 }
+        ]
       },
       {
         id: 'b',
-        text: 'Salir de inmediato por mensajes reenviados sin verificar',
+        text: 'Cerrar la llave del gas y de la electricidad',
+        recommended: true,
+        rationale:
+          'Si se puede hacer con seguridad y sin demoras, reduce riesgos adicionales durante la emergencia.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: -2 },
+          { variableKey: 'cumplimientoPreventivo', delta: 2 }
+        ]
+      },
+      {
+        id: 'c',
+        text: 'Salir de mi vivienda y acudir a una zona alta para saber por dónde va el fuego',
+        recommended: false,
+        rationale:
+          'Buscar visibilidad del incendio desde zonas expuestas aumenta el riesgo personal.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: 1 },
+          { variableKey: 'capacidadOperativa', delta: -1 }
+        ]
+      },
+      {
+        id: 'd',
+        text: 'Salir lo antes posible de mi vivienda, tal y como leo en una cadena de Wassap',
         recommended: false,
         rationale: 'Aumenta caos y exposición por desinformación.',
         impacts: [{ variableKey: 'confianzaVecinal', delta: -6 }]
+      },
+      {
+        id: 'e',
+        text: 'Esperar indicaciones de las autoridades antes de evacuar',
+        recommended: true,
+        rationale: 'Evita movimientos descoordinados y mejora seguridad colectiva.',
+        impacts: [{ variableKey: 'confianzaVecinal', delta: 5 }]
       }
     ]
   },
