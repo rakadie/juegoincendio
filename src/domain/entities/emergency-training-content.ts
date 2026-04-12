@@ -508,6 +508,51 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     ]
   },
   {
+    id: 's-014-red-agua-rural',
+    title: 'Nueva variable: puntos de agua rurales',
+    category: 'postincendio',
+    context:
+      'Tras campaña de evaluación, se detectan carencias de hidrantes y balsas para primera intervención.',
+    options: [
+      {
+        id: 'a',
+        text: 'Plan municipal para señalizar y mantener puntos de agua estratégicos',
+        recommended: true,
+        rationale: 'Refuerza respuesta temprana y logística en zonas dispersas.',
+        impacts: [{ variableKey: 'capacidadOperativa', delta: 5 }]
+      },
+      {
+        id: 'b',
+        text: 'Dejar el mantenimiento para actuaciones puntuales',
+        recommended: false,
+        rationale: 'Mantiene vulnerabilidad estructural del territorio.',
+        impacts: [{ variableKey: 'capacidadOperativa', delta: -4 }]
+      },
+      {
+        id: 'c',
+        text: 'Crear nuevas balsas de agua y mejorar los accesos para vehículos de emergencia',
+        recommended: true,
+        rationale:
+          'Aumenta disponibilidad hídrica y reduce tiempos de acceso en primera respuesta.',
+        impacts: [
+          { variableKey: 'capacidadOperativa', delta: 6 },
+          { variableKey: 'danosPotencialesVivienda', delta: -2 }
+        ]
+      },
+      {
+        id: 'd',
+        text: 'Llegado el momento las brigadas pueden encontrar agua en charcos o estanques cercanos',
+        recommended: false,
+        rationale:
+          'Depender de puntos no garantizados ni preparados puede fallar en momentos críticos.',
+        impacts: [
+          { variableKey: 'capacidadOperativa', delta: -3 },
+          { variableKey: 'danosPotencialesVivienda', delta: 2 }
+        ]
+      }
+    ]
+  },
+  {
     id: 's-007-evacuacion-ciudadania',
     title: '¿Qué hacer si se declara un incendio?',
     category: 'evacuacion',
@@ -1049,21 +1094,52 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     title: 'Vecino que se niega a evacuar',
     category: 'operaciones',
     context:
-      'En condiciones críticas, una persona permanece en vivienda de alto riesgo.',
+      'Han continuado las evacuaciones, sin embargo, a primera hora llega una alarma al Puesto de Mando Avanzado: un vecino no ha querido abandonar su vivienda y donde está las llamas avanzan sin control. Hablas con el resto del equipo…',
     options: [
       {
         id: 'a',
-        text: 'No exponer brigada si la zona es inviable y mantener comunicación segura',
-        recommended: true,
-        rationale: 'Prioriza seguridad de intervinientes y aplica criterio de riesgo operativo.',
-        impacts: [{ variableKey: 'capacidadOperativa', delta: 2 }]
+        text: 'Decidís mandar una brigada para que obligue al vecino a abandonar su vivienda, si no podría morir.',
+        recommended: false,
+        rationale:
+          'La intención es protectora, pero una entrada forzosa en zona de llama fuera de control puede poner en grave riesgo a la brigada.',
+        impacts: [
+          { variableKey: 'capacidadOperativa', delta: -7 },
+          { variableKey: 'confianzaVecinal', delta: 1 }
+        ]
       },
       {
         id: 'b',
-        text: 'Enviar brigada para extracción forzosa en máxima peligrosidad',
+        text: 'La zona es demasiado peligrosa, tomáis la decisión de no mandar ningún equipo ante el riesgo de no poder salir de la zona.',
+        recommended: true,
+        rationale:
+          'Aplica criterio de seguridad operativa cuando la extracción no es viable sin comprometer más vidas.',
+        impacts: [
+          { variableKey: 'capacidadOperativa', delta: 2 },
+          { variableKey: 'confianzaVecinal', delta: -1 }
+        ]
+      },
+      {
+        id: 'c',
+        text: 'Intentáis evacuar al vecino con un helicóptero si las condiciones lo permiten',
+        recommended: true,
+        rationale:
+          'Es una alternativa de extracción más segura en escenarios concretos, siempre sujeta a viabilidad aérea.',
+        impacts: [
+          { variableKey: 'capacidadOperativa', delta: -5 },
+          { variableKey: 'danosPotencialesVivienda', delta: -2 },
+          { variableKey: 'confianzaVecinal', delta: 3 }
+        ]
+      },
+      {
+        id: 'd',
+        text: 'Le pedís al vecino que moje su casa con una manguera hasta que pase el incendio',
         recommended: false,
-        rationale: 'Puede comprometer vidas de intervinientes sin garantías de retorno.',
-        impacts: [{ variableKey: 'capacidadOperativa', delta: -7 }]
+        rationale:
+          'No es una medida de autoprotección suficiente en un frente sin control y puede aumentar el riesgo para la persona aislada.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: 5 },
+          { variableKey: 'confianzaVecinal', delta: -4 }
+        ]
       }
     ]
   },
@@ -1090,29 +1166,6 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
         recommended: false,
         rationale: 'Se pierde oportunidad de entrenamiento en calma.',
         impacts: [{ variableKey: 'cumplimientoPreventivo', delta: -3 }]
-      }
-    ]
-  },
-  {
-    id: 's-014-red-agua-rural',
-    title: 'Nueva variable: puntos de agua rurales',
-    category: 'postincendio',
-    context:
-      'Tras campaña de evaluación, se detectan carencias de hidrantes y balsas para primera intervención.',
-    options: [
-      {
-        id: 'a',
-        text: 'Plan municipal para señalizar y mantener puntos de agua estratégicos',
-        recommended: true,
-        rationale: 'Refuerza respuesta temprana y logística en zonas dispersas.',
-        impacts: [{ variableKey: 'capacidadOperativa', delta: 5 }]
-      },
-      {
-        id: 'b',
-        text: 'Dejar el mantenimiento para actuaciones puntuales',
-        recommended: false,
-        rationale: 'Mantiene vulnerabilidad estructural del territorio.',
-        impacts: [{ variableKey: 'capacidadOperativa', delta: -4 }]
       }
     ]
   }
