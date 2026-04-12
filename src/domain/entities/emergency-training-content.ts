@@ -112,6 +112,69 @@ export const EMERGENCY_GAME_VARIABLES: GameVariableDefinition[] = [
 
 export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
   {
+    id: 's-000-introduccion',
+    title: 'Introducción: Apaga las llamas',
+    category: 'comunicacion',
+    context:
+      'Los medios de extinción son cada vez más efectivos. Son capaces de frenar los conatos que se declaran cada año en nuestras áreas forestales. Sin embargo, cuando esto no se produce, cuando las llamas avanzan y no se frenan, el fuego se convierte en un incendio voraz. El abandono del campo, el cambio climático y la falta de prevención convierten nuestros montes en un auténtico polvorín.\n\nEste juego quiere contribuir a la concienciación y comprensión del trabajo que debe realizarse para disminuir las consecuencias de los incendios.\n\nSi quieres descubrir más, entra y ¡Apaga las llamas!',
+    options: [
+      {
+        id: 'a',
+        text: 'Entrar al simulador y comenzar',
+        recommended: true,
+        rationale:
+          'Permite iniciar el recorrido de aprendizaje y toma de decisiones sobre prevención y respuesta.',
+        impacts: [{ variableKey: 'confianzaVecinal', delta: 1 }]
+      }
+    ]
+  },
+  {
+    id: 's-000b-avatar-emergencias',
+    title: 'Avatar de responsable de emergencias',
+    category: 'comunicacion',
+    context: 'Eres la persona responsable del Servicio de Emergencias. Ponte cara.',
+    options: [
+      {
+        id: 'a',
+        text: 'Imagen masculina (avatar bombero)',
+        recommended: true,
+        rationale: 'Personaliza tu perfil para iniciar la experiencia de juego.',
+        impacts: []
+      },
+      {
+        id: 'b',
+        text: 'Imagen femenina (avatar bombera)',
+        recommended: true,
+        rationale: 'Personaliza tu perfil para iniciar la experiencia de juego.',
+        impacts: []
+      },
+      {
+        id: 'c',
+        text: 'Imagen neutra (avatar neutro)',
+        recommended: true,
+        rationale: 'Personaliza tu perfil para iniciar la experiencia de juego.',
+        impacts: []
+      }
+    ]
+  },
+  {
+    id: 's-000c-contexto-prevencion-otono',
+    title: 'Contexto inicial de prevención',
+    category: 'prevencion',
+    context:
+      'Los inviernos están siendo secos. Ya no son lo que eran. Los montes y zonas rurales han perdido el verdor de otras épocas por la falta de lluvias. Esto significa para todos y todas que aumenta el riesgo de un gran incendio, y para ti en particular, que debes estar en alerta en cualquier momento. Tus Servicios de Emergencias están preparados para actuar, y lo hacen cada vez mejor. Están evitando muchas catástrofes, pero cuando las hay, sin unos terrenos en buen estado, se desencadena una tragedia.\n\nEste otoño, decides comenzar tu plan de prevención. Por tu experiencia, lo primero es hablar con los vecinos y vecinas. Y recuerda que no siempre hay una sola respuesta correcta.',
+    options: [
+      {
+        id: 'a',
+        text: 'Comenzar el plan de prevención hablando con vecinos y vecinas',
+        recommended: true,
+        rationale:
+          'Abre la fase preventiva y prepara la toma de decisiones comunitarias del escenario.',
+        impacts: [{ variableKey: 'cumplimientoPreventivo', delta: 2 }]
+      }
+    ]
+  },
+  {
     id: 's-001-limpieza-perimetral',
     title: 'Limpieza alrededor de viviendas',
     category: 'prevencion',
