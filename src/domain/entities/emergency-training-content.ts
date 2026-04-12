@@ -509,8 +509,8 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
   },
   {
     id: 's-014-red-agua-rural',
-    title: 'Nueva variable: puntos de agua rurales',
-    category: 'postincendio',
+    title: 'Puntos de agua rurales',
+    category: 'prevencion',
     context:
       'Tras campaña de evaluación, se detectan carencias de hidrantes y balsas para primera intervención.',
     options: [
