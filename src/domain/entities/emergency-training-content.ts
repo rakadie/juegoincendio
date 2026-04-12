@@ -757,6 +757,245 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
         recommended: false,
         rationale: 'Aumenta impacto en economía familiar y bienestar animal.',
         impacts: [{ variableKey: 'continuidadSectorPrimario', delta: -4 }]
+      },
+      {
+        id: 'c',
+        text: 'Ordeno una evacuación escalonada y habilito varios puntos de acogida en municipios cercanos',
+        recommended: true,
+        rationale:
+          'Reduce cuellos de botella, ordena los traslados y mejora la protección de la población desplazada.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: -3 },
+          { variableKey: 'confianzaVecinal', delta: 5 },
+          { variableKey: 'capacidadOperativa', delta: -3 }
+        ]
+      },
+      {
+        id: 'd',
+        text: 'Doy a los vecinos la opción de decidir si quieren evacuar o no',
+        recommended: false,
+        rationale:
+          'Delegar la evacuación en decisión individual en fase crítica aumenta la exposición y descoordinación.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: 6 },
+          { variableKey: 'confianzaVecinal', delta: -5 }
+        ]
+      }
+    ]
+  },
+  {
+    id: 's-010b-defensa-nucleo-viviendas',
+    title: 'Defensa del núcleo de viviendas con incendio fuera de control',
+    category: 'operaciones',
+    context:
+      'El incendio sigue avanzando sin control. Las llamas superan los dos metros y medio. Vas a mandar a los bomberos al núcleo de viviendas…',
+    options: [
+      {
+        id: 'a',
+        text: 'Refuerzas la defensa con maquinaria pesada para abrir líneas cortafuegos alrededor del barrio',
+        recommended: true,
+        rationale:
+          'Prioriza la defensa de la interfaz urbana con una estrategia de contención más robusta.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: -5 },
+          { variableKey: 'capacidadOperativa', delta: -6 },
+          { variableKey: 'confianzaVecinal', delta: 3 }
+        ]
+      },
+      {
+        id: 'b',
+        text: 'Van a hacer una defensa activa del barrio para que no se quemen las viviendas',
+        recommended: false,
+        rationale:
+          'Puede ayudar, pero sin reforzar la contención perimetral puede ser insuficiente ante un frente tan intenso.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: -1 },
+          { variableKey: 'capacidadOperativa', delta: -5 }
+        ]
+      },
+      {
+        id: 'c',
+        text: 'Les pides que dejen pasar el frente de llamas y luego que entren para apagar lo que quede activo, para minimizar daños',
+        recommended: false,
+        rationale:
+          'Reduce exposición directa inicial, pero puede permitir más afección en viviendas antes del control.',
+        impacts: [
+          { variableKey: 'capacidadOperativa', delta: 1 },
+          { variableKey: 'danosPotencialesVivienda', delta: 4 },
+          { variableKey: 'confianzaVecinal', delta: -2 }
+        ]
+      },
+      {
+        id: 'd',
+        text: 'Intentas apagar las llamas con camiones cisterna de agua del ayuntamiento',
+        recommended: false,
+        rationale:
+          'Como estrategia principal frente a llama muy intensa suele ser insuficiente y poco segura.',
+        impacts: [
+          { variableKey: 'capacidadOperativa', delta: -2 },
+          { variableKey: 'danosPotencialesVivienda', delta: 5 }
+        ]
+      }
+    ]
+  },
+  {
+    id: 's-010c-ataque-zona-secundaria',
+    title: 'Actuación en otra zona del monte antes de la noche',
+    category: 'operaciones',
+    context:
+      'Mientras tanto, en otra zona del monte los medios aéreos continúan trabajando sin descanso antes de que llegue la noche.',
+    options: [
+      {
+        id: 'a',
+        text: 'Ordenas parar las descargas aéreas para ahorrar agua y utilizarla más tarde',
+        recommended: false,
+        rationale:
+          'Interrumpir descargas en fase activa suele favorecer la continuidad del frente de incendio.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: 4 },
+          { variableKey: 'confianzaVecinal', delta: -2 }
+        ]
+      },
+      {
+        id: 'b',
+        text: 'Mandas a las brigadas terrestres que sigan atacando desde la cola',
+        recommended: false,
+        rationale:
+          'Puede aportar control local, pero puede ser insuficiente si no se actúa también sobre zonas críticas.',
+        impacts: [
+          { variableKey: 'capacidadOperativa', delta: -4 },
+          { variableKey: 'danosPotencialesVivienda', delta: 1 }
+        ]
+      },
+      {
+        id: 'c',
+        text: 'Pides a los medios terrestres que realicen líneas de defensa',
+        recommended: true,
+        rationale:
+          'Consolida la contención y mejora la capacidad de frenar propagación antes del periodo nocturno.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: -4 },
+          { variableKey: 'capacidadOperativa', delta: -5 },
+          { variableKey: 'cumplimientoPreventivo', delta: 2 }
+        ]
+      },
+      {
+        id: 'd',
+        text: 'Rediriges parte de las brigadas para atacar los flancos del incendio',
+        recommended: true,
+        rationale:
+          'Atacar flancos puede reducir la expansión lateral y reforzar el cierre táctico del perímetro.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: -3 },
+          { variableKey: 'capacidadOperativa', delta: -4 }
+        ]
+      }
+    ]
+  },
+  {
+    id: 's-010c2-refuerzo-ume-viviendas',
+    title: 'Refuerzo con UME para proteger viviendas',
+    category: 'operaciones',
+    context:
+      'No quieres que se quemen más viviendas… Continúan los relevos de los medios terrestres. La Unidad Militar de Emergencias se ha unido a ellos.',
+    options: [
+      {
+        id: 'a',
+        text: 'Continúan los relevos de los medios terrestres. La Unidad Militar de Emergencias se ha unido a ellos',
+        recommended: false,
+        rationale:
+          'Mantiene la presión operativa, pero puede quedarse corta si no se refuerza la protección del núcleo urbano.',
+        impacts: [
+          { variableKey: 'capacidadOperativa', delta: -4 },
+          { variableKey: 'danosPotencialesVivienda', delta: -1 }
+        ]
+      },
+      {
+        id: 'b',
+        text: 'La Unidad Militar de Emergencias se ha unido y los medios aéreos deben continuar',
+        recommended: true,
+        rationale:
+          'Combina continuidad aérea y refuerzo terrestre para sostener la contención en una fase crítica.',
+        impacts: [
+          { variableKey: 'capacidadOperativa', delta: -8 },
+          { variableKey: 'danosPotencialesVivienda', delta: -4 },
+          { variableKey: 'confianzaVecinal', delta: 2 }
+        ]
+      },
+      {
+        id: 'c',
+        text: 'Creas un perímetro de protección alrededor del núcleo de viviendas con maquinaria y brigadas',
+        recommended: true,
+        rationale:
+          'Prioriza la defensa de viviendas y mejora la capacidad de frenar la llegada del frente al casco habitado.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: -5 },
+          { variableKey: 'capacidadOperativa', delta: -6 },
+          { variableKey: 'confianzaVecinal', delta: 3 }
+        ]
+      },
+      {
+        id: 'd',
+        text: 'Ordenas apagar primero los jardines y piscinas de las casas para evitar que el fuego llegue',
+        recommended: false,
+        rationale:
+          'No centra recursos en los puntos de mayor propagación y puede resultar insuficiente como estrategia principal.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: 3 },
+          { variableKey: 'capacidadOperativa', delta: -2 }
+        ]
+      }
+    ]
+  },
+  {
+    id: 's-010d-zona-barranco',
+    title: 'Intervención en zona de barranco',
+    category: 'operaciones',
+    context: 'Las llamas llegan a una zona de barranco…',
+    options: [
+      {
+        id: 'a',
+        text: 'Das las órdenes para que lleguen allí los hidroaviones',
+        recommended: true,
+        rationale:
+          'Aporta alta capacidad de descarga en un terreno complejo donde el acceso terrestre puede estar limitado.',
+        impacts: [
+          { variableKey: 'capacidadOperativa', delta: -7 },
+          { variableKey: 'danosPotencialesVivienda', delta: -3 }
+        ]
+      },
+      {
+        id: 'b',
+        text: 'Ordenas desviar un camión de bomberos para que baje al fondo del barranco',
+        recommended: false,
+        rationale:
+          'Puede comprometer la seguridad y la maniobrabilidad del vehículo en una zona de difícil acceso.',
+        impacts: [
+          { variableKey: 'capacidadOperativa', delta: -3 },
+          { variableKey: 'danosPotencialesVivienda', delta: 2 }
+        ]
+      },
+      {
+        id: 'c',
+        text: 'Pides a los helicópteros que acudan a la zona de barranco',
+        recommended: true,
+        rationale:
+          'Los helicópteros ofrecen flexibilidad táctica y precisión de descarga en relieve abrupto.',
+        impacts: [
+          { variableKey: 'capacidadOperativa', delta: -6 },
+          { variableKey: 'danosPotencialesVivienda', delta: -2 }
+        ]
+      },
+      {
+        id: 'd',
+        text: 'Ordenas a las brigadas terrestres que ataquen el flanco del incendio desde la parte alta del barranco',
+        recommended: false,
+        rationale:
+          'Puede ser útil en combinación con medios aéreos, pero aislado incrementa exposición del personal.',
+        impacts: [
+          { variableKey: 'capacidadOperativa', delta: -5 },
+          { variableKey: 'danosPotencialesVivienda', delta: 1 }
+        ]
       }
     ]
   },
@@ -779,6 +1018,29 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
         recommended: false,
         rationale: 'Fatiga operativa y mayor exposición de personal.',
         impacts: [{ variableKey: 'capacidadOperativa', delta: -10 }]
+      },
+      {
+        id: 'c',
+        text: 'Priorizar la protección del núcleo urbano y retirar equipos de zonas menos críticas',
+        recommended: true,
+        rationale:
+          'Concentra recursos en la zona con mayor riesgo para viviendas y mejora la eficacia de la defensa.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: -3 },
+          { variableKey: 'confianzaVecinal', delta: 2 },
+          { variableKey: 'capacidadOperativa', delta: -3 }
+        ]
+      },
+      {
+        id: 'd',
+        text: 'Suspender las operaciones hasta el amanecer cuando haya más luz',
+        recommended: false,
+        rationale:
+          'Detener la respuesta en fase activa puede permitir propagación nocturna y aumentar daños acumulados.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: 6 },
+          { variableKey: 'confianzaVecinal', delta: -4 }
+        ]
       }
     ]
   },
