@@ -605,6 +605,79 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
         recommended: false,
         rationale: 'Puede quedarse corto para estabilización temprana.',
         impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 5 }]
+      },
+      {
+        id: 'c',
+        text: 'Enviar una unidad policial y un helicóptero de reconocimiento para evaluar el incendio antes de desplegar brigadas',
+        recommended: false,
+        rationale:
+          'Aporta información, pero puede retrasar el ataque inicial en condiciones de riesgo alto.',
+        impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 3 }]
+      },
+      {
+        id: 'd',
+        text: 'No movilizar recursos y observar la evolución del incendio desde el centro de coordinación',
+        recommended: false,
+        rationale:
+          'Retrasa la respuesta operativa y aumenta la probabilidad de propagación del incendio.',
+        impacts: [
+          { variableKey: 'capacidadOperativa', delta: 2 },
+          { variableKey: 'danosPotencialesVivienda', delta: 8 },
+          { variableKey: 'confianzaVecinal', delta: -4 }
+        ]
+      }
+    ]
+  },
+  {
+    id: 's-009b-escalado-incendio',
+    title: 'Escalado de medios por empeoramiento del incendio',
+    category: 'operaciones',
+    context:
+      'Las temperaturas y la falta de humedad no ayudan. El incendio ocupa más masa forestal.',
+    options: [
+      {
+        id: 'a',
+        text: 'Envío medios aéreos más grandes (hidroaviones, helicópteros Kamov)',
+        recommended: true,
+        rationale:
+          'Ante intensificación del fuego, aumentar capacidad de descarga y alcance mejora la contención inicial.',
+        impacts: [
+          { variableKey: 'capacidadOperativa', delta: -10 },
+          { variableKey: 'danosPotencialesVivienda', delta: -5 }
+        ]
+      },
+      {
+        id: 'b',
+        text: 'Solo mando más medios terrestres',
+        recommended: false,
+        rationale:
+          'Refuerza el frente, pero puede resultar insuficiente sin apoyo aéreo en condiciones extremas.',
+        impacts: [
+          { variableKey: 'capacidadOperativa', delta: -6 },
+          { variableKey: 'danosPotencialesVivienda', delta: 2 }
+        ]
+      },
+      {
+        id: 'c',
+        text: 'Enviar un medio aéreo adicional y reforzar ligeramente las brigadas terrestres',
+        recommended: false,
+        rationale:
+          'Es una escalada parcial que puede ayudar, aunque puede quedarse corta si el frente sigue creciendo.',
+        impacts: [
+          { variableKey: 'capacidadOperativa', delta: -7 },
+          { variableKey: 'danosPotencialesVivienda', delta: 1 }
+        ]
+      },
+      {
+        id: 'd',
+        text: 'No enviar más recursos y confiar en que el viento reduzca la intensidad del incendio',
+        recommended: false,
+        rationale:
+          'La inacción en un escenario adverso aumenta el riesgo de propagación y de daños a población y viviendas.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: 8 },
+          { variableKey: 'confianzaVecinal', delta: -5 }
+        ]
       }
     ]
   },
