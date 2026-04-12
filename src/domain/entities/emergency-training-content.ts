@@ -629,6 +629,60 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     ]
   },
   {
+    id: 's-009c-continuidad-incendio',
+    title: 'Seguimiento tras inicio del incendio',
+    category: 'operaciones',
+    context:
+      'Están actuando los medios que has enviado aunque te avisan de que el incendio continúa.',
+    options: [
+      {
+        id: 'a',
+        text: 'Reorganizo la estrategia: priorizo proteger viviendas y crear líneas cortafuegos',
+        recommended: true,
+        rationale:
+          'Permite concentrar esfuerzos en protección de personas y contención del frente con criterio táctico.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: -4 },
+          { variableKey: 'capacidadOperativa', delta: -4 },
+          { variableKey: 'confianzaVecinal', delta: 2 }
+        ]
+      },
+      {
+        id: 'b',
+        text: 'Aumento los medios enviados',
+        recommended: false,
+        rationale:
+          'Mejora parcialmente la respuesta, aunque suele ser menos eficaz que reorganizar la estrategia por prioridades.',
+        impacts: [
+          { variableKey: 'cumplimientoPreventivo', delta: 2 },
+          { variableKey: 'confianzaVecinal', delta: 1 }
+        ]
+      },
+      {
+        id: 'c',
+        text: 'Espero. Todavía están actuando y pueden apagarlo',
+        recommended: false,
+        rationale: 'Demorar decisiones de ajuste puede facilitar la propagación en condiciones adversas.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: 4 },
+          { variableKey: 'confianzaVecinal', delta: -2 }
+        ]
+      },
+      {
+        id: 'd',
+        text: 'Retiro algunos medios para ahorrar recursos por si es necesario más tarde',
+        recommended: false,
+        rationale:
+          'Retirar medios en fase activa reduce capacidad de control y puede empeorar el escenario.',
+        impacts: [
+          { variableKey: 'capacidadOperativa', delta: 3 },
+          { variableKey: 'danosPotencialesVivienda', delta: 6 },
+          { variableKey: 'confianzaVecinal', delta: -3 }
+        ]
+      }
+    ]
+  },
+  {
     id: 's-009b-escalado-incendio',
     title: 'Escalado de medios por empeoramiento del incendio',
     category: 'operaciones',
