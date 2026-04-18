@@ -162,7 +162,7 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     title: 'Contexto inicial de prevención',
     category: 'prevencion',
     context:
-      'Los inviernos están siendo secos. Ya no son lo que eran. Los montes y zonas rurales han perdido el verdor de otras épocas por la falta de lluvias. Esto significa para todos y todas que aumenta el riesgo de un gran incendio, y para ti en particular, que debes estar en alerta en cualquier momento. Tus Servicios de Emergencias están preparados para actuar, y lo hacen cada vez mejor. Están evitando muchas catástrofes, pero cuando las hay, sin unos terrenos en buen estado, se desencadena una tragedia.\n\nEste otoño, decides comenzar tu plan de prevención. Por tu experiencia, lo primero es hablar con los vecinos y vecinas. Y recuerda que no siempre hay una sola respuesta correcta.',
+      'Los inviernos están siendo secos. Ya no son lo que eran. Los montes y zonas rurales han perdido el verdor de otras épocas por la falta de lluvias. Esto significa que aumenta el riesgo de un gran incendio, y para ti en particular, que debes estar en alerta en cualquier momento. Tus Servicios de Emergencias están preparados para actuar, y lo hacen cada vez mejor. Están evitando muchas catástrofes, pero cuando las hay, sin unos terrenos en buen estado, se desencadena una tragedia.\n\nEste otoño, decides comenzar tu plan de prevención. Por tu experiencia, debes preparar un plan de acción.\n\nRecuerda que no siempre hay una sola respuesta correcta.',
     options: [
       {
         id: 'a',
@@ -171,6 +171,61 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
         rationale:
           'Abre la fase preventiva y prepara la toma de decisiones comunitarias del escenario.',
         impacts: [{ variableKey: 'cumplimientoPreventivo', delta: 2 }]
+      }
+    ]
+  },
+  {
+    id: 's-000d-quemas-prescritas-otono',
+    title: 'Planificación de quemas prescritas',
+    category: 'prevencion',
+    context:
+      'Este otoño estás pensando en realizar algunas quemas prescritas. Sabes que hay zonas que pueden tener acumulación de combustible vegetal que puede aumentar la intensidad de las llamas. ¿Qué decisión tomas?',
+    options: [
+      {
+        id: 'a',
+        text: 'Planificar algunas quemas controladas en invierno que realizará el equipo de Emergencias',
+        recommended: true,
+        rationale:
+          'Prioriza la ventana estacional más segura y la ejecución por personal preparado, reduciendo el riesgo de escape.',
+        impacts: [
+          { variableKey: 'cumplimientoPreventivo', delta: 7 },
+          { variableKey: 'danosPotencialesVivienda', delta: -3 },
+          { variableKey: 'confianzaVecinal', delta: 2 }
+        ]
+      },
+      {
+        id: 'b',
+        text: 'Permitir solo pequeñas quemas realizadas por vecinos para limpiar sus parcelas',
+        recommended: false,
+        rationale:
+          'Aunque sean pequeñas, sin un dispositivo técnico completo aumentan la variabilidad del riesgo y la probabilidad de incidentes.',
+        impacts: [
+          { variableKey: 'cumplimientoPreventivo', delta: -3 },
+          { variableKey: 'danosPotencialesVivienda', delta: 2 }
+        ]
+      },
+      {
+        id: 'c',
+        text: 'El año pasado ya hiciste quemas. Decides finalmente que la vegetación acumulada sirva de alimento a los animales.',
+        recommended: false,
+        rationale:
+          'No actuar sobre el combustible acumulado puede incrementar la intensidad potencial del fuego en condiciones secas.',
+        impacts: [
+          { variableKey: 'cumplimientoPreventivo', delta: -4 },
+          { variableKey: 'danosPotencialesVivienda', delta: 4 }
+        ]
+      },
+      {
+        id: 'd',
+        text: 'Realizar quemas durante la temporada seca para eliminar rápidamente el combustible.',
+        recommended: false,
+        rationale:
+          'Es la opción de mayor exposición al riesgo: condiciones secas y mayor probabilidad de propagación rápida.',
+        impacts: [
+          { variableKey: 'cumplimientoPreventivo', delta: -8 },
+          { variableKey: 'danosPotencialesVivienda', delta: 6 },
+          { variableKey: 'confianzaVecinal', delta: -2 }
+        ]
       }
     ]
   },
