@@ -230,6 +230,51 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     ]
   },
   {
+    id: 's-014-red-agua-rural',
+    title: 'Puntos de agua rurales',
+    category: 'prevencion',
+    context:
+      'Tras campaña de evaluación, se detectan carencias de hidrantes y balsas para primera intervención.',
+    options: [
+      {
+        id: 'a',
+        text: 'Plan municipal para señalizar y mantener puntos de agua estratégicos',
+        recommended: true,
+        rationale: 'Refuerza respuesta temprana y logística en zonas dispersas.',
+        impacts: [{ variableKey: 'capacidadOperativa', delta: 5 }]
+      },
+      {
+        id: 'b',
+        text: 'Dejar el mantenimiento para actuaciones puntuales',
+        recommended: false,
+        rationale: 'Mantiene vulnerabilidad estructural del territorio.',
+        impacts: [{ variableKey: 'capacidadOperativa', delta: -4 }]
+      },
+      {
+        id: 'c',
+        text: 'Crear nuevas balsas de agua y mejorar los accesos para vehículos de emergencia',
+        recommended: true,
+        rationale:
+          'Aumenta disponibilidad hídrica y reduce tiempos de acceso en primera respuesta.',
+        impacts: [
+          { variableKey: 'capacidadOperativa', delta: 6 },
+          { variableKey: 'danosPotencialesVivienda', delta: -2 }
+        ]
+      },
+      {
+        id: 'd',
+        text: 'Llegado el momento las brigadas pueden encontrar agua en charcos o estanques cercanos',
+        recommended: false,
+        rationale:
+          'Depender de puntos no garantizados ni preparados puede fallar en momentos críticos.',
+        impacts: [
+          { variableKey: 'capacidadOperativa', delta: -3 },
+          { variableKey: 'danosPotencialesVivienda', delta: 2 }
+        ]
+      }
+    ]
+  },
+  {
     id: 's-001-limpieza-perimetral',
     title: 'Limpieza alrededor de viviendas',
     category: 'prevencion',
@@ -621,51 +666,6 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
         impacts: [
           { variableKey: 'cumplimientoPreventivo', delta: 5 },
           { variableKey: 'danosPotencialesVivienda', delta: -2 }
-        ]
-      }
-    ]
-  },
-  {
-    id: 's-014-red-agua-rural',
-    title: 'Puntos de agua rurales',
-    category: 'prevencion',
-    context:
-      'Tras campaña de evaluación, se detectan carencias de hidrantes y balsas para primera intervención.',
-    options: [
-      {
-        id: 'a',
-        text: 'Plan municipal para señalizar y mantener puntos de agua estratégicos',
-        recommended: true,
-        rationale: 'Refuerza respuesta temprana y logística en zonas dispersas.',
-        impacts: [{ variableKey: 'capacidadOperativa', delta: 5 }]
-      },
-      {
-        id: 'b',
-        text: 'Dejar el mantenimiento para actuaciones puntuales',
-        recommended: false,
-        rationale: 'Mantiene vulnerabilidad estructural del territorio.',
-        impacts: [{ variableKey: 'capacidadOperativa', delta: -4 }]
-      },
-      {
-        id: 'c',
-        text: 'Crear nuevas balsas de agua y mejorar los accesos para vehículos de emergencia',
-        recommended: true,
-        rationale:
-          'Aumenta disponibilidad hídrica y reduce tiempos de acceso en primera respuesta.',
-        impacts: [
-          { variableKey: 'capacidadOperativa', delta: 6 },
-          { variableKey: 'danosPotencialesVivienda', delta: -2 }
-        ]
-      },
-      {
-        id: 'd',
-        text: 'Llegado el momento las brigadas pueden encontrar agua en charcos o estanques cercanos',
-        recommended: false,
-        rationale:
-          'Depender de puntos no garantizados ni preparados puede fallar en momentos críticos.',
-        impacts: [
-          { variableKey: 'capacidadOperativa', delta: -3 },
-          { variableKey: 'danosPotencialesVivienda', delta: 2 }
         ]
       }
     ]
@@ -1234,7 +1234,7 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
           'Aporta alta capacidad de descarga en un terreno complejo donde el acceso terrestre puede estar limitado.',
         impacts: [
           { variableKey: 'capacidadOperativa', delta: -7 },
-          { variableKey: 'danosPotencialesVivienda', delta: -3 }
+          { variableKey: 'danosPotencialesVivienda', delta: -2 }
         ]
       },
       {
@@ -1255,8 +1255,8 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
         rationale:
           'Los helicópteros ofrecen flexibilidad táctica y precisión de descarga en relieve abrupto.',
         impacts: [
-          { variableKey: 'capacidadOperativa', delta: -6 },
-          { variableKey: 'danosPotencialesVivienda', delta: -2 }
+          { variableKey: 'capacidadOperativa', delta: -5 },
+          { variableKey: 'danosPotencialesVivienda', delta: -4 }
         ]
       },
       {
@@ -1322,7 +1322,7 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     title: 'Vecino que se niega a evacuar',
     category: 'operaciones',
     context:
-      'Han continuado las evacuaciones, sin embargo, a primera hora llega una alarma al Puesto de Mando Avanzado: un vecino no ha querido abandonar su vivienda y donde está las llamas avanzan sin control. Hablas con el resto del equipo…',
+      'Han continuado las evacuaciones, sin embargo, a primera hora llega una alarma al Puesto de Mando Avanzado: un vecino no ha querido abandonar su vivienda y donde se encuentra las llamas avanzan sin control. Hablas con el resto del equipo…',
     options: [
       {
         id: 'a',
