@@ -749,6 +749,62 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     ]
   },
   {
+    id: 's-008b-riesgo-extremo-verano',
+    title: 'Medidas ante riesgo extremo en verano',
+    category: 'operaciones',
+    context:
+      'Es pleno verano. El termómetro supera los 38 °C, la humedad es muy baja y el viento puede cambiar en cualquier momento. Los técnicos advierten que el riesgo de incendio es extremo y que cualquier chispa podría provocar un gran fuego.\n\n¿Qué medidas decides tomar para reducir el riesgo en el monte?',
+    options: [
+      {
+        id: 'a',
+        text: 'Activar el nivel máximo de alerta: prohibir barbacoas y quemas, cerrar algunas pistas forestales y aumentar la vigilancia con patrullas y torres de observación.',
+        recommended: true,
+        rationale:
+          'Combina restricciones, control de accesos y refuerzo de vigilancia para reducir igniciones y mejorar detección temprana.',
+        impacts: [
+          { variableKey: 'cumplimientoPreventivo', delta: 8 },
+          { variableKey: 'danosPotencialesVivienda', delta: -4 },
+          { variableKey: 'capacidadOperativa', delta: -2 },
+          { variableKey: 'confianzaVecinal', delta: 2 }
+        ]
+      },
+      {
+        id: 'b',
+        text: 'Recomendar a la población que tenga precaución en el monte, pero mantener todas las actividades recreativas abiertas.',
+        recommended: false,
+        rationale:
+          'La recomendación genérica sin medidas adicionales suele ser insuficiente en condiciones extremas.',
+        impacts: [
+          { variableKey: 'cumplimientoPreventivo', delta: -4 },
+          { variableKey: 'danosPotencialesVivienda', delta: 3 }
+        ]
+      },
+      {
+        id: 'c',
+        text: 'Permitir el uso de barbacoas solo en zonas habilitadas porque están preparadas para el fuego.',
+        recommended: false,
+        rationale:
+          'Incluso en áreas habilitadas, mantener focos de ignición con riesgo extremo eleva la probabilidad de incidente.',
+        impacts: [
+          { variableKey: 'cumplimientoPreventivo', delta: -6 },
+          { variableKey: 'danosPotencialesVivienda', delta: 5 }
+        ]
+      },
+      {
+        id: 'd',
+        text: 'No tomar medidas especiales porque todavía no se ha declarado ningún incendio.',
+        recommended: false,
+        rationale:
+          'Esperar a la declaración de incendio en riesgo extremo reduce la capacidad de prevención y reacción temprana.',
+        impacts: [
+          { variableKey: 'cumplimientoPreventivo', delta: -9 },
+          { variableKey: 'danosPotencialesVivienda', delta: 7 },
+          { variableKey: 'confianzaVecinal', delta: -3 }
+        ]
+      }
+    ]
+  },
+  {
     id: 's-009-primer-envio-medios',
     title: 'Activación inicial de medios',
     category: 'operaciones',
@@ -997,6 +1053,60 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
         impacts: [
           { variableKey: 'capacidadOperativa', delta: -2 },
           { variableKey: 'danosPotencialesVivienda', delta: 5 }
+        ]
+      }
+    ]
+  },
+  {
+    id: 's-010b2-foco-secundario-por-radio',
+    title: 'Foco secundario detectado por radio',
+    category: 'operaciones',
+    context:
+      'El incendio principal sigue activo, pero llega una nueva información por radio: ha aparecido un foco secundario a varios kilómetros. Los técnicos advierten que, si el viento cambia, ambos frentes podrían unirse.\n\n¿Qué decisión tomas?',
+    options: [
+      {
+        id: 'a',
+        text: 'Dividir los recursos: mantener equipos en el incendio principal y enviar una brigada rápida al foco secundario para intentar apagarlo antes de que crezca.',
+        recommended: true,
+        rationale:
+          'Permite sostener la defensa del frente principal y atacar de forma temprana el foco secundario para evitar su consolidación.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: -3 },
+          { variableKey: 'capacidadOperativa', delta: -5 },
+          { variableKey: 'confianzaVecinal', delta: 2 }
+        ]
+      },
+      {
+        id: 'b',
+        text: 'Concentrar todos los medios en el incendio principal para evitar que avance hacia zonas habitadas.',
+        recommended: false,
+        rationale:
+          'Puede proteger el frente principal a corto plazo, pero deja el foco secundario con margen para crecer y complicar la maniobra.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: 2 },
+          { variableKey: 'confianzaVecinal', delta: -1 }
+        ]
+      },
+      {
+        id: 'c',
+        text: 'Esperar a confirmar si el foco secundario crece antes de enviar recursos.',
+        recommended: false,
+        rationale:
+          'Retrasar la intervención reduce las opciones de control temprano y aumenta el riesgo de que ambos frentes se aproximen.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: 5 },
+          { variableKey: 'confianzaVecinal', delta: -2 }
+        ]
+      },
+      {
+        id: 'd',
+        text: 'Priorizar la vigilancia aérea del foco secundario sin enviar equipos terrestres todavía.',
+        recommended: false,
+        rationale:
+          'Mejora la información situacional, pero sin ataque inicial el foco puede intensificarse con rapidez en condiciones adversas.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: 3 },
+          { variableKey: 'capacidadOperativa', delta: -1 }
         ]
       }
     ]
