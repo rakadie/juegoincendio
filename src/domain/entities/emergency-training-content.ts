@@ -179,7 +179,7 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     title: 'Planificación de quemas prescritas',
     category: 'prevencion',
     context:
-      'Este otoño estás pensando en realizar algunas quemas prescritas. Sabes que hay zonas que pueden tener acumulación de combustible vegetal que puede aumentar la intensidad de las llamas. ¿Qué decisión tomas?',
+      'Este otoño estás pensando en realizar algunas quemas prescritas. Sabes que hay zonas que pueden tener acumulación de combustible vegetal que alimentarán la intensidad de las llamas en caso de incendio. ¿Qué decisión tomas?',
     options: [
       {
         id: 'a',
