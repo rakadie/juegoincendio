@@ -675,7 +675,7 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
   {
     id: 's-007-evacuacion-ciudadania',
     title: '¿Qué hacer si se declara un incendio?',
-    category: 'evacuacion',
+    category: 'prevencion',
     context:
       'Durante esta visita surge otra duda. Muchos vecinos no saben qué deben hacer si se declara un incendio cerca de su municipio.',
     options: [
@@ -688,17 +688,6 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
         impacts: [
           { variableKey: 'danosPotencialesVivienda', delta: 2 },
           { variableKey: 'confianzaVecinal', delta: -2 }
-        ]
-      },
-      {
-        id: 'b',
-        text: 'Cerrar la llave del gas y de la electricidad',
-        recommended: true,
-        rationale:
-          'Si se puede hacer con seguridad y sin demoras, reduce riesgos adicionales durante la emergencia.',
-        impacts: [
-          { variableKey: 'danosPotencialesVivienda', delta: -2 },
-          { variableKey: 'cumplimientoPreventivo', delta: 2 }
         ]
       },
       {
