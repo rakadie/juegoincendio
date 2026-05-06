@@ -162,15 +162,14 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     title: 'Contexto inicial de prevención',
     category: 'prevencion',
     context:
-      'Los inviernos están siendo secos. Ya no son lo que eran. Los montes y zonas rurales han perdido el verdor de otras épocas por la falta de lluvias. Esto significa que aumenta el riesgo de un gran incendio, y para ti en particular, que debes estar en alerta en cualquier momento. Tus Servicios de Emergencias están preparados para actuar, y lo hacen cada vez mejor. Están evitando muchas catástrofes, pero cuando las hay, sin unos terrenos en buen estado, se desencadena una tragedia.\n\nEste otoño, decides comenzar tu plan de prevención. Por tu experiencia, debes preparar un plan de acción.\n\nRecuerda que no siempre hay una sola respuesta correcta.',
+      'Los inviernos están siendo secos. Ya no son lo que eran. Los montes y zonas rurales han perdido el verdor de otras épocas por la falta de lluvias. Esto significa que aumenta el riesgo de un gran incendio. Tus Servicios de Emergencias están preparados para actuar, y lo hacen cada vez mejor. Están evitando muchas catástrofes, pero cuando las hay, sin unos terrenos en buen estado, se desencadena una tragedia. Este otoño, decides comenzar tu plan de prevención. Por tu experiencia, debes preparar un plan de acción. Recuerda que no siempre hay una sola respuesta correcta.',
     options: [
       {
         id: 'a',
-        text: 'Comenzar el plan de prevención hablando con vecinos y vecinas',
+        text: 'Continuar',
         recommended: true,
-        rationale:
-          'Abre la fase preventiva y prepara la toma de decisiones comunitarias del escenario.',
-        impacts: [{ variableKey: 'cumplimientoPreventivo', delta: 2 }]
+        rationale: 'Permite avanzar al siguiente cuadro del escenario.',
+        impacts: []
       }
     ]
   },
@@ -279,7 +278,7 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     title: 'Limpieza alrededor de viviendas',
     category: 'prevencion',
     context:
-      'Como responsable de Emergencias, debes recomendar la distancia de limpieza mínima alrededor de viviendas.',
+      'Como responsable de Emergencias, debes recomendar la distancia de limpieza mínima alrededor de viviendas y edificios públicos.',
     options: [
       {
         id: 'a',
@@ -322,7 +321,8 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     id: 's-002-plantas-finca',
     title: 'Elección de vegetación tras limpiar finca',
     category: 'prevencion',
-    context: 'Los vecinos quieren replantar una finca limpia sin aumentar el riesgo de incendio.',
+    context:
+      'En una de tus visitas a un municipio, un vecino te pregunta qué plantas son más idóneas para replantar en su finca, ¿qué le aconsejas?',
     options: [
       {
         id: 'a',
@@ -396,7 +396,7 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     options: [
       {
         id: 'a',
-        text: 'Que plante vegetación alrededor de las zonas urbanas',
+        text: 'Que plante la vegetación que le guste alrededor de las zonas urbanas',
         recommended: false,
         rationale:
           'Plantar sin diseño preventivo en interfaz urbano-forestal puede aumentar la continuidad del combustible.',
@@ -441,25 +441,26 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     id: 's-003-maquinaria-riesgo',
     title: 'Uso de maquinaria en horas de riesgo',
     category: 'prevencion',
-    context: 'Un vecino usa maquinaria por la tarde con calor intenso.',
+    context:
+      'Un vecino quiere usar maquinaria en su terreno en cualquier momento que lo necesite, aunque haga calor intenso. Dice que él siempre tiene cuidado. ¿Qué le indicas?',
     options: [
       {
         id: 'a',
-        text: 'Cortando con una radial en el jardín',
+        text: 'Puede cortar con una radial en el jardín',
         recommended: false,
         rationale: 'Actividad de alto riesgo por posibles chispas.',
         impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 6 }]
       },
       {
         id: 'b',
-        text: 'Cortando con una radial en un patio',
+        text: 'Puede cortar con una radial en un patio',
         recommended: false,
         rationale: 'Sigue siendo de riesgo si no hay medidas estrictas.',
         impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 4 }]
       },
       {
         id: 'c',
-        text: 'Desbrozando',
+        text: 'Puede desbrozar lo que quiera.',
         recommended: false,
         rationale:
           'Sin medidas adicionales, puede provocar igniciones por contacto con material seco.',
@@ -467,7 +468,7 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
       },
       {
         id: 'd',
-        text: 'Desbrozando con una manguera al lado',
+        text: 'Puede desbrozar con una manguera al lado',
         recommended: true,
         rationale: 'Reduce riesgo al añadir medios inmediatos de primera respuesta.',
         impacts: [{ variableKey: 'cumplimientoPreventivo', delta: 5 }]
@@ -479,7 +480,7 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     title: 'Gestión de quemas agrícolas',
     category: 'prevencion',
     context:
-      'Un vecino pregunta cómo gestionar una quema agrícola de forma legal y segura.',
+      'En tu visita al municipio un vecino te pregunta cómo gestionar una quema agrícola de forma legal y segura. ¿Qué consejo le darías?',
     options: [
       {
         id: 'a',
@@ -520,7 +521,7 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
       },
       {
         id: 'e',
-        text: 'Hacerla al atardecer sin autorización si el terreno está húmedo',
+        text: 'Hacerla al atardecer, aunque no tengas autorización, si el terreno está húmedo',
         recommended: false,
         rationale:
           'Aunque haya humedad puntual, incumple normativa y mantiene riesgo de escape.',
@@ -542,7 +543,8 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     id: 's-005-recoleccion-monte',
     title: 'Recogida de pinocha, leña, caña y forraje',
     category: 'prevencion',
-    context: 'La población consulta sobre recolección de material vegetal y aprovechamientos.',
+    context:
+      'Te llega otra consulta sobre la recolección de material vegetal y aprovechamientos. Se dice por ahí que no es posible cogerla.',
     options: [
       {
         id: 'a',
@@ -625,7 +627,7 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     title: 'Hogueras o barbacoas en entorno forestal',
     category: 'prevencion',
     context:
-      'Surge la duda de si es posible hacer hogueras o barbacoas durante actividades en el monte.',
+      'Otra de las dudas que circulan es si es posible hacer hogueras o barbacoas en el monte.',
     options: [
       {
         id: 'a',
@@ -652,7 +654,7 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
       },
       {
         id: 'd',
-        text: 'Solo es posible invierno',
+        text: 'Solo es posible en otoño e invierno',
         recommended: false,
         rationale:
           'La autorización no depende únicamente de la estación, sino del riesgo y de la regulación activa.',
@@ -674,7 +676,8 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     id: 's-007-evacuacion-ciudadania',
     title: '¿Qué hacer si se declara un incendio?',
     category: 'evacuacion',
-    context: 'Última ronda de preguntas vecinales sobre autoprotección inmediata.',
+    context:
+      'Durante esta visita surge otra duda. Muchos vecinos no saben qué deben hacer si se declara un incendio cerca de su municipio.',
     options: [
       {
         id: 'a',
@@ -722,6 +725,17 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
         recommended: true,
         rationale: 'Evita movimientos descoordinados y mejora seguridad colectiva.',
         impacts: [{ variableKey: 'confianzaVecinal', delta: 5 }]
+      },
+      {
+        id: 'f',
+        text: 'Retirar enseres que estén cerca de puertas y ventanas, y cerrar contraventanas.',
+        recommended: true,
+        rationale:
+          'Reduce la exposición de elementos vulnerables y mejora la autoprotección básica de la vivienda.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: -3 },
+          { variableKey: 'cumplimientoPreventivo', delta: 2 }
+        ]
       }
     ]
   },
