@@ -133,6 +133,7 @@ export function renderGameContentPage(): string {
       const categoryLabel = {
         prevencion: 'Prevención',
         operaciones: 'Operaciones',
+        'proteccion-civil': 'Protección civil',
         evacuacion: 'Evacuación',
         comunicacion: 'Comunicación',
         postincendio: 'Postincendio'
@@ -169,7 +170,7 @@ export function renderGameContentPage(): string {
 
         categories.forEach(function (c) {
           const active = state.selectedCategory === c ? 'active' : '';
-          const label = c === 'todos' ? 'Todos' : categoryLabel[c];
+          const label = c === 'todos' ? 'Todos' : categoryLabel[c] ?? c;
           html += '<button class="item ' + active + '" data-cat="' + c + '">' +
             label +
           '</button>';
@@ -195,7 +196,7 @@ export function renderGameContentPage(): string {
           const active = state.selectedScenarioId === s.id ? 'active' : '';
           html += '<button class="item ' + active + '" data-id="' + s.id + '">' +
             '<strong>' + s.title + '</strong><br/>' +
-            '<span class="muted">' + categoryLabel[s.category] + '</span>' +
+            '<span class="muted">' + (categoryLabel[s.category] ?? s.category) + '</span>' +
           '</button>';
         });
 
@@ -228,8 +229,9 @@ export function renderGameContentPage(): string {
         let html = '';
 
         scenario.options.forEach(function (o) {
-          const tagClass = o.recommended ? 'tag-ok' : 'tag-bad';
-          const tagText = o.recommended ? 'Recomendada' : 'No recomendada';
+          const isRecommended = o.recommended === true || ['optimal', 'recommended'].includes(o.evaluation);
+          const tagClass = isRecommended ? 'tag-ok' : 'tag-bad';
+          const tagText = o.evaluation ?? (o.recommended ? 'Recomendada' : 'No recomendada');
           const impactsText = o.impacts.length > 0
             ? o.impacts.map(function (i) {
                 return i.variableKey + ' ' + (i.delta != null ? i.delta : i.setTo);

@@ -1,9 +1,8 @@
 import Fastify, { FastifyInstance } from 'fastify';
 import { GetActiveFiresQueryHandler } from '../../application/queries/get-active-fires-query-handler.js';
-import {
-  EMERGENCY_GAME_VARIABLES,
-  EMERGENCY_TRAINING_SCENARIOS
-} from '../../domain/entities/emergency-training-content.js';
+import { EMERGENCY_GAME_VARIABLES } from '../../domain/entities/emergency-training-content.js';
+import { CAMPAIGN_CONTENT } from '../../content/campaign.js';
+import { NEW_GAME_SCENARIOS } from '../../content/scenarios/index.js';
 import { InMemoryFireIncidentRepository } from '../../infrastructure/repositories/in-memory-fire-incident-repository.js';
 import { renderGameContentPage } from './game-content-page.js';
 import { renderPrototypePage } from './prototype-page.js';
@@ -26,7 +25,8 @@ export function buildApp(): FastifyInstance {
   app.get('/game-content/data', async () => {
     return {
       variables: EMERGENCY_GAME_VARIABLES,
-      scenarios: EMERGENCY_TRAINING_SCENARIOS
+      scenarios: NEW_GAME_SCENARIOS,
+      campaign: CAMPAIGN_CONTENT
     };
   });
 
