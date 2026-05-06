@@ -969,54 +969,6 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     ]
   },
   {
-    id: 's-010-cambio-viento-evacuacion',
-    title: 'Cambio de viento hacia núcleo poblado',
-    category: 'evacuacion',
-    context: 'El frente cambia dirección y amenaza zona habitada.',
-    options: [
-      {
-        id: 'a',
-        text: 'Ordenar evacuación y traslado también de animales a centros de acogida',
-        recommended: true,
-        rationale: 'Protege vidas humanas y reduce pérdidas indirectas en explotaciones.',
-        impacts: [
-          { variableKey: 'danosPotencialesVivienda', delta: -5 },
-          { variableKey: 'confianzaVecinal', delta: 4 }
-        ]
-      },
-      {
-        id: 'b',
-        text: 'Evacuar solo a personas y dejar animales en fincas',
-        recommended: false,
-        rationale: 'Aumenta impacto en economía familiar y bienestar animal.',
-        impacts: [{ variableKey: 'continuidadSectorPrimario', delta: -4 }]
-      },
-      {
-        id: 'c',
-        text: 'Ordeno una evacuación escalonada y habilito varios puntos de acogida en municipios cercanos',
-        recommended: true,
-        rationale:
-          'Reduce cuellos de botella, ordena los traslados y mejora la protección de la población desplazada.',
-        impacts: [
-          { variableKey: 'danosPotencialesVivienda', delta: -3 },
-          { variableKey: 'confianzaVecinal', delta: 5 },
-          { variableKey: 'capacidadOperativa', delta: -3 }
-        ]
-      },
-      {
-        id: 'd',
-        text: 'Doy a los vecinos la opción de decidir si quieren evacuar o no',
-        recommended: false,
-        rationale:
-          'Delegar la evacuación en decisión individual en fase crítica aumenta la exposición y descoordinación.',
-        impacts: [
-          { variableKey: 'danosPotencialesVivienda', delta: 6 },
-          { variableKey: 'confianzaVecinal', delta: -5 }
-        ]
-      }
-    ]
-  },
-  {
     id: 's-010b-defensa-nucleo-viviendas',
     title: 'Defensa del núcleo de viviendas con incendio fuera de control',
     category: 'operaciones',
@@ -1381,6 +1333,54 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
         impacts: [
           { variableKey: 'danosPotencialesVivienda', delta: 5 },
           { variableKey: 'confianzaVecinal', delta: -4 }
+        ]
+      }
+    ]
+  },
+  {
+    id: 's-010-cambio-viento-evacuacion',
+    title: 'Cambio de viento hacia núcleo poblado',
+    category: 'operaciones',
+    context: 'El frente cambia dirección y amenaza zona habitada.',
+    options: [
+      {
+        id: 'a',
+        text: 'Ordenar evacuación y traslado también de animales a centros de acogida',
+        recommended: true,
+        rationale: 'Protege vidas humanas y reduce pérdidas indirectas en explotaciones.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: -5 },
+          { variableKey: 'confianzaVecinal', delta: 4 }
+        ]
+      },
+      {
+        id: 'b',
+        text: 'Evacuar solo a personas y dejar animales en fincas',
+        recommended: false,
+        rationale: 'Aumenta impacto en economía familiar y bienestar animal.',
+        impacts: [{ variableKey: 'continuidadSectorPrimario', delta: -4 }]
+      },
+      {
+        id: 'c',
+        text: 'Ordeno una evacuación escalonada y habilito varios puntos de acogida en municipios cercanos',
+        recommended: true,
+        rationale:
+          'Reduce cuellos de botella, ordena los traslados y mejora la protección de la población desplazada.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: -3 },
+          { variableKey: 'confianzaVecinal', delta: 5 },
+          { variableKey: 'capacidadOperativa', delta: -3 }
+        ]
+      },
+      {
+        id: 'd',
+        text: 'Doy a los vecinos la opción de decidir si quieren evacuar o no',
+        recommended: false,
+        rationale:
+          'Delegar la evacuación en decisión individual en fase crítica aumenta la exposición y descoordinación.',
+        impacts: [
+          { variableKey: 'danosPotencialesVivienda', delta: 6 },
+          { variableKey: 'confianzaVecinal', delta: -5 }
         ]
       }
     ]
