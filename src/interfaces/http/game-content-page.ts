@@ -205,9 +205,14 @@ export function renderGameContentPage(): string {
         [...el.querySelectorAll('button')].forEach((btn) => {
           btn.addEventListener('click', () => {
             state.selectedScenarioId = btn.dataset.id;
+            window.location.hash = btn.dataset.id;
             renderScenarioDetail();
             renderScenarioList();
           });
+        });
+
+        el.querySelector('button.active')?.scrollIntoView({
+          block: 'nearest'
         });
       }
 
@@ -258,7 +263,16 @@ export function renderGameContentPage(): string {
       async function init() {
         const response = await fetch('/game-content/data');
         state.data = await response.json();
-        state.selectedScenarioId = state.data.scenarios[0]?.id ?? null;
+        const scenarioIdFromHash = window.location.hash.replace('#', '');
+        const scenarioFromHash = state.data.scenarios.find((s) => s.id === scenarioIdFromHash);
+
+        if (scenarioFromHash) {
+          state.selectedCategory = scenarioFromHash.category;
+          state.selectedScenarioId = scenarioFromHash.id;
+        } else {
+          state.selectedScenarioId = state.data.scenarios[0]?.id ?? null;
+        }
+
         renderVariables(state.data.variables);
         render();
       }

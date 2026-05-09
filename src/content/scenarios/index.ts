@@ -4,6 +4,10 @@ import { s000bAvatarEmergencias } from './comunicacion/s-000b-avatar-emergencias
 import { s008CampanaSectorPrimario } from './comunicacion/s-008-campana-sector-primario.js';
 import { s013SimulacroEscolar } from './comunicacion/s-013-simulacro-escolar.js';
 import { rumorRedesEvacuacion } from './comunicacion/s-015-rumor-redes-evacuacion.js';
+import { rumorEvacuacionNoroeste } from './comunicacion/s-016-rumor-evacuacion-noroeste.js';
+import { s017ProblemasComunicacion } from './comunicacion/s-017-problemas-comunicacion.js';
+import { s022RumorImagen } from './comunicacion/s-022-rumor-imagen.js';
+import { s023PrensaMolestando } from './comunicacion/s-023-prensa-molestando.js';
 import { s008bRiesgoExtremoVerano } from './operaciones/s-008b-riesgo-extremo-verano.js';
 import { s009PrimerEnvioMedios } from './operaciones/s-009-primer-envio-medios.js';
 import { s009bEscaladoIncendio } from './operaciones/s-009b-escalado-incendio.js';
@@ -19,6 +23,13 @@ import { s011LineasDefensa } from './operaciones/s-011-lineas-defensa.js';
 import { falloComunicacionesRadio } from './operaciones/s-012-fallo-comunicaciones-radio.js';
 import { s012RescateZonaPeligrosa } from './operaciones/s-012-rescate-zona-peligrosa.js';
 import { fincaGanaderaAtrapada } from './operaciones/s-014-finca-ganadera-atrapada.js';
+import { s015PosibleEvacuacion } from './operaciones/s-015-posible-evacuacion.js';
+import { s018ApagonEnNucleo } from './operaciones/s-018-apagon-en-nucleo.js';
+import { s019RiesgoSubestacion } from './operaciones/s-019-riesgo-subestacion.js';
+import { s020VientoNoHelicopteros } from './operaciones/s-020-viento-no-helicopteros.js';
+import { s021Animales } from './operaciones/s-021-animales.js';
+import { s022CentroDeMayores } from './operaciones/s-022-centro-de-mayores.js';
+import { s024QuemaTecnica } from './operaciones/s-024-quema-tecnica.js';
 import { s000cContextoPrevencionOtono } from './prevencion/s-000c-contexto-prevencion-otono.js';
 import { s000dQuemasPrescritasOtono } from './prevencion/s-000d-quemas-prescritas-otono.js';
 import { s001LimpiezaPerimetral } from './prevencion/s-001-limpieza-perimetral.js';
@@ -38,6 +49,10 @@ export {
   s008CampanaSectorPrimario,
   s013SimulacroEscolar,
   rumorRedesEvacuacion,
+  rumorEvacuacionNoroeste,
+  s017ProblemasComunicacion,
+  s022RumorImagen,
+  s023PrensaMolestando,
   s008bRiesgoExtremoVerano,
   s009PrimerEnvioMedios,
   s009bEscaladoIncendio,
@@ -53,6 +68,13 @@ export {
   falloComunicacionesRadio,
   s012RescateZonaPeligrosa,
   fincaGanaderaAtrapada,
+  s015PosibleEvacuacion,
+  s018ApagonEnNucleo,
+  s019RiesgoSubestacion,
+  s020VientoNoHelicopteros,
+  s021Animales,
+  s022CentroDeMayores,
+  s024QuemaTecnica,
   s000cContextoPrevencionOtono,
   s000dQuemasPrescritasOtono,
   s001LimpiezaPerimetral,
@@ -73,6 +95,10 @@ export const NEW_GAME_SCENARIOS: Scenario[] = [
   s008CampanaSectorPrimario,
   s013SimulacroEscolar,
   rumorRedesEvacuacion,
+  rumorEvacuacionNoroeste,
+  s017ProblemasComunicacion,
+  s022RumorImagen,
+  s023PrensaMolestando,
   s008bRiesgoExtremoVerano,
   s009PrimerEnvioMedios,
   s009bEscaladoIncendio,
@@ -88,6 +114,13 @@ export const NEW_GAME_SCENARIOS: Scenario[] = [
   falloComunicacionesRadio,
   s012RescateZonaPeligrosa,
   fincaGanaderaAtrapada,
+  s015PosibleEvacuacion,
+  s018ApagonEnNucleo,
+  s019RiesgoSubestacion,
+  s020VientoNoHelicopteros,
+  s021Animales,
+  s022CentroDeMayores,
+  s024QuemaTecnica,
   s000cContextoPrevencionOtono,
   s000dQuemasPrescritasOtono,
   s001LimpiezaPerimetral,
