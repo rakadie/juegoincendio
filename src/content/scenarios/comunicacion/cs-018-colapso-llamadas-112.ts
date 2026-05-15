@@ -30,7 +30,28 @@ export const cs018ColapsoLlamadas112: Scenario = {
       "severity": "medium",
       "rationale": "Respuesta adecuada. Informar bien reduce llamadas innecesarias y evita que el miedo colapse el canal de emergencias. La claridad también es una herramienta de protección civil.",
       "shortFeedback": "Respuesta adecuada. Informar bien reduce llamadas innecesarias y evita que el miedo colapse el canal de emergencias. La claridad también es una herramienta de protección civil.",
-      "impacts": [],
+      "impacts": [
+        {
+          "variableKey": "saturacion112",
+          "delta": -5
+        },
+        {
+          "variableKey": "confusionPublica",
+          "delta": -4
+        },
+        {
+          "variableKey": "poblacionProtegida",
+          "delta": 3
+        },
+        {
+          "variableKey": "confianzaInstitucional",
+          "delta": 4
+        },
+        {
+          "variableKey": "coordinacionOperativa",
+          "delta": 3
+        }
+      ],
       "mediaOutputs": [],
       "flags": []
     },
@@ -41,7 +62,28 @@ export const cs018ColapsoLlamadas112: Scenario = {
       "severity": "high",
       "rationale": "Respuesta incorrecta. El mensaje es demasiado restrictivo y puede hacer que personas en riesgo no pidan ayuda. Hay emergencias sin llamas visibles: humo intenso, personas dependientes, atrapamientos o problemas sanitarios.",
       "shortFeedback": "Respuesta incorrecta. El mensaje es demasiado restrictivo y puede hacer que personas en riesgo no pidan ayuda. Hay emergencias sin llamas visibles: humo intenso, personas dependientes, atrapamientos o problemas sanitarios.",
-      "impacts": [],
+      "impacts": [
+        {
+          "variableKey": "saturacion112",
+          "delta": -2
+        },
+        {
+          "variableKey": "poblacionProtegida",
+          "delta": -4
+        },
+        {
+          "variableKey": "confusionPublica",
+          "delta": 4
+        },
+        {
+          "variableKey": "confianzaInstitucional",
+          "delta": -3
+        },
+        {
+          "variableKey": "riesgoAtrapamiento",
+          "delta": 3
+        }
+      ],
       "mediaOutputs": [],
       "flags": []
     },
@@ -52,7 +94,28 @@ export const cs018ColapsoLlamadas112: Scenario = {
       "severity": "medium",
       "rationale": "Respuesta adecuada. Las ruedas de prensa periódicas transmiten control, reducen rumores y permiten ordenar la información. Si además ofreces canales alternativos, la población sabe dónde informarse sin saturar el teléfono de emergencias.",
       "shortFeedback": "Respuesta adecuada. Las ruedas de prensa periódicas transmiten control, reducen rumores y permiten ordenar la información. Si además ofreces canales alternativos, la población sabe dónde informarse sin saturar el teléfono de emergencias.",
-      "impacts": [],
+      "impacts": [
+        {
+          "variableKey": "saturacion112",
+          "delta": -5
+        },
+        {
+          "variableKey": "confusionPublica",
+          "delta": -5
+        },
+        {
+          "variableKey": "confianzaInstitucional",
+          "delta": 5
+        },
+        {
+          "variableKey": "coordinacionOperativa",
+          "delta": 4
+        },
+        {
+          "variableKey": "poblacionProtegida",
+          "delta": 3
+        }
+      ],
       "mediaOutputs": [],
       "flags": []
     },
@@ -63,7 +126,28 @@ export const cs018ColapsoLlamadas112: Scenario = {
       "severity": "high",
       "rationale": "Respuesta incorrecta. En una crisis, el silencio se llena rápido con rumores. Es mejor comunicar lo confirmado, reconocer lo que se está verificando y actualizar con transparencia.",
       "shortFeedback": "Respuesta incorrecta. En una crisis, el silencio se llena rápido con rumores. Es mejor comunicar lo confirmado, reconocer lo que se está verificando y actualizar con transparencia.",
-      "impacts": [],
+      "impacts": [
+        {
+          "variableKey": "saturacion112",
+          "delta": 4
+        },
+        {
+          "variableKey": "confusionPublica",
+          "delta": 5
+        },
+        {
+          "variableKey": "confianzaInstitucional",
+          "delta": -3
+        },
+        {
+          "variableKey": "coordinacionOperativa",
+          "delta": -2
+        },
+        {
+          "variableKey": "poblacionProtegida",
+          "delta": -2
+        }
+      ],
       "mediaOutputs": [],
       "flags": []
     },
@@ -74,7 +158,28 @@ export const cs018ColapsoLlamadas112: Scenario = {
       "severity": "high",
       "rationale": "Respuesta incorrecta. En plena emergencia, la población necesita instrucciones comprensibles, no una tesis con humo. El exceso de tecnicismos puede confundir y aumentar las llamadas.",
       "shortFeedback": "Respuesta incorrecta. En plena emergencia, la población necesita instrucciones comprensibles, no una tesis con humo. El exceso de tecnicismos puede confundir y aumentar las llamadas.",
-      "impacts": [],
+      "impacts": [
+        {
+          "variableKey": "confusionPublica",
+          "delta": 4
+        },
+        {
+          "variableKey": "saturacion112",
+          "delta": 3
+        },
+        {
+          "variableKey": "confianzaInstitucional",
+          "delta": -2
+        },
+        {
+          "variableKey": "coordinacionOperativa",
+          "delta": -1
+        },
+        {
+          "variableKey": "poblacionProtegida",
+          "delta": -2
+        }
+      ],
       "mediaOutputs": [],
       "flags": []
     }
@@ -82,6 +187,7 @@ export const cs018ColapsoLlamadas112: Scenario = {
   "unlocks": [],
   "sourceNotes": [
     "En una crisis, la comunicación pública debe reducir la incertidumbre, combatir rumores y orientar a la población hacia canales oficiales.",
-    "El 112 debe reservarse para emergencias reales; la información general debe canalizarse por vías alternativas claras, actualizadas y accesibles."
+    "El 112 debe reservarse para emergencias reales; la información general debe canalizarse por vías alternativas claras, actualizadas y accesibles.",
+    "Las ruedas de prensa periódicas, los canales oficiales y la coordinación con medios de comunicación ayudan a reducir llamadas innecesarias y mejorar la confianza pública."
   ]
 };

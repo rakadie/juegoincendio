@@ -28,7 +28,24 @@ export const os010CambioVientoEvacuacion: Scenario = {
       "severity": "medium",
       "rationale": "Respuesta adecuada. El cambio de viento puede reducir mucho el margen de reacción. Una evacuación preventiva, ordenada y con rutas seguras evita salidas improvisadas y reduce el riesgo de atrapamientos.",
       "shortFeedback": "Respuesta adecuada. El cambio de viento puede reducir mucho el margen de reacción. Una evacuación preventiva, ordenada y con rutas seguras evita salidas improvisadas y reduce el riesgo de atrapamientos.",
-      "impacts": [],
+      "impacts": [
+        {
+          "variableKey": "poblacionProtegida",
+          "delta": 5
+        },
+        {
+          "variableKey": "coordinacionOperativa",
+          "delta": 3
+        },
+        {
+          "variableKey": "riesgoAtrapamiento",
+          "delta": -4
+        },
+        {
+          "variableKey": "confusionPublica",
+          "delta": -2
+        }
+      ],
       "mediaOutputs": [],
       "flags": []
     },
@@ -39,7 +56,24 @@ export const os010CambioVientoEvacuacion: Scenario = {
       "severity": "high",
       "rationale": "Respuesta incorrecta. Esperar demasiado puede dejar sin margen a vecinos, equipos de emergencia y personas vulnerables. En incendios con viento cambiante, la prudencia no es quedarse mirando: es anticiparse.",
       "shortFeedback": "Respuesta incorrecta. Esperar demasiado puede dejar sin margen a vecinos, equipos de emergencia y personas vulnerables. En incendios con viento cambiante, la prudencia no es quedarse mirando: es anticiparse.",
-      "impacts": [],
+      "impacts": [
+        {
+          "variableKey": "poblacionProtegida",
+          "delta": -4
+        },
+        {
+          "variableKey": "riesgoAtrapamiento",
+          "delta": 5
+        },
+        {
+          "variableKey": "danosPotencialesVivienda",
+          "delta": 3
+        },
+        {
+          "variableKey": "coordinacionOperativa",
+          "delta": -2
+        }
+      ],
       "mediaOutputs": [],
       "flags": []
     },
@@ -50,7 +84,24 @@ export const os010CambioVientoEvacuacion: Scenario = {
       "severity": "medium",
       "rationale": "Respuesta adecuada. Una evacuación no funciona solo con dar la orden. Hay que explicar quién debe salir, por dónde, hacia dónde y qué hacer para evitar confusión, colapsos y rumores.",
       "shortFeedback": "Respuesta adecuada. Una evacuación no funciona solo con dar la orden. Hay que explicar quién debe salir, por dónde, hacia dónde y qué hacer para evitar confusión, colapsos y rumores.",
-      "impacts": [],
+      "impacts": [
+        {
+          "variableKey": "coordinacionOperativa",
+          "delta": 5
+        },
+        {
+          "variableKey": "confusionPublica",
+          "delta": -5
+        },
+        {
+          "variableKey": "poblacionProtegida",
+          "delta": 3
+        },
+        {
+          "variableKey": "riesgoAtrapamiento",
+          "delta": -2
+        }
+      ],
       "mediaOutputs": [],
       "flags": []
     },
@@ -61,7 +112,24 @@ export const os010CambioVientoEvacuacion: Scenario = {
       "severity": "high",
       "rationale": "Respuesta incorrecta. La percepción individual puede ser engañosa. El humo, el viento y la visibilidad cambian rápido. Dejar la decisión a cada persona genera respuestas desordenadas y puede poner en riesgo al operativo.",
       "shortFeedback": "Respuesta incorrecta. La percepción individual puede ser engañosa. El humo, el viento y la visibilidad cambian rápido. Dejar la decisión a cada persona genera respuestas desordenadas y puede poner en riesgo al operativo.",
-      "impacts": [],
+      "impacts": [
+        {
+          "variableKey": "confusionPublica",
+          "delta": 5
+        },
+        {
+          "variableKey": "riesgoAtrapamiento",
+          "delta": 4
+        },
+        {
+          "variableKey": "coordinacionOperativa",
+          "delta": -4
+        },
+        {
+          "variableKey": "poblacionProtegida",
+          "delta": -3
+        }
+      ],
       "mediaOutputs": [],
       "flags": []
     },
@@ -72,7 +140,28 @@ export const os010CambioVientoEvacuacion: Scenario = {
       "severity": "high",
       "rationale": "Respuesta incorrecta. Una evacuación masiva sin planificación puede saturar carreteras, bloquear el acceso de emergencias y crear un problema nuevo encima del incendio. Y el incendio ya venía bastante completo.",
       "shortFeedback": "Respuesta incorrecta. Una evacuación masiva sin planificación puede saturar carreteras, bloquear el acceso de emergencias y crear un problema nuevo encima del incendio. Y el incendio ya venía bastante completo.",
-      "impacts": [],
+      "impacts": [
+        {
+          "variableKey": "confusionPublica",
+          "delta": 4
+        },
+        {
+          "variableKey": "riesgoAtrapamiento",
+          "delta": 3
+        },
+        {
+          "variableKey": "coordinacionOperativa",
+          "delta": -5
+        },
+        {
+          "variableKey": "poblacionProtegida",
+          "delta": -2
+        },
+        {
+          "variableKey": "saturacionRecursos",
+          "delta": 5
+        }
+      ],
       "mediaOutputs": [],
       "flags": []
     }
@@ -80,6 +169,7 @@ export const os010CambioVientoEvacuacion: Scenario = {
   "unlocks": [],
   "sourceNotes": [
     "La evacuación preventiva debe activarse con rutas confirmadas, control de tráfico y prioridad para personas vulnerables o zonas más expuestas.",
-    "La comunicación de una evacuación debe ser clara, coordinada y única para evitar rumores, salidas improvisadas y colapsos en las vías."
+    "La comunicación de una evacuación debe ser clara, coordinada y única para evitar rumores, salidas improvisadas y colapsos en las vías.",
+    "Opciones actualizadas desde el fragmento sincronizado de os-010-cambio-viento-evacuacion."
   ]
 };

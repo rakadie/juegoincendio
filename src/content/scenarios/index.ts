@@ -4,13 +4,11 @@ import { cs000Introduccion } from './comunicacion/cs-000-introduccion.js';
 import { cs000bAvatarEmergencias } from './comunicacion/cs-000b-avatar-emergencias.js';
 import { cs008CampanaSectorPrimario } from './comunicacion/cs-008-campana-sector-primario.js';
 import { cs013SimulacroEscolar } from './comunicacion/cs-013-simulacro-escolar.js';
-import { cs015RumorRedesEvacuacion } from './comunicacion/cs-015-rumor-redes-evacuacion.js';
 import { cs016RumorEvacuacionNoroeste } from './comunicacion/cs-016-rumor-evacuacion-noroeste.js';
 import { cs017ProblemasComunicacion } from './comunicacion/cs-017-problemas-comunicacion.js';
 import { cs018ColapsoLlamadas112 } from './comunicacion/cs-018-colapso-llamadas-112.js';
 import { cs022RumorImagen } from './comunicacion/cs-022-rumor-imagen.js';
 import { cs023ImagenAntiguaViral } from './comunicacion/cs-023-imagen-antigua-viral.js';
-import { cs023PrensaMolestando } from './comunicacion/cs-023-prensa-molestando.js';
 import { cs024PresionMediaticaZonaCaliente } from './comunicacion/cs-024-presion-mediatica-zona-caliente.js';
 import { os008bRiesgoExtremoVerano } from './operaciones/os-008b-riesgo-extremo-verano.js';
 import { os009PrimerEnvioMedios } from './operaciones/os-009-primer-envio-medios.js';
@@ -36,6 +34,15 @@ import { os022EvacuacionConMascotas } from './operaciones/os-022-evacuacion-con-
 import { os023CentroMayoresRiesgo } from './operaciones/os-023-centro-mayores-riesgo.js';
 import { os024QuemaTecnica } from './operaciones/os-024-quema-tecnica.js';
 import { os025CortafuegoEmergencia } from './operaciones/os-025-cortafuego-emergencia.js';
+import { os026DefensaOperativaNucleoViviendas } from './operaciones/os-026-defensa-operativa-nucleo-viviendas.js';
+import { os027FuegoEnBarranco } from './operaciones/os-027-fuego-en-barranco.js';
+import { os028DefensaNocturnaPerimetro } from './operaciones/os-028-defensa-nocturna-perimetro.js';
+import { os029RelevoCuadrillasAgotadas } from './operaciones/os-029-relevo-cuadrillas-agotadas.js';
+import { os030FuegoDeCopas } from './operaciones/os-030-fuego-de-copas.js';
+import { os031ConfinamientoExtremoFuegoCopas } from './operaciones/os-031-confinamiento-extremo-fuego-copas.js';
+import { os032CasasDiseminadasMonte } from './operaciones/os-032-casas-diseminadas-monte.js';
+import { os033SenderistasDesorientadosHumo } from './operaciones/os-033-senderistas-desorientados-humo.js';
+import { os034VecinosSinMediosParaSalir } from './operaciones/os-034-vecinos-sin-medios-para-salir.js';
 import { ps000cContextoPrevencionOtono } from './prevencion/ps-000c-contexto-prevencion-otono.js';
 import { ps000dQuemasPrescritasOtono } from './prevencion/ps-000d-quemas-prescritas-otono.js';
 import { ps001LimpiezaPerimetral } from './prevencion/ps-001-limpieza-perimetral.js';
@@ -47,6 +54,11 @@ import { ps005RecoleccionMonte } from './prevencion/ps-005-recoleccion-monte.js'
 import { ps006HoguerasMonte } from './prevencion/ps-006-hogueras-monte.js';
 import { ps007EvacuacionCiudadania } from './prevencion/ps-007-evacuacion-ciudadania.js';
 import { ps014RedAguaRural } from './prevencion/ps-014-red-agua-rural.js';
+import { ps035LimpiezaAlrededorViviendas } from './prevencion/ps-035-limpieza-alrededor-viviendas.js';
+import { ps036DefensaPasivaVivienda } from './prevencion/ps-036-defensa-pasiva-vivienda.js';
+import { ps037PlanFamiliarEmergencia } from './prevencion/ps-037-plan-familiar-emergencia.js';
+import { ps038EleccionVegetacionFinca } from './prevencion/ps-038-eleccion-vegetacion-finca.js';
+import { ps039UsoMaquinariaEpocaRiesgo } from './prevencion/ps-039-uso-maquinaria-epoca-riesgo.js';
 import { pcs013CentroMayoresRiesgo } from './proteccion-civil/pcs-013-centro-mayores-riesgo.js';
 
 export const NEW_GAME_SCENARIOS: Scenario[] = [
@@ -54,13 +66,11 @@ export const NEW_GAME_SCENARIOS: Scenario[] = [
   cs000bAvatarEmergencias,
   cs008CampanaSectorPrimario,
   cs013SimulacroEscolar,
-  cs015RumorRedesEvacuacion,
   cs016RumorEvacuacionNoroeste,
   cs017ProblemasComunicacion,
   cs018ColapsoLlamadas112,
   cs022RumorImagen,
   cs023ImagenAntiguaViral,
-  cs023PrensaMolestando,
   cs024PresionMediaticaZonaCaliente,
   os008bRiesgoExtremoVerano,
   os009PrimerEnvioMedios,
@@ -86,6 +96,15 @@ export const NEW_GAME_SCENARIOS: Scenario[] = [
   os023CentroMayoresRiesgo,
   os024QuemaTecnica,
   os025CortafuegoEmergencia,
+  os026DefensaOperativaNucleoViviendas,
+  os027FuegoEnBarranco,
+  os028DefensaNocturnaPerimetro,
+  os029RelevoCuadrillasAgotadas,
+  os030FuegoDeCopas,
+  os031ConfinamientoExtremoFuegoCopas,
+  os032CasasDiseminadasMonte,
+  os033SenderistasDesorientadosHumo,
+  os034VecinosSinMediosParaSalir,
   ps000cContextoPrevencionOtono,
   ps000dQuemasPrescritasOtono,
   ps001LimpiezaPerimetral,
@@ -97,5 +116,10 @@ export const NEW_GAME_SCENARIOS: Scenario[] = [
   ps006HoguerasMonte,
   ps007EvacuacionCiudadania,
   ps014RedAguaRural,
+  ps035LimpiezaAlrededorViviendas,
+  ps036DefensaPasivaVivienda,
+  ps037PlanFamiliarEmergencia,
+  ps038EleccionVegetacionFinca,
+  ps039UsoMaquinariaEpocaRiesgo,
   pcs013CentroMayoresRiesgo,
 ];

@@ -30,7 +30,28 @@ export const cs023ImagenAntiguaViral: Scenario = {
       "severity": "medium",
       "rationale": "Respuesta adecuada. El desmentido debe ir acompañado de información útil. No basta con decir “esto es falso”; hay que dar a la población una referencia fiable para orientarse.",
       "shortFeedback": "Respuesta adecuada. El desmentido debe ir acompañado de información útil. No basta con decir “esto es falso”; hay que dar a la población una referencia fiable para orientarse.",
-      "impacts": [],
+      "impacts": [
+        {
+          "variableKey": "confusionPublica",
+          "delta": -5
+        },
+        {
+          "variableKey": "confianzaInstitucional",
+          "delta": 4
+        },
+        {
+          "variableKey": "saturacion112",
+          "delta": -3
+        },
+        {
+          "variableKey": "riesgoAtrapamiento",
+          "delta": -2
+        },
+        {
+          "variableKey": "transparenciaInformativa",
+          "delta": 4
+        }
+      ],
       "mediaOutputs": [],
       "flags": []
     },
@@ -41,7 +62,28 @@ export const cs023ImagenAntiguaViral: Scenario = {
       "severity": "high",
       "rationale": "Respuesta incorrecta. En una emergencia, el silencio puede permitir que la imagen falsa marque la percepción pública. El rumor corre; la información oficial no puede ir paseando.",
       "shortFeedback": "Respuesta incorrecta. En una emergencia, el silencio puede permitir que la imagen falsa marque la percepción pública. El rumor corre; la información oficial no puede ir paseando.",
-      "impacts": [],
+      "impacts": [
+        {
+          "variableKey": "confusionPublica",
+          "delta": 5
+        },
+        {
+          "variableKey": "confianzaInstitucional",
+          "delta": -4
+        },
+        {
+          "variableKey": "saturacion112",
+          "delta": 4
+        },
+        {
+          "variableKey": "riesgoAtrapamiento",
+          "delta": 3
+        },
+        {
+          "variableKey": "transparenciaInformativa",
+          "delta": -3
+        }
+      ],
       "mediaOutputs": [],
       "flags": []
     },
@@ -52,7 +94,28 @@ export const cs023ImagenAntiguaViral: Scenario = {
       "severity": "medium",
       "rationale": "Respuesta adecuada. Una imagen falsa se combate mejor con contexto verificable: mapa actualizado, canales oficiales y aliados informativos que ayuden a llegar rápido a la población.",
       "shortFeedback": "Respuesta adecuada. Una imagen falsa se combate mejor con contexto verificable: mapa actualizado, canales oficiales y aliados informativos que ayuden a llegar rápido a la población.",
-      "impacts": [],
+      "impacts": [
+        {
+          "variableKey": "confusionPublica",
+          "delta": -5
+        },
+        {
+          "variableKey": "confianzaInstitucional",
+          "delta": 5
+        },
+        {
+          "variableKey": "saturacion112",
+          "delta": -4
+        },
+        {
+          "variableKey": "transparenciaInformativa",
+          "delta": 5
+        },
+        {
+          "variableKey": "coordinacionOperativa",
+          "delta": 3
+        }
+      ],
       "mediaOutputs": [],
       "flags": []
     },
@@ -63,7 +126,28 @@ export const cs023ImagenAntiguaViral: Scenario = {
       "severity": "high",
       "rationale": "Respuesta incorrecta. Contestar caso por caso es insuficiente y desordenado. La respuesta debe ser institucional, visible y fácil de encontrar.",
       "shortFeedback": "Respuesta incorrecta. Contestar caso por caso es insuficiente y desordenado. La respuesta debe ser institucional, visible y fácil de encontrar.",
-      "impacts": [],
+      "impacts": [
+        {
+          "variableKey": "confusionPublica",
+          "delta": 3
+        },
+        {
+          "variableKey": "confianzaInstitucional",
+          "delta": -2
+        },
+        {
+          "variableKey": "saturacion112",
+          "delta": 2
+        },
+        {
+          "variableKey": "transparenciaInformativa",
+          "delta": -2
+        },
+        {
+          "variableKey": "coordinacionOperativa",
+          "delta": -2
+        }
+      ],
       "mediaOutputs": [],
       "flags": []
     },
@@ -74,7 +158,28 @@ export const cs023ImagenAntiguaViral: Scenario = {
       "severity": "high",
       "rationale": "Respuesta incorrecta. Reproducir la imagen sin cuidado puede amplificarla todavía más. Si se muestra, debe hacerse con marca clara de “falso” o “imagen antigua” y siempre junto a información verificada.",
       "shortFeedback": "Respuesta incorrecta. Reproducir la imagen sin cuidado puede amplificarla todavía más. Si se muestra, debe hacerse con marca clara de “falso” o “imagen antigua” y siempre junto a información verificada.",
-      "impacts": [],
+      "impacts": [
+        {
+          "variableKey": "confusionPublica",
+          "delta": 4
+        },
+        {
+          "variableKey": "confianzaInstitucional",
+          "delta": -3
+        },
+        {
+          "variableKey": "saturacion112",
+          "delta": 3
+        },
+        {
+          "variableKey": "riesgoAtrapamiento",
+          "delta": 2
+        },
+        {
+          "variableKey": "transparenciaInformativa",
+          "delta": -1
+        }
+      ],
       "mediaOutputs": [],
       "flags": []
     }
@@ -82,6 +187,7 @@ export const cs023ImagenAntiguaViral: Scenario = {
   "unlocks": [],
   "sourceNotes": [
     "La desinformación visual durante una emergencia puede generar miedo, saturación de llamadas y movimientos innecesarios de población.",
-    "Los desmentidos deben acompañarse de información actualizada, canales oficiales y materiales verificables como mapas o comunicados claros."
+    "Los desmentidos deben acompañarse de información actualizada, canales oficiales y materiales verificables como mapas o comunicados claros.",
+    "La coordinación con medios de comunicación y ayuntamientos ayuda a amplificar la corrección y reducir la circulación de rumores."
   ]
 };
