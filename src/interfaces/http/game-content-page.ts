@@ -84,6 +84,18 @@ export function renderGameContentPage(): string {
         padding: 12px;
         margin-bottom: 10px;
       }
+      .pressure-grid {
+        display: grid;
+        gap: 8px;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        margin: 12px 0;
+      }
+      .pressure {
+        border: 1px solid #3e5b77;
+        background: #0f2234;
+        border-radius: 10px;
+        padding: 10px;
+      }
       .tag-ok { color: var(--ok); font-weight: 700; }
       .tag-bad { color: var(--bad); font-weight: 700; }
       .impact { color: var(--warn); font-size: 13px; }
@@ -230,8 +242,49 @@ export function renderGameContentPage(): string {
         }
 
         title.textContent = scenario.title;
-        context.textContent = scenario.context;
+        context.textContent = scenario.intro
+          ? scenario.intro + ' ' + scenario.context
+          : scenario.context;
         let html = '';
+
+        if (scenario.type === 'action-selection') {
+          html += '<div class="chips">' +
+            '<span class="chip">Tipo: selección de acciones</span>' +
+            '<span class="chip">Actuaciones disponibles: ' + scenario.maxActions + '</span>' +
+          '</div>';
+
+          if (scenario.objective) {
+            html += '<p><strong>Objetivo:</strong> ' + scenario.objective + '</p>';
+          }
+
+          if (scenario.pressureIndicators?.length > 0) {
+            html += '<div class="pressure-grid">' + scenario.pressureIndicators.map(function (p) {
+              return '<div class="pressure"><strong>' + p.label + '</strong><br/><span class="muted">' + p.level + '</span></div>';
+            }).join('') + '</div>';
+          }
+
+          (scenario.actions || []).forEach(function (a) {
+            const impactsText = Object.keys(a.impact || {}).map(function (key) {
+              return key + ' ' + a.impact[key];
+            }).join(', ');
+
+            html += '<div class="option">' +
+              '<div><strong>' + a.label + '</strong></div>' +
+              '<div class="muted">' + a.description + '</div>' +
+              '<div class="impact">Impactos: ' + impactsText + '</div>' +
+              '<div class="muted">' + a.feedback + '</div>' +
+            '</div>';
+          });
+
+          if (scenario.combos?.length > 0) {
+            html += '<h3>Combos</h3>' + scenario.combos.map(function (combo) {
+              return '<div class="option"><strong>' + combo.title + '</strong><div class="muted">' + combo.text + '</div></div>';
+            }).join('');
+          }
+
+          options.innerHTML = html;
+          return;
+        }
 
         scenario.options.forEach(function (o) {
           const isRecommended = o.recommended === true || ['optimal', 'recommended'].includes(o.evaluation);

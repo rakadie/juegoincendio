@@ -1,193 +1,240 @@
 import type { Scenario } from '../../../domain/types/scenario.js';
 
 export const cs018ColapsoLlamadas112: Scenario = {
-  "id": "s-018-colapso-llamadas-112",
-  "title": "Colapso de llamadas al 112",
-  "category": "comunicacion",
-  "phase": "crisis",
-  "block": "comunicacion-crisis",
-  "difficulty": "media",
-  "estimatedTime": "2 min",
-  "tags": [
-    "112",
-    "comunicacion",
-    "crisis",
-    "rumores",
-    "informacion-publica",
-    "ruedas-prensa",
-    "medios-comunicacion"
+  id: 's-018-colapso-llamadas-112',
+  title: 'Colapso de llamadas al 112',
+  category: 'comunicacion',
+  phase: 'crisis',
+  block: 'comunicacion-crisis',
+  type: 'action-selection',
+  difficulty: 'media',
+  estimatedTime: '2 min',
+  maxActions: 2,
+  tags: [
+    '112',
+    'comunicacion',
+    'crisis',
+    'rumores',
+    'informacion-publica',
+    'medios-comunicacion',
+    'canales-oficiales',
+    'saturacion'
   ],
-  "status": "available",
-  "context": "El incendio evoluciona rápido y el humo ya es visible desde varios municipios. En pocos minutos, el 112 empieza a recibir una avalancha de llamadas.",
-  "question": "¿Cómo comunicas a la población para reducir la saturación del 112 sin dejar a nadie desinformado?",
-  "briefing": "La emergencia entra en una fase de alta presión informativa. La ciudadanía necesita saber qué ocurre, qué zonas están afectadas, qué debe hacer y dónde consultar información fiable. El problema es que el 112 empieza a saturarse con llamadas que no siempre son emergencias: dudas generales, rumores, mensajes reenviados y peticiones de información que podrían resolverse por otros canales. Si no se actúa rápido, las llamadas críticas pueden quedar bloqueadas. Pero si se comunica mal, la población puede interpretar que se le está pidiendo “no molestar” justo cuando tiene miedo. La prioridad es separar la información general de la emergencia real: mantener el 112 para situaciones urgentes, abrir canales claros de información pública, actualizar con frecuencia y explicar qué debe hacer la población según su zona.",
-  "requirements": null,
-  "options": [
+  status: 'available',
+  intro: 'El humo ya se ve desde varios municipios. El miedo empieza a llamar por telefono.',
+  context:
+    'El humo ya se ve desde varios municipios. En pocos minutos, el 112 empieza a recibir una avalancha de llamadas. Algunas son emergencias reales: personas que ven llamas cerca de una finca, humo entrando en viviendas o vecinos con movilidad reducida que preguntan si deben prepararse para salir. Pero muchas otras llamadas son dudas generales: si se debe evacuar, si una carretera esta cortada, si el humo viene hacia el nucleo urbano o si es verdad un audio que circula por WhatsApp. La centralita empieza a tensionarse. Si el 112 se satura, las llamadas criticas pueden tardar mas en entrar.',
+  objective:
+    'Reducir la saturacion del 112 sin dejar a la poblacion desinformada.',
+  question:
+    'Que dos actuaciones inmediatas priorizas para reducir la saturacion del 112 sin dejar a la poblacion desinformada?',
+  briefing:
+    'La crisis debe gestionarse con presion y priorizacion. No hay tiempo para hacerlo todo: elige dos actuaciones inmediatas entre seis opciones posibles.',
+  requirements: null,
+  pressureIndicators: [
+    { id: 'saturacion112', label: 'Saturacion del 112', level: 'alta' },
+    { id: 'confusionPublica', label: 'Confusion publica', level: 'subiendo' },
+    { id: 'confianzaInstitucional', label: 'Confianza institucional', level: 'inestable' }
+  ],
+  actions: [
     {
-      "id": "a",
-      "text": "Emitir mensajes oficiales frecuentes, breves y claros, indicando qué zonas están afectadas, qué zonas no tienen orden de evacuación, dónde consultar actualizaciones y recordando que el 112 debe reservarse para emergencias reales.",
-      "evaluation": "recommended",
-      "severity": "medium",
-      "rationale": "Respuesta adecuada. Informar bien reduce llamadas innecesarias y evita que el miedo colapse el canal de emergencias. La claridad también es una herramienta de protección civil.",
-      "shortFeedback": "Respuesta adecuada. Informar bien reduce llamadas innecesarias y evita que el miedo colapse el canal de emergencias. La claridad también es una herramienta de protección civil.",
-      "impacts": [
-        {
-          "variableKey": "saturacion112",
-          "delta": -5
-        },
-        {
-          "variableKey": "confusionPublica",
-          "delta": -4
-        },
-        {
-          "variableKey": "poblacionProtegida",
-          "delta": 3
-        },
-        {
-          "variableKey": "confianzaInstitucional",
-          "delta": 4
-        },
-        {
-          "variableKey": "coordinacionOperativa",
-          "delta": 3
-        }
-      ],
-      "mediaOutputs": [],
-      "flags": []
+      id: 'mensaje-oficial-breve',
+      label: 'Emitir mensaje oficial breve y claro',
+      description:
+        'Publicar un primer mensaje oficial con informacion confirmada: zona aproximada afectada, recomendaciones basicas, canales de actualizacion y recordatorio de que el 112 debe reservarse para emergencias reales.',
+      impact: {
+        saturacion112: -3,
+        confusionPublica: -3,
+        confianzaInstitucional: 2
+      },
+      flagsOnApply: ['mensajeOficialBreveEmitido'],
+      feedback:
+        'La poblacion recibe una primera referencia fiable. No resuelve todo, pero reduce llamadas de duda y corta parte del ruido inicial.'
     },
     {
-      "id": "b",
-      "text": "Pedir públicamente que nadie llame al 112 salvo que vea llamas cerca de su casa.",
-      "evaluation": "risky",
-      "severity": "high",
-      "rationale": "Respuesta incorrecta. El mensaje es demasiado restrictivo y puede hacer que personas en riesgo no pidan ayuda. Hay emergencias sin llamas visibles: humo intenso, personas dependientes, atrapamientos o problemas sanitarios.",
-      "shortFeedback": "Respuesta incorrecta. El mensaje es demasiado restrictivo y puede hacer que personas en riesgo no pidan ayuda. Hay emergencias sin llamas visibles: humo intenso, personas dependientes, atrapamientos o problemas sanitarios.",
-      "impacts": [
-        {
-          "variableKey": "saturacion112",
-          "delta": -2
-        },
-        {
-          "variableKey": "poblacionProtegida",
-          "delta": -4
-        },
-        {
-          "variableKey": "confusionPublica",
-          "delta": 4
-        },
-        {
-          "variableKey": "confianzaInstitucional",
-          "delta": -3
-        },
-        {
-          "variableKey": "riesgoAtrapamiento",
-          "delta": 3
-        }
-      ],
-      "mediaOutputs": [],
-      "flags": []
+      id: 'canal-informacion-no-urgente',
+      label: 'Abrir canal de informacion no urgente',
+      description:
+        'Habilitar o reforzar canales de informacion no urgente: web municipal, redes institucionales, linea informativa si existe, mensajes de ayuntamiento y avisos coordinados con medios.',
+      impact: {
+        saturacion112: -4,
+        coordinacionOperativa: 2,
+        confusionPublica: -2
+      },
+      flagsOnApply: ['canalInformacionNoUrgenteActivado'],
+      feedback:
+        'Las dudas generales empiezan a desviarse fuera del 112. Las llamadas criticas tienen mas opciones de entrar.'
     },
     {
-      "id": "c",
-      "text": "Organizar ruedas de prensa periódicas y habilitar canales específicos para información no urgente, como web oficial, redes institucionales, medios de comunicación, ayuntamientos y líneas informativas si están disponibles, dejando claro cuándo sí debe llamarse al 112.",
-      "evaluation": "recommended",
-      "severity": "medium",
-      "rationale": "Respuesta adecuada. Las ruedas de prensa periódicas transmiten control, reducen rumores y permiten ordenar la información. Si además ofreces canales alternativos, la población sabe dónde informarse sin saturar el teléfono de emergencias.",
-      "shortFeedback": "Respuesta adecuada. Las ruedas de prensa periódicas transmiten control, reducen rumores y permiten ordenar la información. Si además ofreces canales alternativos, la población sabe dónde informarse sin saturar el teléfono de emergencias.",
-      "impacts": [
-        {
-          "variableKey": "saturacion112",
-          "delta": -5
-        },
-        {
-          "variableKey": "confusionPublica",
-          "delta": -5
-        },
-        {
-          "variableKey": "confianzaInstitucional",
-          "delta": 5
-        },
-        {
-          "variableKey": "coordinacionOperativa",
-          "delta": 4
-        },
-        {
-          "variableKey": "poblacionProtegida",
-          "delta": 3
-        }
-      ],
-      "mediaOutputs": [],
-      "flags": []
+      id: 'actualizaciones-periodicas-medios',
+      label: 'Programar actualizaciones periodicas con medios y ayuntamientos',
+      description:
+        'Convocar actualizaciones periodicas para medios de comunicacion y ayuntamientos afectados, con mensajes breves, horarios claros y datos confirmados.',
+      impact: {
+        confianzaInstitucional: 4,
+        confusionPublica: -3,
+        saturacion112: -2,
+        coordinacionOperativa: 3
+      },
+      flagsOnApply: ['actualizacionesPeriodicasActivadas'],
+      feedback:
+        'Los medios y ayuntamientos ayudan a amplificar informacion util. La comunicacion deja de ir a golpes.'
     },
     {
-      "id": "d",
-      "text": "Esperar a tener todos los datos confirmados antes de comunicar, para evitar errores.",
-      "evaluation": "risky",
-      "severity": "high",
-      "rationale": "Respuesta incorrecta. En una crisis, el silencio se llena rápido con rumores. Es mejor comunicar lo confirmado, reconocer lo que se está verificando y actualizar con transparencia.",
-      "shortFeedback": "Respuesta incorrecta. En una crisis, el silencio se llena rápido con rumores. Es mejor comunicar lo confirmado, reconocer lo que se está verificando y actualizar con transparencia.",
-      "impacts": [
-        {
-          "variableKey": "saturacion112",
-          "delta": 4
-        },
-        {
-          "variableKey": "confusionPublica",
-          "delta": 5
-        },
-        {
-          "variableKey": "confianzaInstitucional",
-          "delta": -3
-        },
-        {
-          "variableKey": "coordinacionOperativa",
-          "delta": -2
-        },
-        {
-          "variableKey": "poblacionProtegida",
-          "delta": -2
-        }
-      ],
-      "mediaOutputs": [],
-      "flags": []
+      id: 'coordinar-ayuntamientos',
+      label: 'Coordinar un mensaje unico con los ayuntamientos afectados',
+      description:
+        'Acordar un mensaje unico con ayuntamientos, Proteccion Civil y comunicacion institucional para evitar contradicciones sobre zonas afectadas, carreteras, evacuaciones y canales oficiales.',
+      impact: {
+        confusionPublica: -4,
+        confianzaInstitucional: 3,
+        coordinacionOperativa: 4
+      },
+      flagsOnApply: ['mensajeUnicoAyuntamientosCoordinado'],
+      feedback:
+        'Se reducen contradicciones entre instituciones. La poblacion recibe una instruccion mas coherente.'
     },
     {
-      "id": "e",
-      "text": "Publicar un mensaje técnico con muchos detalles operativos para demostrar que la situación está bajo control.",
-      "evaluation": "risky",
-      "severity": "high",
-      "rationale": "Respuesta incorrecta. En plena emergencia, la población necesita instrucciones comprensibles, no una tesis con humo. El exceso de tecnicismos puede confundir y aumentar las llamadas.",
-      "shortFeedback": "Respuesta incorrecta. En plena emergencia, la población necesita instrucciones comprensibles, no una tesis con humo. El exceso de tecnicismos puede confundir y aumentar las llamadas.",
-      "impacts": [
-        {
-          "variableKey": "confusionPublica",
-          "delta": 4
-        },
-        {
-          "variableKey": "saturacion112",
-          "delta": 3
-        },
-        {
-          "variableKey": "confianzaInstitucional",
-          "delta": -2
-        },
-        {
-          "variableKey": "coordinacionOperativa",
-          "delta": -1
-        },
-        {
-          "variableKey": "poblacionProtegida",
-          "delta": -2
-        }
-      ],
-      "mediaOutputs": [],
-      "flags": []
+      id: 'responder-caso-por-caso-redes',
+      label: 'Responder caso por caso en redes sociales',
+      description:
+        'Destinar el equipo de comunicacion a responder manualmente preguntas en redes sociales y comentarios individuales.',
+      impact: {
+        confusionPublica: 2,
+        saturacion112: 1,
+        coordinacionOperativa: -2
+      },
+      flagsOnApply: ['respuestaCasoPorCasoRedes'],
+      feedback:
+        'Contestar uno a uno consume tiempo y no ordena la informacion general. La emergencia necesita un canal claro, no una conversacion infinita.'
+    },
+    {
+      id: 'esperar-datos-completos',
+      label: 'Esperar a tener todos los datos antes de comunicar',
+      description:
+        'Retrasar la comunicacion publica hasta tener confirmacion completa sobre perimetro, carreteras, riesgo para viviendas y evolucion prevista.',
+      impact: {
+        confusionPublica: 5,
+        saturacion112: 4,
+        confianzaInstitucional: -3
+      },
+      flagsOnApply: ['comunicacionRetrasada'],
+      feedback:
+        'El silencio deja hueco a rumores. Comunicar lo confirmado y actualizar despues es mas seguro que esperar a tener el puzzle perfecto.'
     }
   ],
-  "unlocks": [],
-  "sourceNotes": [
-    "En una crisis, la comunicación pública debe reducir la incertidumbre, combatir rumores y orientar a la población hacia canales oficiales.",
-    "El 112 debe reservarse para emergencias reales; la información general debe canalizarse por vías alternativas claras, actualizadas y accesibles.",
-    "Las ruedas de prensa periódicas, los canales oficiales y la coordinación con medios de comunicación ayudan a reducir llamadas innecesarias y mejorar la confianza pública."
+  combos: [
+    {
+      id: 'informacion-publica-ordenada',
+      title: 'Informacion publica ordenada',
+      requires: ['mensajeOficialBreveEmitido', 'canalInformacionNoUrgenteActivado'],
+      text:
+        'La poblacion recibe una referencia inicial y un lugar alternativo para resolver dudas. El 112 empieza a recuperar margen para llamadas criticas.',
+      bonusImpact: {
+        saturacion112: -2,
+        confusionPublica: -1
+      }
+    },
+    {
+      id: 'comunicacion-coordinada',
+      title: 'Comunicacion coordinada',
+      requires: ['actualizacionesPeriodicasActivadas', 'mensajeUnicoAyuntamientosCoordinado'],
+      text:
+        'Medios y ayuntamientos replican una misma linea informativa. La emergencia habla con menos voces, pero mas claridad.',
+      bonusImpact: {
+        confianzaInstitucional: 2,
+        confusionPublica: -2,
+        coordinacionOperativa: 1
+      }
+    },
+    {
+      id: 'silencio-fragmentado',
+      title: 'Silencio fragmentado',
+      requires: ['respuestaCasoPorCasoRedes', 'comunicacionRetrasada'],
+      text:
+        'La informacion oficial llega tarde y dispersa. Los grupos de mensajeria llenan el vacio con versiones contradictorias.',
+      bonusImpact: {
+        confusionPublica: 3,
+        saturacion112: 2,
+        confianzaInstitucional: -2
+      }
+    }
+  ],
+  outcomes: [
+    {
+      id: 'alto',
+      title: '112 descongestionado parcialmente',
+      condition: {
+        saturacion112: '<=0',
+        confusionPublica: '<=2'
+      },
+      text:
+        'La comunicacion oficial reduce parte de las llamadas innecesarias. La poblacion empieza a consultar canales alternativos y el 112 recupera margen para atender emergencias reales. El incendio sigue avanzando, pero el ruido informativo baja varios decibelios.',
+      crisisImpact: {
+        confianzaInstitucional: 2,
+        confusionPublica: -2
+      }
+    },
+    {
+      id: 'medio',
+      title: 'Saturacion contenida, rumores activos',
+      condition: {
+        saturacion112: '<=4'
+      },
+      text:
+        'La situacion mejora, pero no queda resuelta. Parte de la poblacion encuentra informacion fiable, aunque siguen circulando dudas y mensajes no verificados. El 112 continua tensionado.',
+      crisisImpact: {
+        confusionPublica: 1
+      }
+    },
+    {
+      id: 'bajo',
+      title: 'Caos informativo',
+      condition: {
+        saturacion112: '>4'
+      },
+      text:
+        'Las llamadas se acumulan, los canales oficiales llegan tarde o no se entienden y los rumores empiezan a circular mas rapido que las aclaraciones. La siguiente desinformacion encontrara la puerta abierta.',
+      crisisImpact: {
+        confusionPublica: 3,
+        confianzaInstitucional: -2,
+        saturacion112: 2
+      }
+    }
+  ],
+  nextLogic: [
+    {
+      id: 'imagen-viral-con-respuesta-ordenada',
+      condition: {
+        confusionPublica: '<=2',
+        confianzaInstitucional: '>=4'
+      },
+      nextScenario: 's-023-imagen-antigua-viral',
+      transition:
+        'Aunque la comunicacion oficial ha reducido la saturacion del 112, una imagen antigua empieza a circular como si fuera actual. La diferencia es que ahora hay canales activos para desmentirla rapido.'
+    },
+    {
+      id: 'imagen-viral-con-caos',
+      condition: {
+        confusionPublica: '>=6'
+      },
+      nextScenario: 's-023-imagen-antigua-viral',
+      transition:
+        'La comunicacion llega tarde y la confusion gana terreno. Una imagen antigua empieza a circular como si mostrara el avance actual del incendio. Cae sobre un terreno perfecto para el panico.'
+    },
+    {
+      id: 'ruta-base-imagen-viral',
+      condition: 'default',
+      nextScenario: 's-023-imagen-antigua-viral',
+      transition:
+        'El 112 sigue tensionado y la informacion se mueve deprisa. Una imagen impactante aparece en redes y amenaza con disparar de nuevo la alarma social.'
+    }
+  ],
+  options: [],
+  unlocks: ['s-023-imagen-antigua-viral'],
+  sourceNotes: [
+    'Esta escena debe ser una pantalla de seleccion de acciones, no un cuestionario.',
+    'La jugadora solo puede elegir dos actuaciones para reforzar la sensacion de urgencia.',
+    'En esta escena, el fuego esta en el monte, pero la propagacion tambien ocurre por telefono.'
   ]
 };

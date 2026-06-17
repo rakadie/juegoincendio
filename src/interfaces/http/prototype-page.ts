@@ -4,7 +4,7 @@ export function renderPrototypePage(): string {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Guardián del Bosque · Simulador navegable</title>
+    <title>¡Apaga las llamas! · Beta vertical</title>
     <style>
       :root {
         --bg-1: #08141f;
@@ -525,7 +525,19 @@ export function renderPrototypePage(): string {
         background: #14532d66;
       }
 
+      .outcome-chip.contenida {
+        border-color: #22c55e88;
+        color: #86efac;
+        background: #14532d66;
+      }
+
       .outcome-chip.parcial {
+        border-color: #f59e0b88;
+        color: #fcd34d;
+        background: #78350f66;
+      }
+
+      .outcome-chip.moderado {
         border-color: #f59e0b88;
         color: #fcd34d;
         background: #78350f66;
@@ -535,6 +547,424 @@ export function renderPrototypePage(): string {
         border-color: #ef444488;
         color: #fca5a5;
         background: #7f1d1d66;
+      }
+
+      .outcome-chip.desbordada {
+        border-color: #ef444488;
+        color: #fca5a5;
+        background: #7f1d1d66;
+      }
+
+      .inspection-grid {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: minmax(0, 1.5fr) minmax(300px, 0.55fr);
+        align-items: start;
+      }
+
+      .inspection-board {
+        display: grid;
+        gap: 12px;
+      }
+
+      .inspection-brief {
+        display: grid;
+        gap: 8px;
+        border: 1px solid #d8c799;
+        border-radius: 12px;
+        padding: 12px;
+        color: #172819;
+        background: linear-gradient(180deg, #fff8df, #eee0ba);
+      }
+
+      .inspection-brief h2 {
+        margin: 0;
+        font-size: 24px;
+      }
+
+      .inspection-brief p {
+        margin: 0;
+        line-height: 1.4;
+      }
+
+      .inspection-quota {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        border: 2px solid #9a6b12;
+        border-radius: 12px;
+        padding: 10px 14px;
+        color: #1f1b0b;
+        background: linear-gradient(180deg, #fde68a, #fbbf24);
+        font-weight: 800;
+      }
+
+      .inspection-quota strong {
+        font-size: 36px;
+        line-height: 1;
+      }
+
+      .inspection-scene {
+        position: relative;
+        min-height: 455px;
+        overflow: hidden;
+        border: 1px solid #385879;
+        border-radius: 8px;
+        background:
+          linear-gradient(180deg, #8fc5d3 0%, #c6dfc8 28%, #7ea063 29%, #4d6d3f 54%, #786b4d 55%, #9d8a64 100%);
+      }
+
+      .inspection-scene svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .inspection-hotspot {
+        position: absolute;
+        width: 34px;
+        height: 34px;
+        border: 2px solid #fef3c7;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        transform: translate(-50%, -50%);
+        color: #08141f;
+        background: #f59e0b;
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+      }
+
+      .inspection-hotspot:hover,
+      .inspection-hotspot.active {
+        background: #22d3ee;
+        border-color: #cffafe;
+      }
+
+      .inspection-hotspot.selected {
+        background: #22c55e;
+        border-color: #dcfce7;
+      }
+
+      .inspection-hotspot.ignored {
+        background: #64748b;
+        color: #e2e8f0;
+      }
+
+      .inspection-panel {
+        display: grid;
+        gap: 12px;
+      }
+
+      .vulnerability-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .vulnerability-item {
+        display: grid;
+        grid-template-columns: 30px 28px 1fr;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid #3e5b77;
+        border-radius: 8px;
+        padding: 8px;
+        color: var(--text);
+        background: #102335d9;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .vulnerability-item.active {
+        border-color: #22d3ee;
+        background: #164e6338;
+      }
+
+      .vulnerability-item.selected {
+        border-color: #22c55e;
+      }
+
+      .vulnerability-number {
+        display: grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        color: #fff7ed;
+        background: #ea580c;
+        font-weight: 800;
+      }
+
+      .inspection-actions {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(130px, 1fr));
+        gap: 8px;
+      }
+
+      .action-card {
+        min-height: 148px;
+        border: 1px solid #94a3b8;
+        border-radius: 8px;
+        padding: 10px;
+        color: #10201a;
+        background: linear-gradient(180deg, #f7f4df, #dfead0);
+        cursor: pointer;
+        display: grid;
+        align-content: start;
+        gap: 6px;
+        text-align: center;
+      }
+
+      .action-card:nth-child(2n) {
+        background: linear-gradient(180deg, #fff0cf, #f3d9a5);
+      }
+
+      .action-card:nth-child(3n) {
+        background: linear-gradient(180deg, #e8f4f8, #cfe2eb);
+      }
+
+      .action-card.active {
+        outline: 3px solid #22d3ee;
+      }
+
+      .action-card.selected {
+        outline: 3px solid #22c55e;
+      }
+
+      .action-card:disabled {
+        opacity: 0.64;
+        cursor: not-allowed;
+      }
+
+      .action-icon {
+        font-size: 30px;
+        line-height: 1;
+      }
+
+      .action-card strong {
+        font-size: 13px;
+      }
+
+      .action-card small {
+        font-size: 12px;
+        line-height: 1.25;
+      }
+
+      .inspection-summary {
+        display: grid;
+        gap: 9px;
+      }
+
+      .inspection-summary .metric {
+        padding: 9px;
+      }
+
+      .combo-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .combo-item {
+        border: 1px solid #4f6780;
+        border-radius: 10px;
+        padding: 8px;
+        background: #11263a;
+        font-size: 13px;
+      }
+
+      .details-toggle {
+        border: 1px solid #63809f;
+        border-radius: 8px;
+        padding: 8px 10px;
+        color: var(--text);
+        background: #20364d;
+        cursor: pointer;
+      }
+
+      .action-details {
+        display: grid;
+        gap: 10px;
+        margin-top: 10px;
+        border: 1px solid #456789;
+        border-radius: 10px;
+        padding: 10px;
+        background: #0f2234;
+      }
+
+      .action-details.hidden {
+        display: none;
+      }
+
+      .detail-section h4 {
+        margin: 0 0 6px;
+        font-size: 14px;
+      }
+
+      .detail-section ul {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+
+      .balance-grid {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: minmax(0, 1fr) minmax(320px, 0.75fr);
+      }
+
+      .balance-indicators {
+        display: grid;
+        gap: 10px;
+      }
+
+      .balance-indicator {
+        border: 1px solid #3a5978;
+        border-radius: 10px;
+        padding: 10px;
+        background: var(--panel-2);
+      }
+
+      .balance-indicator small {
+        color: var(--muted);
+        display: block;
+        margin-top: 4px;
+      }
+
+      .alert-option {
+        border: 1px solid #456789;
+        background: #102335d9;
+        color: var(--text);
+        border-radius: 10px;
+        text-align: left;
+        padding: 11px;
+        cursor: pointer;
+        display: grid;
+        gap: 7px;
+      }
+
+      .alert-option:hover {
+        border-color: #83a9cf;
+      }
+
+      .alert-option.correct {
+        border-color: #22c55e88;
+      }
+
+      .alert-option.incorrect {
+        border-color: #ef444488;
+      }
+
+      .first-alert-scene {
+        overflow: hidden;
+        border: 1px solid #385879;
+        border-radius: 8px;
+        background: #0a1827;
+      }
+
+      .first-alert-scene img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+      }
+
+      .fronts-map {
+        position: relative;
+        overflow: hidden;
+        min-height: 430px;
+        border: 1px solid #385879;
+        border-radius: 8px;
+        background:
+          linear-gradient(180deg, rgba(8, 20, 31, 0.08), rgba(8, 20, 31, 0.78)),
+          url('/images/primer-aviso-humo.png') center / cover;
+      }
+
+      .front-zone {
+        position: absolute;
+        display: grid;
+        gap: 6px;
+        width: min(30%, 260px);
+        border: 1px solid #94a3b866;
+        border-radius: 8px;
+        padding: 11px;
+        color: var(--text);
+        background: #0d1b2bdc;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
+      }
+
+      .front-zone strong {
+        font-size: 15px;
+      }
+
+      .front-zone small {
+        color: var(--muted);
+        line-height: 1.35;
+      }
+
+      .front-zone.active {
+        border-color: #fbbf24;
+        background: #3a2608e8;
+        box-shadow: 0 0 0 2px #fbbf2455 inset, 0 0 34px #f59e0b66;
+      }
+
+      .front-zone[data-zone="zona-comunicacion"] {
+        left: 5%;
+        top: 12%;
+      }
+
+      .front-zone[data-zone="zona-territorio-accesos"] {
+        left: 35%;
+        bottom: 10%;
+      }
+
+      .front-zone[data-zone="zona-poblacion-riesgo"] {
+        right: 5%;
+        top: 18%;
+      }
+
+      .crisis-pressure {
+        display: grid;
+        gap: 9px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .pressure-card {
+        border: 1px solid #4f6780;
+        border-radius: 8px;
+        padding: 10px;
+        background: #11263a;
+      }
+
+      .crisis-action-grid {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .crisis-action {
+        border: 1px solid #456789;
+        border-radius: 10px;
+        padding: 11px;
+        color: var(--text);
+        background: #102335d9;
+        text-align: left;
+        cursor: pointer;
+        display: grid;
+        gap: 7px;
+      }
+
+      .crisis-action.selected {
+        border-color: #22c55e;
+        box-shadow: 0 0 0 1px #22c55e55 inset;
+      }
+
+      .crisis-action:disabled {
+        opacity: 0.62;
+        cursor: not-allowed;
       }
 
       @media (max-width: 1120px) {
@@ -548,8 +978,18 @@ export function renderPrototypePage(): string {
         }
 
         .screen-grid,
+        .balance-grid,
+        .inspection-grid,
         .hero-grid {
           grid-template-columns: 1fr;
+        }
+
+        .inspection-scene {
+          min-height: 420px;
+        }
+
+        .inspection-actions {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
       }
 
@@ -561,13 +1001,33 @@ export function renderPrototypePage(): string {
         .title {
           font-size: 22px;
         }
+
+        .inspection-quota {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .inspection-actions {
+          grid-template-columns: 1fr;
+        }
+
+        .front-zone {
+          position: static;
+          width: auto;
+          margin: 10px;
+        }
+
+        .crisis-pressure,
+        .crisis-action-grid {
+          grid-template-columns: 1fr;
+        }
       }
     </style>
   </head>
   <body>
     <div class="layout">
       <aside class="sidebar">
-        <div class="brand">Guardián del Bosque</div>
+        <div class="brand">¡Apaga las llamas!</div>
         <div class="subtitle">
           Simulador de decisiones estacionales para prevención y respuesta frente a incendios forestales.
         </div>
@@ -592,9 +1052,9 @@ export function renderPrototypePage(): string {
       <main class="content">
         <header class="topbar">
           <div>
-            <h1 class="title" id="screen-title">Campaña anual · Guardián del Bosque</h1>
+            <h1 class="title" id="screen-title">¡Apaga las llamas!</h1>
             <div class="muted" id="screen-subtitle">
-              Planifica en invierno, responde en verano y evalúa resultados en otoño.
+              La emergencia empieza antes del fuego. Prepara, responde y asume consecuencias.
             </div>
           </div>
 
@@ -611,22 +1071,23 @@ export function renderPrototypePage(): string {
         <section id="screen-briefing" class="screen card">
           <div class="hero-grid">
             <article class="hero-copy">
-              <h2>Diseña la estrategia y navega por escenarios críticos</h2>
+              <h2>Antes de apagar las llamas, decide que margen tendra la emergencia</h2>
               <p>
-                En invierno asignas recursos limitados para reducir vulnerabilidad del monte.
-                En verano, cada decisión táctica se ve afectada por ese patrón previo.
-                El objetivo es terminar la campaña con menos del 20% del bosque quemado y sin quiebra.
+                Eres responsable de Emergencias en un municipio con zonas de interfaz urbano-forestal.
+                Primero preparas viviendas, fincas y comunidad. Despues, cuando aparece el humo,
+                cada decision previa condiciona el caos con el que llega la siguiente escena.
               </p>
 
               <div class="chips">
-                <span class="chip">Ciclo: Invierno → Verano → Resultado</span>
-                <span class="chip">Sistema dual: recursos + riesgo</span>
-                <span class="chip">Heurística: decisiones con memoria</span>
+                <span class="chip">Acto I: prevencion</span>
+                <span class="chip">Acto II: crisis</span>
+                <span class="chip">Beta: ruta comunicacion completa</span>
               </div>
 
               <div class="button-row">
-                <button class="primary" id="btn-start-campaign" type="button">Iniciar campaña de invierno</button>
+                <button class="primary" id="btn-start-campaign" type="button">Comenzar desde prevencion</button>
                 <button class="ghost" id="btn-jump-game-content" type="button">Ver base de escenarios</button>
+                <button class="secondary" id="btn-preview-s018" type="button">Probar colapso 112</button>
               </div>
             </article>
 
@@ -652,6 +1113,163 @@ export function renderPrototypePage(): string {
                 <rect x="154" y="34" width="158" height="26" rx="13" fill="#173729" stroke="#2f7d58" />
                 <text x="168" y="51" fill="#d8ffea" font-size="12" font-family="Inter, Arial">Decisiones con impacto diferido</text>
               </svg>
+            </aside>
+          </div>
+        </section>
+
+        <section id="screen-inspection" class="screen hidden">
+          <div class="inspection-grid">
+            <article class="inspection-board">
+              <div class="inspection-brief">
+                <div class="decision-header">
+                  <h2 id="inspection-title">Inspeccion preventiva</h2>
+                  <div class="inspection-quota">
+                    <span>Actuaciones disponibles</span>
+                    <strong id="inspection-counter">4</strong>
+                  </div>
+                </div>
+                <p><strong id="inspection-intro">No hay humo todavia.</strong></p>
+                <p id="inspection-context"></p>
+              </div>
+
+              <div class="inspection-scene" id="inspection-scene" aria-label="Zona de viviendas en interfaz urbano-forestal">
+                <svg viewBox="0 0 900 520" role="presentation" preserveAspectRatio="none">
+                  <rect x="0" y="0" width="900" height="520" fill="#b8d7ca" />
+                  <path d="M0 145 C150 95 260 115 410 82 C560 48 710 62 900 22 L900 260 L0 260 Z" fill="#597b46" />
+                  <path d="M0 202 C180 140 330 164 500 128 C650 96 770 122 900 80 L900 290 L0 290 Z" fill="#47683c" opacity="0.86" />
+                  <path d="M0 384 C170 344 336 356 490 382 C640 408 752 404 900 348 L900 520 L0 520 Z" fill="#9c855f" />
+                  <path d="M565 520 C610 448 682 420 752 388 C810 360 842 326 900 284" stroke="#c8b28a" stroke-width="74" fill="none" />
+                  <path d="M565 520 C610 448 682 420 752 388 C810 360 842 326 900 284" stroke="#6f5f46" stroke-width="8" fill="none" opacity="0.55" />
+                  <g>
+                    <rect x="135" y="230" width="142" height="118" rx="8" fill="#eadcc6" stroke="#725b45" stroke-width="3" />
+                    <path d="M120 232 L207 164 L292 232 Z" fill="#8b4a32" stroke="#5f3325" stroke-width="3" />
+                    <rect x="169" y="281" width="36" height="67" fill="#6e4a35" />
+                    <rect x="224" y="265" width="35" height="30" fill="#9cc3d5" stroke="#385879" />
+                    <path d="M147 210 C168 220 190 204 210 216 C230 228 252 208 272 222" stroke="#d6b25c" stroke-width="9" fill="none" />
+                    <rect x="118" y="356" width="190" height="12" fill="#6b4f37" opacity="0.8" />
+                  </g>
+                  <g>
+                    <rect x="705" y="210" width="118" height="98" rx="6" fill="#d6e3ee" stroke="#4f6780" stroke-width="3" />
+                    <path d="M690 210 L765 156 L838 210 Z" fill="#50708a" />
+                    <rect x="748" y="248" width="34" height="60" fill="#324963" />
+                    <rect x="792" y="236" width="24" height="22" fill="#bfe4f0" />
+                  </g>
+                  <g fill="#365b36">
+                    <circle cx="450" cy="170" r="55" />
+                    <circle cx="520" cy="146" r="60" />
+                    <circle cx="610" cy="120" r="62" />
+                    <circle cx="690" cy="128" r="58" />
+                  </g>
+                  <g stroke="#5b3a27" stroke-width="12">
+                    <line x1="450" y1="220" x2="450" y2="350" />
+                    <line x1="520" y1="205" x2="520" y2="346" />
+                    <line x1="610" y1="185" x2="610" y2="322" />
+                    <line x1="690" y1="190" x2="690" y2="316" />
+                  </g>
+                  <g fill="#b7791f" opacity="0.88">
+                    <rect x="296" y="337" width="44" height="18" rx="4" />
+                    <rect x="290" y="359" width="60" height="14" rx="4" />
+                    <rect x="372" y="326" width="94" height="22" rx="11" />
+                    <rect x="438" y="350" width="36" height="20" rx="4" />
+                  </g>
+                  <g fill="#d9b36a" opacity="0.72">
+                    <ellipse cx="455" cy="314" rx="62" ry="18" />
+                    <ellipse cx="535" cy="304" rx="70" ry="20" />
+                  </g>
+                </svg>
+                <div id="inspection-hotspots"></div>
+              </div>
+
+              <div class="inspection-actions" id="inspection-action-cards"></div>
+            </article>
+
+            <aside class="card inspection-panel">
+              <div>
+                <h3>Vulnerabilidades detectables</h3>
+                <div class="vulnerability-list" id="inspection-vulnerability-list"></div>
+              </div>
+              <div>
+                <h3 id="inspection-hotspot-title">Selecciona un punto vulnerable</h3>
+                <p class="muted" id="inspection-hotspot-description"></p>
+              </div>
+              <div class="status-box" id="inspection-action-box"></div>
+              <div class="inspection-summary" id="inspection-summary"></div>
+              <div class="status-box hidden" id="inspection-finish-box"></div>
+            </aside>
+          </div>
+        </section>
+
+        <section id="screen-balance" class="screen hidden">
+          <div class="balance-grid">
+            <article class="card result-hero">
+              <div class="outcome-chip" id="balance-phase-chip">Balance preventivo</div>
+              <h2 id="balance-title">Balance preventivo del municipio</h2>
+              <p class="muted" id="balance-intro"></p>
+              <p class="muted" id="balance-context"></p>
+
+              <div class="balance-indicators" id="balance-indicators"></div>
+              <div class="status-box" id="balance-outcome"></div>
+            </article>
+
+            <aside class="card decision-panel">
+              <div class="decision-header">
+                <h2 id="first-alert-title">Primer aviso de incendio</h2>
+                <span class="step-label">s-040</span>
+              </div>
+              <div class="first-alert-scene">
+                <img src="/images/primer-aviso-humo.png" alt="Columna de humo sobre una zona rural próxima a viviendas y monte" />
+              </div>
+              <p class="muted" id="first-alert-intro"></p>
+              <p class="muted" id="first-alert-context"></p>
+              <h3 id="first-alert-question"></h3>
+              <div class="decision-list" id="first-alert-options"></div>
+              <div class="status-box hidden" id="first-alert-feedback"></div>
+            </aside>
+          </div>
+        </section>
+
+        <section id="screen-fronts" class="screen hidden">
+          <div class="screen-grid">
+            <article class="card">
+              <div class="decision-header">
+                <h2 id="fronts-title">La emergencia se abre en tres frentes</h2>
+                <span class="step-label">Mapa de crisis</span>
+              </div>
+              <p class="muted" id="fronts-intro"></p>
+              <div class="fronts-map" id="fronts-map"></div>
+            </article>
+
+            <aside class="card decision-panel">
+              <h2 id="fronts-headline"></h2>
+              <p class="muted" id="fronts-body"></p>
+              <div class="status-box">
+                <strong>Ruta activada</strong>
+                <p class="muted" id="fronts-route-detail"></p>
+              </div>
+              <div class="button-row">
+                <button class="primary" id="btn-fronts-continue" type="button">Continuar</button>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section id="screen-crisis" class="screen hidden">
+          <div class="screen-grid">
+            <article class="card decision-panel">
+              <div class="decision-header">
+                <h2 id="crisis-title">Escena de crisis</h2>
+                <span class="step-label" id="crisis-counter">0/2 acciones</span>
+              </div>
+              <p class="muted" id="crisis-intro"></p>
+              <p class="muted" id="crisis-context"></p>
+              <div class="crisis-pressure" id="crisis-pressure"></div>
+              <div class="crisis-action-grid" id="crisis-actions"></div>
+            </article>
+
+            <aside class="card">
+              <h3>Consecuencia acumulada</h3>
+              <div class="status-box" id="crisis-feedback"></div>
+              <div class="status-box hidden" id="crisis-result"></div>
             </aside>
           </div>
         </section>
@@ -733,23 +1351,23 @@ export function renderPrototypePage(): string {
 
           <div class="screen-grid">
             <article class="card">
-              <h3>Resumen de campaña</h3>
+              <h3>Balance de la emergencia</h3>
 
               <div class="metrics" style="margin-top:10px;">
                 <div class="metric">
-                  <div class="metric-head"><span>Riesgo base calculado</span><strong id="result-risk">0</strong></div>
+                  <div class="metric-head"><span>Proteccion de poblacion</span><strong id="result-risk">0</strong></div>
                 </div>
                 <div class="metric">
-                  <div class="metric-head"><span>Bosque quemado final</span><strong id="result-burned">0%</strong></div>
+                  <div class="metric-head"><span>Danos materiales</span><strong id="result-burned">0</strong></div>
                 </div>
                 <div class="metric">
-                  <div class="metric-head"><span>Presupuesto final</span><strong id="result-budget">0 €</strong></div>
+                  <div class="metric-head"><span>Confianza publica</span><strong id="result-budget">0</strong></div>
                 </div>
               </div>
 
               <div class="button-row" style="margin-top:12px;">
-                <button class="primary" id="btn-restart" type="button">Jugar otra campaña</button>
-                <button class="secondary" id="btn-review-winter" type="button">Revisar decisiones de invierno</button>
+                <button class="primary" id="btn-restart" type="button">Jugar de nuevo</button>
+                <button class="secondary" id="btn-review-winter" type="button">Revisar prevencion</button>
               </div>
             </article>
 
@@ -769,28 +1387,38 @@ export function renderPrototypePage(): string {
 
     <script>
       const STAGES = [
-        { id: 'briefing', label: '01 · Briefing', subtitle: 'Contexto y objetivos' },
-        { id: 'winter', label: '02 · Invierno', subtitle: 'Preparación y prevención' },
-        { id: 'summer', label: '03 · Verano', subtitle: 'Crisis y respuesta' },
-        { id: 'result', label: '04 · Otoño', subtitle: 'Resultado final' }
+        { id: 'briefing', label: '01 · Inicio', subtitle: 'Rol y objetivo' },
+        { id: 'inspection', label: '02 · Prevencion', subtitle: 'Tres inspecciones' },
+        { id: 'balance', label: '03 · Primer aviso', subtitle: 'Balance y ruptura' },
+        { id: 'fronts', label: '04 · Tres frentes', subtitle: 'Mapa de crisis' },
+        { id: 'crisis', label: '05 · Crisis', subtitle: 'Ruta comunicacion' },
+        { id: 'result', label: '06 · Resultado', subtitle: 'Balance final' }
       ];
 
       const HEADER_TEXT = {
         briefing: {
-          title: 'Campaña anual · Guardián del Bosque',
-          subtitle: 'Planifica en invierno, responde en verano y evalúa resultados en otoño.'
+          title: '¡Apaga las llamas!',
+          subtitle: 'La emergencia no empieza cuando aparece el fuego. Empieza antes.'
         },
-        winter: {
-          title: 'Invierno · Fase de preparación',
-          subtitle: 'Asigna recursos para reducir vulnerabilidad estructural del monte.'
+        inspection: {
+          title: 'Acto I · Prevencion',
+          subtitle: 'Lee el territorio antes de que haya humo y prioriza cuatro actuaciones por pantalla.'
         },
-        summer: {
-          title: 'Verano · Fase de crisis',
-          subtitle: 'Gestiona el incendio con la severidad heredada de tus decisiones de invierno.'
+        balance: {
+          title: 'Puente narrativo · Primer aviso',
+          subtitle: 'Lo preparado antes del fuego empieza a pesar cuando aparece el humo.'
+        },
+        fronts: {
+          title: 'Inicio de crisis · Tres frentes',
+          subtitle: 'La crisis acaba de elegir por donde entrar.'
+        },
+        crisis: {
+          title: 'Acto II · Ruta de comunicacion',
+          subtitle: 'Elige dos acciones por escena. No puedes hacerlo todo.'
         },
         result: {
-          title: 'Otoño · Cierre de campaña',
-          subtitle: 'Evalúa impacto final, sostenibilidad y aprendizaje táctico.'
+          title: 'Resultado final',
+          subtitle: 'Lee que decisiones compraron margen y cuales dejaron entrar el caos.'
         }
       };
 
@@ -808,6 +1436,32 @@ export function renderPrototypePage(): string {
         cortafuegos: 'Cortafuegos',
         humedad: 'Humedad',
         accesibilidad: 'Accesibilidad'
+      };
+
+      const INSPECTION_METRIC_LABELS = {
+        defensibilidadViviendas: 'Defensibilidad de viviendas',
+        riesgoPavesas: 'Riesgo por pavesas',
+        continuidadCombustible: 'Continuidad vegetal',
+        riesgoFuegoCopas: 'Riesgo de fuego de copas',
+        riesgoIgnicion: 'Riesgo de ignicion',
+        riesgoPropagacion: 'Riesgo de propagacion',
+        seguridadEquipos: 'Seguridad de equipos',
+        coordinacionOperativa: 'Coordinacion operativa',
+        cumplimientoPreventivo: 'Cumplimiento preventivo',
+        accesosDespejados: 'Accesos despejados',
+        controlIncendio: 'Control tecnico',
+        poblacionProtegida: 'Poblacion protegida',
+        confianzaVecinal: 'Confianza vecinal',
+        preparacionFamiliar: 'Preparacion familiar',
+        autonomiaCiudadana: 'Autonomia ciudadana',
+        canalesOficiales: 'Canales oficiales',
+        atencionVulnerables: 'Atencion vulnerable',
+        inclusionVulnerables: 'Inclusion vulnerable',
+        saturacion112: 'Saturacion 112',
+        exposicionHumoCalor: 'Exposicion a humo y calor',
+        danosViviendas: 'Danos potenciales en viviendas',
+        riesgoAtrapamiento: 'Riesgo de atrapamiento',
+        confusionPublica: 'Confusion publica'
       };
 
       const RESOURCE_LIMITS = {
@@ -829,12 +1483,21 @@ export function renderPrototypePage(): string {
 
       let WINTER_NODES = [];
       let SUMMER_NODES = [];
+      let INSPECTION_SCREENS = [];
+      let PREVENTION_BALANCE = null;
+      let FIRST_ALERT = null;
+      let CRISIS_ROUTE_MODULE = null;
+      let GAME_SCENARIOS = [];
 
       function buildInitialState() {
         return {
           stage: 'briefing',
           unlocked: {
             briefing: true,
+            inspection: false,
+            balance: false,
+            fronts: false,
+            crisis: false,
             winter: false,
             summer: false,
             result: false
@@ -856,6 +1519,23 @@ export function renderPrototypePage(): string {
           },
           winterIndex: 0,
           summerIndex: 0,
+          inspectionIndex: 0,
+          inspections: {},
+          balance: {
+            outcomeId: null,
+            alertOptionId: null,
+            alertFeedback: null,
+            activeRouteId: null
+          },
+          crisis: {
+            activeScenarioId: null,
+            selectedActionIds: [],
+            appliedFlags: [],
+            metrics: {},
+            feedbackLog: [],
+            completed: false,
+            outcome: null
+          },
           riskBase: null,
           fireIntensity: 0,
           burned: 8,
@@ -906,10 +1586,12 @@ export function renderPrototypePage(): string {
       }
 
       function seasonLabel() {
-        if (state.stage === 'briefing') return 'Briefing';
-        if (state.stage === 'winter') return 'Invierno';
-        if (state.stage === 'summer') return 'Verano';
-        return 'Otoño';
+        if (state.stage === 'briefing') return 'Inicio';
+        if (state.stage === 'inspection') return 'Prevencion';
+        if (state.stage === 'balance') return 'Primer aviso';
+        if (state.stage === 'fronts') return 'Tres frentes';
+        if (state.stage === 'crisis') return 'Crisis';
+        return 'Resultado';
       }
 
       function applyVector(target, changes, limits) {
@@ -1000,6 +1682,899 @@ export function renderPrototypePage(): string {
           .join('');
       }
 
+      function inspectionIcon(hotspotId) {
+        const icons = {
+          'canalones-hojas': '🧹',
+          'combustibles-fachada': '🪵',
+          'ramas-bajas-vegetacion-seca': '✂️',
+          'copas-tocandose': '🌳',
+          'huecos-sin-proteger': '▤',
+          'acceso-estrecho': '🚒',
+          'centro-social': '🏛️',
+          'restos-poda-acumulados': '🍂',
+          'vegetacion-densa-borde-fincas': '🌿',
+          'pastoreo-preventivo': '🐑',
+          'replantacion-finca': '🌵',
+          'camino-rural-invadido': '🛣️',
+          'quema-agricola-restos': '🔥',
+          'quema-tecnica-profesional': '🧭',
+          'familias-sin-mochila': '🎒',
+          'personas-vulnerables-sin-registro': '♿',
+          'hogares-sin-plan-evacuacion-confinamiento': '🏠',
+          'canales-oficiales-poco-claros': '📢',
+          'canales-oficiales-debiles': '📢',
+          'edificio-publico-sin-protocolo': '🏛️',
+          'punto-encuentro-sin-protocolo': '🏛️',
+          'turistas-senderistas-sin-informacion': '🥾',
+          'turistas-senderistas-sin-aviso': '🥾',
+          'mascotas-sin-prevision': '🐾',
+          'familias-sin-kit-basico': '🎒',
+          'voluntariado-sin-coordinacion': '🤝'
+        };
+
+        return icons[hotspotId] || '•';
+      }
+
+      function actionSummary(hotspot) {
+        const summaries = {
+          'canalones-hojas': 'Evita que las hojas secas sean combustible.',
+          'combustibles-fachada': 'Separa leña, muebles y objetos de la fachada.',
+          'ramas-bajas-vegetacion-seca': 'Reduce el combustible cercano al suelo.',
+          'copas-tocandose': 'Aumenta la distancia entre árboles.',
+          'huecos-sin-proteger': 'Evita la entrada de brasas en la vivienda.',
+          'acceso-estrecho': 'Asegura paso libre para medios de extinción.',
+          'centro-social': 'Prepara un punto público de apoyo.',
+          'restos-poda-acumulados': 'Retira, tritura o composta restos secos.',
+          'vegetacion-densa-borde-fincas': 'Rompe la continuidad entre finca y monte.',
+          'pastoreo-preventivo': 'Reduce combustible fino con gestion ganadera.',
+          'replantacion-finca': 'Evita pantallas vegetales continuas.',
+          'camino-rural-invadido': 'Mantiene acceso y salida practicables.',
+          'quema-agricola-restos': 'Autoriza solo con condiciones seguras.',
+          'quema-tecnica-profesional': 'Evalua una actuacion tecnica planificada.',
+          'familias-sin-mochila': 'Evita perder minutos buscando lo esencial.',
+          'personas-vulnerables-sin-registro': 'Prioriza avisos, apoyo y transporte.',
+          'hogares-sin-plan-evacuacion-confinamiento': 'Aclara como salir o protegerse.',
+          'canales-oficiales-poco-claros': 'Reduce rumores y llamadas innecesarias.',
+          'canales-oficiales-debiles': 'Reduce rumores y mensajes contradictorios.',
+          'edificio-publico-sin-protocolo': 'Da funcion real a un edificio publico.',
+          'punto-encuentro-sin-protocolo': 'Prepara acogida e informacion vecinal.',
+          'turistas-senderistas-sin-informacion': 'Informa a visitantes y rutas expuestas.',
+          'turistas-senderistas-sin-aviso': 'Informa a visitantes y rutas expuestas.',
+          'mascotas-sin-prevision': 'Evita retrasos por animales domesticos.',
+          'familias-sin-kit-basico': 'Evita retrasos buscando lo esencial.',
+          'voluntariado-sin-coordinacion': 'Ordena la ayuda vecinal disponible.'
+        };
+
+        return summaries[hotspot.id] || hotspot.visualHint;
+      }
+
+      function actionDetailsHtml(action) {
+        if (!action.details) return '';
+
+        return '<button class="details-toggle" id="btn-action-details" type="button">' + action.details.buttonLabel + '</button>' +
+          '<div class="action-details hidden" id="action-details-panel">' +
+            action.details.sections.map(function (section) {
+              return '<div class="detail-section">' +
+                '<h4>' + section.title + '</h4>' +
+                '<ul>' + section.items.map(function (item) {
+                  return '<li>' + item + '</li>';
+                }).join('') + '</ul>' +
+              '</div>';
+            }).join('') +
+          '</div>';
+      }
+
+      function wireActionDetailsToggle() {
+        const button = document.getElementById('btn-action-details');
+        const panel = document.getElementById('action-details-panel');
+        if (!button || !panel) return;
+
+        button.onclick = function () {
+          panel.classList.toggle('hidden');
+          button.textContent = panel.classList.contains('hidden') ? 'Ver detalles' : 'Ocultar detalles';
+        };
+      }
+
+      function currentInspectionScreen() {
+        return INSPECTION_SCREENS[state.inspectionIndex] || null;
+      }
+
+      function aggregateInspectionMetrics() {
+        const aggregate = {};
+        Object.keys(state.inspections || {}).forEach(function (screenId) {
+          const metrics = state.inspections[screenId].metrics || {};
+          Object.keys(metrics).forEach(function (key) {
+            aggregate[key] = (aggregate[key] || 0) + metrics[key];
+          });
+        });
+        return aggregate;
+      }
+
+      function aggregateIgnoredFlags() {
+        const flags = [];
+        Object.keys(state.inspections || {}).forEach(function (screenId) {
+          (state.inspections[screenId].ignoredFlags || []).forEach(function (flag) {
+            uniquePush(flags, flag);
+          });
+        });
+        return flags;
+      }
+
+      function crisisRouteState() {
+        const metrics = aggregateInspectionMetrics();
+        const balanceOutcome = chooseBalanceOutcome();
+        if (balanceOutcome?.crisisImpact) {
+          Object.keys(balanceOutcome.crisisImpact).forEach(function (key) {
+            metrics[key] = (metrics[key] || 0) + balanceOutcome.crisisImpact[key];
+          });
+        }
+        if (state.balance.alertFeedback?.impact) {
+          Object.keys(state.balance.alertFeedback.impact).forEach(function (key) {
+            metrics[key] = (metrics[key] || 0) + state.balance.alertFeedback.impact[key];
+          });
+        }
+        return {
+          metrics: metrics,
+          flags: aggregateIgnoredFlags()
+        };
+      }
+
+      function compareValue(left, operator, right) {
+        if (operator === '>=') return left >= right;
+        if (operator === '<=') return left <= right;
+        if (operator === '>') return left > right;
+        if (operator === '<') return left < right;
+        if (operator === '===') return left === right;
+        if (operator === '!==') return left !== right;
+        return false;
+      }
+
+      function parseConditionExpression(expression) {
+        const match = String(expression).trim().match(/^(<=|>=|<|>|===|!==)\\s*(-?\\d+(?:\\.\\d+)?)$/);
+        if (!match) return null;
+        return {
+          operator: match[1],
+          value: Number(match[2])
+        };
+      }
+
+      function conditionRecordMatches(condition, metrics) {
+        if (condition === 'default') return true;
+        if (!condition) return false;
+
+        return Object.keys(condition).every(function (key) {
+          const expression = parseConditionExpression(condition[key]);
+          if (!expression) return false;
+          return compareValue(metrics[key] || 0, expression.operator, expression.value);
+        });
+      }
+
+      function scenarioNextStep(scenario) {
+        const logic = scenario.nextLogic || [];
+        return logic.find(function (item) {
+          return conditionRecordMatches(item.condition, state.crisis.metrics);
+        }) || logic.find(function (item) {
+          return item.condition === 'default';
+        }) || null;
+      }
+
+      function routeConditionMatches(condition, routeState) {
+        if (condition === 'default') return true;
+        if (condition.flag) return routeState.flags.includes(condition.flag);
+        if (condition.any) {
+          return condition.any.some(function (expression) {
+            return compareValue(
+              routeState.metrics[expression.variable] || 0,
+              expression.operator,
+              expression.value
+            );
+          });
+        }
+        return false;
+      }
+
+      function activeCrisisRoute() {
+        if (!CRISIS_ROUTE_MODULE) return null;
+        const betaRoute = CRISIS_ROUTE_MODULE.routeLogic.find(function (route) {
+          return route.id === 'ruta-comunicacion';
+        });
+        if (betaRoute) return betaRoute;
+        const routeState = crisisRouteState();
+        const routes = CRISIS_ROUTE_MODULE.routeLogic.slice().sort(function (a, b) {
+          return a.priority - b.priority;
+        });
+        return routes.find(function (route) {
+          return routeConditionMatches(route.condition, routeState);
+        }) || routes[routes.length - 1] || null;
+      }
+
+      function beneficialMetricValue(key, value) {
+        const negativeIsGood = [
+          'riesgoPavesas',
+          'riesgoIgnicion',
+          'riesgoPropagacion',
+          'confusionPublica',
+          'saturacion112',
+          'danosViviendas',
+          'riesgoAtrapamiento',
+          'exposicionHumoCalor'
+        ];
+
+        if (negativeIsGood.includes(key)) return -value;
+        return value;
+      }
+
+      function preventionPreparednessScore() {
+        const metrics = aggregateInspectionMetrics();
+        return Object.keys(metrics).reduce(function (total, key) {
+          return total + Math.max(0, beneficialMetricValue(key, metrics[key]));
+        }, 0);
+      }
+
+      function chooseBalanceOutcome() {
+        if (!PREVENTION_BALANCE) return null;
+        const score = preventionPreparednessScore();
+        if (score >= 58) {
+          return PREVENTION_BALANCE.outcomes.find(function (outcome) { return outcome.id === 'municipio-preparado'; });
+        }
+        if (score >= 28) {
+          return PREVENTION_BALANCE.outcomes.find(function (outcome) { return outcome.id === 'preparacion-desigual'; });
+        }
+        return PREVENTION_BALANCE.outcomes.find(function (outcome) { return outcome.id === 'territorio-vulnerable'; });
+      }
+
+      function blankInspectionSession(screen) {
+        return {
+          selectedHotspotId: screen?.hotspots?.[0]?.id || null,
+          appliedHotspotIds: [],
+          appliedFlags: [],
+          ignoredFlags: [],
+          futureConsequences: [],
+          metrics: Object.assign({}, screen?.initialState || {}),
+          completed: false,
+          outcome: null,
+          combos: []
+        };
+      }
+
+      function currentInspectionState() {
+        const screen = currentInspectionScreen();
+        if (!screen) return blankInspectionSession(null);
+        if (!state.inspections[screen.id]) {
+          state.inspections[screen.id] = blankInspectionSession(screen);
+        }
+        return state.inspections[screen.id];
+      }
+
+      function inspectionMetrics() {
+        return currentInspectionState().metrics;
+      }
+
+      function applyInspectionImpact(impact) {
+        const metrics = inspectionMetrics();
+        Object.keys(impact || {}).forEach(function (key) {
+          if (typeof metrics[key] !== 'number') metrics[key] = 0;
+          metrics[key] += impact[key];
+        });
+      }
+
+      function selectedInspectionHotspot() {
+        const screen = currentInspectionScreen();
+        const inspection = currentInspectionState();
+        if (!screen) return null;
+        return screen.hotspots.find(function (hotspot) {
+          return hotspot.id === inspection.selectedHotspotId;
+        }) || screen.hotspots[0] || null;
+      }
+
+      function chooseInspectionOutcome() {
+        const metrics = inspectionMetrics();
+        const screen = currentInspectionScreen();
+        const protectionScore =
+          (metrics.defensibilidadViviendas || 0) +
+          Math.abs(metrics.riesgoPavesas || 0) +
+          Math.abs(metrics.riesgoIgnicion || 0) +
+          Math.abs(metrics.riesgoPropagacion || 0) +
+          Math.abs(metrics.continuidadCombustible || 0) +
+          (metrics.seguridadEquipos || 0) +
+          (metrics.cumplimientoPreventivo || 0);
+
+        if (protectionScore >= 18) {
+          return screen.outcomes.find(function (outcome) { return outcome.id === 'alto'; });
+        }
+        if (protectionScore >= 9) {
+          return screen.outcomes.find(function (outcome) { return outcome.id === 'medio'; });
+        }
+        return screen.outcomes.find(function (outcome) { return outcome.id === 'bajo'; });
+      }
+
+      function completeInspectionIfReady() {
+        const screen = currentInspectionScreen();
+        const inspection = currentInspectionState();
+        if (!screen || inspection.completed) return;
+        if (inspection.appliedHotspotIds.length < screen.maxActions) return;
+
+        const appliedFlags = inspection.appliedFlags;
+        inspection.combos = screen.combos.filter(function (combo) {
+          return combo.requires.every(function (flag) { return appliedFlags.includes(flag); });
+        });
+
+        inspection.combos.forEach(function (combo) {
+          applyInspectionImpact(combo.bonusImpact);
+        });
+
+        const ignoredHotspots = screen.hotspots.filter(function (hotspot) {
+          return !inspection.appliedHotspotIds.includes(hotspot.id);
+        });
+
+        inspection.ignoredFlags = ignoredHotspots.map(function (hotspot) {
+          return hotspot.flagIfIgnored;
+        });
+        inspection.futureConsequences = ignoredHotspots.map(function (hotspot) {
+          return hotspot.futureConsequence;
+        });
+        inspection.futureConsequences.forEach(function (message) {
+          uniquePush(state.diagnosis, message);
+        });
+
+        const metrics = inspectionMetrics();
+        state.terrain.combustible = clamp(
+          state.terrain.combustible + Math.round((metrics.continuidadCombustible || 0) * 1.5),
+          0,
+          100
+        );
+        state.terrain.cortafuegos = clamp(
+          state.terrain.cortafuegos + Math.max(0, Math.round(((metrics.defensibilidadViviendas || 0) + (metrics.controlIncendio || 0)) * 0.7)),
+          0,
+          100
+        );
+        state.terrain.accesibilidad = clamp(
+          state.terrain.accesibilidad + Math.max(0, ((metrics.seguridadEquipos || 0) + (metrics.accesosDespejados || 0)) * 1.5),
+          0,
+          100
+        );
+        state.resources.apoyo = clamp(
+          state.resources.apoyo + Math.max(0, (metrics.confianzaVecinal || 0) + Math.round((metrics.cumplimientoPreventivo || 0) / 2)),
+          0,
+          100
+        );
+
+        inspection.outcome = chooseInspectionOutcome();
+        inspection.completed = true;
+
+        state.winterLog.push({
+          node: screen.title,
+          decision: inspection.appliedHotspotIds.length + ' actuaciones preventivas priorizadas',
+          effects: 'Flags: ' + inspection.appliedFlags.join(', ')
+        });
+
+        addEventLog('Inspeccion preventiva completada', screen.shortTitle + ': ' + inspection.outcome.title);
+      }
+
+      function applyInspectionAction(hotspot) {
+        const screen = currentInspectionScreen();
+        const inspection = currentInspectionState();
+        if (!screen || !hotspot || inspection.completed) return;
+        if (inspection.appliedHotspotIds.includes(hotspot.id)) return;
+        if (inspection.appliedHotspotIds.length >= screen.maxActions) return;
+
+        inspection.appliedHotspotIds.push(hotspot.id);
+        hotspot.action.flagsOnApply.forEach(function (flag) {
+          uniquePush(inspection.appliedFlags, flag);
+        });
+        applyInspectionImpact(hotspot.action.impact);
+
+        addEventLog('Actuacion preventiva', hotspot.action.label);
+        completeInspectionIfReady();
+        render();
+      }
+
+      function renderInspectionSummary() {
+        const summary = document.getElementById('inspection-summary');
+        const metrics = inspectionMetrics();
+        const visible = [
+          'defensibilidadViviendas',
+          'riesgoPavesas',
+          'riesgoIgnicion',
+          'riesgoPropagacion',
+          'continuidadCombustible',
+          'seguridadEquipos',
+          'coordinacionOperativa',
+          'cumplimientoPreventivo'
+        ].filter(function (key) {
+          return typeof metrics[key] === 'number' && metrics[key] !== 0;
+        }).slice(0, 5);
+
+        const keys = visible.length > 0 ? visible : ['continuidadCombustible', 'seguridadEquipos', 'coordinacionOperativa'];
+        summary.innerHTML = keys.map(function (key) {
+          const value = metrics[key] || 0;
+          return '<div class="metric">' +
+            '<div class="metric-head"><span>' + INSPECTION_METRIC_LABELS[key] + '</span><strong>' + signed(value) + '</strong></div>' +
+          '</div>';
+        }).join('');
+      }
+
+      function renderInspection() {
+        const screen = currentInspectionScreen();
+        const inspection = currentInspectionState();
+        const title = document.getElementById('inspection-title');
+        const intro = document.getElementById('inspection-intro');
+        const context = document.getElementById('inspection-context');
+        const counter = document.getElementById('inspection-counter');
+        const hotspotLayer = document.getElementById('inspection-hotspots');
+        const actionCards = document.getElementById('inspection-action-cards');
+        const vulnerabilityList = document.getElementById('inspection-vulnerability-list');
+        const hotspotTitle = document.getElementById('inspection-hotspot-title');
+        const hotspotDescription = document.getElementById('inspection-hotspot-description');
+        const actionBox = document.getElementById('inspection-action-box');
+        const finishBox = document.getElementById('inspection-finish-box');
+
+        if (!screen) {
+          title.textContent = 'Inspeccion preventiva';
+          context.textContent = 'Cargando datos de inspeccion...';
+          hotspotLayer.innerHTML = '';
+          actionBox.innerHTML = '<p class="muted">Esperando contenido.</p>';
+          return;
+        }
+
+        if (!inspection.selectedHotspotId) {
+          inspection.selectedHotspotId = screen.hotspots[0]?.id || null;
+        }
+
+        const selected = selectedInspectionHotspot();
+        const remaining = screen.maxActions - inspection.appliedHotspotIds.length;
+
+        title.textContent = 'Pantalla ' + (state.inspectionIndex + 1) + ' — ' + screen.title;
+        intro.textContent = screen.intro;
+        context.textContent = 'Objetivo: ' + screen.objective;
+        counter.textContent = String(remaining);
+
+        hotspotLayer.innerHTML = screen.hotspots.map(function (hotspot, index) {
+          const isActive = selected && selected.id === hotspot.id ? 'active' : '';
+          const isApplied = inspection.appliedHotspotIds.includes(hotspot.id) ? 'selected' : '';
+          const isIgnored = inspection.completed && !inspection.appliedHotspotIds.includes(hotspot.id) ? 'ignored' : '';
+          return '<button class="inspection-hotspot ' + isActive + ' ' + isApplied + ' ' + isIgnored + '" ' +
+            'style="left:' + hotspot.position.x + '%; top:' + hotspot.position.y + '%" ' +
+            'title="' + hotspot.visualHint + '" data-hotspot="' + hotspot.id + '">' + (index + 1) + '</button>';
+        }).join('');
+
+        Array.from(hotspotLayer.querySelectorAll('button')).forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            inspection.selectedHotspotId = btn.dataset.hotspot;
+            render();
+          });
+        });
+
+        vulnerabilityList.innerHTML = screen.hotspots.map(function (hotspot, index) {
+          const isActive = selected && selected.id === hotspot.id ? 'active' : '';
+          const isApplied = inspection.appliedHotspotIds.includes(hotspot.id) ? 'selected' : '';
+          return '<button class="vulnerability-item ' + isActive + ' ' + isApplied + '" data-hotspot="' + hotspot.id + '">' +
+            '<span class="vulnerability-number">' + (index + 1) + '</span>' +
+            '<span>' + inspectionIcon(hotspot.id) + '</span>' +
+            '<strong>' + hotspot.title + '</strong>' +
+          '</button>';
+        }).join('');
+
+        Array.from(vulnerabilityList.querySelectorAll('button')).forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            inspection.selectedHotspotId = btn.dataset.hotspot;
+            render();
+          });
+        });
+
+        actionCards.innerHTML = screen.hotspots.map(function (hotspot) {
+          const isActive = selected && selected.id === hotspot.id ? 'active' : '';
+          const isApplied = inspection.appliedHotspotIds.includes(hotspot.id) ? 'selected' : '';
+          const disable = inspection.completed ||
+            isApplied ||
+            inspection.appliedHotspotIds.length >= screen.maxActions;
+          return '<button class="action-card ' + isActive + ' ' + isApplied + '" data-hotspot="' + hotspot.id + '" ' + (disable ? 'disabled' : '') + '>' +
+            '<span class="action-icon">' + inspectionIcon(hotspot.id) + '</span>' +
+            '<strong>' + hotspot.action.label + '</strong>' +
+            '<small>' + actionSummary(hotspot) + '</small>' +
+          '</button>';
+        }).join('');
+
+        Array.from(actionCards.querySelectorAll('button')).forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            const hotspot = screen.hotspots.find(function (item) {
+              return item.id === btn.dataset.hotspot;
+            });
+            inspection.selectedHotspotId = btn.dataset.hotspot;
+            applyInspectionAction(hotspot);
+          });
+        });
+
+        if (selected) {
+          const alreadyApplied = inspection.appliedHotspotIds.includes(selected.id);
+          hotspotTitle.textContent = selected.title;
+          hotspotDescription.textContent = selected.description;
+
+          if (inspection.completed) {
+            actionBox.innerHTML = alreadyApplied
+              ? '<p><strong>Actuacion aplicada:</strong> ' + selected.action.label + '</p><p class="muted">' + selected.action.feedback + '</p>' + actionDetailsHtml(selected.action)
+              : '<p><strong>Quedo pendiente:</strong> ' + selected.flagIfIgnored + '</p><p class="muted">' + selected.futureConsequence + '</p>';
+            wireActionDetailsToggle();
+          } else if (alreadyApplied) {
+            actionBox.innerHTML =
+              '<p><strong>Actuacion aplicada:</strong> ' + selected.action.label + '</p>' +
+              '<p class="muted">' + selected.action.feedback + '</p>' +
+              actionDetailsHtml(selected.action);
+            wireActionDetailsToggle();
+          } else {
+            actionBox.innerHTML =
+              '<p><strong>Accion posible:</strong> ' + selected.action.label + '</p>' +
+              '<p class="muted">' + (selected.action.description || actionSummary(selected)) + '</p>' +
+              actionDetailsHtml(selected.action) +
+              '<div class="effects">Impactos: ' + Object.keys(selected.action.impact).map(function (key) {
+                return INSPECTION_METRIC_LABELS[key] + ' ' + signed(selected.action.impact[key]);
+              }).join(' · ') + '</div>' +
+              '<div class="button-row" style="margin-top:10px;">' +
+                '<button class="primary" id="btn-apply-inspection" type="button">Ejecutar actuacion</button>' +
+              '</div>';
+
+            document.getElementById('btn-apply-inspection').onclick = function () {
+              applyInspectionAction(selected);
+            };
+            wireActionDetailsToggle();
+          }
+        }
+
+        renderInspectionSummary();
+
+        if (inspection.completed) {
+          const combosHtml = inspection.combos.length > 0
+            ? '<div class="combo-list">' + inspection.combos.map(function (combo) {
+                return '<div class="combo-item"><strong>' + combo.title + '</strong><br/>' + combo.text + '</div>';
+              }).join('') + '</div>'
+            : '<p class="muted">No se activaron sinergias completas, pero las medidas elegidas quedan registradas.</p>';
+
+          const hasNextInspection = state.inspectionIndex < INSPECTION_SCREENS.length - 1;
+          const nextButtonText = hasNextInspection ? 'Continuar a pantalla ' + (state.inspectionIndex + 2) : 'Continuar al balance';
+          finishBox.classList.remove('hidden');
+          finishBox.innerHTML =
+            '<h3 style="margin-top:0;">' + inspection.outcome.title + '</h3>' +
+            '<p class="muted">' + inspection.outcome.text + '</p>' +
+            combosHtml +
+            '<div class="button-row" style="margin-top:12px;"><button class="primary" id="btn-next-inspection" type="button">' + nextButtonText + '</button></div>';
+
+          document.getElementById('btn-next-inspection').onclick = function () {
+            if (hasNextInspection) {
+              state.inspectionIndex += 1;
+              render();
+              return;
+            }
+            unlockStage('balance');
+            setStage('balance');
+          };
+        } else {
+          finishBox.classList.add('hidden');
+        }
+      }
+
+      function renderBalance() {
+        const title = document.getElementById('balance-title');
+        const intro = document.getElementById('balance-intro');
+        const context = document.getElementById('balance-context');
+        const indicators = document.getElementById('balance-indicators');
+        const outcomeBox = document.getElementById('balance-outcome');
+        const alertTitle = document.getElementById('first-alert-title');
+        const alertIntro = document.getElementById('first-alert-intro');
+        const alertContext = document.getElementById('first-alert-context');
+        const alertQuestion = document.getElementById('first-alert-question');
+        const alertOptions = document.getElementById('first-alert-options');
+        const alertFeedback = document.getElementById('first-alert-feedback');
+
+        if (!PREVENTION_BALANCE || !FIRST_ALERT) {
+          title.textContent = 'Balance preventivo';
+          intro.textContent = 'Cargando balance...';
+          return;
+        }
+
+        const metrics = aggregateInspectionMetrics();
+        const outcome = chooseBalanceOutcome();
+        state.balance.outcomeId = outcome.id;
+
+        title.textContent = PREVENTION_BALANCE.title;
+        intro.textContent = PREVENTION_BALANCE.intro;
+        context.textContent = PREVENTION_BALANCE.context;
+
+        indicators.innerHTML = PREVENTION_BALANCE.indicators.map(function (indicator) {
+          const score = indicator.variables.reduce(function (total, key) {
+            return total + beneficialMetricValue(key, metrics[key] || 0);
+          }, 0);
+          const width = clamp(Math.round((score + 12) * 3), 6, 100);
+          const details = indicator.variables.map(function (key) {
+            return INSPECTION_METRIC_LABELS[key] + ' ' + signed(metrics[key] || 0);
+          }).join(' · ');
+
+          return '<div class="balance-indicator">' +
+            '<div class="metric-head"><span>' + indicator.label + '</span><strong>' + signed(score) + '</strong></div>' +
+            '<div class="bar"><span style="width:' + width + '%"></span></div>' +
+            '<small>' + details + '</small>' +
+          '</div>';
+        }).join('');
+
+        outcomeBox.innerHTML =
+          '<h3 style="margin-top:0;">' + outcome.title + '</h3>' +
+          '<p class="muted">' + outcome.text + '</p>' +
+          '<p><strong>Lectura de diseño:</strong> No decides si hay incendio. Decides con cuanto caos llega la siguiente escena.</p>';
+
+        alertTitle.textContent = FIRST_ALERT.title;
+        alertIntro.textContent = FIRST_ALERT.intro;
+        alertContext.textContent = FIRST_ALERT.context;
+        alertQuestion.textContent = FIRST_ALERT.question;
+
+        alertOptions.innerHTML = FIRST_ALERT.options.map(function (option) {
+          const selected = state.balance.alertOptionId === option.id ? (option.isCorrect ? 'correct' : 'incorrect') : '';
+          return '<button class="alert-option ' + selected + '" data-option="' + option.id + '">' +
+            '<strong>Opcion ' + option.id.toUpperCase() + '</strong>' +
+            '<span>' + option.text + '</span>' +
+          '</button>';
+        }).join('');
+
+        Array.from(alertOptions.querySelectorAll('button')).forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            const selected = FIRST_ALERT.options.find(function (option) {
+              return option.id === btn.dataset.option;
+            });
+            if (!selected) return;
+
+            state.balance.alertOptionId = selected.id;
+            state.balance.alertFeedback = selected;
+            state.winterLog.push({
+              node: FIRST_ALERT.title,
+              decision: selected.text,
+              effects: selected.isCorrect ? 'Respuesta inicial adecuada' : 'Respuesta inicial problematica'
+            });
+            addEventLog('Primer aviso de incendio', selected.isCorrect ? 'Respuesta adecuada' : 'Respuesta problematica');
+            render();
+          });
+        });
+
+        if (state.balance.alertFeedback) {
+          alertFeedback.classList.remove('hidden');
+          alertFeedback.innerHTML =
+            '<p><strong>' + (state.balance.alertFeedback.isCorrect ? 'Adecuada' : 'Problematica') + ':</strong> ' +
+            state.balance.alertFeedback.feedback + '</p>' +
+            '<p class="muted">' + state.balance.alertFeedback.transition + '</p>' +
+            '<div class="button-row"><button class="primary" id="btn-balance-to-winter" type="button">Abrir mapa de crisis</button></div>';
+
+          document.getElementById('btn-balance-to-winter').onclick = function () {
+            unlockStage('fronts');
+            setStage('fronts');
+          };
+        } else {
+          alertFeedback.classList.add('hidden');
+        }
+      }
+
+      function crisisZoneIcon(zone) {
+        if (zone.icon === 'phone-alert') return '☎';
+        if (zone.icon === 'road-fire') return '▰';
+        if (zone.icon === 'home-warning') return '⌂';
+        return '!';
+      }
+
+      function renderFronts() {
+        const title = document.getElementById('fronts-title');
+        const intro = document.getElementById('fronts-intro');
+        const map = document.getElementById('fronts-map');
+        const headline = document.getElementById('fronts-headline');
+        const body = document.getElementById('fronts-body');
+        const routeDetail = document.getElementById('fronts-route-detail');
+        const continueButton = document.getElementById('btn-fronts-continue');
+
+        if (!CRISIS_ROUTE_MODULE) {
+          title.textContent = 'La emergencia se abre en tres frentes';
+          intro.textContent = 'Cargando mapa de crisis...';
+          return;
+        }
+
+        const route = activeCrisisRoute();
+        state.balance.activeRouteId = route.id;
+
+        title.textContent = CRISIS_ROUTE_MODULE.title;
+        intro.textContent = CRISIS_ROUTE_MODULE.intro + ' ' + CRISIS_ROUTE_MODULE.objective;
+
+        map.innerHTML = CRISIS_ROUTE_MODULE.mapZones.map(function (zone) {
+          const active = zone.id === route.highlightedZone ? 'active' : '';
+          return '<div class="front-zone ' + active + '" data-zone="' + zone.id + '">' +
+            '<strong>' + crisisZoneIcon(zone) + ' ' + zone.title + '</strong>' +
+            '<small>' + zone.description + '</small>' +
+          '</div>';
+        }).join('');
+
+        headline.textContent = route.uiState.headline;
+        body.textContent = route.uiState.body;
+        routeDetail.textContent = route.transition + ' Siguiente escenario sugerido: ' + route.nextScenario + '.';
+        continueButton.textContent = route.uiState.buttonLabel;
+        continueButton.onclick = function () {
+          state.winterLog.push({
+            node: CRISIS_ROUTE_MODULE.title,
+            decision: route.uiState.headline,
+            effects: 'Ruta: ' + route.nextScenario
+          });
+          addEventLog('Mapa de crisis', route.uiState.headline);
+          const nextScenario = GAME_SCENARIOS.find(function (scenario) {
+            return scenario.id === route.nextScenario;
+          });
+          if (nextScenario && nextScenario.type === 'action-selection') {
+            startCrisisScenario(nextScenario.id, false);
+            return;
+          }
+          finalizeBetaResult('Ruta de crisis no disponible en esta beta.');
+        };
+      }
+
+      function activeCrisisScenario() {
+        return GAME_SCENARIOS.find(function (scenario) {
+          return scenario.id === state.crisis.activeScenarioId;
+        }) || null;
+      }
+
+      function startCrisisScenario(scenarioId, preserveMetrics) {
+        state.crisis.activeScenarioId = scenarioId;
+        state.crisis.selectedActionIds = [];
+        state.crisis.appliedFlags = [];
+        if (!preserveMetrics) {
+          state.crisis.metrics = Object.assign({}, crisisRouteState().metrics);
+        }
+        state.crisis.feedbackLog = [];
+        state.crisis.completed = false;
+        state.crisis.outcome = null;
+        unlockStage('crisis');
+        setStage('crisis');
+      }
+
+      function applyCrisisImpact(impact) {
+        Object.keys(impact || {}).forEach(function (key) {
+          state.crisis.metrics[key] = (state.crisis.metrics[key] || 0) + impact[key];
+        });
+      }
+
+      function chooseCrisisOutcome(scenario) {
+        const outcomes = scenario.outcomes || [];
+        const matched = outcomes.find(function (outcome) {
+          return conditionRecordMatches(outcome.condition, state.crisis.metrics);
+        });
+        if (matched) return matched;
+
+        if (outcomes.length > 0) {
+          return outcomes[outcomes.length - 1];
+        }
+
+        return {
+          id: 'medio',
+          title: 'Escena resuelta',
+          condition: {},
+          text: 'La decision queda registrada y la crisis avanza.',
+          crisisImpact: {}
+        };
+      }
+
+      function completeCrisisScenarioIfReady(scenario) {
+        if (state.crisis.completed) return;
+        if (state.crisis.selectedActionIds.length < scenario.maxActions) return;
+
+        const activeCombos = (scenario.combos || []).filter(function (combo) {
+          return combo.requires.every(function (flag) {
+            return state.crisis.appliedFlags.includes(flag);
+          });
+        });
+
+        activeCombos.forEach(function (combo) {
+          applyCrisisImpact(combo.bonusImpact);
+          state.crisis.feedbackLog.push(combo.title + ': ' + combo.text);
+        });
+
+        state.crisis.outcome = chooseCrisisOutcome(scenario);
+        applyCrisisImpact(state.crisis.outcome.crisisImpact);
+        state.crisis.completed = true;
+        state.winterLog.push({
+          node: scenario.title,
+          decision: state.crisis.selectedActionIds.length + ' acciones inmediatas aplicadas',
+          effects: state.crisis.outcome.title
+        });
+        addEventLog(scenario.title, state.crisis.outcome.title);
+      }
+
+      function applyCrisisAction(scenario, action) {
+        if (!scenario || !action || state.crisis.completed) return;
+        if (state.crisis.selectedActionIds.includes(action.id)) return;
+        if (state.crisis.selectedActionIds.length >= scenario.maxActions) return;
+
+        state.crisis.selectedActionIds.push(action.id);
+        (action.flagsOnApply || []).forEach(function (flag) {
+          uniquePush(state.crisis.appliedFlags, flag);
+        });
+        applyCrisisImpact(action.impact);
+        state.crisis.feedbackLog.push(action.feedback);
+        completeCrisisScenarioIfReady(scenario);
+        render();
+      }
+
+      function renderCrisisScenario() {
+        const scenario = activeCrisisScenario();
+        const title = document.getElementById('crisis-title');
+        const counter = document.getElementById('crisis-counter');
+        const intro = document.getElementById('crisis-intro');
+        const context = document.getElementById('crisis-context');
+        const pressure = document.getElementById('crisis-pressure');
+        const actions = document.getElementById('crisis-actions');
+        const feedback = document.getElementById('crisis-feedback');
+        const result = document.getElementById('crisis-result');
+
+        if (!scenario) {
+          title.textContent = 'Escena de crisis';
+          context.textContent = 'No hay escenario de crisis activo.';
+          return;
+        }
+
+        const remaining = scenario.maxActions - state.crisis.selectedActionIds.length;
+        title.textContent = scenario.title;
+        counter.textContent = remaining + '/' + scenario.maxActions + ' acciones';
+        intro.textContent = scenario.intro || '';
+        context.textContent = scenario.context;
+
+        pressure.innerHTML = (scenario.pressureIndicators || []).map(function (item) {
+          return '<div class="pressure-card"><strong>' + item.label + '</strong><br/><span class="muted">' + item.level + '</span></div>';
+        }).join('');
+
+        actions.innerHTML = (scenario.actions || []).map(function (action) {
+          const selected = state.crisis.selectedActionIds.includes(action.id);
+          const disabled = state.crisis.completed || selected || state.crisis.selectedActionIds.length >= scenario.maxActions;
+          return '<button class="crisis-action ' + (selected ? 'selected' : '') + '" data-action="' + action.id + '" ' + (disabled ? 'disabled' : '') + '>' +
+            '<strong>' + action.label + '</strong>' +
+            '<span>' + action.description + '</span>' +
+          '</button>';
+        }).join('');
+
+        Array.from(actions.querySelectorAll('button')).forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            const action = scenario.actions.find(function (item) {
+              return item.id === btn.dataset.action;
+            });
+            applyCrisisAction(scenario, action);
+          });
+        });
+
+        feedback.innerHTML = state.crisis.feedbackLog.length > 0
+          ? state.crisis.feedbackLog.map(function (item) { return '<p class="muted">' + item + '</p>'; }).join('')
+          : '<p class="muted">Elige dos actuaciones inmediatas. El 112 no puede esperar a una estrategia perfecta.</p>';
+
+        if (state.crisis.completed) {
+          const nextStep = scenarioNextStep(scenario);
+          result.classList.remove('hidden');
+          result.innerHTML =
+            '<h3 style="margin-top:0;">' + state.crisis.outcome.title + '</h3>' +
+            '<p class="muted">' + state.crisis.outcome.text + '</p>' +
+            (nextStep ? '<p class="muted">' + nextStep.transition + '</p>' : '') +
+            '<div class="button-row"><button class="primary" id="btn-crisis-next" type="button">' +
+              (nextStep && nextStep.nextScenario !== 'resultado-beta' ? 'Continuar' : 'Ver resultado final') +
+            '</button></div>';
+          document.getElementById('btn-crisis-next').onclick = function () {
+            const step = scenarioNextStep(scenario);
+            if (!step || step.nextScenario === 'resultado-beta') {
+              finalizeBetaResult(step?.transition || 'La ruta de crisis queda cerrada.');
+              return;
+            }
+
+            const nextScenario = GAME_SCENARIOS.find(function (item) {
+              return item.id === step.nextScenario;
+            });
+            if (nextScenario && nextScenario.type === 'action-selection') {
+              startCrisisScenario(nextScenario.id, true);
+              return;
+            }
+
+            finalizeBetaResult('La beta vertical termina aqui porque el siguiente escenario aun no esta adaptado.');
+          };
+        } else {
+          result.classList.add('hidden');
+        }
+      }
+
       function renderHeader() {
         const info = HEADER_TEXT[state.stage] || HEADER_TEXT.briefing;
         document.getElementById('screen-title').textContent = info.title;
@@ -1074,18 +2649,23 @@ export function renderPrototypePage(): string {
       function renderBriefing() {
         const startButton = document.getElementById('btn-start-campaign');
         const jumpButton = document.getElementById('btn-jump-game-content');
+        const previewS018Button = document.getElementById('btn-preview-s018');
 
-        if (state.unlocked.winter && state.stage === 'briefing') {
-          startButton.textContent = 'Reanudar campaña';
+        if (state.unlocked.inspection && state.stage === 'briefing') {
+          startButton.textContent = 'Reanudar beta';
         }
 
         startButton.onclick = function () {
-          unlockStage('winter');
-          setStage('winter');
+          unlockStage('inspection');
+          setStage('inspection');
         };
 
         jumpButton.onclick = function () {
           window.location.href = '/game-content';
+        };
+
+        previewS018Button.onclick = function () {
+          startCrisisScenario('s-018-colapso-llamadas-112', false);
         };
       }
 
@@ -1348,11 +2928,68 @@ export function renderPrototypePage(): string {
         });
       }
 
+      function finalMetricValue(key) {
+        return state.crisis.metrics[key] || 0;
+      }
+
+      function finalizeBetaResult(reason) {
+        const protection =
+          finalMetricValue('poblacionProtegida') +
+          finalMetricValue('inclusionVulnerables') -
+          Math.max(0, finalMetricValue('riesgoAtrapamiento'));
+        const damage =
+          finalMetricValue('danosViviendas') +
+          finalMetricValue('riesgoPropagacion') +
+          Math.max(0, finalMetricValue('exposicionHumoCalor'));
+        const trust =
+          finalMetricValue('confianzaInstitucional') +
+          finalMetricValue('confianzaPublica') +
+          finalMetricValue('confianzaVecinal') -
+          Math.max(0, finalMetricValue('confusionPublica'));
+        const operational =
+          finalMetricValue('coordinacionOperativa') +
+          finalMetricValue('seguridadEquipos') -
+          Math.max(0, finalMetricValue('saturacion112'));
+
+        const total = protection + trust + operational - damage;
+        let type = 'moderado';
+        let label = 'Crisis con danos moderados';
+        let title = 'La emergencia deja margen, pero no sale limpia';
+
+        if (total >= 10 && protection >= 2) {
+          type = 'contenida';
+          label = 'Respuesta contenida';
+          title = 'La respuesta gana tiempo cuando mas falta hacia';
+        } else if (total <= -6 || protection <= -5) {
+          type = 'desbordada';
+          label = 'Emergencia desbordada';
+          title = 'El incendio encuentra demasiadas puertas abiertas';
+        }
+
+        state.result = {
+          type: type,
+          label: label,
+          title: title,
+          reason: reason,
+          metrics: {
+            protection: protection,
+            damage: damage,
+            trust: trust,
+            operational: operational
+          }
+        };
+
+        unlockStage('result');
+        state.stage = 'result';
+        addEventLog('Resultado final', label);
+        render();
+      }
+
       function renderResult() {
         const hero = document.getElementById('result-hero');
 
         if (!state.result) {
-          hero.innerHTML = '<h2>Aún no hay resultado</h2><p class="muted">Completa invierno y verano para obtener evaluación final.</p>';
+          hero.innerHTML = '<h2>Aun no hay resultado</h2><p class="muted">Completa la ruta de crisis para obtener evaluacion final.</p>';
           return;
         }
 
@@ -1361,9 +2998,9 @@ export function renderPrototypePage(): string {
           '<h2>' + state.result.title + '</h2>' +
           '<p class="muted">' + state.result.reason + '</p>';
 
-        document.getElementById('result-risk').textContent = String(state.riskBase == null ? 0 : state.riskBase);
-        document.getElementById('result-burned').textContent = state.burned + '%';
-        document.getElementById('result-budget').textContent = state.resources.dinero + ' €';
+        document.getElementById('result-risk').textContent = signed(state.result.metrics?.protection || 0);
+        document.getElementById('result-burned').textContent = signed(state.result.metrics?.damage || 0);
+        document.getElementById('result-budget').textContent = signed(state.result.metrics?.trust || 0);
 
         const fullLog = state.winterLog.concat(state.summerLog);
         const logContainer = document.getElementById('result-log');
@@ -1383,14 +3020,14 @@ export function renderPrototypePage(): string {
         const restartButton = document.getElementById('btn-restart');
         restartButton.onclick = function () {
           state = buildInitialState();
-          addEventLog('Nueva campaña', 'Se reiniciaron recursos, terreno y eventos.');
+          addEventLog('Nueva beta', 'Se reiniciaron decisiones, metricas y eventos.');
           render();
         };
 
         const reviewButton = document.getElementById('btn-review-winter');
         reviewButton.onclick = function () {
-          if (!state.unlocked.winter) return;
-          setStage('winter');
+          if (!state.unlocked.inspection) return;
+          setStage('inspection');
         };
       }
 
@@ -1424,8 +3061,16 @@ export function renderPrototypePage(): string {
           const content = await contentRes.json();
           const firesData = await firesRes.json();
 
+          INSPECTION_SCREENS = content.campaign?.preventionInspections || [];
+          if (INSPECTION_SCREENS.length === 0 && content.campaign?.preventionInspection) {
+            INSPECTION_SCREENS = [content.campaign.preventionInspection];
+          }
+          PREVENTION_BALANCE = content.campaign?.preventionBalance || null;
+          FIRST_ALERT = content.campaign?.firstAlert || null;
+          CRISIS_ROUTE_MODULE = content.campaign?.crisisRouteModule || null;
           WINTER_NODES = content.campaign?.winterNodes || [];
           SUMMER_NODES = content.campaign?.summerNodes || [];
+          GAME_SCENARIOS = content.scenarios || [];
 
           state.catalog.scenarios = (content.scenarios || []).length;
           state.catalog.variables = (content.variables || []).length;
@@ -1458,6 +3103,22 @@ export function renderPrototypePage(): string {
         renderTopHUD();
         renderGlobalLog();
         renderBriefing();
+
+        if (state.unlocked.inspection || state.stage === 'inspection') {
+          renderInspection();
+        }
+
+        if (state.unlocked.balance || state.stage === 'balance') {
+          renderBalance();
+        }
+
+        if (state.unlocked.fronts || state.stage === 'fronts') {
+          renderFronts();
+        }
+
+        if (state.unlocked.crisis || state.stage === 'crisis') {
+          renderCrisisScenario();
+        }
 
         if (state.unlocked.winter || state.stage === 'winter') {
           renderWinter();

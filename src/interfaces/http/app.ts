@@ -1,4 +1,6 @@
 import Fastify, { FastifyInstance } from 'fastify';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { GetActiveFiresQueryHandler } from '../../application/queries/get-active-fires-query-handler.js';
 import { EMERGENCY_GAME_VARIABLES } from '../../domain/entities/emergency-training-content.js';
 import { CAMPAIGN_CONTENT } from '../../content/campaign.js';
@@ -33,6 +35,12 @@ export function buildApp(): FastifyInstance {
   app.get('/game-content', async (_request, reply) => {
     reply.type('text/html; charset=utf-8');
     return renderGameContentPage();
+  });
+
+  app.get('/images/primer-aviso-humo.png', async (_request, reply) => {
+    const image = await readFile(join(process.cwd(), 'public', 'images', 'primer-aviso-humo.png'));
+    reply.type('image/png');
+    return image;
   });
 
   app.get('/', async (_request, reply) => {
