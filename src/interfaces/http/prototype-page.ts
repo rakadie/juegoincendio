@@ -4,75 +4,63 @@ export function renderPrototypePage(): string {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>¡Apaga las llamas! · Beta vertical</title>
+    <title>¡Apaga las llamas!</title>
     <style>
       :root {
-        --bg-1: #08141f;
-        --bg-2: #0f2335;
-        --panel: #0d1b2bd9;
-        --panel-2: #152a41de;
-        --stroke: #33516f;
-        --text: #e5edf6;
-        --muted: #9eb0c4;
-        --primary: #5eead4;
-        --primary-2: #22d3ee;
-        --accent: #93c5fd;
+        --bg-1: #141817;
+        --bg-2: #202722;
+        --panel: #151d1adf;
+        --panel-2: #23312bde;
+        --stroke: #52625b;
+        --text: #f1f3ed;
+        --muted: #b7c1bb;
+        --primary: #f1bd58;
+        --primary-2: #52b9aa;
+        --accent: #9fd8cf;
         --ok: #22c55e;
         --warn: #f59e0b;
         --bad: #ef4444;
       }
 
       * { box-sizing: border-box; }
-      html, body { height: 100%; }
+      html, body {
+        width: 100%;
+        min-height: 100%;
+        overflow-x: hidden;
+      }
 
       body {
         margin: 0;
         font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
         color: var(--text);
-        background:
-          radial-gradient(circle at 10% 15%, rgba(34, 197, 94, 0.24), transparent 34%),
-          radial-gradient(circle at 84% 10%, rgba(245, 158, 11, 0.2), transparent 28%),
-          radial-gradient(circle at 70% 112%, rgba(14, 116, 144, 0.4), transparent 44%),
-          linear-gradient(170deg, var(--bg-1) 0%, var(--bg-2) 55%, #191919 100%);
+        background: linear-gradient(165deg, var(--bg-1) 0%, var(--bg-2) 62%, #191b19 100%);
         background-attachment: fixed;
       }
 
       .layout {
         position: relative;
+        width: 100%;
+        max-width: 100%;
         min-height: 100%;
         display: grid;
-        grid-template-columns: 290px 1fr;
-      }
-
-      .layout::before {
-        content: '';
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        background:
-          linear-gradient(to top, rgba(255, 115, 0, 0.08), transparent 36%),
-          repeating-linear-gradient(
-            -22deg,
-            rgba(255, 255, 255, 0.015) 0 2px,
-            transparent 2px 7px
-          );
-        mix-blend-mode: screen;
+        grid-template-columns: 250px minmax(0, 1fr);
       }
 
       .sidebar {
-        border-right: 1px solid #2f455f;
-        background: #07121dcf;
+        border-right: 1px solid #39453f;
+        background: #101613f2;
         backdrop-filter: blur(6px);
         padding: 20px 16px;
         display: grid;
         align-content: start;
         gap: 14px;
+        min-width: 0;
       }
 
       .brand {
         font-size: 20px;
         font-weight: 700;
-        letter-spacing: 0.2px;
+        letter-spacing: 0;
       }
 
       .subtitle {
@@ -82,29 +70,31 @@ export function renderPrototypePage(): string {
       }
 
       .season-pill {
-        border: 1px solid #3f5f80;
+        border: 1px solid #61756c;
         border-radius: 999px;
         width: fit-content;
         padding: 6px 11px;
         font-size: 12px;
-        color: var(--accent);
-        background: #15304a80;
+        color: #d7e8e3;
+        background: #23312b;
       }
 
       .nav {
         display: grid;
         gap: 9px;
+        min-width: 0;
+        max-width: 100%;
       }
 
       .stage-btn {
         width: 100%;
-        border: 1px solid #324963;
-        border-radius: 12px;
+        border: 1px solid #46564f;
+        border-radius: 8px;
         padding: 11px 12px;
         cursor: pointer;
         text-align: left;
         color: var(--text);
-        background: #0e1f31a0;
+        background: #1a231fa0;
         display: grid;
         gap: 2px;
       }
@@ -123,8 +113,8 @@ export function renderPrototypePage(): string {
 
       .stage-btn.active {
         border-color: var(--primary-2);
-        background: #164e6338;
-        box-shadow: 0 0 0 1px #22d3ee2e inset;
+        background: #24483f;
+        box-shadow: 0 0 0 1px #52b9aa35 inset;
       }
 
       .stage-btn.locked {
@@ -136,57 +126,21 @@ export function renderPrototypePage(): string {
         pointer-events: none;
       }
 
-      .legend {
-        border: 1px solid #304b67;
-        background: #0f2234b0;
-        border-radius: 12px;
-        padding: 10px;
-        display: grid;
-        gap: 7px;
-      }
-
-      .legend-title {
-        font-size: 12px;
-        color: var(--muted);
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-      }
-
-      .legend-item {
-        font-size: 12px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .legend-item span:first-child {
-        width: 21px;
-        display: inline-grid;
-        place-items: center;
-      }
-
-      .links {
-        display: grid;
-        gap: 8px;
-      }
-
-      .links a {
-        color: var(--primary);
-        text-decoration: none;
-        font-size: 13px;
-      }
-
       .content {
         position: relative;
+        width: 100%;
+        max-width: 100%;
         padding: 22px;
         display: grid;
+        grid-template-columns: minmax(0, 1fr);
         gap: 16px;
+        min-width: 0;
       }
 
       .card {
         background: var(--panel);
         border: 1px solid var(--stroke);
-        border-radius: 16px;
+        border-radius: 8px;
         padding: 15px;
         backdrop-filter: blur(2px);
         box-shadow: 0 12px 28px rgba(0, 0, 0, 0.24);
@@ -234,6 +188,9 @@ export function renderPrototypePage(): string {
 
       .screen {
         display: block;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
       }
 
       .hidden {
@@ -246,45 +203,61 @@ export function renderPrototypePage(): string {
         grid-template-columns: 1.45fr 1fr;
       }
 
-      .hero-grid {
+      .briefing-hero {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        min-height: min(680px, calc(100vh - 130px));
+        border: 1px solid #59665f;
+        border-radius: 8px;
+        padding: clamp(24px, 5vw, 64px);
         display: grid;
-        gap: 14px;
-        grid-template-columns: 1.2fr 1fr;
-        align-items: stretch;
+        align-items: end;
+        overflow: hidden;
+        background:
+          linear-gradient(90deg, rgba(9, 13, 11, 0.94) 0%, rgba(9, 13, 11, 0.72) 56%, rgba(9, 13, 11, 0.28) 100%),
+          linear-gradient(0deg, rgba(9, 13, 11, 0.78), transparent 52%),
+          url('/images/operational-command-hero.png') center / cover;
+        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.34);
       }
 
-      .hero-copy {
+      .briefing-copy {
+        width: min(680px, 100%);
+        min-width: 0;
         display: grid;
-        align-content: start;
-        gap: 12px;
+        align-content: end;
+        gap: 16px;
       }
 
-      .hero-copy h2 {
+      .briefing-kicker {
         margin: 0;
-        font-size: 24px;
+        color: #f1bd58;
+        font-size: 13px;
+        font-weight: 750;
+        text-transform: uppercase;
       }
 
-      .hero-copy p {
+      .briefing-copy h2 {
+        max-width: 650px;
         margin: 0;
-        line-height: 1.5;
+        font-size: clamp(34px, 5vw, 58px);
+        line-height: 1.06;
+        overflow-wrap: anywhere;
+        text-shadow: 0 3px 20px rgba(0, 0, 0, 0.74);
       }
 
-      .hero-illustration {
-        border: 1px solid #385879;
-        border-radius: 14px;
-        background: linear-gradient(170deg, #12253a 0%, #142d21 100%);
-        display: grid;
-        place-items: center;
-        min-height: 210px;
-      }
-
-      .hero-illustration svg {
-        width: 94%;
-        max-width: 360px;
-        height: auto;
+      .briefing-copy > p:not(.briefing-kicker) {
+        max-width: 620px;
+        margin: 0;
+        color: #e5e9e3;
+        font-size: 17px;
+        line-height: 1.55;
+        text-shadow: 0 2px 14px rgba(0, 0, 0, 0.74);
       }
 
       .button-row {
+        width: 100%;
+        min-width: 0;
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
@@ -292,8 +265,10 @@ export function renderPrototypePage(): string {
 
       button.primary,
       button.secondary,
-      button.ghost {
-        border-radius: 10px;
+      button.ghost,
+      .context-trigger {
+        min-height: 44px;
+        border-radius: 8px;
         border: 1px solid transparent;
         font-size: 14px;
         cursor: pointer;
@@ -302,12 +277,27 @@ export function renderPrototypePage(): string {
       }
 
       button.primary {
-        border-color: #30b8ce;
-        background: linear-gradient(180deg, #0e7490, #155e75);
+        border-color: #f1bd58;
+        color: #211803;
+        background: #f1bd58;
+        font-weight: 750;
       }
 
       button.primary:hover {
         filter: brightness(1.1);
+      }
+
+      button.primary:disabled {
+        cursor: wait;
+        filter: grayscale(0.65);
+        opacity: 0.7;
+      }
+
+      button:focus-visible,
+      a:focus-visible,
+      [tabindex]:focus-visible {
+        outline: 3px solid #f1bd58;
+        outline-offset: 3px;
       }
 
       button.secondary {
@@ -322,6 +312,28 @@ export function renderPrototypePage(): string {
       button.ghost {
         border-color: #456789;
         background: transparent;
+      }
+
+      .context-trigger {
+        width: fit-content;
+        border-color: #82938b;
+        padding: 9px 12px;
+        color: #eff4ef;
+        background: rgba(20, 27, 24, 0.78);
+      }
+
+      .context-trigger:hover {
+        border-color: var(--primary);
+        background: #29352f;
+      }
+
+      .inline-status {
+        width: fit-content;
+        margin: 0;
+        border-left: 3px solid var(--warn);
+        padding: 8px 10px;
+        color: #f5deb1;
+        background: rgba(42, 31, 12, 0.82);
       }
 
       .metrics {
@@ -475,11 +487,6 @@ export function renderPrototypePage(): string {
         content: '⚠';
         margin-right: 8px;
         color: #fbbf24;
-      }
-
-      .log-card {
-        max-height: 260px;
-        overflow: auto;
       }
 
       .log-list {
@@ -798,6 +805,82 @@ export function renderPrototypePage(): string {
         display: none;
       }
 
+      .context-dialog {
+        width: min(520px, 100%);
+        max-width: none;
+        height: 100vh;
+        max-height: none;
+        margin: 0 0 0 auto;
+        border: 0;
+        border-left: 1px solid #65736c;
+        padding: 0;
+        color: var(--text);
+        background: #171e1b;
+        box-shadow: -18px 0 48px rgba(0, 0, 0, 0.42);
+      }
+
+      .context-dialog::backdrop {
+        background: rgba(5, 8, 7, 0.68);
+      }
+
+      .context-dialog-shell {
+        height: 100%;
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr);
+      }
+
+      .context-dialog-header {
+        min-height: 72px;
+        border-bottom: 1px solid #46534d;
+        padding: 16px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .context-dialog-header h2 {
+        margin: 0;
+        font-size: 21px;
+      }
+
+      .context-dialog-close {
+        width: 44px;
+        height: 44px;
+        flex: 0 0 44px;
+        border: 1px solid #68766f;
+        border-radius: 50%;
+        color: var(--text);
+        background: transparent;
+        font-size: 25px;
+        line-height: 1;
+        cursor: pointer;
+      }
+
+      .context-dialog-body {
+        overflow: auto;
+        padding: 24px 20px 40px;
+      }
+
+      .context-section + .context-section {
+        margin-top: 24px;
+        border-top: 1px solid #3f4c46;
+        padding-top: 22px;
+      }
+
+      .context-section h3 {
+        margin: 0 0 8px;
+        color: #f1bd58;
+        font-size: 14px;
+      }
+
+      .context-section p {
+        margin: 0;
+        color: #d6ddd8;
+        line-height: 1.65;
+        white-space: pre-line;
+      }
+
       .detail-section h4 {
         margin: 0 0 6px;
         font-size: 14px;
@@ -969,21 +1052,27 @@ export function renderPrototypePage(): string {
 
       @media (max-width: 1120px) {
         .layout {
-          grid-template-columns: 1fr;
+          grid-template-columns: minmax(0, 1fr);
         }
 
         .sidebar {
           border-right: 0;
-          border-bottom: 1px solid #2f455f;
+          border-bottom: 1px solid #39453f;
+          position: relative;
+          z-index: 2;
+        }
+
+        .nav {
+          grid-auto-flow: column;
+          grid-auto-columns: minmax(150px, 42vw);
+          overflow-x: auto;
+          overscroll-behavior-inline: contain;
+          padding-bottom: 4px;
         }
 
         .screen-grid,
         .balance-grid,
         .inspection-grid,
-        .hero-grid {
-          grid-template-columns: 1fr;
-        }
-
         .inspection-scene {
           min-height: 420px;
         }
@@ -994,12 +1083,69 @@ export function renderPrototypePage(): string {
       }
 
       @media (max-width: 760px) {
+        .sidebar {
+          gap: 9px;
+          padding: 10px 14px;
+        }
+
+        .sidebar .brand,
+        .sidebar .subtitle,
+        .season-pill {
+          display: none;
+        }
+
+        .nav {
+          grid-auto-columns: minmax(145px, 68vw);
+        }
+
+        .stage-btn {
+          min-height: 48px;
+          padding: 8px 10px;
+        }
+
+        .stage-btn small {
+          display: none;
+        }
+
         .content {
           padding: 14px;
         }
 
         .title {
           font-size: 22px;
+        }
+
+        .briefing-hero {
+          min-height: 590px;
+          padding: 24px 20px;
+          background-position: 60% center;
+        }
+
+        .briefing-copy {
+          width: 100%;
+          max-width: 100%;
+        }
+
+        .briefing-copy h2 {
+          font-size: 38px;
+        }
+
+        .briefing-copy > p:not(.briefing-kicker) {
+          font-size: 16px;
+          overflow-wrap: anywhere;
+        }
+
+        .briefing-copy .button-row > button {
+          width: 100%;
+        }
+
+        .context-dialog {
+          width: 100%;
+          height: min(76vh, 720px);
+          margin: auto 0 0;
+          border-top: 1px solid #65736c;
+          border-left: 0;
+          border-radius: 12px 12px 0 0;
         }
 
         .inspection-quota {
@@ -1022,6 +1168,15 @@ export function renderPrototypePage(): string {
           grid-template-columns: 1fr;
         }
       }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+        }
+      }
     </style>
   </head>
   <body>
@@ -1034,19 +1189,6 @@ export function renderPrototypePage(): string {
         <div class="season-pill" id="season-pill">Fase activa: Briefing</div>
 
         <nav class="nav" id="stage-nav"></nav>
-
-        <div class="legend">
-          <div class="legend-title">Lectura rápida</div>
-          <div class="legend-item"><span>🔥</span> <span>Más combustible o propagación</span></div>
-          <div class="legend-item"><span>🛡️</span> <span>Refuerzo de cortafuegos y defensa</span></div>
-          <div class="legend-item"><span>💧</span> <span>Uso de agua y logística hídrica</span></div>
-          <div class="legend-item"><span>👥</span> <span>Apoyo vecinal y confianza social</span></div>
-        </div>
-
-        <div class="links">
-          <a href="/game-content">Panel de contenido técnico</a>
-          <a href="/fires/active">JSON de incendios activos</a>
-        </div>
       </aside>
 
       <main class="content">
@@ -1058,62 +1200,21 @@ export function renderPrototypePage(): string {
             </div>
           </div>
 
-          <div class="chips">
-            <span class="chip" id="chip-dinero">💰 Presupuesto: --</span>
-            <span class="chip" id="chip-brigadas">🚒 Brigadas: --</span>
-            <span class="chip" id="chip-bosque">🌲 Bosque quemado: --</span>
-            <span class="chip" id="chip-catalogo">📚 Escenarios base: --</span>
-            <span class="chip important" id="chip-riesgo">Riesgo base: pendiente</span>
-            <span class="chip" id="health-chip">API: comprobando...</span>
-          </div>
         </header>
 
-        <section id="screen-briefing" class="screen card">
-          <div class="hero-grid">
-            <article class="hero-copy">
-              <h2>Antes de apagar las llamas, decide que margen tendra la emergencia</h2>
-              <p>
-                Eres responsable de Emergencias en un municipio con zonas de interfaz urbano-forestal.
-                Primero preparas viviendas, fincas y comunidad. Despues, cuando aparece el humo,
-                cada decision previa condiciona el caos con el que llega la siguiente escena.
-              </p>
-
-              <div class="chips">
-                <span class="chip">Acto I: prevencion</span>
-                <span class="chip">Acto II: crisis</span>
-                <span class="chip">Beta: ruta comunicacion completa</span>
-              </div>
-
-              <div class="button-row">
-                <button class="primary" id="btn-start-campaign" type="button">Comenzar desde prevencion</button>
-                <button class="ghost" id="btn-jump-game-content" type="button">Ver base de escenarios</button>
-                <button class="secondary" id="btn-preview-s018" type="button">Probar colapso 112</button>
-              </div>
-            </article>
-
-            <aside class="hero-illustration" aria-hidden="true">
-              <svg viewBox="0 0 360 220" role="presentation">
-                <defs>
-                  <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stop-color="#1d4ed8" />
-                    <stop offset="100%" stop-color="#059669" />
-                  </linearGradient>
-                  <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stop-color="#fb923c" />
-                    <stop offset="100%" stop-color="#dc2626" />
-                  </linearGradient>
-                </defs>
-                <rect x="12" y="15" width="336" height="190" rx="16" fill="#0a1827" stroke="#406080" />
-                <path d="M25 145 Q90 95 155 130 T300 120" stroke="url(#g1)" stroke-width="11" fill="none" stroke-linecap="round" />
-                <path d="M50 175 Q135 120 210 160 T325 152" stroke="#22c55e" stroke-opacity="0.55" stroke-width="8" fill="none" stroke-linecap="round" />
-                <path d="M210 98 Q248 78 288 95" stroke="url(#g2)" stroke-width="13" fill="none" stroke-linecap="round" />
-                <circle cx="242" cy="96" r="15" fill="#f97316" fill-opacity="0.65" />
-                <rect x="35" y="34" width="105" height="26" rx="13" fill="#19324b" stroke="#3c6a91" />
-                <text x="50" y="51" fill="#cde7ff" font-size="12" font-family="Inter, Arial">Riesgo dinámico</text>
-                <rect x="154" y="34" width="158" height="26" rx="13" fill="#173729" stroke="#2f7d58" />
-                <text x="168" y="51" fill="#d8ffea" font-size="12" font-family="Inter, Arial">Decisiones con impacto diferido</text>
-              </svg>
-            </aside>
+        <section id="screen-briefing" class="screen briefing-hero">
+          <div class="briefing-copy">
+            <p class="briefing-kicker">Simulador de decisiones</p>
+            <h2>La emergencia empieza antes del fuego</h2>
+            <p>
+              Preparas viviendas, territorio y comunidad. Cuando aparezca el humo,
+              cada decisión previa cambiará el margen de respuesta.
+            </p>
+            <p class="inline-status hidden" id="briefing-status" role="status"></p>
+            <div class="button-row">
+              <button class="primary" id="btn-start-campaign" type="button" disabled>Comenzar la prevención →</button>
+              <button class="context-trigger" id="btn-briefing-context" type="button" aria-haspopup="dialog" aria-controls="context-dialog">ⓘ Contexto completo</button>
+            </div>
           </div>
         </section>
 
@@ -1130,6 +1231,7 @@ export function renderPrototypePage(): string {
                 </div>
                 <p><strong id="inspection-intro">No hay humo todavia.</strong></p>
                 <p id="inspection-context"></p>
+                <button class="context-trigger" id="btn-inspection-context" type="button" aria-haspopup="dialog" aria-controls="context-dialog">ⓘ Contexto completo</button>
               </div>
 
               <div class="inspection-scene" id="inspection-scene" aria-label="Zona de viviendas en interfaz urbano-forestal">
@@ -1205,7 +1307,7 @@ export function renderPrototypePage(): string {
               <div class="outcome-chip" id="balance-phase-chip">Balance preventivo</div>
               <h2 id="balance-title">Balance preventivo del municipio</h2>
               <p class="muted" id="balance-intro"></p>
-              <p class="muted" id="balance-context"></p>
+              <button class="context-trigger" id="btn-balance-context" type="button" aria-haspopup="dialog" aria-controls="context-dialog">ⓘ Contexto completo</button>
 
               <div class="balance-indicators" id="balance-indicators"></div>
               <div class="status-box" id="balance-outcome"></div>
@@ -1220,7 +1322,7 @@ export function renderPrototypePage(): string {
                 <img src="/images/primer-aviso-humo.png" alt="Columna de humo sobre una zona rural próxima a viviendas y monte" />
               </div>
               <p class="muted" id="first-alert-intro"></p>
-              <p class="muted" id="first-alert-context"></p>
+              <button class="context-trigger" id="btn-first-alert-context" type="button" aria-haspopup="dialog" aria-controls="context-dialog">ⓘ Contexto completo</button>
               <h3 id="first-alert-question"></h3>
               <div class="decision-list" id="first-alert-options"></div>
               <div class="status-box hidden" id="first-alert-feedback"></div>
@@ -1261,7 +1363,7 @@ export function renderPrototypePage(): string {
                 <span class="step-label" id="crisis-counter">0/2 acciones</span>
               </div>
               <p class="muted" id="crisis-intro"></p>
-              <p class="muted" id="crisis-context"></p>
+              <button class="context-trigger" id="btn-crisis-context" type="button" aria-haspopup="dialog" aria-controls="context-dialog">ⓘ Contexto completo</button>
               <div class="crisis-pressure" id="crisis-pressure"></div>
               <div class="crisis-action-grid" id="crisis-actions"></div>
             </article>
@@ -1378,12 +1480,20 @@ export function renderPrototypePage(): string {
           </div>
         </section>
 
-        <section class="card log-card">
-          <h3 style="margin-top:0;">Bitácora operativa</h3>
-          <div class="log-list" id="global-log"></div>
-        </section>
       </main>
     </div>
+
+    <dialog class="context-dialog" id="context-dialog" aria-labelledby="context-dialog-title">
+      <div class="context-dialog-shell">
+        <header class="context-dialog-header">
+          <h2 id="context-dialog-title">Contexto completo</h2>
+          <form method="dialog">
+            <button class="context-dialog-close" type="submit" aria-label="Cerrar contexto">×</button>
+          </form>
+        </header>
+        <div class="context-dialog-body" id="context-dialog-body"></div>
+      </div>
+    </dialog>
 
     <script>
       const STAGES = [
@@ -1449,7 +1559,7 @@ export function renderPrototypePage(): string {
         coordinacionOperativa: 'Coordinacion operativa',
         cumplimientoPreventivo: 'Cumplimiento preventivo',
         accesosDespejados: 'Accesos despejados',
-        controlIncendio: 'Control tecnico',
+        controlIncendio: 'Control del incendio',
         poblacionProtegida: 'Poblacion protegida',
         confianzaVecinal: 'Confianza vecinal',
         preparacionFamiliar: 'Preparacion familiar',
@@ -1542,14 +1652,10 @@ export function renderPrototypePage(): string {
           diagnosis: [],
           winterLog: [],
           summerLog: [],
-          eventLog: [],
           result: null,
           emergencyAidUsed: false,
-          catalog: {
-            scenarios: 0,
-            variables: 0,
-            activeFires: 0
-          }
+          contentStatus: 'loading',
+          contentError: null
         };
       }
 
@@ -1609,9 +1715,36 @@ export function renderPrototypePage(): string {
         if (!collection.includes(text)) collection.push(text);
       }
 
-      function addEventLog(label, subtitle) {
-        state.eventLog.unshift({ label: label, subtitle: subtitle });
-        state.eventLog = state.eventLog.slice(0, 10);
+      function openContext(title, sections) {
+        const dialog = document.getElementById('context-dialog');
+        const dialogTitle = document.getElementById('context-dialog-title');
+        const dialogBody = document.getElementById('context-dialog-body');
+
+        dialogTitle.textContent = title || 'Contexto completo';
+        dialogBody.replaceChildren();
+
+        sections.filter(function (section) {
+          return section && section.text;
+        }).forEach(function (section) {
+          const sectionElement = document.createElement('section');
+          sectionElement.className = 'context-section';
+
+          const heading = document.createElement('h3');
+          heading.textContent = section.title;
+
+          const paragraph = document.createElement('p');
+          paragraph.textContent = section.text;
+
+          sectionElement.append(heading, paragraph);
+          dialogBody.append(sectionElement);
+        });
+
+        if (typeof dialog.showModal === 'function') {
+          dialog.showModal();
+          return;
+        }
+
+        dialog.setAttribute('open', '');
       }
 
       function unlockStage(id) {
@@ -1634,10 +1767,6 @@ export function renderPrototypePage(): string {
         state.resources.apoyo = clamp(state.resources.apoyo - 12, 0, 100);
         state.resources.moral = clamp(state.resources.moral - 8, 0, 100);
 
-        addEventLog(
-          'Ayuda de emergencia activada',
-          'Recibiste financiación urgente con penalización de apoyo vecinal y moral de brigadas.'
-        );
       }
 
       function evaluateImmediateDefeat() {
@@ -1875,10 +2004,10 @@ export function renderPrototypePage(): string {
 
       function activeCrisisRoute() {
         if (!CRISIS_ROUTE_MODULE) return null;
-        const betaRoute = CRISIS_ROUTE_MODULE.routeLogic.find(function (route) {
+        const preferredRoute = CRISIS_ROUTE_MODULE.routeLogic.find(function (route) {
           return route.id === 'ruta-comunicacion';
         });
-        if (betaRoute) return betaRoute;
+        if (preferredRoute) return preferredRoute;
         const routeState = crisisRouteState();
         const routes = CRISIS_ROUTE_MODULE.routeLogic.slice().sort(function (a, b) {
           return a.priority - b.priority;
@@ -2048,7 +2177,6 @@ export function renderPrototypePage(): string {
           effects: 'Flags: ' + inspection.appliedFlags.join(', ')
         });
 
-        addEventLog('Inspeccion preventiva completada', screen.shortTitle + ': ' + inspection.outcome.title);
       }
 
       function applyInspectionAction(hotspot) {
@@ -2064,7 +2192,6 @@ export function renderPrototypePage(): string {
         });
         applyInspectionImpact(hotspot.action.impact);
 
-        addEventLog('Actuacion preventiva', hotspot.action.label);
         completeInspectionIfReady();
         render();
       }
@@ -2100,6 +2227,7 @@ export function renderPrototypePage(): string {
         const title = document.getElementById('inspection-title');
         const intro = document.getElementById('inspection-intro');
         const context = document.getElementById('inspection-context');
+        const contextButton = document.getElementById('btn-inspection-context');
         const counter = document.getElementById('inspection-counter');
         const hotspotLayer = document.getElementById('inspection-hotspots');
         const actionCards = document.getElementById('inspection-action-cards');
@@ -2114,6 +2242,7 @@ export function renderPrototypePage(): string {
           context.textContent = 'Cargando datos de inspeccion...';
           hotspotLayer.innerHTML = '';
           actionBox.innerHTML = '<p class="muted">Esperando contenido.</p>';
+          contextButton.disabled = true;
           return;
         }
 
@@ -2127,6 +2256,13 @@ export function renderPrototypePage(): string {
         title.textContent = 'Pantalla ' + (state.inspectionIndex + 1) + ' — ' + screen.title;
         intro.textContent = screen.intro;
         context.textContent = 'Objetivo: ' + screen.objective;
+        contextButton.disabled = false;
+        contextButton.onclick = function () {
+          openContext(screen.title, [
+            { title: 'Situación', text: screen.context },
+            { title: 'Objetivo', text: screen.objective }
+          ]);
+        };
         counter.textContent = String(remaining);
 
         hotspotLayer.innerHTML = screen.hotspots.map(function (hotspot, index) {
@@ -2255,12 +2391,12 @@ export function renderPrototypePage(): string {
       function renderBalance() {
         const title = document.getElementById('balance-title');
         const intro = document.getElementById('balance-intro');
-        const context = document.getElementById('balance-context');
+        const contextButton = document.getElementById('btn-balance-context');
         const indicators = document.getElementById('balance-indicators');
         const outcomeBox = document.getElementById('balance-outcome');
         const alertTitle = document.getElementById('first-alert-title');
         const alertIntro = document.getElementById('first-alert-intro');
-        const alertContext = document.getElementById('first-alert-context');
+        const alertContextButton = document.getElementById('btn-first-alert-context');
         const alertQuestion = document.getElementById('first-alert-question');
         const alertOptions = document.getElementById('first-alert-options');
         const alertFeedback = document.getElementById('first-alert-feedback');
@@ -2277,7 +2413,12 @@ export function renderPrototypePage(): string {
 
         title.textContent = PREVENTION_BALANCE.title;
         intro.textContent = PREVENTION_BALANCE.intro;
-        context.textContent = PREVENTION_BALANCE.context;
+        contextButton.onclick = function () {
+          openContext(PREVENTION_BALANCE.title, [
+            { title: 'Situación', text: PREVENTION_BALANCE.context },
+            { title: 'Objetivo', text: PREVENTION_BALANCE.objective }
+          ]);
+        };
 
         indicators.innerHTML = PREVENTION_BALANCE.indicators.map(function (indicator) {
           const score = indicator.variables.reduce(function (total, key) {
@@ -2302,14 +2443,24 @@ export function renderPrototypePage(): string {
 
         alertTitle.textContent = FIRST_ALERT.title;
         alertIntro.textContent = FIRST_ALERT.intro;
-        alertContext.textContent = FIRST_ALERT.context;
+        alertContextButton.onclick = function () {
+          const completeOptions = FIRST_ALERT.options.map(function (option) {
+            return (option.shortLabel || 'Opción ' + option.id.toUpperCase()) + ': ' + option.text;
+          }).join('\\n\\n');
+
+          openContext(FIRST_ALERT.title, [
+            { title: 'Situación', text: FIRST_ALERT.context },
+            { title: 'Criterio operativo', text: FIRST_ALERT.briefing },
+            { title: 'Opciones completas', text: completeOptions }
+          ]);
+        };
         alertQuestion.textContent = FIRST_ALERT.question;
 
         alertOptions.innerHTML = FIRST_ALERT.options.map(function (option) {
           const selected = state.balance.alertOptionId === option.id ? (option.isCorrect ? 'correct' : 'incorrect') : '';
           return '<button class="alert-option ' + selected + '" data-option="' + option.id + '">' +
-            '<strong>Opcion ' + option.id.toUpperCase() + '</strong>' +
-            '<span>' + option.text + '</span>' +
+            '<strong>' + (option.shortLabel || 'Opción ' + option.id.toUpperCase()) + '</strong>' +
+            '<span>' + (option.summary || option.text) + '</span>' +
           '</button>';
         }).join('');
 
@@ -2325,18 +2476,20 @@ export function renderPrototypePage(): string {
             state.winterLog.push({
               node: FIRST_ALERT.title,
               decision: selected.text,
-              effects: selected.isCorrect ? 'Respuesta inicial adecuada' : 'Respuesta inicial problematica'
+              effects: selected.isCorrect ? 'Decisión sólida' : 'Decisión arriesgada'
             });
-            addEventLog('Primer aviso de incendio', selected.isCorrect ? 'Respuesta adecuada' : 'Respuesta problematica');
             render();
           });
         });
 
         if (state.balance.alertFeedback) {
           alertFeedback.classList.remove('hidden');
+          const feedbackText = state.balance.alertFeedback.feedback
+            .replace(/^Respuesta adecuada\\.\\s*/i, '')
+            .replace(/^Respuesta incorrecta\\.\\s*/i, '');
           alertFeedback.innerHTML =
-            '<p><strong>' + (state.balance.alertFeedback.isCorrect ? 'Adecuada' : 'Problematica') + ':</strong> ' +
-            state.balance.alertFeedback.feedback + '</p>' +
+            '<p><strong>' + (state.balance.alertFeedback.isCorrect ? 'Decisión sólida' : 'Decisión arriesgada') + ':</strong> ' +
+            feedbackText + '</p>' +
             '<p class="muted">' + state.balance.alertFeedback.transition + '</p>' +
             '<div class="button-row"><button class="primary" id="btn-balance-to-winter" type="button">Abrir mapa de crisis</button></div>';
 
@@ -2395,7 +2548,6 @@ export function renderPrototypePage(): string {
             decision: route.uiState.headline,
             effects: 'Ruta: ' + route.nextScenario
           });
-          addEventLog('Mapa de crisis', route.uiState.headline);
           const nextScenario = GAME_SCENARIOS.find(function (scenario) {
             return scenario.id === route.nextScenario;
           });
@@ -2403,7 +2555,7 @@ export function renderPrototypePage(): string {
             startCrisisScenario(nextScenario.id, false);
             return;
           }
-          finalizeBetaResult('Ruta de crisis no disponible en esta beta.');
+          finalizeCampaignResult('La emergencia avanza hacia una nueva fase operativa.');
         };
       }
 
@@ -2476,7 +2628,6 @@ export function renderPrototypePage(): string {
           decision: state.crisis.selectedActionIds.length + ' acciones inmediatas aplicadas',
           effects: state.crisis.outcome.title
         });
-        addEventLog(scenario.title, state.crisis.outcome.title);
       }
 
       function applyCrisisAction(scenario, action) {
@@ -2499,7 +2650,7 @@ export function renderPrototypePage(): string {
         const title = document.getElementById('crisis-title');
         const counter = document.getElementById('crisis-counter');
         const intro = document.getElementById('crisis-intro');
-        const context = document.getElementById('crisis-context');
+        const contextButton = document.getElementById('btn-crisis-context');
         const pressure = document.getElementById('crisis-pressure');
         const actions = document.getElementById('crisis-actions');
         const feedback = document.getElementById('crisis-feedback');
@@ -2507,7 +2658,8 @@ export function renderPrototypePage(): string {
 
         if (!scenario) {
           title.textContent = 'Escena de crisis';
-          context.textContent = 'No hay escenario de crisis activo.';
+          intro.textContent = 'No hay escenario de crisis activo.';
+          contextButton.disabled = true;
           return;
         }
 
@@ -2515,7 +2667,13 @@ export function renderPrototypePage(): string {
         title.textContent = scenario.title;
         counter.textContent = remaining + '/' + scenario.maxActions + ' acciones';
         intro.textContent = scenario.intro || '';
-        context.textContent = scenario.context;
+        contextButton.disabled = false;
+        contextButton.onclick = function () {
+          openContext(scenario.title, [
+            { title: 'Situación', text: scenario.context },
+            { title: 'Criterio operativo', text: scenario.briefing }
+          ]);
+        };
 
         pressure.innerHTML = (scenario.pressureIndicators || []).map(function (item) {
           return '<div class="pressure-card"><strong>' + item.label + '</strong><br/><span class="muted">' + item.level + '</span></div>';
@@ -2556,7 +2714,7 @@ export function renderPrototypePage(): string {
           document.getElementById('btn-crisis-next').onclick = function () {
             const step = scenarioNextStep(scenario);
             if (!step || step.nextScenario === 'resultado-beta') {
-              finalizeBetaResult(step?.transition || 'La ruta de crisis queda cerrada.');
+              finalizeCampaignResult(step?.transition || 'La ruta de crisis queda cerrada.');
               return;
             }
 
@@ -2568,7 +2726,7 @@ export function renderPrototypePage(): string {
               return;
             }
 
-            finalizeBetaResult('La beta vertical termina aqui porque el siguiente escenario aun no esta adaptado.');
+            finalizeCampaignResult('La emergencia entra en una nueva fase. Revisa el balance de tus decisiones.');
           };
         } else {
           result.classList.add('hidden');
@@ -2610,62 +2768,53 @@ export function renderPrototypePage(): string {
         });
       }
 
-      function renderTopHUD() {
-        const currentRisk = state.riskBase != null ? state.riskBase : riskFromTerrain();
-        const riskText = state.riskBase == null
-          ? 'Riesgo provisional: ' + currentRisk + ' (' + riskLabel(currentRisk) + ')'
-          : 'Riesgo base: ' + currentRisk + ' (' + riskLabel(currentRisk) + ')';
-
-        document.getElementById('chip-dinero').textContent = '💰 Presupuesto: ' + state.resources.dinero + ' €';
-        document.getElementById('chip-brigadas').textContent = '🚒 Brigadas: ' + state.resources.brigadas;
-        document.getElementById('chip-bosque').textContent = '🌲 Bosque quemado: ' + state.burned + '%';
-        document.getElementById('chip-catalogo').textContent =
-          '📚 Escenarios base: ' + state.catalog.scenarios + ' · Variables: ' + state.catalog.variables;
-        document.getElementById('chip-riesgo').textContent = riskText;
-
+      function renderStageStatus() {
         const seasonPill = document.getElementById('season-pill');
         seasonPill.textContent = 'Fase activa: ' + seasonLabel();
-
-        const riskChip = document.getElementById('chip-riesgo');
-        riskChip.classList.remove('bad');
-        if (currentRisk >= 45) {
-          riskChip.classList.add('bad');
-        }
-      }
-
-      function renderGlobalLog() {
-        const container = document.getElementById('global-log');
-
-        if (state.eventLog.length === 0) {
-          container.innerHTML = '<div class="log-item">Aún no hay decisiones registradas.<small>Comienza la campaña para ver trazabilidad.</small></div>';
-          return;
-        }
-
-        container.innerHTML = state.eventLog.map(function (item) {
-          return '<div class="log-item"><strong>' + item.label + '</strong><small>' + item.subtitle + '</small></div>';
-        }).join('');
       }
 
       function renderBriefing() {
         const startButton = document.getElementById('btn-start-campaign');
-        const jumpButton = document.getElementById('btn-jump-game-content');
-        const previewS018Button = document.getElementById('btn-preview-s018');
+        const contextButton = document.getElementById('btn-briefing-context');
+        const status = document.getElementById('briefing-status');
+        const isLoading = state.contentStatus === 'loading';
+        const hasError = state.contentStatus === 'error';
 
-        if (state.unlocked.inspection && state.stage === 'briefing') {
-          startButton.textContent = 'Reanudar beta';
-        }
+        startButton.disabled = isLoading;
+        startButton.textContent = isLoading
+          ? 'Preparando la partida...'
+          : hasError
+            ? 'Reintentar'
+            : state.unlocked.inspection
+              ? 'Volver a prevención'
+              : 'Comenzar la prevención →';
 
-        startButton.onclick = function () {
+        status.classList.toggle('hidden', !hasError);
+        status.textContent = hasError ? state.contentError : '';
+
+        startButton.onclick = async function () {
+          if (hasError) {
+            await loadExternalData();
+            if (state.contentStatus !== 'ready') {
+              render();
+              return;
+            }
+          }
           unlockStage('inspection');
           setStage('inspection');
         };
 
-        jumpButton.onclick = function () {
-          window.location.href = '/game-content';
-        };
-
-        previewS018Button.onclick = function () {
-          startCrisisScenario('s-018-colapso-llamadas-112', false);
+        contextButton.onclick = function () {
+          openContext('Tu misión', [
+            {
+              title: 'Responsabilidad',
+              text: 'Eres responsable de Emergencias en un municipio con zonas de interfaz urbano-forestal. Antes de la época de mayor riesgo puedes preparar viviendas, fincas y comunidad.'
+            },
+            {
+              title: 'Lo que está en juego',
+              text: 'Cuando aparezca el humo, las decisiones preventivas condicionarán la seguridad de la población, el margen de los equipos y la claridad de la respuesta pública.'
+            }
+          ]);
         };
       }
 
@@ -2725,7 +2874,6 @@ export function renderPrototypePage(): string {
 
               uniquePush(state.diagnosis, selected.diagnosisHint);
 
-              addEventLog('❄️ ' + node.title, selected.text);
               state.winterIndex += 1;
               applyEmergencyAidIfNeeded();
               render();
@@ -2784,10 +2932,6 @@ export function renderPrototypePage(): string {
         unlockStage('summer');
         state.stage = 'summer';
 
-        addEventLog(
-          '☀️ Inicio del verano',
-          'Severidad calculada: ' + state.riskBase + ' (' + riskLabel(state.riskBase) + ').'
-        );
 
         render();
       }
@@ -2917,7 +3061,6 @@ export function renderPrototypePage(): string {
                 ' · Δbosque ' + signed(fireResult.burnedShift)
             });
 
-            addEventLog('☀️ ' + node.title, selected.text);
             state.summerIndex += 1;
 
             applyEmergencyAidIfNeeded();
@@ -2932,7 +3075,7 @@ export function renderPrototypePage(): string {
         return state.crisis.metrics[key] || 0;
       }
 
-      function finalizeBetaResult(reason) {
+      function finalizeCampaignResult(reason) {
         const protection =
           finalMetricValue('poblacionProtegida') +
           finalMetricValue('inclusionVulnerables') -
@@ -2981,7 +3124,6 @@ export function renderPrototypePage(): string {
 
         unlockStage('result');
         state.stage = 'result';
-        addEventLog('Resultado final', label);
         render();
       }
 
@@ -3020,7 +3162,6 @@ export function renderPrototypePage(): string {
         const restartButton = document.getElementById('btn-restart');
         restartButton.onclick = function () {
           state = buildInitialState();
-          addEventLog('Nueva beta', 'Se reiniciaron decisiones, metricas y eventos.');
           render();
         };
 
@@ -3047,19 +3188,17 @@ export function renderPrototypePage(): string {
 
         unlockStage('result');
         state.stage = 'result';
-        addEventLog('🧾 Resultado final', labels[type].label + ': ' + reason);
         render();
       }
 
       async function loadExternalData() {
-        try {
-          const [contentRes, firesRes] = await Promise.all([
-            fetch('/game-content/data'),
-            fetch('/fires/active')
-          ]);
+        state.contentStatus = 'loading';
+        state.contentError = null;
 
+        try {
+          const contentRes = await fetch('/game-content/data');
+          if (!contentRes.ok) throw new Error('No se pudo cargar el contenido');
           const content = await contentRes.json();
-          const firesData = await firesRes.json();
 
           INSPECTION_SCREENS = content.campaign?.preventionInspections || [];
           if (INSPECTION_SCREENS.length === 0 && content.campaign?.preventionInspection) {
@@ -3071,28 +3210,10 @@ export function renderPrototypePage(): string {
           WINTER_NODES = content.campaign?.winterNodes || [];
           SUMMER_NODES = content.campaign?.summerNodes || [];
           GAME_SCENARIOS = content.scenarios || [];
-
-          state.catalog.scenarios = (content.scenarios || []).length;
-          state.catalog.variables = (content.variables || []).length;
-          state.catalog.activeFires = (firesData.fires || []).length;
-
-          addEventLog(
-            'Datos cargados',
-            'Escenarios: ' + state.catalog.scenarios + ' · Variables: ' + state.catalog.variables + ' · Incendios activos API: ' + state.catalog.activeFires
-          );
+          state.contentStatus = 'ready';
         } catch (_error) {
-          addEventLog('Modo offline de contenido', 'No fue posible cargar catálogo externo; se usa simulación local.');
-        }
-      }
-
-      async function loadHealth() {
-        try {
-          const response = await fetch('/health');
-          const data = await response.json();
-          document.getElementById('health-chip').textContent =
-            data.status === 'ok' ? 'API: disponible' : 'API: error';
-        } catch (_error) {
-          document.getElementById('health-chip').textContent = 'API: sin conexión';
+          state.contentStatus = 'error';
+          state.contentError = 'No se pudo preparar la partida. Comprueba la conexión y vuelve a intentarlo.';
         }
       }
 
@@ -3100,8 +3221,7 @@ export function renderPrototypePage(): string {
         renderHeader();
         renderStageNav();
         renderScreens();
-        renderTopHUD();
-        renderGlobalLog();
+        renderStageStatus();
         renderBriefing();
 
         if (state.unlocked.inspection || state.stage === 'inspection') {
@@ -3135,7 +3255,7 @@ export function renderPrototypePage(): string {
 
       async function init() {
         render();
-        await Promise.all([loadHealth(), loadExternalData()]);
+        await loadExternalData();
         render();
       }
 

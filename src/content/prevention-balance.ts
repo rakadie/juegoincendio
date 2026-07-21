@@ -113,6 +113,9 @@ export const FIRST_ALERT_SCENARIO: FirstAlertScenario = {
   options: [
     {
       id: 'a',
+      shortLabel: 'Movilizar y verificar',
+      summary:
+        'Activa la primera intervención y confirma localización, accesos, viento y combustible.',
       text:
         'Activar de inmediato medios de primera intervencion, confirmar la localizacion exacta, evaluar accesos, viento y combustible disponible, y mantener informados a los municipios cercanos sin ordenar medidas masivas todavia.',
       isCorrect: true,
@@ -130,6 +133,9 @@ export const FIRST_ALERT_SCENARIO: FirstAlertScenario = {
     },
     {
       id: 'b',
+      shortLabel: 'Esperar confirmación total',
+      summary:
+        'Retrasa la movilización hasta conocer el alcance exacto del incendio.',
       text:
         'Esperar a tener confirmacion completa sobre el tamano del incendio antes de movilizar recursos, para evitar una activacion innecesaria.',
       isCorrect: false,
@@ -146,6 +152,9 @@ export const FIRST_ALERT_SCENARIO: FirstAlertScenario = {
     },
     {
       id: 'c',
+      shortLabel: 'Comunicar lo confirmado',
+      summary:
+        'Publica un aviso prudente, pide evitar la zona y anuncia actualizaciones.',
       text:
         'Abrir una comunicacion publica inicial breve y prudente: informar de que se esta verificando un incendio, pedir que se evite la zona, recordar canales oficiales y anunciar actualizaciones frecuentes.',
       isCorrect: true,
@@ -162,6 +171,9 @@ export const FIRST_ALERT_SCENARIO: FirstAlertScenario = {
     },
     {
       id: 'd',
+      shortLabel: 'Evacuar todos los núcleos',
+      summary:
+        'Ordena una evacuación general antes de confirmar qué zonas están amenazadas.',
       text:
         'Ordenar la evacuacion inmediata de todos los nucleos cercanos al humo para evitar riesgos posteriores.',
       isCorrect: false,
@@ -179,6 +191,9 @@ export const FIRST_ALERT_SCENARIO: FirstAlertScenario = {
     },
     {
       id: 'e',
+      shortLabel: 'Priorizar las redes sociales',
+      summary:
+        'Concentra los recursos en informar y espera la confirmación desde el terreno.',
       text:
         'Centrar todos los recursos en informar por redes sociales y esperar a que los equipos sobre el terreno confirmen si realmente hace falta intervenir.',
       isCorrect: false,

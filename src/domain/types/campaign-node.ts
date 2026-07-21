@@ -64,6 +64,8 @@ export interface PreventionBalanceContent {
 
 export interface FirstAlertOption {
   id: string;
+  shortLabel?: string;
+  summary?: string;
   text: string;
   isCorrect: boolean;
   impact: Record<string, number>;
