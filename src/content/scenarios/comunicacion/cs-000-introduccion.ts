@@ -13,7 +13,7 @@ export const cs000Introduccion: Scenario = {
   ],
   "status": "available",
   "context": "Los medios de extinción son cada vez más efectivos. Son capaces de frenar los conatos que se declaran cada año en nuestras áreas forestales. Sin embargo, cuando esto no se produce, cuando las llamas avanzan y no se frenan, el fuego se convierte en un incendio voraz. El abandono del campo, el cambio climático y la falta de prevención convierten nuestros montes en un auténtico polvorín.\n\nEste juego quiere contribuir a la concienciación y comprensión del trabajo que debe realizarse para disminuir las consecuencias de los incendios.\n\nSi quieres descubrir más, entra y ¡Apaga las llamas!",
-  "question": "¿Cómo respondes ante este escenario?",
+  "question": "",
   "briefing": "Los medios de extinción son cada vez más efectivos. Son capaces de frenar los conatos que se declaran cada año en nuestras áreas forestales. Sin embargo, cuando esto no se produce, cuando las llamas avanzan y no se frenan, el fuego se convierte en un incendio voraz. El abandono del campo, el cambio climático y la falta de prevención convierten nuestros montes en un auténtico polvorín.\n\nEste juego quiere contribuir a la concienciación y comprensión del trabajo que debe realizarse para disminuir las consecuencias de los incendios.\n\nSi quieres descubrir más, entra y ¡Apaga las llamas!",
   "requirements": null,
   "options": [

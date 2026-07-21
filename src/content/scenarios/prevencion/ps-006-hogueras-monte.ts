@@ -52,8 +52,8 @@ export const ps006HoguerasMonte: Scenario = {
     {
       "id": "c",
       "text": "Solo en las zonas autorizadas",
-      "evaluation": "risky",
-      "severity": "high",
+      "evaluation": "acceptable",
+      "severity": "medium",
       "rationale": "Es condición necesaria, pero también deben cumplirse las condiciones meteorológicas y normativas vigentes.",
       "shortFeedback": "Es condición necesaria, pero también deben cumplirse las condiciones meteorológicas y normativas vigentes.",
       "impacts": [

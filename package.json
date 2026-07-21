@@ -10,6 +10,7 @@
     "dev": "tsx watch src/interfaces/http/server.ts",
     "start": "node dist/interfaces/http/server.js",
     "build": "tsc -p tsconfig.json",
+    "i18n:extract-scenarios": "tsx scripts/extract-scenario-i18n.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"

@@ -13,13 +13,13 @@ export const cs000bAvatarEmergencias: Scenario = {
   ],
   "status": "available",
   "context": "Eres la persona responsable del Servicio de Emergencias. Ponte cara.",
-  "question": "¿Cómo respondes ante este escenario?",
+  "question": "",
   "briefing": "Eres la persona responsable del Servicio de Emergencias. Ponte cara.",
   "requirements": null,
   "options": [
     {
       "id": "a",
-      "text": "Imagen masculina (avatar bombero)",
+      "text": "Bombero forestal",
       "evaluation": "recommended",
       "severity": "medium",
       "rationale": "Personaliza tu perfil para iniciar la experiencia de juego.",
@@ -30,7 +30,7 @@ export const cs000bAvatarEmergencias: Scenario = {
     },
     {
       "id": "b",
-      "text": "Imagen femenina (avatar bombera)",
+      "text": "Bombera forestal",
       "evaluation": "recommended",
       "severity": "medium",
       "rationale": "Personaliza tu perfil para iniciar la experiencia de juego.",
@@ -41,7 +41,7 @@ export const cs000bAvatarEmergencias: Scenario = {
     },
     {
       "id": "c",
-      "text": "Imagen neutra (avatar neutro)",
+      "text": "Perfil forestal neutro",
       "evaluation": "recommended",
       "severity": "medium",
       "rationale": "Personaliza tu perfil para iniciar la experiencia de juego.",

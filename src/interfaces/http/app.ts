@@ -43,6 +43,36 @@ export function buildApp(): FastifyInstance {
     return image;
   });
 
+  app.get('/images/operational-command-hero.png', async (_request, reply) => {
+    const image = await readFile(join(process.cwd(), 'public', 'images', 'operational-command-hero.png'));
+    reply.type('image/png');
+    return image;
+  });
+
+  app.get('/images/gameplay-wildfire-scene.png', async (_request, reply) => {
+    const image = await readFile(join(process.cwd(), 'public', 'images', 'gameplay-wildfire-scene.png'));
+    reply.type('image/png');
+    return image;
+  });
+
+  app.get('/images/avatar-forestal-hombre.png', async (_request, reply) => {
+    const image = await readFile(join(process.cwd(), 'public', 'images', 'avatar-forestal-hombre.png'));
+    reply.type('image/png');
+    return image;
+  });
+
+  app.get('/images/avatar-forestal-mujer.png', async (_request, reply) => {
+    const image = await readFile(join(process.cwd(), 'public', 'images', 'avatar-forestal-mujer.png'));
+    reply.type('image/png');
+    return image;
+  });
+
+  app.get('/images/avatar-forestal-neutro.png', async (_request, reply) => {
+    const image = await readFile(join(process.cwd(), 'public', 'images', 'avatar-forestal-neutro.png'));
+    reply.type('image/png');
+    return image;
+  });
+
   app.get('/', async (_request, reply) => {
     reply.type('text/html; charset=utf-8');
     return renderPrototypePage();

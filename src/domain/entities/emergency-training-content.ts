@@ -162,7 +162,7 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
     title: 'Contexto inicial de prevención',
     category: 'prevencion',
     context:
-      'Los inviernos están siendo secos. Ya no son lo que eran. Los montes y zonas rurales han perdido el verdor de otras épocas por la falta de lluvias. Esto significa que aumenta el riesgo de un gran incendio. Tus Servicios de Emergencias están preparados para actuar, y lo hacen cada vez mejor. Están evitando muchas catástrofes, pero cuando las hay, sin unos terrenos en buen estado, se desencadena una tragedia. Este otoño, decides comenzar tu plan de prevención. Por tu experiencia, debes preparar un plan de acción. Recuerda que no siempre hay una sola respuesta correcta.',
+      'Los inviernos están siendo secos. Ya no son lo que eran. Los montes y zonas rurales han perdido el verdor de otras épocas por la falta de lluvias. Esto significa que aumenta el riesgo de un gran incendio. Tus Servicios de Emergencias están preparados para actuar, y lo hacen cada vez mejor. Están evitando muchas catástrofes, pero cuando las hay, sin unos terrenos en buen estado, se desencadena una tragedia. Este otoño, decides comenzar tu plan de prevención. Por tu experiencia, debes preparar un plan de acción.',
     options: [
       {
         id: 'a',
@@ -273,120 +273,8 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
       }
     ]
   },
-  {
-    id: 's-001-limpieza-perimetral',
-    title: 'Limpieza alrededor de viviendas',
-    category: 'prevencion',
-    context:
-      'Como responsable de Emergencias, debes recomendar la distancia de limpieza mínima alrededor de viviendas y edificios públicos.',
-    options: [
-      {
-        id: 'a',
-        text: '5 metros',
-        recommended: false,
-        rationale: 'Insuficiente para reducir continuidad del combustible.',
-        impacts: [{ variableKey: 'cumplimientoPreventivo', delta: -3 }]
-      },
-      {
-        id: 'b',
-        text: '8 metros',
-        recommended: false,
-        rationale: 'Mejora parcial, pero sigue siendo limitada.',
-        impacts: [{ variableKey: 'cumplimientoPreventivo', delta: -1 }]
-      },
-      {
-        id: 'c',
-        text: '12 metros',
-        recommended: true,
-        rationale: 'Mejor equilibrio para reducir riesgo en interfaz urbano-forestal.',
-        impacts: [{ variableKey: 'cumplimientoPreventivo', delta: 6 }]
-      },
-      {
-        id: 'd',
-        text: '15 metros',
-        recommended: false,
-        rationale: 'Puede ser adecuada en contextos concretos, pero no siempre exigible.',
-        impacts: [{ variableKey: 'confianzaVecinal', delta: -1 }]
-      },
-      {
-        id: 'e',
-        text: '20 metros',
-        recommended: false,
-        rationale: 'Puede percibirse desproporcionada y bajar adherencia social.',
-        impacts: [{ variableKey: 'confianzaVecinal', delta: -3 }]
-      }
-    ]
-  },
-  {
-    id: 's-002-plantas-finca',
-    title: 'Elección de vegetación tras limpiar finca',
-    category: 'prevencion',
-    context:
-      'En una de tus visitas a un municipio, un vecino te pregunta qué plantas son más idóneas para replantar en su finca, ¿qué le aconsejas?',
-    options: [
-      {
-        id: 'a',
-        text: 'Bambú',
-        recommended: false,
-        rationale: 'Puede generar continuidad vegetal y acumulación de material seco.',
-        impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 4 }]
-      },
-      {
-        id: 'b',
-        text: 'Cactus',
-        recommended: true,
-        rationale: 'Puede integrarse con menor continuidad de combustible si se diseña con distancias.',
-        impacts: [
-          { variableKey: 'cumplimientoPreventivo', delta: 3 },
-          { variableKey: 'danosPotencialesVivienda', delta: -1 }
-        ]
-      },
-      {
-        id: 'c',
-        text: 'Lentiscos',
-        recommended: true,
-        rationale: 'Bien gestionado y con discontinuidad vegetal, mejora el equilibrio de la finca.',
-        impacts: [{ variableKey: 'cumplimientoPreventivo', delta: 2 }]
-      },
-      {
-        id: 'd',
-        text: 'Pitas',
-        recommended: false,
-        rationale: 'Sin planificación de seguridad pueden aumentar exposición en la interfaz.',
-        impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 2 }]
-      },
-      {
-        id: 'e',
-        text: 'Palmeras',
-        recommended: false,
-        rationale: 'Puede generar continuidad y acumulación de material vegetal seco.',
-        impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 4 }]
-      },
-      {
-        id: 'f',
-        text: 'Buganvillas',
-        recommended: false,
-        rationale: 'Si se colocan de forma densa y sin separación, aumentan el riesgo en perímetros.',
-        impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 3 }]
-      },
-      {
-        id: 'g',
-        text: 'Helecho',
-        recommended: false,
-        rationale:
-          'En condiciones secas puede comportarse como combustible fino y favorecer propagación.',
-        impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 4 }]
-      },
-      {
-        id: 'h',
-        text: 'Hibisco',
-        recommended: false,
-        rationale:
-          'Requiere diseño preventivo específico; en masa y sin distancias puede elevar exposición.',
-        impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 2 }]
-      }
-    ]
-  },
+
+
   {
     id: 's-002b-asesoramiento-terrenos',
     title: 'Asesoramiento sobre terrenos colindantes',
@@ -437,44 +325,7 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
       }
     ]
   },
-  {
-    id: 's-003-maquinaria-riesgo',
-    title: 'Uso de maquinaria en horas de riesgo',
-    category: 'prevencion',
-    context:
-      'Un vecino quiere usar maquinaria en su terreno en cualquier momento que lo necesite, aunque haga calor intenso. Dice que él siempre tiene cuidado. ¿Qué le indicas?',
-    options: [
-      {
-        id: 'a',
-        text: 'Puede cortar con una radial en el jardín',
-        recommended: false,
-        rationale: 'Actividad de alto riesgo por posibles chispas.',
-        impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 6 }]
-      },
-      {
-        id: 'b',
-        text: 'Puede cortar con una radial en un patio',
-        recommended: false,
-        rationale: 'Sigue siendo de riesgo si no hay medidas estrictas.',
-        impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 4 }]
-      },
-      {
-        id: 'c',
-        text: 'Puede desbrozar lo que quiera.',
-        recommended: false,
-        rationale:
-          'Sin medidas adicionales, puede provocar igniciones por contacto con material seco.',
-        impacts: [{ variableKey: 'danosPotencialesVivienda', delta: 3 }]
-      },
-      {
-        id: 'd',
-        text: 'Puede desbrozar con una manguera al lado',
-        recommended: true,
-        rationale: 'Reduce riesgo al añadir medios inmediatos de primera respuesta.',
-        impacts: [{ variableKey: 'cumplimientoPreventivo', delta: 5 }]
-      }
-    ]
-  },
+
   {
     id: 's-004-quemas-agricolas',
     title: 'Gestión de quemas agrícolas',
@@ -1275,51 +1126,7 @@ export const EMERGENCY_TRAINING_SCENARIOS: TrainingScenario[] = [
       }
     ]
   },
-  {
-    id: 's-011-lineas-defensa',
-    title: 'Defensa nocturna del perímetro',
-    category: 'operaciones',
-    context: 'Con la caída de la noche, el objetivo es evitar más daños en viviendas.',
-    options: [
-      {
-        id: 'a',
-        text: 'Relevos terrestres + líneas de defensa coordinadas',
-        recommended: true,
-        rationale: 'Mejora sostenibilidad táctica y contención progresiva.',
-        impacts: [{ variableKey: 'danosPotencialesVivienda', delta: -4 }]
-      },
-      {
-        id: 'b',
-        text: 'Forzar ataque directo continuo sin relevo',
-        recommended: false,
-        rationale: 'Fatiga operativa y mayor exposición de personal.',
-        impacts: [{ variableKey: 'capacidadOperativa', delta: -10 }]
-      },
-      {
-        id: 'c',
-        text: 'Priorizar la protección del núcleo urbano y retirar equipos de zonas menos críticas',
-        recommended: true,
-        rationale:
-          'Concentra recursos en la zona con mayor riesgo para viviendas y mejora la eficacia de la defensa.',
-        impacts: [
-          { variableKey: 'danosPotencialesVivienda', delta: -3 },
-          { variableKey: 'confianzaVecinal', delta: 2 },
-          { variableKey: 'capacidadOperativa', delta: -3 }
-        ]
-      },
-      {
-        id: 'd',
-        text: 'Suspender las operaciones hasta el amanecer cuando haya más luz',
-        recommended: false,
-        rationale:
-          'Detener la respuesta en fase activa puede permitir propagación nocturna y aumentar daños acumulados.',
-        impacts: [
-          { variableKey: 'danosPotencialesVivienda', delta: 6 },
-          { variableKey: 'confianzaVecinal', delta: -4 }
-        ]
-      }
-    ]
-  },
+
   {
     id: 's-012-rescate-zona-peligrosa',
     title: 'Vecino que se niega a evacuar',

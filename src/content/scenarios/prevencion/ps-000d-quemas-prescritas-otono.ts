@@ -64,17 +64,21 @@ export const ps000dQuemasPrescritasOtono: Scenario = {
     {
       "id": "c",
       "text": "El año pasado ya hiciste quemas. Decides finalmente que la vegetación acumulada sirva de alimento a los animales.",
-      "evaluation": "risky",
-      "severity": "high",
-      "rationale": "No actuar sobre el combustible acumulado puede incrementar la intensidad potencial del fuego en condiciones secas.",
-      "shortFeedback": "No actuar sobre el combustible acumulado puede incrementar la intensidad potencial del fuego en condiciones secas.",
+      "evaluation": "acceptable",
+      "severity": "medium",
+      "rationale": "Es una alternativa v?lida si se organiza como pastoreo o aprovechamiento controlado del combustible vegetal, aunque requiere seguimiento para no dejar zonas sin tratar.",
+      "shortFeedback": "Es una alternativa v?lida si se organiza como pastoreo o aprovechamiento controlado del combustible vegetal, aunque requiere seguimiento para no dejar zonas sin tratar.",
       "impacts": [
         {
           "variableKey": "cumplimientoPreventivo",
-          "delta": -4
+          "delta": 3
         },
         {
           "variableKey": "danosPotencialesVivienda",
+          "delta": -2
+        },
+        {
+          "variableKey": "continuidadSectorPrimario",
           "delta": 4
         }
       ],

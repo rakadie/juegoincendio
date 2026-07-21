@@ -38,12 +38,17 @@ export const ps039UsoMaquinariaEpocaRiesgo: Scenario = {
     },
     {
       "id": "b",
-      "text": "Puede cortar con una radial en un patio sin más medidas, porque al estar dentro de la vivienda el riesgo es menor.",
-      "evaluation": "risky",
-      "severity": "high",
-      "rationale": "Respuesta incorrecta. Un patio puede reducir parte del riesgo, pero no lo elimina. Las chispas pueden alcanzar hojas secas, macetas, toldos, maderas, plásticos o vegetación próxima si no hay medidas estrictas.",
-      "shortFeedback": "Respuesta incorrecta. Un patio puede reducir parte del riesgo, pero no lo elimina. Las chispas pueden alcanzar hojas secas, macetas, toldos, maderas, plásticos o vegetación próxima si no hay medidas estrictas.",
-      "impacts": [],
+      "text": "Puede cortar con una radial en un patio solo si evita las horas de calor, despeja el entorno, humedece la zona si procede y tiene agua o extintor preparado.",
+      "evaluation": "acceptable",
+      "severity": "medium",
+      "rationale": "Respuesta aceptable con matices. Un patio puede reducir parte del riesgo si no hay vegetaci?n ni materiales combustibles cerca, pero no autoriza el trabajo si hay alerta, viento o restricciones activas.",
+      "shortFeedback": "Respuesta aceptable con matices. Un patio puede reducir parte del riesgo si no hay vegetaci?n ni materiales combustibles cerca, pero no autoriza el trabajo si hay alerta, viento o restricciones activas.",
+      "impacts": [
+        {
+          "variableKey": "cumplimientoPreventivo",
+          "delta": 2
+        }
+      ],
       "mediaOutputs": [],
       "flags": []
     },

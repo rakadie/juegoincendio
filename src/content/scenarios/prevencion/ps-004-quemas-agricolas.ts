@@ -20,10 +20,10 @@ export const ps004QuemasAgricolas: Scenario = {
     {
       "id": "a",
       "text": "Solicitar autorización y confirmar que no existe prohibición activa por riesgo meteorológico",
-      "evaluation": "risky",
-      "severity": "high",
-      "rationale": "Es necesario, pero insuficiente sin planificación operativa completa.",
-      "shortFeedback": "Es necesario, pero insuficiente sin planificación operativa completa.",
+      "evaluation": "acceptable",
+      "severity": "medium",
+      "rationale": "Es un paso v?lido y necesario, aunque debe completarse con medidas operativas antes de encender la quema.",
+      "shortFeedback": "Es un paso v?lido y necesario, aunque debe completarse con medidas operativas antes de encender la quema.",
       "impacts": [
         {
           "variableKey": "cumplimientoPreventivo",
@@ -36,10 +36,10 @@ export const ps004QuemasAgricolas: Scenario = {
     {
       "id": "b",
       "text": "Realizarla solo en horario autorizado, con perímetro limpio y medios de extinción preparados",
-      "evaluation": "risky",
-      "severity": "high",
-      "rationale": "Mejora el control, pero falta incluir vigilancia completa y criterio de suspensión.",
-      "shortFeedback": "Mejora el control, pero falta incluir vigilancia completa y criterio de suspensión.",
+      "evaluation": "acceptable",
+      "severity": "medium",
+      "rationale": "Es una opci?n v?lida como parte del protocolo, pero necesita vigilancia hasta la extinci?n total y suspensi?n si cambian las condiciones.",
+      "shortFeedback": "Es una opci?n v?lida como parte del protocolo, pero necesita vigilancia hasta la extinci?n total y suspensi?n si cambian las condiciones.",
       "impacts": [
         {
           "variableKey": "cumplimientoPreventivo",
@@ -56,10 +56,10 @@ export const ps004QuemasAgricolas: Scenario = {
     {
       "id": "c",
       "text": "Comunicar inicio y fin a la autoridad competente cuando proceda y mantener vigilancia hasta extinción total",
-      "evaluation": "risky",
-      "severity": "high",
-      "rationale": "Aporta trazabilidad y seguridad, pero no cubre por sí sola todo el protocolo.",
-      "shortFeedback": "Aporta trazabilidad y seguridad, pero no cubre por sí sola todo el protocolo.",
+      "evaluation": "acceptable",
+      "severity": "medium",
+      "rationale": "Aporta trazabilidad y seguridad. Es v?lida, aunque debe ir acompa?ada de autorizaci?n, revisi?n meteorol?gica y preparaci?n del per?metro.",
+      "shortFeedback": "Aporta trazabilidad y seguridad. Es v?lida, aunque debe ir acompa?ada de autorizaci?n, revisi?n meteorol?gica y preparaci?n del per?metro.",
       "impacts": [
         {
           "variableKey": "confianzaVecinal",
