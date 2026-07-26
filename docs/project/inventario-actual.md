@@ -19,9 +19,9 @@ El repositorio contiene tres capas de avance distintas:
 2. **Contenido editorial estructurado**, con alrededor de cincuenta escenarios, variables, impactos, decisiones, textos revisables e internacionalización inicial.
 3. **Un prototipo vertical funcional**, servido por Fastify y construido dentro de una única página HTML/JavaScript, con prevención, primer aviso, crisis, decisiones, variables, resultados y reinicio.
 
-El producto ya supera el estado de maqueta estática. Sin embargo, la arquitectura objetivo documentada —Next.js, React, Zustand, MapLibre, PostgreSQL/PostGIS, Redis, CQRS completo y despliegue distribuido— no está implementada. El juego funcional actual vive principalmente dentro de `src/interfaces/http/prototype-page.ts`, mientras que el dominio TypeScript separado solo cubre un ejemplo mínimo de incidentes activos.
+El producto ya supera el estado de maqueta estática. La dirección acordada es consolidar la aplicación Fastify existente mediante una arquitectura modular, sin migrar en esta fase a Next.js ni separar frontend y backend. El juego funcional actual vive principalmente dentro de `src/interfaces/http/prototype-page.ts`, mientras que el dominio TypeScript separado solo cubre un ejemplo mínimo de incidentes activos.
 
-La prioridad no debería ser añadir más arquitectura ni más pantallas, sino consolidar la beta vertical existente: separar motor, interfaz y contenido; definir el alcance real del MVP; eliminar duplicidades; añadir pruebas; y decidir qué partes de la arquitectura objetivo son necesarias ahora.
+La prioridad no debería ser añadir más arquitectura ni más pantallas, sino consolidar la beta vertical existente: separar motor, interfaz y contenido; cerrar el alcance del MVP; eliminar duplicidades; añadir pruebas; e implementar un territorio ilustrado/SVG coherente con las reglas narrativas y heurísticas explicables acordadas.
 
 ---
 
@@ -31,10 +31,10 @@ La prioridad no debería ser añadir más arquitectura ni más pantallas, sino c
 |---|---|---|---|
 | Concepto de serious game sobre incendios | Existe y es aprovechable | `README.md`, `docs/product/vision-and-scope.md` | La propuesta de valor está formulada. |
 | Bucle prevención → crisis → resultado | Existe y es aprovechable | `src/content/campaign.ts`, `prototype-page.ts` | Ya hay una beta vertical navegable. |
-| Público objetivo | Existe, pero necesita revisión | `docs/product/vision-and-scope.md` | Mezcla gestores, estudiantes y ciudadanía. Hay que elegir un público principal para el MVP. |
-| Objetivo educativo | Existe, pero necesita revisión | Documentación de producto y escenarios | Conviven formación técnica, sensibilización ciudadana y divulgación. Debe priorizarse uno. |
-| Nombre e identidad del producto | Existe, pero necesita revisión | `Guardián del Bosque` en documentación y `¡Apaga las llamas!` en interfaz | Hay dos nombres de producto. Debe decidirse marca principal y posible subtítulo. |
-| Alcance del MVP | Es solo documentación o propuesta | Varias especificaciones | Hay propuestas diferentes: ciclo estacional, beta de comunicación, prevención y simulación geoespacial. Falta cerrar un único alcance. |
+| Público objetivo | Existe y es aprovechable | Decisión de producto | El público principal de la beta es la ciudadanía. Gestores y estudiantes quedan como públicos secundarios. |
+| Objetivo educativo | Existe, pero necesita revisión | Documentación de producto y escenarios | Debe concretarse qué aprendizaje ciudadano prioritario debe demostrar la beta. |
+| Nombre e identidad del producto | Existe y es aprovechable | Decisión de producto e interfaz | La marca oficial es `¡Apaga las llamas!`. Las referencias a `Guardián del Bosque` deben migrarse o archivarse. |
+| Alcance del MVP | Es solo documentación o propuesta | Varias especificaciones | Hay propuestas diferentes: ciclo estacional, beta de comunicación y prevención. Falta cerrar el recorrido exacto de la beta. |
 | KPIs | Es solo documentación o propuesta | `docs/product/vision-and-scope.md` | No hay analítica implementada. |
 | Modelo de publicación y explotación | Falta implementar | No localizado | Debe definirse si será demostrador, producto educativo, licencia institucional o publicación editorial. |
 
@@ -62,10 +62,11 @@ La prioridad no debería ser añadir más arquitectura ni más pantallas, sino c
 | Resultados dinámicos | Existe y es aprovechable | `finalizeCampaignResult()` | Calcula protección, daños, confianza y capacidad operativa. |
 | Reinicio de partida | Existe y es aprovechable | `buildInitialState()` y botón de reinicio | Funcional en memoria. |
 | Persistencia de partida | Falta implementar | No localizada | No hay `localStorage`, base de datos ni sincronización. |
-| Motor desacoplado de la interfaz | Falta implementar | La lógica principal está embebida en `prototype-page.ts` | Debe extraerse a módulos TypeScript testeables. |
+| Motor desacoplado de la interfaz | Falta implementar | La lógica principal está embebida en `prototype-page.ts` | Debe extraerse a módulos TypeScript testeables dentro de la aplicación Fastify. |
 | Dominio separado de incidentes | Existe, pero necesita revisión | `FireIncident`, repositorio en memoria, query handler | Es un ejemplo aislado y no gobierna la partida real. Debe integrarse o retirarse. |
-| Simulación geoespacial / propagación | Es solo documentación o propuesta | Arquitectura, dominio y backlog | No hay grilla, autómata celular ni cálculo espacial implementado. |
-| Eventos de dominio auditables | Es solo documentación o propuesta | `docs/domain/game-design-spec.md` | La interfaz guarda logs, pero no existe un event store o modelo de eventos de dominio. |
+| Motor narrativo y heurístico explicable | Existe, pero necesita revisión | Variables, impactos, condiciones y cálculo de resultados | Es la dirección acordada para la beta. Debe formalizarse, documentarse y probarse. |
+| Simulación geoespacial / propagación física | Fuera del alcance de la beta | Arquitectura, dominio y backlog | No se implementará como motor celular en esta fase. |
+| Eventos de dominio auditables | Es solo documentación o propuesta | `docs/domain/game-design-spec.md` | La interfaz guarda logs, pero no existe un modelo modular de eventos del juego. |
 
 ## 4. Interfaz y experiencia de usuario
 
@@ -75,7 +76,7 @@ La prioridad no debería ser añadir más arquitectura ni más pantallas, sino c
 | Playtest de escenarios | Existe y es aprovechable | `/game-content`, `game-content-page.ts` | Herramienta útil para revisar contenidos de forma aislada. |
 | Diseño responsive inicial | Existe y es aprovechable | Media queries en ambas páginas | Hay adaptación a tablet y móvil. |
 | Accesibilidad inicial | Existe, pero necesita revisión | Foco visible, diálogo, reducción de movimiento | Falta auditoría WCAG, semántica completa y pruebas con teclado/lector. |
-| Componentización | Falta implementar | HTML, CSS y JS concentrados en dos archivos grandes | Debe dividirse por componentes y responsabilidades. |
+| Componentización | Falta implementar | HTML, CSS y JS concentrados en dos archivos grandes | Debe dividirse por componentes y responsabilidades sin abandonar Fastify. |
 | Sistema de diseño reutilizable | Es solo documentación o propuesta | Mockups e iconografía, estilos embebidos | No hay tokens ni componentes compartidos. |
 | Claridad de información | Existe, pero necesita revisión | Mucha información y textos largos | Necesita prueba de usabilidad y jerarquía por fase. |
 | Estados de carga y error | Existe y es aprovechable | `contentStatus`, `contentError` | Implementación básica. |
@@ -85,13 +86,14 @@ La prioridad no debería ser añadir más arquitectura ni más pantallas, sino c
 
 | Elemento | Clasificación | Evidencia | Observación / siguiente acción |
 |---|---|---|---|
-| Representación visual del territorio | Existe, pero necesita revisión | SVG de inspección e imagen de crisis | Sirve para prototipo, no para simulación territorial. |
+| Representación visual del territorio | Existe, pero necesita revisión | SVG de inspección e imagen de crisis | Debe evolucionar hacia un territorio ilustrado/SVG coherente y reutilizable. |
 | Hotspots interactivos | Existe y es aprovechable | `prevention-inspections.ts` y SVG de interfaz | Buena base para decisiones localizadas. |
-| Capas cartográficas | Falta implementar | No hay MapLibre ni GeoJSON operativo | Documentado, pero no materializado. |
-| Perímetro dinámico del incendio | Falta implementar | No localizado | El fuego cambia como métricas, no como geometría. |
-| Movimiento de recursos | Falta implementar | No localizado | No hay rutas, posiciones ni tiempos espaciales. |
-| Datos geográficos reales | Falta implementar | No hay PostGIS ni datasets activos | Debe decidirse si el MVP necesita territorio real o ficticio. |
-| MapLibre / Turf | Es solo documentación o propuesta | `docs/frontend/frontend-spec.md` | No aparece en dependencias ni código actual. |
+| Territorio ilustrado/SVG para la beta | Falta implementar | Decisión de producto | Es la solución acordada. Debe incluir zonas, carreteras, infraestructuras, recursos y estados visuales. |
+| Capas narrativas del mapa | Falta implementar | No localizado | Deben responder a eventos y variables sin requerir cartografía real. |
+| Perímetro dinámico del incendio | Falta implementar | No localizado | Puede representarse mediante estados y geometrías SVG predefinidas. |
+| Movimiento de recursos | Falta implementar | No localizado | Puede resolverse con posiciones y rutas SVG narrativas. |
+| Datos geográficos reales | Fuera del alcance de la beta | No hay PostGIS ni datasets activos | No son necesarios para validar el producto ciudadano. |
+| MapLibre / Turf / PostGIS | Pospuesto | Documentación técnica | Se reconsiderará solo si una fase posterior necesita territorio real. |
 
 ## 6. Contenidos editoriales e internacionalización
 
@@ -112,7 +114,7 @@ La prioridad no debería ser añadir más arquitectura ni más pantallas, sino c
 | Imágenes principales | Existe y es aprovechable | `public/images/operational-command-hero.png`, `gameplay-wildfire-scene.png`, `primer-aviso-humo.png` | Funcionan como fondos y apoyo visual. |
 | Avatares | Existe y es aprovechable | Tres PNG de perfil forestal | Integrados como rutas HTTP. |
 | Iconografía funcional | Existe, pero necesita revisión | Emojis y símbolos embebidos | No constituye una familia visual propia ni accesible. |
-| Sistema de iconos SVG | Falta implementar | No localizado | Debe crearse si se mantiene la dirección visual propuesta. |
+| Sistema de iconos SVG | Falta implementar | No localizado | Debe coordinarse con el territorio ilustrado/SVG. |
 | Gestión de assets | Existe, pero necesita revisión | Rutas individuales en Fastify | Conviene servir `public` de forma estática y documentar licencias/origen. |
 | Licencias y atribución | Falta implementar | No localizado | Debe registrarse para publicación. |
 
@@ -120,13 +122,14 @@ La prioridad no debería ser añadir más arquitectura ni más pantallas, sino c
 
 | Elemento | Clasificación | Evidencia | Observación / siguiente acción |
 |---|---|---|---|
-| Servidor Fastify | Existe y es aprovechable | `src/interfaces/http/server.ts`, `app.ts` | Sirve prototipo, contenido e imágenes. |
+| Servidor Fastify | Existe y es aprovechable | `src/interfaces/http/server.ts`, `app.ts` | Es la base técnica oficial de la beta. |
+| Aplicación Fastify modular | Existe, pero necesita revisión | Estructura TypeScript y decisión de arquitectura | Debe modularizar motor, interfaz, contenido y servicios sin migración de framework. |
 | Healthcheck | Existe y es aprovechable | `/health` | Básico y funcional. |
 | Endpoint de contenido | Existe y es aprovechable | `/game-content/data` | Entrega variables, escenarios y campaña. |
 | Endpoint de incendios activos | Existe, pero necesita revisión | `/fires/active` | Usa datos de ejemplo de Madrid y Sevilla, desconectados del juego. |
-| Persistencia en PostgreSQL/PostGIS | Falta implementar | No hay Prisma ni dependencia PostgreSQL | Solo documentación. |
-| Redis y bus de eventos | Es solo documentación o propuesta | Especificación backend | No implementados. |
-| OpenAPI y contratos | Falta implementar | Backlog pendiente | No se localizaron contratos ejecutables. |
+| Persistencia en PostgreSQL/PostGIS | Fuera del alcance de la beta | No hay Prisma ni dependencia PostgreSQL | No es necesaria para la beta inicial. |
+| Redis y bus de eventos | Pospuesto | Especificación backend | No son necesarios para la siguiente fase. |
+| OpenAPI y contratos | Falta implementar | Backlog pendiente | Solo será prioritario para endpoints que formen parte estable del producto. |
 | Autenticación y usuarios | Falta implementar | No localizado | No necesaria para la beta local, sí para cuentas o informes centralizados. |
 
 ## 9. Pruebas y calidad
@@ -146,7 +149,8 @@ La prioridad no debería ser añadir más arquitectura ni más pantallas, sino c
 | Elemento | Clasificación | Evidencia | Observación / siguiente acción |
 |---|---|---|---|
 | Ejecución local | Existe y es aprovechable | `npm run dev`, `npm run build`, `npm start` | Base suficiente para desarrollo. |
-| Railway + Vercel | Es solo documentación o propuesta | `docs/analysis/gaps-and-decisions.md` | La implementación actual es una única app Fastify, no frontend/backend separados. |
+| Despliegue de una aplicación Fastify | Falta implementar | Decisión de arquitectura | Debe elegirse un proveedor compatible y evitar separar frontend/backend en la beta. |
+| Railway + Vercel | Necesita revisión | `docs/analysis/gaps-and-decisions.md` | Vercel deja de ser necesario si se mantiene una sola aplicación Fastify. |
 | Docker | Falta implementar o no localizado | No localizado | Puede no ser necesario en la siguiente fase. |
 | Entornos y secretos | Es solo documentación o propuesta | Documentación DevOps | No hay infraestructura real verificada. |
 | Observabilidad | Falta implementar | Fastify usa log básico, sin métricas ni trazas | No prioritaria hasta estabilizar el MVP. |
@@ -158,24 +162,29 @@ La prioridad no debería ser añadir más arquitectura ni más pantallas, sino c
 |---|---|---|---|
 | Índice documental | Existe y es aprovechable | `docs/README.md` | Buena navegación general. |
 | Especificaciones por área | Existe y es aprovechable | `docs/product`, `architecture`, `frontend`, `backend`, etc. | Cobertura amplia. |
-| Backlog documental | Existe, pero necesita revisión | `docs/project/backlog-pendiente.md` | Está orientado a una arquitectura más ambiciosa que el prototipo actual. |
+| Backlog documental | Existe, pero necesita revisión | `docs/project/backlog-pendiente.md` | Está orientado a una arquitectura más ambiciosa que la decisión actual. |
 | Gaps y riesgos | Existe y es aprovechable | `docs/analysis/gaps-and-decisions.md` | Ya reconoce sobreingeniería y falta de implementación. |
 | Documentación histórica | Existe, pero necesita revisión | `docs/legacy`, `buzon`, manuales | Mucho valor editorial, pero mezcla material vigente, propuesta y archivo. |
-| Issues y pull requests como gestión | Falta estructurar | No hay PR recientes y el backlog no está trasladado a Issues | Debe hacerse después de aprobar este inventario. |
+| Issues y pull requests como gestión | Falta estructurar | El backlog no está trasladado a Issues | Debe hacerse después de aprobar este inventario. |
 | Criterios de terminado | Es solo documentación o propuesta | Plantillas y guías | Falta aplicarlos a entregables reales. |
 
 ---
 
-## Contradicciones y decisiones que deben resolverse antes del roadmap
+## Decisiones de producto resueltas
 
-1. **Marca:** `Guardián del Bosque` frente a `¡Apaga las llamas!`.
-2. **Público principal:** gestores, estudiantes o ciudadanía.
-3. **Producto inicial:** ciclo estacional completo, newsgame narrativo o simulador técnico.
-4. **Arquitectura:** mantener una aplicación Fastify modular o migrar ya a Next.js + backend separado.
-5. **Mapa:** territorio ilustrado/SVG para la beta o MapLibre/PostGIS desde el principio.
-6. **Motor:** reglas narrativas y heurísticas explicables o simulación celular geoespacial.
-7. **Fuente editorial:** archivos de escenario, catálogo i18n o documentos Markdown.
-8. **Dominio:** integrar el prototipo actual en módulos TypeScript o desarrollar el dominio DDD documentado desde cero.
+1. **Marca:** `¡Apaga las llamas!`.
+2. **Público principal:** ciudadanía.
+3. **Arquitectura:** mantener y modularizar la aplicación Fastify.
+4. **Mapa:** territorio ilustrado/SVG para la beta.
+5. **Motor:** reglas narrativas y heurísticas explicables.
+
+## Decisiones aún pendientes antes del roadmap
+
+1. **Producto inicial:** recorrido exacto de la beta dentro del material existente.
+2. **Objetivo educativo:** aprendizaje ciudadano prioritario y criterios para evaluarlo.
+3. **Fuente editorial:** archivos de escenario, catálogo i18n o documentos Markdown.
+4. **Dominio:** forma concreta de extraer el motor actual a módulos TypeScript y retirar o integrar el dominio de incidentes de ejemplo.
+5. **Publicación:** formato de explotación y despliegue inicial.
 
 ## Elementos que conviene conservar
 
@@ -193,39 +202,40 @@ La prioridad no debería ser añadir más arquitectura ni más pantallas, sino c
 ## Elementos que conviene revisar o simplificar
 
 - Arquitectura hexagonal + DDD + CQRS completa para el tamaño actual.
-- Next.js, Redis, RabbitMQ, PostGIS y microcapas antes de validar el juego.
+- Next.js, Redis, RabbitMQ y PostGIS antes de validar el juego.
 - Duplicidad entre campaña estacional y ruta vertical narrativa.
 - Dos modelos de dominio desconectados.
 - Archivos de interfaz de miles de líneas.
 - Textos duplicados y problemas de codificación.
 - Uso de emojis como iconografía final.
 - Endpoint de incendios de ejemplo sin relación con el producto.
+- Referencias documentales a `Guardián del Bosque`.
 
 ## Vacíos prioritarios
 
-1. Definir el MVP y su público principal.
-2. Extraer el motor del archivo de interfaz.
+1. Cerrar el recorrido exacto y objetivo educativo de la beta ciudadana.
+2. Extraer el motor del archivo de interfaz a módulos TypeScript dentro de Fastify.
 3. Crear pruebas del motor y del recorrido vertical.
 4. Documentar el grafo real de escenas y dependencias.
 5. Resolver la fuente única de verdad editorial.
-6. Añadir persistencia local y reanudación.
-7. Crear un informe final causal más completo.
-8. Decidir el nivel de mapa necesario para la beta.
+6. Diseñar e implementar el territorio ilustrado/SVG.
+7. Añadir persistencia local y reanudación.
+8. Crear un informe final causal más completo.
 9. Convertir el backlog aprobado en GitHub Issues.
 10. Configurar CI básico: typecheck, build y tests.
 
 ## Recomendación de siguiente hito
 
-No iniciar todavía la migración a Next.js/PostGIS.
-
-El siguiente hito debería ser **consolidar una beta vertical jugable y mantenible** con este alcance:
+El siguiente hito debería ser **consolidar una beta vertical ciudadana, jugable y mantenible** con este alcance:
 
 - Un recorrido completo de prevención, primer aviso, crisis y resultado.
-- Motor TypeScript separado de la vista.
+- Motor TypeScript separado de la vista y ejecutado dentro de Fastify.
+- Reglas narrativas y heurísticas explicables.
 - Contenido externo y editable.
+- Territorio ilustrado/SVG con estados vinculados a decisiones.
 - Persistencia local.
 - Resultado causal basado en decisiones.
 - Pruebas unitarias e integración.
-- Interfaz actual refactorizada sin rediseño total.
+- Interfaz actual refactorizada sin migración de framework.
 
-Solo después de probar esa beta con usuarios y validar la necesidad territorial debería decidirse si se incorpora MapLibre/PostGIS y un backend persistente.
+MapLibre, PostGIS, Next.js, Redis y una simulación física o celular quedan fuera de la beta. Solo se reconsiderarán después de validar el producto con ciudadanía y demostrar una necesidad concreta.
