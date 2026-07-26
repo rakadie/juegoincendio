@@ -29,6 +29,8 @@ La **Vertical Beta 1** queda definida como una partida ciudadana completa en dos
 
 El aprendizaje central es comprobar que la prevención cambia el margen operativo, los daños, la exposición de la población y la dificultad de las decisiones posteriores.
 
+La gobernanza editorial queda dividida en tres responsabilidades: los escenarios TypeScript mandan sobre estructura y reglas; el catálogo i18n español manda sobre los textos publicados; y los documentos Markdown sirven para revisión y aprobación, pero no alimentan directamente el juego.
+
 ---
 
 ## 1. Producto y alcance
@@ -154,11 +156,12 @@ Dos partidas con decisiones preventivas diferentes deben producir condiciones, d
 
 | Elemento | Clasificación | Evidencia | Observación / siguiente acción |
 |---|---|---|---|
-| Escenarios externos a la vista | Existe y es aprovechable | `src/content/scenarios/` | Buena base para edición modular. |
-| Catálogo i18n español | Existe y es aprovechable | `src/content/i18n/es/scenarios.ts` | Permite separar textos de estructura. |
-| Script de extracción | Existe y es aprovechable | `scripts/extract-scenario-i18n.ts` | Debe preservarse. |
-| Documentos de revisión | Existe y es aprovechable | `docs/revision-textos/` | Útiles para revisión editorial no técnica. |
-| Fuente única de verdad | Existe, pero necesita revisión | Escenarios, i18n y Markdown | Sigue pendiente decidir qué archivo manda. |
+| Escenarios TypeScript | Existe y es aprovechable | `src/content/scenarios/` | Son la fuente de verdad de estructura, IDs, opciones, impactos, requisitos, flags, desbloqueos y transiciones. |
+| Catálogo i18n español | Existe y es aprovechable | `src/content/i18n/es/scenarios.ts` | Es la fuente de verdad de los textos publicados: títulos, contexto, preguntas, feedback y piezas narrativas. |
+| Documentos Markdown de revisión | Existe y es aprovechable | `docs/revision-textos/` | Son el espacio de revisión, comentarios y aprobación editorial; no constituyen una fuente ejecutable del juego. |
+| Script de extracción | Existe, pero necesita revisión | `scripts/extract-scenario-i18n.ts` | No debe sobrescribir el catálogo aprobado. Debe generar una base nueva, detectar campos ausentes o validar sincronización. |
+| Flujo editorial combinado | Existe y es aprovechable | Decisión de producto | TypeScript gobierna reglas; i18n gobierna textos; Markdown documenta revisión y aprobación. |
+| Sincronización y trazabilidad | Falta implementar | No hay automatización completa | Añadir validaciones para detectar IDs o campos desalineados y registrar qué revisión Markdown se ha incorporado al catálogo. |
 | Codificación UTF-8 | Existe, pero necesita revisión | Textos sin tildes o dañados | Requiere limpieza y pruebas automáticas. |
 | Segundo idioma | Fuera del alcance de la beta | Solo español | No es prioritario para Vertical Beta 1. |
 
@@ -197,6 +200,7 @@ Dos partidas con decisiones preventivas diferentes deben producir condiciones, d
 | Typecheck y build | Existe y es aprovechable | Scripts disponibles | Deben ejecutarse en CI. |
 | CI | Falta implementar | Sin checks activos verificados | Añadir GitHub Actions para typecheck, build y tests. |
 | Validación del objetivo educativo | Falta implementar | No existe protocolo | Comprobar que el usuario entiende la relación prevención–impacto. |
+| Validación editorial automatizada | Falta implementar | No localizada | Comprobar IDs, claves i18n, textos ausentes y divergencias antes de integrar cambios. |
 
 ## 10. Despliegue y operación
 
@@ -231,14 +235,14 @@ Dos partidas con decisiones preventivas diferentes deben producir condiciones, d
 5. **Arquitectura:** mantener y modularizar Fastify.
 6. **Mapa:** territorio ilustrado/SVG.
 7. **Motor:** reglas narrativas y heurísticas explicables.
-8. **Simulación física, MapLibre y PostGIS:** fuera del alcance de la beta.
+8. **Fuente editorial:** TypeScript para estructura y reglas; catálogo i18n para textos publicados; Markdown para revisión y aprobación.
+9. **Simulación física, MapLibre y PostGIS:** fuera del alcance de la beta.
 
 ## Decisiones aún pendientes antes del roadmap
 
-1. **Fuente editorial:** escenarios TypeScript, catálogo i18n o documentos Markdown como fuente principal.
-2. **Dominio:** diseño concreto de los módulos del motor y retirada o integración del dominio de incidentes de ejemplo.
-3. **Publicación:** formato de explotación y proveedor inicial.
-4. **Validación:** quién revisará el rigor operativo y cómo se probará el aprendizaje con ciudadanía.
+1. **Dominio:** diseño concreto de los módulos del motor y retirada o integración del dominio de incidentes de ejemplo.
+2. **Publicación:** formato de explotación y proveedor inicial.
+3. **Validación:** quién revisará el rigor operativo y cómo se probará el aprendizaje con ciudadanía.
 
 ## Vacíos prioritarios
 
@@ -247,11 +251,12 @@ Dos partidas con decisiones preventivas diferentes deben producir condiciones, d
 3. Definir el contrato de estado heredado entre fases.
 4. Extraer el motor a módulos TypeScript.
 5. Crear pruebas que comparen partidas con prevención distinta.
-6. Resolver la fuente única de verdad editorial.
-7. Diseñar el territorio ilustrado/SVG con estados estacionales.
-8. Añadir persistencia local.
-9. Crear un informe final causal completo.
-10. Configurar CI básico.
+6. Adaptar el script y el flujo editorial para proteger el catálogo i18n aprobado.
+7. Añadir validaciones de sincronización entre escenarios, i18n y documentos de revisión.
+8. Diseñar el territorio ilustrado/SVG con estados estacionales.
+9. Añadir persistencia local.
+10. Crear un informe final causal completo.
+11. Configurar CI básico.
 
 ## Recomendación de siguiente hito
 
