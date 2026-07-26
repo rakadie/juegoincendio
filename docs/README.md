@@ -24,6 +24,7 @@
 ## Gestión de ejecución
 
 - Gaps, riesgos y decisiones: [docs/analysis/gaps-and-decisions.md](analysis/gaps-and-decisions.md)
+- Auditoría de escenas e IDs: [docs/analysis/auditoria-escenas-ids.md](analysis/auditoria-escenas-ids.md)
 - Backlog pendiente: [docs/project/backlog-pendiente.md](project/backlog-pendiente.md)
 - Dudas abiertas: [docs/project/dudas-abiertas.md](project/dudas-abiertas.md)
 - Plan de scripts de ejecución: [docs/project/scripts-plan.md](project/scripts-plan.md)
@@ -38,4 +39,3 @@
 - Plantilla PR: [docs/templates/pr-template.md](templates/pr-template.md)
 - Plantilla script: [docs/templates/script-template.md](templates/script-template.md)
 - Plantilla clase: [docs/templates/class-template.md](templates/class-template.md)
-
