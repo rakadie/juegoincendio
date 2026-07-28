@@ -28,6 +28,7 @@
 - Auditoría de escenas e IDs: [docs/analysis/auditoria-escenas-ids.md](analysis/auditoria-escenas-ids.md)
 - Backlog pendiente: [docs/project/backlog-pendiente.md](project/backlog-pendiente.md)
 - Dudas abiertas: [docs/project/dudas-abiertas.md](project/dudas-abiertas.md)
+- Automatización de estados del GitHub Project: [docs/project/project-status-automation.md](project/project-status-automation.md)
 - Plan de scripts de ejecución: [docs/project/scripts-plan.md](project/scripts-plan.md)
 - Plan de transición documental a ejecución: [docs/project/transition-plan.md](project/transition-plan.md)
 
