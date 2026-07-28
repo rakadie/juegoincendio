@@ -4,15 +4,14 @@
  * Synchronize GitHub issue state with a GitHub Projects v2 Status field.
  *
  * Rules:
- * - closed issue -> Done
- * - status:blocked -> Blocked
- * - status:ready -> Ready
- * - status:in-progress -> In Progress
- * - status:review -> Review
+ * - new/reopened issue without another signal -> Backlog
+ * - closed issue as completed -> Done
+ * - closed issue as not planned/duplicate -> Superseded
+ * - status:* labels explicitly select a Project status
  * - all explicit dependencies closed -> Ready
  * - any explicit dependency open -> Blocked
  * - draft PR with `Closes/Fixes/Resolves #N` -> In Progress
- * - non-draft PR with `Closes/Fixes/Resolves #N` -> Review
+ * - non-draft PR with a closing reference -> Review
  * - merged PR with a closing reference -> Done
  *
  * This script never closes an issue because its Project status changed.
@@ -25,11 +24,13 @@ module.exports = async ({ github, context, core }) => {
   const normalize = (value) => String(value || '').trim().toLocaleLowerCase('en-US');
 
   const statusNames = {
-    blocked: process.env.PROJECT_STATUS_BLOCKED || 'Blocked',
+    backlog: process.env.PROJECT_STATUS_BACKLOG || 'Backlog',
     ready: process.env.PROJECT_STATUS_READY || 'Ready',
     inProgress: process.env.PROJECT_STATUS_IN_PROGRESS || 'In Progress',
+    blocked: process.env.PROJECT_STATUS_BLOCKED || 'Blocked',
     review: process.env.PROJECT_STATUS_REVIEW || 'Review',
     done: process.env.PROJECT_STATUS_DONE || 'Done',
+    superseded: process.env.PROJECT_STATUS_SUPERSEDED || 'Superseded',
   };
 
   if (!Number.isInteger(projectNumber) || projectNumber <= 0) {
@@ -83,13 +84,9 @@ module.exports = async ({ github, context, core }) => {
   const optionByName = (name) =>
     statusField.options.find((option) => normalize(option.name) === normalize(name));
 
-  const statusOptions = {
-    blocked: optionByName(statusNames.blocked),
-    ready: optionByName(statusNames.ready),
-    inProgress: optionByName(statusNames.inProgress),
-    review: optionByName(statusNames.review),
-    done: optionByName(statusNames.done),
-  };
+  const statusOptions = Object.fromEntries(
+    Object.entries(statusNames).map(([key, name]) => [key, optionByName(name)]),
+  );
 
   for (const [key, option] of Object.entries(statusOptions)) {
     if (!option) {
@@ -213,18 +210,28 @@ module.exports = async ({ github, context, core }) => {
   };
 
   const calculateStatus = async (issue) => {
-    if (issue.state === 'closed') return { key: 'done', reason: 'issue closed' };
+    if (issue.state === 'closed') {
+      const reason = normalize(issue.state_reason);
+      if (reason === 'not_planned' || reason === 'duplicate') {
+        return { key: 'superseded', reason: `issue closed as ${reason}` };
+      }
+      return { key: 'done', reason: 'issue closed as completed' };
+    }
 
     const labels = new Set(
       (issue.labels || []).map((label) => normalize(typeof label === 'string' ? label : label.name)),
     );
 
+    if (labels.has('status:superseded')) {
+      return { key: 'superseded', reason: 'status:superseded label' };
+    }
     if (labels.has('status:blocked')) return { key: 'blocked', reason: 'status:blocked label' };
     if (labels.has('status:review')) return { key: 'review', reason: 'status:review label' };
     if (labels.has('status:in-progress')) {
       return { key: 'inProgress', reason: 'status:in-progress label' };
     }
     if (labels.has('status:ready')) return { key: 'ready', reason: 'status:ready label' };
+    if (labels.has('status:backlog')) return { key: 'backlog', reason: 'status:backlog label' };
 
     const dependencies = dependencyNumbers(issue.body);
     if (dependencies.length === 0) return null;
@@ -245,11 +252,16 @@ module.exports = async ({ github, context, core }) => {
     };
   };
 
-  const syncIssue = async (issue, forcedKey = null) => {
+  const syncIssue = async (issue, forcedKey = null, fallbackKey = null) => {
     if (issue.pull_request) return;
-    const decision = forcedKey
+
+    let decision = forcedKey
       ? { key: forcedKey, reason: 'manual or pull-request transition' }
       : await calculateStatus(issue);
+
+    if (!decision && fallbackKey) {
+      decision = { key: fallbackKey, reason: 'default state for new or reopened issue' };
+    }
 
     if (!decision) {
       core.info(`#${issue.number}: no explicit status signal; status left unchanged.`);
@@ -302,11 +314,13 @@ module.exports = async ({ github, context, core }) => {
     const issueNumber = Number(context.payload.inputs?.issue_number || 0);
     const requestedStatus = String(context.payload.inputs?.status || 'auto');
     const forcedStatus = {
-      Blocked: 'blocked',
+      Backlog: 'backlog',
       Ready: 'ready',
       'In Progress': 'inProgress',
+      Blocked: 'blocked',
       Review: 'review',
       Done: 'done',
+      Superseded: 'superseded',
     }[requestedStatus];
 
     if (issueNumber > 0) await syncIssue(await getIssue(issueNumber), forcedStatus || null);
@@ -315,8 +329,11 @@ module.exports = async ({ github, context, core }) => {
   }
 
   if (context.eventName === 'issues') {
-    await syncIssue(context.payload.issue);
-    if (['closed', 'reopened', 'edited'].includes(context.payload.action)) {
+    const action = context.payload.action;
+    const fallback = action === 'opened' || action === 'reopened' ? 'backlog' : null;
+    await syncIssue(context.payload.issue, null, fallback);
+
+    if (['closed', 'reopened', 'edited'].includes(action)) {
       await syncOpenDependencies();
     }
   }
