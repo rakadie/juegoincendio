@@ -4,23 +4,34 @@
 
 Sincronizar las incidencias del repositorio con el campo `Status` del GitHub Project sin cerrar incidencias por error.
 
-Flujo objetivo:
+## Estados reales del Project
 
 ```text
-estado inicial → Ready → In Progress → Review → Done
-                    ↘ Blocked ↗
+Backlog → Ready → In Progress → Review → Done
+              ↘ Blocked ↗
+
+Trabajo descartado o sustituido → Superseded
 ```
 
-El workflow no necesita conocer el nombre del estado inicial del Project. Las incidencias sin señal explícita conservan su estado actual.
+Estados configurados:
+
+- `Backlog`;
+- `Ready`;
+- `In Progress`;
+- `Blocked`;
+- `Review`;
+- `Done`;
+- `Superseded`.
 
 ## Regla de seguridad principal
 
 **Cambiar el estado del Project nunca cierra una incidencia.**
 
-El cierre funciona solo en la dirección segura:
+El cierre funciona únicamente desde GitHub Issues hacia el Project:
 
 ```text
-issue cerrada → Status: Done
+issue cerrada como completed → Done
+issue cerrada como not planned/duplicate → Superseded
 ```
 
 Debe permanecer deshabilitado cualquier workflow integrado del Project del tipo:
@@ -35,18 +46,22 @@ El workflow `.github/workflows/project-status-sync.yml` aplica estas reglas:
 
 | Señal | Estado del Project |
 |---|---|
-| Issue cerrada | `Done` |
-| Etiqueta `status:blocked` | `Blocked` |
+| Issue nueva o reabierta sin otra señal | `Backlog` |
+| Etiqueta `status:backlog` | `Backlog` |
 | Etiqueta `status:ready` | `Ready` |
 | Etiqueta `status:in-progress` | `In Progress` |
+| Etiqueta `status:blocked` | `Blocked` |
 | Etiqueta `status:review` | `Review` |
+| Etiqueta `status:superseded` | `Superseded` |
 | Todas las dependencias explícitas están cerradas | `Ready` |
 | Existe alguna dependencia explícita abierta | `Blocked` |
 | PR draft con `Closes #N`, `Fixes #N` o `Resolves #N` | `In Progress` |
 | PR no draft con referencia de cierre | `Review` |
 | PR fusionada con referencia de cierre | `Done` |
+| Issue cerrada como completada | `Done` |
+| Issue cerrada como no planificada o duplicada | `Superseded` |
 
-Una issue abierta sin etiqueta de estado ni dependencias explícitas conserva su estado actual. Esto evita mover épicas o trabajo no refinado a `Ready` por accidente.
+Una issue abierta ya existente sin etiqueta ni dependencias explícitas conserva su estado actual. Esto evita mover épicas o trabajo sin refinar por accidente.
 
 ## Sintaxis de dependencias
 
@@ -61,7 +76,7 @@ Depends on #68 and #69.
 Blocked by #72.
 ```
 
-Los rangos aceptan guion normal, semirraya o raya, por ejemplo `#68-#74`, `#68–#74` y `#68—#74`.
+Los rangos aceptan guion normal, semirraya o raya: `#68-#74`, `#68–#74` y `#68—#74`.
 
 Cuando se cierra, reabre o edita una issue, se vuelven a evaluar todas las issues abiertas con dependencias explícitas.
 
@@ -79,11 +94,11 @@ Secret obligatorio:
 
 | Nombre | Valor |
 |---|---|
-| `PROJECTS_TOKEN` | PAT o token de GitHub App con acceso de escritura al Project y lectura del repositorio |
+| `PROJECTS_TOKEN` | PAT o token de GitHub App con escritura sobre el Project y lectura del repositorio |
 
 Para un repositorio privado, el token necesita también acceso al repositorio. No guardar el token en variables ni en archivos.
 
-El evento estándar `pull_request` recibe secretos únicamente para ramas del propio repositorio. Las PR procedentes de forks no actualizan el Project, lo cual evita exponer el token a código no confiable.
+El evento estándar `pull_request` recibe secretos únicamente para ramas del propio repositorio. Las PR procedentes de forks no actualizan el Project.
 
 ### 2. Variables del repositorio
 
@@ -101,48 +116,52 @@ Variable obligatoria:
 
 El Project debe pertenecer al mismo usuario u organización que el repositorio.
 
-Variables opcionales si los nombres del Project son distintos:
+Variables opcionales si los nombres no coinciden exactamente:
 
 | Variable | Valor predeterminado |
 |---|---|
 | `PROJECT_STATUS_FIELD` | `Status` |
-| `PROJECT_STATUS_BLOCKED` | `Blocked` |
+| `PROJECT_STATUS_BACKLOG` | `Backlog` |
 | `PROJECT_STATUS_READY` | `Ready` |
 | `PROJECT_STATUS_IN_PROGRESS` | `In Progress` |
+| `PROJECT_STATUS_BLOCKED` | `Blocked` |
 | `PROJECT_STATUS_REVIEW` | `Review` |
 | `PROJECT_STATUS_DONE` | `Done` |
-
-Por ejemplo, si el Project usa `In progress` o `In process`, establecer ese texto exacto en `PROJECT_STATUS_IN_PROGRESS`.
+| `PROJECT_STATUS_SUPERSEDED` | `Superseded` |
 
 ### 3. Etiquetas
 
 Crear estas etiquetas en el repositorio:
 
 ```text
-status:blocked
+status:backlog
 status:ready
 status:in-progress
+status:blocked
 status:review
+status:superseded
 ```
 
 Las etiquetas actúan como órdenes explícitas y tienen prioridad sobre las dependencias.
+
+No se utiliza `status:done`: el estado `Done` exige cerrar la issue como completada.
 
 ## Workflows integrados recomendados en el Project
 
 En:
 
 ```text
-Project → menú → Workflows
+Project → Workflows
 ```
 
 Configurar:
 
-1. `Item added to project → estado inicial`.
-2. `Issue closed → Done` activado.
-3. `Pull request merged → Done` activado.
+1. `Item added to project → Backlog` activado.
+2. `Issue closed → Done` puede permanecer activado para cierres completados.
+3. `Pull request merged → Done` puede permanecer activado.
 4. Cualquier regla `Status changed → close issue` desactivada.
 
-El workflow del repositorio puede convivir con `Issue closed → Done`; repetir el mismo valor es idempotente.
+Para distinguir `Done` de `Superseded`, el Action del repositorio es la fuente más precisa porque examina `state_reason`.
 
 ## Ejecución manual
 
@@ -150,7 +169,7 @@ Desde `Actions → Sync Project status → Run workflow` se puede:
 
 - indicar una issue concreta;
 - calcular su estado automáticamente;
-- forzar `Blocked`, `Ready`, `In Progress`, `Review` o `Done`;
+- forzar cualquiera de los siete estados;
 - dejar el número vacío para reevaluar todas las issues abiertas con dependencias.
 
 ## Uso recomendado
@@ -165,24 +184,25 @@ Depende de #24 y #25.
 
 La issue permanecerá en `Blocked` hasta que ambas estén cerradas y entonces pasará a `Ready`.
 
-### Inicio real del trabajo
-
-Usar una de estas dos señales:
-
-- añadir `status:in-progress`;
-- abrir una PR draft que contenga `Closes #N`.
-
-### Revisión
+### Inicio del trabajo
 
 Usar una de estas señales:
 
+- añadir `status:in-progress`;
+- abrir una PR draft con `Closes #N`.
+
+### Revisión
+
 - añadir `status:review`;
-- marcar como lista una PR vinculada mediante `Closes #N`;
-- abrir directamente una PR no draft con referencia de cierre.
+- marcar la PR vinculada como lista para revisión.
 
 ### Finalización
 
-Cerrar la issue o fusionar una PR que la cierre. El Project pasará a `Done` sin ninguna regla inversa que pueda cerrar trabajo accidentalmente.
+Cerrar la issue como completada o fusionar la PR que la cierra. El Project pasará a `Done`.
+
+### Sustitución u obsolescencia
+
+Cerrar la issue como `not planned` o `duplicate`, o aplicar `status:superseded`. El Project pasará a `Superseded`.
 
 ## Archivos
 
