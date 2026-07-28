@@ -31,11 +31,13 @@ on:
         type: choice
         options:
           - auto
-          - Blocked
+          - Backlog
           - Ready
           - In Progress
+          - Blocked
           - Review
           - Done
+          - Superseded
 
 permissions:
   contents: read
@@ -52,11 +54,13 @@ jobs:
     env:
       PROJECT_NUMBER: ${{ vars.PROJECT_NUMBER }}
       PROJECT_STATUS_FIELD: ${{ vars.PROJECT_STATUS_FIELD || 'Status' }}
-      PROJECT_STATUS_BLOCKED: ${{ vars.PROJECT_STATUS_BLOCKED || 'Blocked' }}
+      PROJECT_STATUS_BACKLOG: ${{ vars.PROJECT_STATUS_BACKLOG || 'Backlog' }}
       PROJECT_STATUS_READY: ${{ vars.PROJECT_STATUS_READY || 'Ready' }}
       PROJECT_STATUS_IN_PROGRESS: ${{ vars.PROJECT_STATUS_IN_PROGRESS || 'In Progress' }}
+      PROJECT_STATUS_BLOCKED: ${{ vars.PROJECT_STATUS_BLOCKED || 'Blocked' }}
       PROJECT_STATUS_REVIEW: ${{ vars.PROJECT_STATUS_REVIEW || 'Review' }}
       PROJECT_STATUS_DONE: ${{ vars.PROJECT_STATUS_DONE || 'Done' }}
+      PROJECT_STATUS_SUPERSEDED: ${{ vars.PROJECT_STATUS_SUPERSEDED || 'Superseded' }}
 
     steps:
       - name: Check out repository
