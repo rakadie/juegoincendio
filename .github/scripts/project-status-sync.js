@@ -3,25 +3,23 @@
 /**
  * Synchronize GitHub issue state with a GitHub Projects v2 Status field.
  *
- * Safe defaults:
+ * Rules:
  * - closed issue -> Done
  * - status:blocked -> Backlog
  * - status:ready -> Ready
  * - status:in-progress -> In Progress
  * - all explicit dependencies closed -> Ready
  * - any explicit dependency open -> Backlog
- * - ready-for-review PR with `Closes/Fixes/Resolves #N` -> In Progress
+ * - non-draft PR with `Closes/Fixes/Resolves #N` -> In Progress
  *
- * It never closes an issue because of a Project status change.
+ * This script never closes an issue because its Project status changed.
  */
 module.exports = async ({ github, context, core }) => {
-  const repoOwner = context.repo.owner;
-  const repoName = context.repo.repo;
-  const repoFullName = `${repoOwner}/${repoName}`;
-
-  const projectOwner = process.env.PROJECT_OWNER || repoOwner;
+  const owner = context.repo.owner;
+  const repo = context.repo.repo;
   const projectNumber = Number(process.env.PROJECT_NUMBER);
   const statusFieldName = process.env.PROJECT_STATUS_FIELD || 'Status';
+  const normalize = (value) => String(value || '').trim().toLocaleLowerCase('en-US');
 
   const statusNames = {
     backlog: process.env.PROJECT_STATUS_BACKLOG || 'Backlog',
@@ -34,66 +32,46 @@ module.exports = async ({ github, context, core }) => {
     throw new Error('Repository variable PROJECT_NUMBER must contain the GitHub Project number.');
   }
 
-  const normalize = (value) => String(value || '').trim().toLocaleLowerCase('en-US');
-
-  const projectQuery = `
-    query Project($owner: String!, $repo: String!, $number: Int!) {
-      repository(owner: $owner, name: $repo) {
-        owner {
-          __typename
-          login
-          ... on User {
-            projectV2(number: $number) {
-              ...ProjectData
+  const projectResponse = await github.graphql(
+    `
+      query Project($owner: String!, $repo: String!, $number: Int!) {
+        repository(owner: $owner, name: $repo) {
+          owner {
+            ... on User {
+              projectV2(number: $number) { ...ProjectData }
             }
-          }
-          ... on Organization {
-            projectV2(number: $number) {
-              ...ProjectData
+            ... on Organization {
+              projectV2(number: $number) { ...ProjectData }
             }
           }
         }
       }
-    }
 
-    fragment ProjectData on ProjectV2 {
-      id
-      title
-      fields(first: 50) {
-        nodes {
-          ... on ProjectV2SingleSelectField {
-            id
-            name
-            options {
+      fragment ProjectData on ProjectV2 {
+        id
+        title
+        fields(first: 50) {
+          nodes {
+            ... on ProjectV2SingleSelectField {
               id
               name
+              options { id name }
             }
           }
         }
       }
-    }
-  `;
+    `,
+    { owner, repo, number: projectNumber },
+  );
 
-  const projectResponse = await github.graphql(projectQuery, {
-    owner: repoOwner,
-    repo: repoName,
-    number: projectNumber,
-  });
-
-  const repositoryOwner = projectResponse.repository?.owner;
-  const project = repositoryOwner?.projectV2;
-
+  const project = projectResponse.repository?.owner?.projectV2;
   if (!project) {
-    throw new Error(
-      `Project #${projectNumber} was not found for repository owner ${projectOwner}. ` +
-        'Set PROJECT_OWNER and PROJECT_NUMBER to the owner and number shown in the Project URL.',
-    );
+    throw new Error(`Project #${projectNumber} was not found for repository owner ${owner}.`);
   }
 
   const statusField = project.fields.nodes.find(
     (field) => field && normalize(field.name) === normalize(statusFieldName),
   );
-
   if (!statusField) {
     throw new Error(`Single-select field '${statusFieldName}' was not found in Project '${project.title}'.`);
   }
@@ -112,16 +90,15 @@ module.exports = async ({ github, context, core }) => {
     if (!option) {
       throw new Error(
         `Status option '${statusNames[key]}' was not found in field '${statusField.name}'. ` +
-          'Adjust the PROJECT_STATUS_* repository variables to match the Project option names.',
+          'Set PROJECT_STATUS_* repository variables to the exact option names.',
       );
     }
   }
 
   const findProjectItem = async (issueNodeId) => {
     let after = null;
-
     do {
-      const result = await github.graphql(
+      const response = await github.graphql(
         `
           query ProjectItems($projectId: ID!, $after: String) {
             node(id: $projectId) {
@@ -129,16 +106,9 @@ module.exports = async ({ github, context, core }) => {
                 items(first: 100, after: $after) {
                   nodes {
                     id
-                    content {
-                      ... on Issue {
-                        id
-                      }
-                    }
+                    content { ... on Issue { id } }
                   }
-                  pageInfo {
-                    hasNextPage
-                    endCursor
-                  }
+                  pageInfo { hasNextPage endCursor }
                 }
               }
             }
@@ -147,13 +117,11 @@ module.exports = async ({ github, context, core }) => {
         { projectId: project.id, after },
       );
 
-      const items = result.node.items;
-      const matchingItem = items.nodes.find((item) => item.content?.id === issueNodeId);
-      if (matchingItem) return matchingItem;
-
+      const items = response.node.items;
+      const match = items.nodes.find((item) => item.content?.id === issueNodeId);
+      if (match) return match;
       after = items.pageInfo.hasNextPage ? items.pageInfo.endCursor : null;
     } while (after);
-
     return null;
   };
 
@@ -161,25 +129,22 @@ module.exports = async ({ github, context, core }) => {
     const existing = await findProjectItem(issueNodeId);
     if (existing) return existing;
 
-    const added = await github.graphql(
+    const response = await github.graphql(
       `
         mutation AddProjectItem($projectId: ID!, $contentId: ID!) {
           addProjectV2ItemById(input: { projectId: $projectId, contentId: $contentId }) {
-            item {
-              id
-            }
+            item { id }
           }
         }
       `,
       { projectId: project.id, contentId: issueNodeId },
     );
-
-    return added.addProjectV2ItemById.item;
+    return response.addProjectV2ItemById.item;
   };
 
-  const updateStatus = async (issue, desiredStatusKey, reason) => {
-    const option = statusOptions[desiredStatusKey];
+  const setStatus = async (issue, key, reason) => {
     const item = await ensureProjectItem(issue.node_id);
+    const option = statusOptions[key];
 
     await github.graphql(
       `
@@ -196,11 +161,7 @@ module.exports = async ({ github, context, core }) => {
               fieldId: $fieldId
               value: { singleSelectOptionId: $optionId }
             }
-          ) {
-            projectV2Item {
-              id
-            }
-          }
+          ) { projectV2Item { id } }
         }
       `,
       {
@@ -216,44 +177,34 @@ module.exports = async ({ github, context, core }) => {
 
   const dependencyNumbers = (body) => {
     const numbers = new Set();
-    const source = String(body || '');
-    const linePattern =
+    const pattern =
       /(?:depende(?:ncia)?s?\s*(?:de)?|depends?\s+on|blocked\s+by|bloquead[oa]\s+por)\s*:?\s*([^\n]+)/gi;
 
-    for (const match of source.matchAll(linePattern)) {
-      for (const issueMatch of match[1].matchAll(/#(\d+)/g)) {
-        numbers.add(Number(issueMatch[1]));
+    for (const match of String(body || '').matchAll(pattern)) {
+      for (const reference of match[1].matchAll(/#(\d+)/g)) {
+        numbers.add(Number(reference[1]));
       }
     }
-
     return [...numbers];
   };
 
-  const getIssue = async (number) => {
-    const response = await github.rest.issues.get({ owner: repoOwner, repo: repoName, issue_number: number });
+  const getIssue = async (issueNumber) => {
+    const response = await github.rest.issues.get({ owner, repo, issue_number: issueNumber });
     return response.data;
   };
 
   const calculateStatus = async (issue) => {
-    if (issue.state === 'closed') {
-      return { key: 'done', reason: 'issue closed' };
-    }
+    if (issue.state === 'closed') return { key: 'done', reason: 'issue closed' };
 
     const labels = new Set(
       (issue.labels || []).map((label) => normalize(typeof label === 'string' ? label : label.name)),
     );
 
-    if (labels.has('status:blocked')) {
-      return { key: 'backlog', reason: 'status:blocked label' };
-    }
-
+    if (labels.has('status:blocked')) return { key: 'backlog', reason: 'status:blocked label' };
     if (labels.has('status:in-progress')) {
       return { key: 'inProgress', reason: 'status:in-progress label' };
     }
-
-    if (labels.has('status:ready')) {
-      return { key: 'ready', reason: 'status:ready label' };
-    }
+    if (labels.has('status:ready')) return { key: 'ready', reason: 'status:ready label' };
 
     const dependencies = dependencyNumbers(issue.body);
     if (dependencies.length === 0) return null;
@@ -264,7 +215,7 @@ module.exports = async ({ github, context, core }) => {
     if (openDependencies.length > 0) {
       return {
         key: 'backlog',
-        reason: `open dependencies: ${openDependencies.map((dependency) => `#${dependency.number}`).join(', ')}`,
+        reason: `open dependencies: ${openDependencies.map((item) => `#${item.number}`).join(', ')}`,
       };
     }
 
@@ -276,23 +227,21 @@ module.exports = async ({ github, context, core }) => {
 
   const syncIssue = async (issue, forcedKey = null) => {
     if (issue.pull_request) return;
-
     const decision = forcedKey
-      ? { key: forcedKey, reason: 'manual workflow dispatch' }
+      ? { key: forcedKey, reason: 'manual or pull-request transition' }
       : await calculateStatus(issue);
 
     if (!decision) {
       core.info(`#${issue.number}: no explicit status signal; status left unchanged.`);
       return;
     }
-
-    await updateStatus(issue, decision.key, decision.reason);
+    await setStatus(issue, decision.key, decision.reason);
   };
 
-  const syncOpenDependencyIssues = async () => {
+  const syncOpenDependencies = async () => {
     const issues = await github.paginate(github.rest.issues.listForRepo, {
-      owner: repoOwner,
-      repo: repoName,
+      owner,
+      repo,
       state: 'open',
       per_page: 100,
     });
@@ -307,63 +256,43 @@ module.exports = async ({ github, context, core }) => {
   const closingReferences = (body) => {
     const numbers = new Set();
     const pattern = /(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s+#(\d+)/gi;
-    for (const match of String(body || '').matchAll(pattern)) {
-      numbers.add(Number(match[1]));
-    }
+    for (const match of String(body || '').matchAll(pattern)) numbers.add(Number(match[1]));
     return [...numbers];
   };
 
   if (context.eventName === 'pull_request') {
     const pullRequest = context.payload.pull_request;
     const linkedIssues = closingReferences(pullRequest.body);
-
-    if (linkedIssues.length === 0) {
-      core.info('Pull request has no closing references; nothing to synchronize.');
-      return;
-    }
+    if (linkedIssues.length === 0) return;
 
     if (pullRequest.merged) {
-      for (const number of linkedIssues) {
-        await syncIssue(await getIssue(number), 'done');
-      }
-      await syncOpenDependencyIssues();
-      return;
+      for (const number of linkedIssues) await syncIssue(await getIssue(number), 'done');
+      await syncOpenDependencies();
+    } else if (pullRequest.state === 'open' && !pullRequest.draft) {
+      for (const number of linkedIssues) await syncIssue(await getIssue(number), 'inProgress');
     }
-
-    if (pullRequest.state === 'open' && !pullRequest.draft) {
-      for (const number of linkedIssues) {
-        await syncIssue(await getIssue(number), 'inProgress');
-      }
-    }
-
     return;
   }
 
   if (context.eventName === 'workflow_dispatch') {
-    const requestedNumber = Number(context.payload.inputs?.issue_number || 0);
+    const issueNumber = Number(context.payload.inputs?.issue_number || 0);
     const requestedStatus = String(context.payload.inputs?.status || 'auto');
-    const forcedStatusMap = {
+    const forcedStatus = {
       Backlog: 'backlog',
       Ready: 'ready',
       'In Progress': 'inProgress',
       Done: 'done',
-    };
+    }[requestedStatus];
 
-    if (requestedNumber > 0) {
-      await syncIssue(await getIssue(requestedNumber), forcedStatusMap[requestedStatus] || null);
-    } else {
-      await syncOpenDependencyIssues();
-    }
+    if (issueNumber > 0) await syncIssue(await getIssue(issueNumber), forcedStatus || null);
+    else await syncOpenDependencies();
     return;
   }
 
   if (context.eventName === 'issues') {
     await syncIssue(context.payload.issue);
-
     if (['closed', 'reopened', 'edited'].includes(context.payload.action)) {
-      await syncOpenDependencyIssues();
+      await syncOpenDependencies();
     }
   }
-
-  core.info(`Project synchronization completed for ${repoFullName}.`);
 };
