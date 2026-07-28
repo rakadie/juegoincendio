@@ -45,15 +45,18 @@ Una issue abierta sin etiqueta de estado ni dependencias explícitas conserva su
 
 ## Sintaxis de dependencias
 
-El workflow reconoce referencias escritas en una línea como:
+El workflow reconoce referencias individuales y rangos escritos en una línea como:
 
 ```text
 Depende de #24 y #25.
 Dependencias: #28, #29.
+Depende de #68–#74.
 Bloqueada por #65.
 Depends on #68 and #69.
 Blocked by #72.
 ```
+
+Los rangos aceptan guion normal, semirraya o raya, por ejemplo `#68-#74`, `#68–#74` y `#68—#74`.
 
 Cuando se cierra, reabre o edita una issue, se vuelven a evaluar todas las issues abiertas con dependencias explícitas.
 
@@ -75,6 +78,8 @@ Secret obligatorio:
 
 Para un repositorio privado, el token necesita también acceso al repositorio. No guardar el token en variables ni en archivos.
 
+El evento estándar `pull_request` recibe secretos únicamente para ramas del propio repositorio. Las PR procedentes de forks no actualizan el Project, lo cual evita exponer el token a código no confiable.
+
 ### 2. Variables del repositorio
 
 Crear en:
@@ -88,6 +93,8 @@ Variable obligatoria:
 | Nombre | Valor |
 |---|---|
 | `PROJECT_NUMBER` | Número visible al final de la URL del Project |
+
+El Project debe pertenecer al mismo usuario u organización que el repositorio.
 
 Variables opcionales si los nombres del Project son distintos:
 
