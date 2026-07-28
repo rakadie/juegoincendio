@@ -5,12 +5,15 @@
  *
  * Rules:
  * - closed issue -> Done
- * - status:blocked -> Backlog
+ * - status:blocked -> Blocked
  * - status:ready -> Ready
  * - status:in-progress -> In Progress
+ * - status:review -> Review
  * - all explicit dependencies closed -> Ready
- * - any explicit dependency open -> Backlog
- * - non-draft PR with `Closes/Fixes/Resolves #N` -> In Progress
+ * - any explicit dependency open -> Blocked
+ * - draft PR with `Closes/Fixes/Resolves #N` -> In Progress
+ * - non-draft PR with `Closes/Fixes/Resolves #N` -> Review
+ * - merged PR with a closing reference -> Done
  *
  * This script never closes an issue because its Project status changed.
  */
@@ -22,9 +25,10 @@ module.exports = async ({ github, context, core }) => {
   const normalize = (value) => String(value || '').trim().toLocaleLowerCase('en-US');
 
   const statusNames = {
-    backlog: process.env.PROJECT_STATUS_BACKLOG || 'Backlog',
+    blocked: process.env.PROJECT_STATUS_BLOCKED || 'Blocked',
     ready: process.env.PROJECT_STATUS_READY || 'Ready',
     inProgress: process.env.PROJECT_STATUS_IN_PROGRESS || 'In Progress',
+    review: process.env.PROJECT_STATUS_REVIEW || 'Review',
     done: process.env.PROJECT_STATUS_DONE || 'Done',
   };
 
@@ -80,9 +84,10 @@ module.exports = async ({ github, context, core }) => {
     statusField.options.find((option) => normalize(option.name) === normalize(name));
 
   const statusOptions = {
-    backlog: optionByName(statusNames.backlog),
+    blocked: optionByName(statusNames.blocked),
     ready: optionByName(statusNames.ready),
     inProgress: optionByName(statusNames.inProgress),
+    review: optionByName(statusNames.review),
     done: optionByName(statusNames.done),
   };
 
@@ -214,7 +219,8 @@ module.exports = async ({ github, context, core }) => {
       (issue.labels || []).map((label) => normalize(typeof label === 'string' ? label : label.name)),
     );
 
-    if (labels.has('status:blocked')) return { key: 'backlog', reason: 'status:blocked label' };
+    if (labels.has('status:blocked')) return { key: 'blocked', reason: 'status:blocked label' };
+    if (labels.has('status:review')) return { key: 'review', reason: 'status:review label' };
     if (labels.has('status:in-progress')) {
       return { key: 'inProgress', reason: 'status:in-progress label' };
     }
@@ -228,7 +234,7 @@ module.exports = async ({ github, context, core }) => {
 
     if (openDependencies.length > 0) {
       return {
-        key: 'backlog',
+        key: 'blocked',
         reason: `open dependencies: ${openDependencies.map((item) => `#${item.number}`).join(', ')}`,
       };
     }
@@ -284,8 +290,10 @@ module.exports = async ({ github, context, core }) => {
     if (pullRequest.merged) {
       for (const number of linkedIssues) await syncIssue(await getIssue(number), 'done');
       await syncOpenDependencies();
-    } else if (pullRequest.state === 'open' && !pullRequest.draft) {
+    } else if (pullRequest.state === 'open' && pullRequest.draft) {
       for (const number of linkedIssues) await syncIssue(await getIssue(number), 'inProgress');
+    } else if (pullRequest.state === 'open') {
+      for (const number of linkedIssues) await syncIssue(await getIssue(number), 'review');
     }
     return;
   }
@@ -294,9 +302,10 @@ module.exports = async ({ github, context, core }) => {
     const issueNumber = Number(context.payload.inputs?.issue_number || 0);
     const requestedStatus = String(context.payload.inputs?.status || 'auto');
     const forcedStatus = {
-      Backlog: 'backlog',
+      Blocked: 'blocked',
       Ready: 'ready',
       'In Progress': 'inProgress',
+      Review: 'review',
       Done: 'done',
     }[requestedStatus];
 
