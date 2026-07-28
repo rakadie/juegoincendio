@@ -175,15 +175,29 @@ module.exports = async ({ github, context, core }) => {
     core.info(`#${issue.number} -> ${option.name}: ${reason}`);
   };
 
+  const issueReferences = (text) => {
+    const numbers = new Set();
+    const source = String(text || '');
+
+    for (const match of source.matchAll(/#(\d+)\s*(?:-|–|—)\s*#?(\d+)/g)) {
+      const start = Number(match[1]);
+      const end = Number(match[2]);
+      if (end >= start && end - start <= 100) {
+        for (let number = start; number <= end; number += 1) numbers.add(number);
+      }
+    }
+
+    for (const match of source.matchAll(/#(\d+)/g)) numbers.add(Number(match[1]));
+    return [...numbers];
+  };
+
   const dependencyNumbers = (body) => {
     const numbers = new Set();
     const pattern =
       /(?:depende(?:ncia)?s?\s*(?:de)?|depends?\s+on|blocked\s+by|bloquead[oa]\s+por)\s*:?\s*([^\n]+)/gi;
 
     for (const match of String(body || '').matchAll(pattern)) {
-      for (const reference of match[1].matchAll(/#(\d+)/g)) {
-        numbers.add(Number(reference[1]));
-      }
+      for (const number of issueReferences(match[1])) numbers.add(number);
     }
     return [...numbers];
   };
@@ -255,8 +269,10 @@ module.exports = async ({ github, context, core }) => {
 
   const closingReferences = (body) => {
     const numbers = new Set();
-    const pattern = /(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s+#(\d+)/gi;
-    for (const match of String(body || '').matchAll(pattern)) numbers.add(Number(match[1]));
+    const pattern = /(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s+([^\n]+)/gi;
+    for (const match of String(body || '').matchAll(pattern)) {
+      for (const number of issueReferences(match[1])) numbers.add(number);
+    }
     return [...numbers];
   };
 
