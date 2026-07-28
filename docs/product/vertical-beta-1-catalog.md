@@ -5,7 +5,7 @@ Issue: #23
 Rama: `docs/vertical-beta-1-catalog`  
 Estado contrastado: `main@d08db13fd9330ba297d8b92ca8a77cce7e35aef3`  
 Implementación posterior: #67  
-Target de implementación: **M2 — Motor modular**
+Milestone de implementación: **M2 — Motor modular** (`#2`)
 
 ## 1. Propósito y alcance formal
 
@@ -22,7 +22,7 @@ Este documento publica y valida el **catálogo objetivo** de la Vertical Beta 1.
 - clasificación completa de las 51 escenas;
 - desviaciones entre la especificación aprobada y el runtime auditado.
 
-La incidencia #23 se considera una **entrega documental de M1**. No exige que `main` implemente todavía el catálogo. La implementación física de IDs, payload, inspecciones, flujo, renderer, resultado e i18n se traslada a #67 y a M2.
+La incidencia #23 se considera una **entrega documental de M1**. No exige que `main` implemente todavía el catálogo. La implementación física de IDs, payload, inspecciones, flujo, renderer, resultado e i18n se traslada a #67 y a sus tareas #68–#76.
 
 La validación de #23 significa:
 
@@ -126,7 +126,7 @@ crisis-decision-access-blockage
 | 8 | `crisis` | Ambas | `s-027-fuego-en-barranco` | `crisis-decision-ravine-fire` | `decision` | `src/content/scenarios/operaciones/os-027-fuego-en-barranco.ts` | Una de las dos escenas de apertura completada | `beta-oficial`; conservar compartida | Referenciar una sola vez desde el flujo; comportamiento condicionado por estado heredado | `crisis-decision-housing-defense`<br>`crisis-decision-crown-fire` |
 | 9A | `crisis` | Preparada | `s-026-defensa-operativa-nucleo-viviendas` | `crisis-decision-housing-defense` | `decision` | `src/content/scenarios/operaciones/os-026-defensa-operativa-nucleo-viviendas.ts` | Barranco + rama preparada | `beta-oficial`; conservar | Referenciar desde la salida preparada del flujo | `ending-result-causal-report` |
 | 9B | `crisis` | Vulnerable | `s-030-fuego-de-copas` | `crisis-decision-crown-fire` | `decision` | `src/content/scenarios/operaciones/os-030-fuego-de-copas.ts` | Barranco + rama vulnerable | `beta-oficial`; conservar | Referenciar desde la salida vulnerable del flujo | `ending-result-causal-report` |
-| 10 | `ending` | Común | `resultado-beta` y resultado hardcodeado | `ending-result-causal-report` | `result` | `src/interfaces/http/prototype-page.ts` | `crisis-decision-housing-defense` o `crisis-decision-crown-fire` | `beta-oficial`; sustituir sentinela | Añadir como nodo terminal declarativo y retirar los mecanismos duplicados | — |
+| 10 | `ending` | Común | `resultado-beta` y resultado hardcodeado | `ending-result-causal-report` | `result` | `src/interfaces/http/prototype-page.ts` | `crisis-decision-housing-defense` o `crisis-decision-crown-fire` | `beta-oficial`; sustituir sentinela | Añadir como nodo terminal declarativo y retirar mecanismos duplicados | — |
 
 El catálogo contiene **12 nodos funcionales únicos**. Cinco proceden de objetos `Scenario` actuales.
 
@@ -182,7 +182,7 @@ Canalones, materiales junto a fachadas, huecos y edificios públicos quedan fuer
 
 ### `biblioteca-candidata` — 36
 
-**Comunicación**
+**Comunicación — 6**
 
 - `s-008-campana-sector-primario`;
 - `s-013-simulacro-escolar`;
@@ -191,7 +191,7 @@ Canalones, materiales junto a fachadas, huecos y edificios públicos quedan fuer
 - `s-023-imagen-antigua-viral`;
 - `s-024-presion-mediatica-zona-caliente`.
 
-**Operaciones**
+**Operaciones — 22**
 
 - `s-008b-riesgo-extremo-verano`;
 - `s-009-primer-envio-medios`;
@@ -216,7 +216,7 @@ Canalones, materiales junto a fachadas, huecos y edificios públicos quedan fuer
 - `s-033-senderistas-desorientados-humo`;
 - `s-034-vecinos-sin-medios-para-salir`.
 
-**Prevención**
+**Prevención — 8**
 
 - `s-004-quemas-agricolas`;
 - `s-005-recoleccion-monte`;
@@ -299,27 +299,23 @@ main@d08db13fd9330ba297d8b92ca8a77cce7e35aef3
 
 ## 12. Desviaciones trasladadas a M2
 
-Toda implementación derivada de esta validación se centraliza en:
+Toda implementación derivada de esta validación se centraliza en la épica:
 
-- #67 — **M2 — Implementar el catálogo canónico y el flujo ejecutable de la Vertical Beta 1**.
+- #67 — **M2 — Implementar la Vertical Beta 1 ejecutable**.
 
-#67 agrupa:
+Tareas de la épica:
 
-1. migración atómica de IDs;
-2. payload oficial;
-3. reducción de inspecciones;
-4. retirada de `p-003`;
-5. reorientación del balance;
-6. retirada del modelo heredado;
-7. router de dos ramas;
-8. compatibilidad entre escenas y renderer;
-9. briefing y resultado declarativos;
-10. cobertura i18n de los 12 nodos;
-11. validaciones automáticas.
+- #68 — contrato común `GameScene` y validador del catálogo;
+- #69 — `GameSession`, eventos e invariantes;
+- #70 — dos inspecciones preventivas oficiales;
+- #71 — adaptación de las cinco escenas oficiales;
+- #72 — balance, flujo declarativo, router causal y resultado;
+- #73 — interfaz conectada al motor y renderers;
+- #74 — separación beta/biblioteca/archivo y retirada de campaña heredada;
+- #75 — migración atómica de IDs e i18n;
+- #76 — aceptación integral automatizada.
 
-La división en tareas de implementación se realizará al preparar M2, después de completar las puertas de M1.
-
-Target: **M2 — Motor modular**. La asignación al milestone GitHub correspondiente queda pendiente de que ese milestone exista o sea confirmado. No se presupone su número técnico.
+Todas están asignadas al milestone GitHub **M2 — Motor modular** (`#2`). Permanecen fuera de `Ready` hasta que M1 complete sus puertas estructurales.
 
 ## 13. Validaciones automatizables requeridas en M2
 
