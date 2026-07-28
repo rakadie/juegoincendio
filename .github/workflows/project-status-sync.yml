@@ -11,7 +11,7 @@ on:
       - labeled
       - unlabeled
       - closed
-  pull_request:
+  pull_request_target:
     types:
       - opened
       - edited
@@ -57,7 +57,7 @@ jobs:
       PROJECT_STATUS_DONE: ${{ vars.PROJECT_STATUS_DONE || 'Done' }}
 
     steps:
-      - name: Check out repository
+      - name: Check out trusted base branch
         uses: actions/checkout@v4
 
       - name: Validate Project configuration
