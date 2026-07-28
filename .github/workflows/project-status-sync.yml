@@ -49,7 +49,6 @@ jobs:
   sync-project-status:
     runs-on: ubuntu-latest
     env:
-      PROJECT_OWNER: ${{ vars.PROJECT_OWNER || github.repository_owner }}
       PROJECT_NUMBER: ${{ vars.PROJECT_NUMBER }}
       PROJECT_STATUS_FIELD: ${{ vars.PROJECT_STATUS_FIELD || 'Status' }}
       PROJECT_STATUS_BACKLOG: ${{ vars.PROJECT_STATUS_BACKLOG || 'Backlog' }}
