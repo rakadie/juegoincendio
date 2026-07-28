@@ -7,8 +7,11 @@ Sincronizar las incidencias del repositorio con el campo `Status` del GitHub Pro
 Flujo objetivo:
 
 ```text
-Backlog → Ready → In Progress → Done
+estado inicial → Ready → In Progress → Review → Done
+                    ↘ Blocked ↗
 ```
+
+El workflow no necesita conocer el nombre del estado inicial del Project. Las incidencias sin señal explícita conservan su estado actual.
 
 ## Regla de seguridad principal
 
@@ -33,12 +36,14 @@ El workflow `.github/workflows/project-status-sync.yml` aplica estas reglas:
 | Señal | Estado del Project |
 |---|---|
 | Issue cerrada | `Done` |
-| Etiqueta `status:blocked` | `Backlog` |
+| Etiqueta `status:blocked` | `Blocked` |
 | Etiqueta `status:ready` | `Ready` |
 | Etiqueta `status:in-progress` | `In Progress` |
+| Etiqueta `status:review` | `Review` |
 | Todas las dependencias explícitas están cerradas | `Ready` |
-| Existe alguna dependencia explícita abierta | `Backlog` |
-| PR no draft con `Closes #N`, `Fixes #N` o `Resolves #N` | `In Progress` |
+| Existe alguna dependencia explícita abierta | `Blocked` |
+| PR draft con `Closes #N`, `Fixes #N` o `Resolves #N` | `In Progress` |
+| PR no draft con referencia de cierre | `Review` |
 | PR fusionada con referencia de cierre | `Done` |
 
 Una issue abierta sin etiqueta de estado ni dependencias explícitas conserva su estado actual. Esto evita mover épicas o trabajo no refinado a `Ready` por accidente.
@@ -101,9 +106,10 @@ Variables opcionales si los nombres del Project son distintos:
 | Variable | Valor predeterminado |
 |---|---|
 | `PROJECT_STATUS_FIELD` | `Status` |
-| `PROJECT_STATUS_BACKLOG` | `Backlog` |
+| `PROJECT_STATUS_BLOCKED` | `Blocked` |
 | `PROJECT_STATUS_READY` | `Ready` |
 | `PROJECT_STATUS_IN_PROGRESS` | `In Progress` |
+| `PROJECT_STATUS_REVIEW` | `Review` |
 | `PROJECT_STATUS_DONE` | `Done` |
 
 Por ejemplo, si el Project usa `In progress` o `In process`, establecer ese texto exacto en `PROJECT_STATUS_IN_PROGRESS`.
@@ -116,6 +122,7 @@ Crear estas etiquetas en el repositorio:
 status:blocked
 status:ready
 status:in-progress
+status:review
 ```
 
 Las etiquetas actúan como órdenes explícitas y tienen prioridad sobre las dependencias.
@@ -130,7 +137,7 @@ Project → menú → Workflows
 
 Configurar:
 
-1. `Item added to project → Backlog` o el estado inicial equivalente.
+1. `Item added to project → estado inicial`.
 2. `Issue closed → Done` activado.
 3. `Pull request merged → Done` activado.
 4. Cualquier regla `Status changed → close issue` desactivada.
@@ -143,7 +150,7 @@ Desde `Actions → Sync Project status → Run workflow` se puede:
 
 - indicar una issue concreta;
 - calcular su estado automáticamente;
-- forzar `Backlog`, `Ready`, `In Progress` o `Done`;
+- forzar `Blocked`, `Ready`, `In Progress`, `Review` o `Done`;
 - dejar el número vacío para reevaluar todas las issues abiertas con dependencias.
 
 ## Uso recomendado
@@ -156,14 +163,22 @@ Añadir dependencias explícitas:
 Depende de #24 y #25.
 ```
 
-La issue permanecerá en `Backlog` hasta que ambas estén cerradas y entonces pasará a `Ready`.
+La issue permanecerá en `Blocked` hasta que ambas estén cerradas y entonces pasará a `Ready`.
 
 ### Inicio real del trabajo
 
 Usar una de estas dos señales:
 
 - añadir `status:in-progress`;
-- abrir o marcar como lista una PR no draft que contenga `Closes #N`.
+- abrir una PR draft que contenga `Closes #N`.
+
+### Revisión
+
+Usar una de estas señales:
+
+- añadir `status:review`;
+- marcar como lista una PR vinculada mediante `Closes #N`;
+- abrir directamente una PR no draft con referencia de cierre.
 
 ### Finalización
 
