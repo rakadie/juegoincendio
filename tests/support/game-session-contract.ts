@@ -1,0 +1,160 @@
+import {
+  validateGameSessionContract as validateBaseGameSessionContract,
+  type CanonicalSceneId,
+  type ContractValidationError,
+  type ContractValidationResult
+} from './game-session-contract-base.js';
+
+export {
+  CANONICAL_SCENE_IDS,
+  CRISIS_BRANCHES,
+  DECISION_SCENE_IDS,
+  INHERITED_STATE_KEYS,
+  RESULT_VARIANTS,
+  roundTripJson
+} from './game-session-contract-base.js';
+
+export type {
+  CanonicalSceneId,
+  ContractValidationError,
+  ContractValidationResult,
+  CrisisBranch,
+  DecisionSceneId,
+  GameSessionContractErrorCode,
+  ResultVariant
+} from './game-session-contract-base.js';
+
+const ALLOWED_TRANSITIONS: Readonly<Record<CanonicalSceneId, readonly CanonicalSceneId[]>> = {
+  'intro-briefing-mission': ['prevention-inspection-territory-fuel'],
+  'prevention-inspection-territory-fuel': ['prevention-inspection-housing-interface'],
+  'prevention-inspection-housing-interface': ['transition-summary-prevention'],
+  'transition-summary-prevention': ['crisis-decision-first-alert'],
+  'crisis-decision-first-alert': ['crisis-router-causal-map'],
+  'crisis-router-causal-map': [
+    'crisis-decision-emergency-fuel-break',
+    'crisis-decision-access-blockage'
+  ],
+  'crisis-decision-emergency-fuel-break': ['crisis-decision-ravine-fire'],
+  'crisis-decision-access-blockage': ['crisis-decision-ravine-fire'],
+  'crisis-decision-ravine-fire': [
+    'crisis-decision-housing-defense',
+    'crisis-decision-crown-fire'
+  ],
+  'crisis-decision-housing-defense': ['ending-result-causal-report'],
+  'crisis-decision-crown-fire': ['ending-result-causal-report'],
+  'ending-result-causal-report': []
+};
+
+const PREVENTION_SCENE_IDS = new Set([
+  'prevention-inspection-territory-fuel',
+  'prevention-inspection-housing-interface'
+]);
+
+interface JsonObject {
+  readonly [key: string]: unknown;
+}
+
+function isPlainObject(value: unknown): value is JsonObject {
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+}
+
+function validateCanonicalTransitions(value: unknown): ContractValidationError[] {
+  if (!isPlainObject(value) || !Array.isArray(value.history)) return [];
+
+  const errors: ContractValidationError[] = [];
+  const history = value.history;
+  history.forEach((event, index) => {
+    if (!isPlainObject(event) || event.type !== 'scene-transitioned') return;
+    if (typeof event.fromSceneId !== 'string' || typeof event.toSceneId !== 'string') return;
+
+    const allowedSuccessors = ALLOWED_TRANSITIONS[event.fromSceneId as CanonicalSceneId];
+    if (!allowedSuccessors || !allowedSuccessors.includes(event.toSceneId as CanonicalSceneId)) {
+      errors.push({
+        code: 'corrupt-session-history',
+        path: `$.history[${index}]`,
+        message: `Transition ${event.fromSceneId} -> ${event.toSceneId} is not an edge of the canonical graph.`
+      });
+    }
+  });
+
+  return errors;
+}
+
+function validateInheritedStateCalculationOrder(value: unknown): ContractValidationError[] {
+  if (!isPlainObject(value) || !Array.isArray(value.history)) return [];
+
+  const errors: ContractValidationError[] = [];
+  const history = value.history;
+  const seenPreventionDecisionSequences: number[] = [];
+
+  history.forEach((event, index) => {
+    if (!isPlainObject(event)) return;
+
+    if (
+      event.type === 'decision-applied' &&
+      typeof event.sceneId === 'string' &&
+      PREVENTION_SCENE_IDS.has(event.sceneId) &&
+      typeof event.decisionSequence === 'number' &&
+      Number.isInteger(event.decisionSequence)
+    ) {
+      seenPreventionDecisionSequences.push(event.decisionSequence);
+      return;
+    }
+
+    if (event.type !== 'inherited-state-calculated') return;
+
+    const path = `$.history[${index}]`;
+    const previousEvent = history[index - 1];
+    if (
+      !isPlainObject(previousEvent) ||
+      previousEvent.type !== 'scene-completed' ||
+      previousEvent.sceneId !== 'prevention-inspection-housing-interface'
+    ) {
+      errors.push({
+        code: 'corrupt-session-history',
+        path,
+        message:
+          'InheritedState must be calculated immediately after completing the housing-interface inspection.'
+      });
+    }
+
+    if (!Array.isArray(event.sourceDecisionSequences)) return;
+
+    const sourceDecisionSequences = event.sourceDecisionSequences.filter(
+      (sequence): sequence is number => typeof sequence === 'number' && Number.isInteger(sequence)
+    );
+    const referencesOnlyPriorDecisions = sourceDecisionSequences.every((sequence) =>
+      seenPreventionDecisionSequences.includes(sequence)
+    );
+    const referencesAllPriorPreventionDecisions =
+      sourceDecisionSequences.length === seenPreventionDecisionSequences.length &&
+      sourceDecisionSequences.every(
+        (sequence, sourceIndex) => sequence === seenPreventionDecisionSequences[sourceIndex]
+      );
+
+    if (!referencesOnlyPriorDecisions || !referencesAllPriorPreventionDecisions) {
+      errors.push({
+        code: 'corrupt-session-history',
+        path: `${path}.sourceDecisionSequences`,
+        message:
+          'InheritedState sources must be exactly the prevention decisions applied before the calculation event.'
+      });
+    }
+  });
+
+  return errors;
+}
+
+export function validateGameSessionContract(value: unknown): ContractValidationResult {
+  const baseResult = validateBaseGameSessionContract(value);
+  const extensionErrors = [
+    ...validateCanonicalTransitions(value),
+    ...validateInheritedStateCalculationOrder(value)
+  ];
+
+  if (extensionErrors.length === 0) return baseResult;
+  if (baseResult.valid) return { valid: false, errors: extensionErrors };
+  return { valid: false, errors: [...baseResult.errors, ...extensionErrors] };
+}
