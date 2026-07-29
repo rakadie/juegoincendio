@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "fixture-session-001",
+  "status": "active",
+  "progress": {
+    "currentSceneId": "intro-briefing-mission",
+    "completedSceneIds": []
+  },
+  "decisions": [],
+  "inheritedState": null,
+  "crisisBranch": null,
+  "result": null,
+  "history": [
+    {
+      "sequence": 1,
+      "type": "session-created",
+      "sessionId": "fixture-session-001",
+      "schemaVersion": 1,
+      "initialSceneId": "intro-briefing-mission"
+    }
+  ]
+}
