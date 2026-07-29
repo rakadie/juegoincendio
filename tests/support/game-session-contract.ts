@@ -60,11 +60,59 @@ function isPlainObject(value: unknown): value is JsonObject {
   return prototype === Object.prototype || prototype === null;
 }
 
+function canonicalizeJson(value: unknown, ancestors = new Set<object>()): unknown {
+  if (value === null || typeof value === 'string' || typeof value === 'boolean') return value;
+
+  if (typeof value === 'number') {
+    if (!Number.isFinite(value)) throw new TypeError('Non-finite numbers are not valid JSON.');
+    return value;
+  }
+
+  if (typeof value !== 'object') {
+    throw new TypeError('Only JSON-compatible values can be canonicalized.');
+  }
+
+  if (ancestors.has(value)) throw new TypeError('Circular values are not valid JSON.');
+  ancestors.add(value);
+
+  try {
+    if (Array.isArray(value)) {
+      return value.map((item) => canonicalizeJson(item, ancestors));
+    }
+
+    if (!isPlainObject(value)) {
+      throw new TypeError('Only plain JSON objects can be canonicalized.');
+    }
+
+    // A null-prototype target preserves every enumerable JSON key as an own
+    // data property. In particular, assigning "__proto__" cannot invoke the
+    // legacy Object.prototype setter and silently remove the unexpected key.
+    const canonical = Object.create(null) as Record<string, unknown>;
+    for (const key of Object.keys(value).sort()) {
+      canonical[key] = canonicalizeJson(value[key], ancestors);
+    }
+    return canonical;
+  } finally {
+    ancestors.delete(value);
+  }
+}
+
+function canonicalizeContractInput(value: unknown): unknown {
+  try {
+    return canonicalizeJson(value);
+  } catch {
+    // Preserve malformed values so the base validator reports their original
+    // JSON/type error instead of normalizing the problem away.
+    return value;
+  }
+}
+
 function validateCanonicalTransitions(value: unknown): ContractValidationError[] {
-  if (!isPlainObject(value) || !Array.isArray(value.history)) return [];
+  if (!isPlainObject(value)) return [];
+  const history = value.history;
+  if (!Array.isArray(history)) return [];
 
   const errors: ContractValidationError[] = [];
-  const history = value.history;
   history.forEach((event, index) => {
     if (!isPlainObject(event) || event.type !== 'scene-transitioned') return;
     if (typeof event.fromSceneId !== 'string' || typeof event.toSceneId !== 'string') return;
@@ -83,10 +131,11 @@ function validateCanonicalTransitions(value: unknown): ContractValidationError[]
 }
 
 function validateInheritedStateCalculationOrder(value: unknown): ContractValidationError[] {
-  if (!isPlainObject(value) || !Array.isArray(value.history)) return [];
+  if (!isPlainObject(value)) return [];
+  const history = value.history;
+  if (!Array.isArray(history)) return [];
 
   const errors: ContractValidationError[] = [];
-  const history = value.history;
   const seenPreventionDecisionSequences: number[] = [];
 
   history.forEach((event, index) => {
@@ -148,10 +197,11 @@ function validateInheritedStateCalculationOrder(value: unknown): ContractValidat
 }
 
 export function validateGameSessionContract(value: unknown): ContractValidationResult {
-  const baseResult = validateBaseGameSessionContract(value);
+  const canonicalValue = canonicalizeContractInput(value);
+  const baseResult = validateBaseGameSessionContract(canonicalValue);
   const extensionErrors = [
-    ...validateCanonicalTransitions(value),
-    ...validateInheritedStateCalculationOrder(value)
+    ...validateCanonicalTransitions(canonicalValue),
+    ...validateInheritedStateCalculationOrder(canonicalValue)
   ];
 
   if (extensionErrors.length === 0) return baseResult;
