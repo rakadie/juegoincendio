@@ -84,7 +84,10 @@ function canonicalizeJson(value: unknown, ancestors = new Set<object>()): unknow
       throw new TypeError('Only plain JSON objects can be canonicalized.');
     }
 
-    const canonical: Record<string, unknown> = {};
+    // A null-prototype target preserves every enumerable JSON key as an own
+    // data property. In particular, assigning "__proto__" cannot invoke the
+    // legacy Object.prototype setter and silently remove the unexpected key.
+    const canonical = Object.create(null) as Record<string, unknown>;
     for (const key of Object.keys(value).sort()) {
       canonical[key] = canonicalizeJson(value[key], ancestors);
     }
