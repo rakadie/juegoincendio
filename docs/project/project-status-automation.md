@@ -94,9 +94,9 @@ Secret obligatorio:
 
 | Nombre | Valor |
 |---|---|
-| `PROJECTS_TOKEN` | PAT o token de GitHub App con escritura sobre el Project y lectura y escritura de Issues en el repositorio |
+| `PROJECTS_TOKEN` | PAT clÃ¡sico con el scope `project` para el Project perteneciente al usuario |
 
-Para un repositorio privado, el token necesita tambiÃ©n acceso al repositorio. No guardar el token en variables ni en archivos.
+El `GITHUB_TOKEN` efÃ­mero del workflow cierra las Issues y queda limitado a este repositorio. Para un repositorio privado, el PAT del Project necesita tambiÃ©n acceso de lectura al repositorio. No guardar el token en variables ni en archivos.
 
 Las PR procedentes de forks omiten el job completo. Mientras `PROJECTS_TOKEN` o `PROJECT_NUMBER` no estÃ©n configurados, las PR internas tambiÃ©n se omiten de forma explÃ­cita; los eventos de issues y las ejecuciones programadas o manuales fallan para hacer visible una configuraciÃ³n incompleta.
 
