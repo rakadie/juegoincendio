@@ -60,7 +60,13 @@ const closingReferences = (body, owner, repo) => {
  * All terminal transitions are idempotent. A scheduled reconciliation catches
  * manual moves to terminal Project statuses that do not emit repository events.
  */
-module.exports = async ({ github, projectGraphql = github.graphql, context, core }) => {
+module.exports = async ({
+  github,
+  projectRequest = github.request,
+  projectGraphql = github.graphql,
+  context,
+  core,
+}) => {
   const owner = context.repo.owner;
   const repo = context.repo.repo;
   const projectNumber = Number(process.env.PROJECT_NUMBER);
@@ -80,41 +86,43 @@ module.exports = async ({ github, projectGraphql = github.graphql, context, core
     throw new Error('Repository variable PROJECT_NUMBER must contain the GitHub Project number.');
   }
 
-  const projectResponse = await projectGraphql(
-    `
-      query Project($owner: String!, $repo: String!, $number: Int!) {
-        repository(owner: $owner, name: $repo) {
-          owner {
-            ... on User {
-              projectV2(number: $number) { ...ProjectData }
-            }
-            ... on Organization {
-              projectV2(number: $number) { ...ProjectData }
-            }
-          }
-        }
-      }
+  const [projectResponse, fieldsResponse] = await Promise.all([
+    projectRequest('GET /users/{username}/projectsV2/{project_number}', {
+      username: owner,
+      project_number: projectNumber,
+    }),
+    projectRequest('GET /users/{username}/projectsV2/{project_number}/fields', {
+      username: owner,
+      project_number: projectNumber,
+      per_page: 100,
+    }),
+  ]);
 
-      fragment ProjectData on ProjectV2 {
-        id
-        title
-        fields(first: 50) {
-          nodes {
-            ... on ProjectV2SingleSelectField {
-              id
-              name
-              options { id name }
-            }
-          }
-        }
+  const projectData = projectResponse.data;
+  const projectFields = Array.isArray(fieldsResponse.data)
+    ? fieldsResponse.data
+    : fieldsResponse.data?.value || [];
+  const project = projectData?.node_id
+    ? {
+        id: projectData.node_id,
+        title: projectData.title,
+        fields: {
+          nodes: projectFields.map((field) => ({
+            id: field.node_id,
+            name: field.name,
+            options: (field.options || []).map((option) => ({
+              id: option.id,
+              name: option.name?.raw || option.name,
+            })),
+          })),
+        },
       }
-    `,
-    { owner, repo, number: projectNumber },
-  );
+    : null;
 
-  const project = projectResponse.repository?.owner?.projectV2;
   if (!project) {
-    throw new Error(`Project #${projectNumber} was not found for repository owner ${owner}.`);
+    throw new Error(
+      `Project #${projectNumber} was not found for repository owner ${owner}.`,
+    );
   }
 
   const statusField = project.fields.nodes.find(
@@ -301,7 +309,7 @@ module.exports = async ({ github, projectGraphql = github.graphql, context, core
     const numbers = new Set();
     const source = String(text || '');
 
-    for (const match of source.matchAll(/#(\d+)\s*(?:-|â€“|â€”)\s*#?(\d+)/g)) {
+    for (const match of source.matchAll(/#(\d+)\s*(?:-|–|—)\s*#?(\d+)/g)) {
       const start = Number(match[1]);
       const end = Number(match[2]);
       if (end >= start && end - start <= 100) {
