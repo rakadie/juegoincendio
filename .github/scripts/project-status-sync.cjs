@@ -60,7 +60,7 @@ const closingReferences = (body, owner, repo) => {
  * All terminal transitions are idempotent. A scheduled reconciliation catches
  * manual moves to terminal Project statuses that do not emit repository events.
  */
-module.exports = async ({ github, context, core }) => {
+module.exports = async ({ github, projectGraphql = github.graphql, context, core }) => {
   const owner = context.repo.owner;
   const repo = context.repo.repo;
   const projectNumber = Number(process.env.PROJECT_NUMBER);
@@ -80,7 +80,7 @@ module.exports = async ({ github, context, core }) => {
     throw new Error('Repository variable PROJECT_NUMBER must contain the GitHub Project number.');
   }
 
-  const projectResponse = await github.graphql(
+  const projectResponse = await projectGraphql(
     `
       query Project($owner: String!, $repo: String!, $number: Int!) {
         repository(owner: $owner, name: $repo) {
@@ -143,7 +143,7 @@ module.exports = async ({ github, context, core }) => {
   const findProjectItem = async (issueNodeId) => {
     let after = null;
     do {
-      const response = await github.graphql(
+      const response = await projectGraphql(
         `
           query ProjectItems($projectId: ID!, $after: String) {
             node(id: $projectId) {
@@ -174,7 +174,7 @@ module.exports = async ({ github, context, core }) => {
     const existing = await findProjectItem(issueNodeId);
     if (existing) return existing;
 
-    const response = await github.graphql(
+    const response = await projectGraphql(
       `
         mutation AddProjectItem($projectId: ID!, $contentId: ID!) {
           addProjectV2ItemById(input: { projectId: $projectId, contentId: $contentId }) {
@@ -191,7 +191,7 @@ module.exports = async ({ github, context, core }) => {
     const item = await ensureProjectItem(issue.node_id);
     const option = statusOptions[key];
 
-    await github.graphql(
+    await projectGraphql(
       `
         mutation UpdateProjectStatus(
           $projectId: ID!
@@ -240,7 +240,7 @@ module.exports = async ({ github, context, core }) => {
   const reconcileTerminalProjectStatuses = async () => {
     let after = null;
     do {
-      const response = await github.graphql(
+      const response = await projectGraphql(
         `
           query ProjectItemsWithStatus(
             $projectId: ID!
