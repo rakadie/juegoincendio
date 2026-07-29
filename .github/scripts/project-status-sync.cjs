@@ -314,6 +314,9 @@ module.exports = async ({ github, context, core }) => {
     if (pullRequest.merged) {
       for (const number of linkedIssues) await syncIssue(await getIssue(number), 'done');
       await syncOpenDependencies();
+    } else if (pullRequest.state === 'closed') {
+      for (const number of linkedIssues) await syncIssue(await getIssue(number));
+      await syncOpenDependencies();
     } else if (pullRequest.state === 'open' && pullRequest.draft) {
       for (const number of linkedIssues) await syncIssue(await getIssue(number), 'inProgress');
     } else if (pullRequest.state === 'open') {
