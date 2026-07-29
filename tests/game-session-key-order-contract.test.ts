@@ -22,6 +22,15 @@ function expectContractError(value: unknown, code: GameSessionContractErrorCode)
   expect(result.errors.map((error) => error.code)).toContain(code);
 }
 
+function defineEnumerableProtoKey(target: object, value: unknown): void {
+  Object.defineProperty(target, '__proto__', {
+    value,
+    enumerable: true,
+    configurable: true,
+    writable: true
+  });
+}
+
 describe('GameSession structural JSON equality', () => {
   it('accepts equivalent InheritedState objects with different key order', async () => {
     const fixture = await loadCompletedFixture();
@@ -83,5 +92,21 @@ describe('GameSession structural JSON equality', () => {
     };
 
     expectContractError(fixture, 'session-completion-mismatch');
+  });
+
+  it('preserves an enumerable top-level __proto__ key so exact-key validation rejects it', async () => {
+    const fixture = await loadCompletedFixture();
+    defineEnumerableProtoKey(fixture, null);
+
+    expect(Object.prototype.hasOwnProperty.call(fixture, '__proto__')).toBe(true);
+    expectContractError(fixture, 'unexpected-key');
+  });
+
+  it('preserves an enumerable nested __proto__ key so structural validation rejects it', async () => {
+    const fixture = await loadCompletedFixture();
+    defineEnumerableProtoKey(fixture.inheritedState, 'unexpected');
+
+    expect(Object.prototype.hasOwnProperty.call(fixture.inheritedState, '__proto__')).toBe(true);
+    expectContractError(fixture, 'invalid-inherited-state');
   });
 });
