@@ -98,7 +98,9 @@ Secret obligatorio:
 
 Para un repositorio privado, el token necesita también acceso al repositorio. No guardar el token en variables ni en archivos.
 
-El evento estándar `pull_request` recibe secretos únicamente para ramas del propio repositorio. Las PR procedentes de forks no actualizan el Project.
+El evento estándar `pull_request` recibe secretos únicamente para ramas del propio repositorio. Las PR procedentes de forks omiten el job completo y no actualizan el Project.
+
+Mientras `PROJECTS_TOKEN` o `PROJECT_NUMBER` no estén configurados, las ejecuciones provocadas por una PR interna terminan correctamente como una omisión explícita. Los eventos de issues y las ejecuciones manuales siguen fallando para hacer visible una configuración incompleta.
 
 ### 2. Variables del repositorio
 
@@ -207,4 +209,4 @@ Cerrar la issue como `not planned` o `duplicate`, o aplicar `status:superseded`.
 ## Archivos
 
 - Workflow: `.github/workflows/project-status-sync.yml`
-- Lógica: `.github/scripts/project-status-sync.js`
+- Lógica CommonJS: `.github/scripts/project-status-sync.cjs`
