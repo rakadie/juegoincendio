@@ -13,6 +13,7 @@
     "i18n:extract-scenarios": "tsx scripts/extract-scenario-i18n.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:contract": "vitest run tests/game-session-contract.test.ts",
     "test:watch": "vitest"
   },
   "dependencies": {
