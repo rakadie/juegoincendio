@@ -98,14 +98,7 @@ jobs:
           github-token: ${{ github.token }}
           script: |
             const synchronize = require('./.github/scripts/project-status-sync.cjs');
-            const projectRequest = github.request.defaults({
-              headers: {
-                authorization: `token ${process.env.PROJECTS_TOKEN}`,
-                accept: 'application/vnd.github+json',
-                'x-github-api-version': '2026-03-10',
-              },
-            });
             const projectGraphql = github.graphql.defaults({
               headers: { authorization: `token ${process.env.PROJECTS_TOKEN}` },
             });
-            await synchronize({ github, projectRequest, projectGraphql, context, core });
+            await synchronize({ github, projectGraphql, context, core });
