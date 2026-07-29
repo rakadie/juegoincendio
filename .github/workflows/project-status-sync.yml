@@ -18,10 +18,12 @@ on:
       - ready_for_review
       - converted_to_draft
       - closed
+  schedule:
+    - cron: '*/15 * * * *'
   workflow_dispatch:
     inputs:
       issue_number:
-        description: Optional issue number. Leave empty to rescan open issues with explicit dependencies.
+        description: Optional issue number. Leave empty to reconcile dependencies and terminal statuses.
         required: false
         type: number
       status:
@@ -41,7 +43,7 @@ on:
 
 permissions:
   contents: read
-  issues: read
+  issues: write
   pull-requests: read
 
 concurrency:
