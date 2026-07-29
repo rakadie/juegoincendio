@@ -45,6 +45,11 @@ const ALLOWED_TRANSITIONS: Readonly<Record<CanonicalSceneId, readonly CanonicalS
   'ending-result-causal-report': []
 };
 
+const PREVENTION_SCENE_IDS = new Set([
+  'prevention-inspection-territory-fuel',
+  'prevention-inspection-housing-interface'
+]);
+
 interface JsonObject {
   readonly [key: string]: unknown;
 }
@@ -76,11 +81,78 @@ function validateCanonicalTransitions(value: unknown): ContractValidationError[]
   return errors;
 }
 
+function validateInheritedStateCalculationOrder(value: unknown): ContractValidationError[] {
+  if (!isPlainObject(value) || !Array.isArray(value.history)) return [];
+
+  const errors: ContractValidationError[] = [];
+  const seenPreventionDecisionSequences: number[] = [];
+
+  value.history.forEach((event, index) => {
+    if (!isPlainObject(event)) return;
+
+    if (
+      event.type === 'decision-applied' &&
+      typeof event.sceneId === 'string' &&
+      PREVENTION_SCENE_IDS.has(event.sceneId) &&
+      typeof event.decisionSequence === 'number' &&
+      Number.isInteger(event.decisionSequence)
+    ) {
+      seenPreventionDecisionSequences.push(event.decisionSequence);
+      return;
+    }
+
+    if (event.type !== 'inherited-state-calculated') return;
+
+    const path = `$.history[${index}]`;
+    const previousEvent = value.history[index - 1];
+    if (
+      !isPlainObject(previousEvent) ||
+      previousEvent.type !== 'scene-completed' ||
+      previousEvent.sceneId !== 'prevention-inspection-housing-interface'
+    ) {
+      errors.push({
+        code: 'corrupt-session-history',
+        path,
+        message:
+          'InheritedState must be calculated immediately after completing the housing-interface inspection.'
+      });
+    }
+
+    if (!Array.isArray(event.sourceDecisionSequences)) return;
+
+    const sourceDecisionSequences = event.sourceDecisionSequences.filter(
+      (sequence): sequence is number => typeof sequence === 'number' && Number.isInteger(sequence)
+    );
+    const referencesOnlyPriorDecisions = sourceDecisionSequences.every((sequence) =>
+      seenPreventionDecisionSequences.includes(sequence)
+    );
+    const referencesAllPriorPreventionDecisions =
+      sourceDecisionSequences.length === seenPreventionDecisionSequences.length &&
+      sourceDecisionSequences.every(
+        (sequence, sourceIndex) => sequence === seenPreventionDecisionSequences[sourceIndex]
+      );
+
+    if (!referencesOnlyPriorDecisions || !referencesAllPriorPreventionDecisions) {
+      errors.push({
+        code: 'corrupt-session-history',
+        path: `${path}.sourceDecisionSequences`,
+        message:
+          'InheritedState sources must be exactly the prevention decisions applied before the calculation event.'
+      });
+    }
+  });
+
+  return errors;
+}
+
 export function validateGameSessionContract(value: unknown): ContractValidationResult {
   const baseResult = validateBaseGameSessionContract(value);
-  const transitionErrors = validateCanonicalTransitions(value);
+  const extensionErrors = [
+    ...validateCanonicalTransitions(value),
+    ...validateInheritedStateCalculationOrder(value)
+  ];
 
-  if (transitionErrors.length === 0) return baseResult;
-  if (baseResult.valid) return { valid: false, errors: transitionErrors };
-  return { valid: false, errors: [...baseResult.errors, ...transitionErrors] };
+  if (extensionErrors.length === 0) return baseResult;
+  if (baseResult.valid) return { valid: false, errors: extensionErrors };
+  return { valid: false, errors: [...baseResult.errors, ...extensionErrors] };
 }
