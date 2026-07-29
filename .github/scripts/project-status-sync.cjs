@@ -1,5 +1,25 @@
 /* eslint-disable no-console */
 
+const normalize = (value) => String(value || '').trim().toLocaleLowerCase('en-US');
+
+const issueLabelNames = (labels = []) => {
+  const values = Array.isArray(labels) ? labels : labels.nodes || [];
+  return new Set(
+    values.map((label) => normalize(typeof label === 'string' ? label : label?.name)),
+  );
+};
+
+const projectStatusForClosedReason = (stateReason) => {
+  const reason = normalize(stateReason);
+  return reason === 'not_planned' || reason === 'duplicate' ? 'superseded' : 'done';
+};
+
+const closingReasonForProjectStatus = (statusKey) => {
+  if (statusKey === 'done') return 'completed';
+  if (statusKey !== 'superseded') return null;
+  return 'not_planned';
+};
+
 /**
  * Return issue numbers governed by a closing keyword and targeting this
  * repository. GitHub requires a keyword for each target, so unrelated
@@ -22,12 +42,14 @@ const closingReferences = (body, owner, repo) => {
 };
 
 /**
- * Synchronize GitHub issue state with a GitHub Projects v2 Status field.
+ * Keep GitHub issue state and the terminal GitHub Projects v2 statuses aligned.
  *
  * Rules:
  * - new/reopened issue without another signal -> Backlog
  * - closed issue as completed -> Done
  * - closed issue as not planned/duplicate -> Superseded
+ * - Done -> close the issue as completed
+ * - Superseded -> close the issue as not planned
  * - status:* labels explicitly select a Project status
  * - all explicit dependencies closed -> Ready
  * - any explicit dependency open -> Blocked
@@ -35,14 +57,14 @@ const closingReferences = (body, owner, repo) => {
  * - non-draft PR with a closing reference -> Review
  * - merged PR with a closing reference -> Done
  *
- * This script never closes an issue because its Project status changed.
+ * All terminal transitions are idempotent. A scheduled reconciliation catches
+ * manual moves to terminal Project statuses that do not emit repository events.
  */
 module.exports = async ({ github, context, core }) => {
   const owner = context.repo.owner;
   const repo = context.repo.repo;
   const projectNumber = Number(process.env.PROJECT_NUMBER);
   const statusFieldName = process.env.PROJECT_STATUS_FIELD || 'Status';
-  const normalize = (value) => String(value || '').trim().toLocaleLowerCase('en-US');
 
   const statusNames = {
     backlog: process.env.PROJECT_STATUS_BACKLOG || 'Backlog',
@@ -198,11 +220,88 @@ module.exports = async ({ github, context, core }) => {
     core.info(`#${issue.number} -> ${option.name}: ${reason}`);
   };
 
+  const closeIssueForStatus = async (issue, statusKey) => {
+    const stateReason = closingReasonForProjectStatus(statusKey);
+    if (!stateReason || normalize(issue.state) === 'closed') return;
+
+    await github.rest.issues.update({
+      owner,
+      repo,
+      issue_number: issue.number,
+      state: 'closed',
+      state_reason: stateReason,
+    });
+
+    issue.state = 'closed';
+    issue.state_reason = stateReason;
+    core.info(`#${issue.number} closed as ${stateReason}: Project status ${statusNames[statusKey]}`);
+  };
+
+  const reconcileTerminalProjectStatuses = async () => {
+    let after = null;
+    do {
+      const response = await github.graphql(
+        `
+          query ProjectItemsWithStatus(
+            $projectId: ID!
+            $statusFieldName: String!
+            $after: String
+          ) {
+            node(id: $projectId) {
+              ... on ProjectV2 {
+                items(first: 100, after: $after) {
+                  nodes {
+                    fieldValueByName(name: $statusFieldName) {
+                      ... on ProjectV2ItemFieldSingleSelectValue { name }
+                    }
+                    content {
+                      ... on Issue {
+                        id
+                        number
+                        state
+                        repository { nameWithOwner }
+                        labels(first: 50) { nodes { name } }
+                      }
+                    }
+                  }
+                  pageInfo { hasNextPage endCursor }
+                }
+              }
+            }
+          }
+        `,
+        { projectId: project.id, statusFieldName, after },
+      );
+
+      const items = response.node.items;
+      for (const item of items.nodes) {
+        const issue = item.content;
+        if (
+          !issue ||
+          normalize(issue.repository?.nameWithOwner) !== normalize(`${owner}/${repo}`) ||
+          normalize(issue.state) !== 'open'
+        ) {
+          continue;
+        }
+
+        const statusKey = Object.entries(statusNames).find(
+          ([, name]) => normalize(name) === normalize(item.fieldValueByName?.name),
+        )?.[0];
+
+        if (statusKey === 'done' || statusKey === 'superseded') {
+          await closeIssueForStatus(issue, statusKey);
+        }
+      }
+
+      after = items.pageInfo.hasNextPage ? items.pageInfo.endCursor : null;
+    } while (after);
+  };
+
   const issueReferences = (text) => {
     const numbers = new Set();
     const source = String(text || '');
 
-    for (const match of source.matchAll(/#(\d+)\s*(?:-|–|—)\s*#?(\d+)/g)) {
+    for (const match of source.matchAll(/#(\d+)\s*(?:-|â€“|â€”)\s*#?(\d+)/g)) {
       const start = Number(match[1]);
       const end = Number(match[2]);
       if (end >= start && end - start <= 100) {
@@ -231,17 +330,12 @@ module.exports = async ({ github, context, core }) => {
   };
 
   const calculateStatus = async (issue) => {
-    if (issue.state === 'closed') {
-      const reason = normalize(issue.state_reason);
-      if (reason === 'not_planned' || reason === 'duplicate') {
-        return { key: 'superseded', reason: `issue closed as ${reason}` };
-      }
-      return { key: 'done', reason: 'issue closed as completed' };
+    if (normalize(issue.state) === 'closed') {
+      const key = projectStatusForClosedReason(issue.state_reason);
+      return { key, reason: `issue closed as ${normalize(issue.state_reason) || 'completed'}` };
     }
 
-    const labels = new Set(
-      (issue.labels || []).map((label) => normalize(typeof label === 'string' ? label : label.name)),
-    );
+    const labels = issueLabelNames(issue.labels);
 
     if (labels.has('status:superseded')) {
       return { key: 'superseded', reason: 'status:superseded label' };
@@ -258,7 +352,9 @@ module.exports = async ({ github, context, core }) => {
     if (dependencies.length === 0) return null;
 
     const dependencyIssues = await Promise.all(dependencies.map(getIssue));
-    const openDependencies = dependencyIssues.filter((dependency) => dependency.state !== 'closed');
+    const openDependencies = dependencyIssues.filter(
+      (dependency) => normalize(dependency.state) !== 'closed',
+    );
 
     if (openDependencies.length > 0) {
       return {
@@ -289,6 +385,7 @@ module.exports = async ({ github, context, core }) => {
       return;
     }
     await setStatus(issue, decision.key, decision.reason);
+    await closeIssueForStatus(issue, decision.key);
   };
 
   const syncOpenDependencies = async () => {
@@ -305,6 +402,11 @@ module.exports = async ({ github, context, core }) => {
       }
     }
   };
+
+  if (context.eventName === 'schedule') {
+    await reconcileTerminalProjectStatuses();
+    return;
+  }
 
   if (context.eventName === 'pull_request') {
     const pullRequest = context.payload.pull_request;
@@ -338,8 +440,12 @@ module.exports = async ({ github, context, core }) => {
       Superseded: 'superseded',
     }[requestedStatus];
 
-    if (issueNumber > 0) await syncIssue(await getIssue(issueNumber), forcedStatus || null);
-    else await syncOpenDependencies();
+    if (issueNumber > 0) {
+      await syncIssue(await getIssue(issueNumber), forcedStatus || null);
+    } else {
+      await syncOpenDependencies();
+      await reconcileTerminalProjectStatuses();
+    }
     return;
   }
 
@@ -355,3 +461,5 @@ module.exports = async ({ github, context, core }) => {
 };
 
 module.exports.closingReferences = closingReferences;
+module.exports.projectStatusForClosedReason = projectStatusForClosedReason;
+module.exports.closingReasonForProjectStatus = closingReasonForProjectStatus;
