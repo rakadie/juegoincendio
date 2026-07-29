@@ -1,148 +1,177 @@
 # Vertical Beta 1 — ¡Apaga las llamas!
 
-Fecha de decisión: 26 de julio de 2026
+Fecha de decisión inicial: 26 de julio de 2026  
+Última consolidación: 28 de julio de 2026  
+Estado: **definición de producto vigente**
+
+## Fuente de verdad
+
+Este documento resume el producto aprobado. El catálogo, los IDs, las fuentes y las transiciones se definen de forma normativa en:
+
+- [`docs/product/vertical-beta-1-catalog.md`](vertical-beta-1-catalog.md);
+- #21 — convención canónica de IDs;
+- #22 — recorrido y tratamiento editorial;
+- #59 — aprobación del catálogo;
+- #66 — aprobación del modelo causal.
+
+Las revisiones anteriores de este documento que incluían tres inspecciones, tres estados preventivos, una ruta principal de comunicación o tres desenlaces quedan sustituidas por las decisiones citadas.
 
 ## Objetivo de producto
 
-Demostrar de forma comprensible para la ciudadanía que las decisiones tomadas durante el invierno modifican las condiciones, los recursos disponibles y las consecuencias de un incendio durante el verano.
+Demostrar que las decisiones preventivas sobre el territorio modifican el comportamiento posterior del fuego, la capacidad de intervención y las consecuencias del incendio.
 
-La beta no presenta invierno y verano como modos independientes. Son dos momentos de una misma partida:
+Eje causal:
 
-- **Invierno:** prevención.
-- **Verano:** actuación condicionada por la prevención.
+> prevención territorial → comportamiento del fuego → capacidad de extinción → consecuencias
 
-## Público principal
+La comunicación, el 112, la evacuación y la población vulnerable pueden aparecer como consecuencias o contenido complementario, pero no forman el núcleo causal del MVP.
 
-Ciudadanía.
+## Público y duración
 
-## Duración objetivo
+- Público principal: ciudadanía.
+- Duración objetivo: 20–25 minutos.
+- Partidas de referencia validadas: aproximadamente 20 y 21 minutos.
 
-20–25 minutos.
+## Flujo obligatorio
 
-## Fase 1 — Invierno: prevención
+### Tronco común
 
-### 1. Introducción y rol
+```text
+intro-briefing-mission
+→ prevention-inspection-territory-fuel
+→ prevention-inspection-housing-interface
+→ transition-summary-prevention
+→ crisis-decision-first-alert
+→ crisis-router-causal-map
+```
 
-- Presentación del municipio y del objetivo.
-- Elección de avatar.
-- Explicación breve del vínculo entre prevención y emergencia.
+El avatar es una preferencia opcional y no forma parte del flujo, del estado causal ni de los fixtures.
 
-### 2. Viviendas y edificios
+### Rama preparada
 
-- Inspección mediante hotspots.
-- Selección de cuatro actuaciones.
-- Decisiones sobre canalones, fachadas, vegetación, huecos, accesos y edificios de apoyo.
+```text
+crisis-decision-emergency-fuel-break
+→ crisis-decision-ravine-fire
+→ crisis-decision-housing-defense
+→ ending-result-causal-report
+```
 
-### 3. Fincas, vegetación y combustible
+### Rama vulnerable
 
-- Priorización de limpieza, accesos, quemas, pastoreo y vegetación.
-- Recursos y capacidad de intervención limitados.
+```text
+crisis-decision-access-blockage
+→ crisis-decision-ravine-fire
+→ crisis-decision-crown-fire
+→ ending-result-causal-report
+```
 
-### 4. Comunidad preparada
+`crisis-decision-ravine-fire` es un único nodo compartido. Su dificultad, opciones y consecuencias dependen del estado heredado.
 
-- Planes familiares.
-- Población vulnerable.
-- Canales oficiales.
-- Puntos de apoyo.
-- Información para visitantes y senderistas.
+## Prevención oficial
 
-### 5. Balance preventivo
+### Territorio y combustible
 
-El invierno termina con uno de estos estados:
+`prevention-inspection-territory-fuel` ofrece cinco actuaciones y permite seleccionar tres:
 
-- Municipio preparado.
-- Preparación desigual.
-- Territorio vulnerable.
+1. gestionar restos de poda;
+2. crear discontinuidades vegetales;
+3. limpiar márgenes de caminos rurales;
+4. activar pastoreo preventivo;
+5. evaluar una quema prescrita o línea preventiva profesional.
 
-## Estado que pasa al verano
+### Viviendas e interfaz
 
-La fase de verano debe heredar, como mínimo:
+`prevention-inspection-housing-interface` ofrece tres actuaciones y permite seleccionar dos:
 
-- Defensibilidad de viviendas.
-- Continuidad del combustible.
-- Accesibilidad.
-- Preparación familiar.
-- Población vulnerable identificada.
-- Confianza ciudadana.
-- Claridad de los canales oficiales.
-- Recursos disponibles.
-- Fortalezas y vulnerabilidades generadas por las decisiones.
+1. podar ramas bajas y retirar vegetación seca;
+2. separar copas;
+3. despejar accesos para autobombas.
 
-## Transición
+`p-003-comunidad-preparada` queda en la biblioteca candidata. No se carga ni se ejecuta en la Vertical Beta 1.
 
-Se declara un incendio. Antes de actuar, el juego muestra de manera explícita las condiciones heredadas del invierno y explica que la emergencia comienza con ese margen, no desde cero.
+## Estado heredado
 
-## Fase 2 — Verano: actuación
+La prevención se resume únicamente en cinco dimensiones causales:
 
-### 6. Primer aviso
+- `fuelLoad` — carga de combustible;
+- `fuelContinuity` — continuidad horizontal y vertical;
+- `operationalAccess` — accesos, maniobra y repliegue;
+- `defensibility` — capacidad de defensa territorial y de viviendas;
+- `attackOpportunity` — existencia de una oportunidad segura de ataque.
 
-- Verificar localización.
-- Movilizar medios.
-- Ordenar accesos.
-- Comunicar sin generar alarma innecesaria.
+Preparación familiar, población vulnerable, confianza ciudadana y canales oficiales no son dimensiones estructurales de esta versión.
 
-### 7. Escalada del incendio
+## Selección de rama
 
-- El ataque inicial no resuelve completamente el fuego.
-- El jugador debe asignar recursos limitados.
-- Las vulnerabilidades del invierno modifican dificultad y costes.
+El router evalúa el estado heredado y selecciona una de dos ramas:
 
-### 8. Cambio de viento y amenaza a viviendas
+- preparada, cuando existe margen operativo y oportunidad segura de ataque;
+- vulnerable, cuando una condición crítica de combustible, continuidad, acceso, defensibilidad o seguridad impide mantener el ataque.
 
-- Decisión entre evacuación, confinamiento, defensa del núcleo o redistribución de medios.
-- Accesos, defensibilidad y preparación ciudadana alteran las opciones disponibles.
+No existe una tercera rama intermedia. Los estados mixtos se resuelven mediante reglas explícitas de prioridad y seguridad.
 
-### 9. Crisis de comunicación
+## Resultado final
 
-- Saturación del 112.
-- Desinformación o imagen antigua viral.
-- Solo pueden ejecutarse dos actuaciones por escena.
+Existe un único nodo terminal:
 
-### 10. Noche y agotamiento operativo
+```text
+ending-result-causal-report
+```
 
-- Retirada de medios aéreos.
-- Relevo de cuadrillas o mantenimiento del ataque.
-- La preparación previa determina cuánto margen operativo queda.
+El nodo admite dos variantes:
 
-## Informe final causal
+- `contained`;
+- `overwhelmed`.
 
-El resultado debe explicar:
+La variante se calcula al finalizar desde `GameSession`, `inheritedState`, las decisiones de crisis y el historial causal. **No queda fijada únicamente por la rama seleccionada por el router.**
 
-- Qué medida preventiva redujo daños.
-- Qué carencia agravó la emergencia.
-- Qué decisiones de verano compensaron errores previos.
-- Qué daños podrían haberse evitado.
-- Población protegida.
-- Viviendas afectadas.
-- Confusión pública.
-- Seguridad de los equipos.
-- Resultado alternativo con una prevención diferente.
+Las dos partidas de referencia esperan:
 
-## Desenlaces
+- partida preparada → `contained`;
+- partida vulnerable → `overwhelmed`.
 
-- **Respuesta favorable:** la prevención proporciona margen operativo.
-- **Contención con daños:** la preparación parcial obliga a corregir durante la emergencia.
-- **Emergencia desbordada:** las vulnerabilidades acumuladas y la respuesta insuficiente superan la capacidad del operativo.
+Estos son resultados de aceptación reproducibles, no constantes codificadas en la transición. Los daños parciales y las correcciones realizadas durante la crisis se expresan dentro del informe causal; no crean un tercer nodo ni una tercera variante terminal.
 
-## Criterio de éxito de la beta
+## Informe causal
 
-Dos partidas con decisiones preventivas diferentes deben producir condiciones, opciones y resultados claramente distintos durante el verano.
+El resultado debe explicar entre tres y cinco relaciones prioritarias:
+
+1. actuación preventiva tomada u omitida;
+2. cambio en el estado heredado;
+3. momento de la crisis donde se manifestó;
+4. efecto sobre el fuego o la capacidad de ataque;
+5. alternativa preventiva relevante.
+
+Las consecuencias sociales pueden mostrarse después de explicar combustible, continuidad, accesos, defensibilidad y oportunidad de ataque.
+
+## Criterio de éxito
+
+Dos partidas con el mismo escenario externo y decisiones preventivas distintas deben producir:
+
+- estados heredados distintos;
+- ramas, opciones o dificultades visibles distintas;
+- comportamiento diferente del barranco compartido;
+- explicaciones causales distintas;
+- resultados reproducibles `contained` y `overwhelmed` en los fixtures de referencia.
 
 ## Base técnica acordada
 
-- Aplicación Fastify modular.
-- Motor TypeScript separado de la vista.
-- Reglas narrativas y heurísticas explicables.
-- Territorio ilustrado/SVG.
-- Contenido externo y editable.
-- Informe final generado desde el estado real de la partida.
+- aplicación Fastify modular;
+- motor TypeScript separado de la vista;
+- `GameSession` serializable y trazable;
+- flujo declarativo basado en IDs;
+- reglas puras e independientes del DOM;
+- contenido traducible con cobertura estricta para los 12 nodos;
+- validación automática del catálogo y de las dos partidas.
 
 ## Fuera de alcance
 
-- MapLibre y PostGIS.
-- Mapas geográficos reales.
-- Simulación física o celular avanzada.
-- Cuentas de usuario.
-- Multijugador.
-- Todos los escenarios existentes.
-- Frontend y backend separados.
+- una tercera inspección preventiva ejecutable;
+- una ruta obligatoria de comunicación o evacuación;
+- tres estados o tres desenlaces globales;
+- compatibilidad runtime con IDs históricos;
+- todos los escenarios existentes;
+- mapas geográficos reales;
+- simulación física avanzada;
+- cuentas de usuario y multijugador;
+- separación frontend/backend en esta fase.
