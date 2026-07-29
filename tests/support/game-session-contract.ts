@@ -64,7 +64,8 @@ function validateCanonicalTransitions(value: unknown): ContractValidationError[]
   if (!isPlainObject(value) || !Array.isArray(value.history)) return [];
 
   const errors: ContractValidationError[] = [];
-  value.history.forEach((event, index) => {
+  const history = value.history;
+  history.forEach((event, index) => {
     if (!isPlainObject(event) || event.type !== 'scene-transitioned') return;
     if (typeof event.fromSceneId !== 'string' || typeof event.toSceneId !== 'string') return;
 
@@ -85,9 +86,10 @@ function validateInheritedStateCalculationOrder(value: unknown): ContractValidat
   if (!isPlainObject(value) || !Array.isArray(value.history)) return [];
 
   const errors: ContractValidationError[] = [];
+  const history = value.history;
   const seenPreventionDecisionSequences: number[] = [];
 
-  value.history.forEach((event, index) => {
+  history.forEach((event, index) => {
     if (!isPlainObject(event)) return;
 
     if (
@@ -104,7 +106,7 @@ function validateInheritedStateCalculationOrder(value: unknown): ContractValidat
     if (event.type !== 'inherited-state-calculated') return;
 
     const path = `$.history[${index}]`;
-    const previousEvent = value.history[index - 1];
+    const previousEvent = history[index - 1];
     if (
       !isPlainObject(previousEvent) ||
       previousEvent.type !== 'scene-completed' ||
