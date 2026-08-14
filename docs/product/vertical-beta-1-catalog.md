@@ -113,6 +113,8 @@ crisis-decision-access-blockage
 
 La especificación detallada del tronco común, sus fases y condiciones mínimas de avance se publica en [`vertical-beta-1-common-trunk.md`](vertical-beta-1-common-trunk.md) como entrega de #24.
 
+Las dos ramas de crisis, el nodo compartido y su convergencia final se especifican en [`vertical-beta-1-crisis-branches.md`](vertical-beta-1-crisis-branches.md) como entrega de #25.
+
 ## 5. Tabla definitiva
 
 | Posición | Fase | Rama | Unidad actual | ID canónico | Tipo | Fuente actual | Dependencias de entrada | Estado editorial | Destino en `campaign.ts` / flujo | Salidas canónicas |

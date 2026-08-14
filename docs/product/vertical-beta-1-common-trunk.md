@@ -141,7 +141,7 @@ Estos artefactos son una especificación ejecutable de M1, no el motor del juego
 
 ## 10. Entregas siguientes
 
-- #25 documentará las ramas preparada y vulnerable y su convergencia;
+- #25 documenta las ramas preparada y vulnerable y su convergencia en [`vertical-beta-1-crisis-branches.md`](vertical-beta-1-crisis-branches.md);
 - #26 fijará condiciones, prioridades y comportamiento ante estados inválidos;
 - #27 validará alcanzabilidad, ausencia de ciclos y formato declarativo del grafo completo;
 - #68 implementará el contrato común `GameScene` y el validador del catálogo cuando M1 esté listo.
