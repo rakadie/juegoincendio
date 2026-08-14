@@ -111,6 +111,8 @@ crisis-decision-access-blockage
 
 `contained` y `overwhelmed` son resultados calculados, no IDs independientes.
 
+La especificación detallada del tronco común, sus fases y condiciones mínimas de avance se publica en [`vertical-beta-1-common-trunk.md`](vertical-beta-1-common-trunk.md) como entrega de #24.
+
 ## 5. Tabla definitiva
 
 | Posición | Fase | Rama | Unidad actual | ID canónico | Tipo | Fuente actual | Dependencias de entrada | Estado editorial | Destino en `campaign.ts` / flujo | Salidas canónicas |
