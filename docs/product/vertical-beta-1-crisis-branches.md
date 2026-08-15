@@ -10,7 +10,7 @@
 
 Este documento fija las dos únicas ramas causales de crisis de la Vertical Beta 1, sus diferencias visibles, el uso compartido del barranco y su convergencia en un único nodo final.
 
-El router no ofrece una elección al jugador. Selecciona automáticamente `prepared` o `vulnerable` a partir de `inheritedState`, según los predicados deterministas que debe especificar #26.
+El router no ofrece una elección al jugador. Selecciona automáticamente `prepared` o `vulnerable` a partir de `inheritedState`, según los predicados deterministas de [`vertical-beta-1-graph-transitions.md`](vertical-beta-1-graph-transitions.md), entrega de #26.
 
 ## 2. Alcance
 
@@ -104,7 +104,7 @@ Cada ruta contiene exactamente tres decisiones de crisis después del router. El
 | Cierre de crisis | Aparece `crisis-decision-housing-defense`: la defensa de estructuras sigue siendo operativamente viable. | Aparece `crisis-decision-crown-fire`: la continuidad vertical y horizontal hace inseguro el ataque directo. |
 | Resultado | El nodo final presenta la variante `contained`. | El mismo nodo final presenta la variante `overwhelmed`. |
 
-Las diferencias deben proceder de decisiones preventivas registradas, no de azar ni de una elección manual de rama. #26 fijará las condiciones exactas y #35 aporta los efectos aprobados de `inheritedState` durante la crisis.
+Las diferencias deben proceder de decisiones preventivas registradas, no de azar ni de una elección manual de rama. #26 fija las condiciones exactas y #35 aporta los efectos aprobados de `inheritedState` durante la crisis.
 
 ## 7. Contrato del nodo compartido
 
@@ -175,7 +175,7 @@ Estos artefactos validan forma, recorrido e invariantes de M1. No implementan to
 
 ## 12. Entregas siguientes
 
-- #26 especificará predicados, prioridad, conservación de rama y errores de estado;
+- #26 especifica predicados, prioridad, conservación de rama y errores de estado en [`vertical-beta-1-graph-transitions.md`](vertical-beta-1-graph-transitions.md);
 - #27 validará alcanzabilidad, convergencias, ausencia de ciclos y formato declarativo;
 - #35 aporta los efectos de `inheritedState` que condicionan la experiencia de crisis;
 - #68 implementará el contrato común y el validador del grafo cuando M1 esté listo.

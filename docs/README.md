@@ -11,6 +11,7 @@
 - Catálogo canónico de la Vertical Beta 1: [docs/product/vertical-beta-1-catalog.md](product/vertical-beta-1-catalog.md)
 - Tronco común y fases del grafo: [docs/product/vertical-beta-1-common-trunk.md](product/vertical-beta-1-common-trunk.md)
 - Ramas y convergencias de crisis: [docs/product/vertical-beta-1-crisis-branches.md](product/vertical-beta-1-crisis-branches.md)
+- Condiciones y transiciones del grafo: [docs/product/vertical-beta-1-graph-transitions.md](product/vertical-beta-1-graph-transitions.md)
 - Arquitectura de sistema: [docs/architecture/system-architecture.md](architecture/system-architecture.md)
 - Stack y decisiones técnicas: [docs/architecture/tech-stack-and-decisions.md](architecture/tech-stack-and-decisions.md)
 - Dominio y reglas del juego: [docs/domain/game-design-spec.md](domain/game-design-spec.md)
