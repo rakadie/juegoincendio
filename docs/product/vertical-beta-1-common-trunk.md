@@ -63,7 +63,7 @@ El router no es un menú para el jugador. Consume el estado causal acumulado y p
 - `crisis-decision-emergency-fuel-break`, para la rama preparada;
 - `crisis-decision-access-blockage`, para la rama vulnerable.
 
-La estructura de ambas ramas se documenta en #25 y sus predicados deterministas se especifican en #26.
+La estructura de ambas ramas se documenta en #25 y sus predicados deterministas en [`vertical-beta-1-graph-transitions.md`](vertical-beta-1-graph-transitions.md), entrega de #26.
 
 ## 4. Tabla de nodos y avance
 
@@ -76,7 +76,7 @@ La estructura de ambas ramas se documenta en #25 y sus predicados deterministas 
 | 5 | `crisis` | `crisis-decision-first-alert` | `decision` | Iniciar la crisis y resolver la primera respuesta ante el incendio. | Balance preventivo completado e `inheritedState` disponible. | La decisión se resuelve, sus efectos e historial quedan registrados y la escena se completa. | `crisis-router-causal-map` |
 | 6 | `crisis` | `crisis-router-causal-map` | `router` | Interpretar el estado heredado y seleccionar automáticamente la rama causal. | Primer aviso completado e `inheritedState` válido. | Se determina exactamente una rama mediante las condiciones de #26; el jugador no elige la ruta. | `crisis-decision-emergency-fuel-break` o `crisis-decision-access-blockage` |
 
-Las condiciones de esta tabla fijan la estructura y los datos mínimos necesarios. No fijan valores, combinaciones ni umbrales causales; #26 debe expresarlos como predicados deterministas y sin solapamientos.
+Las condiciones de esta tabla fijan la estructura y los datos mínimos necesarios. Los valores, combinaciones y umbrales causales quedan expresados como predicados deterministas y sin solapamientos en [`vertical-beta-1-graph-transitions.md`](vertical-beta-1-graph-transitions.md).
 
 ## 5. Transiciones de fase
 
@@ -142,6 +142,6 @@ Estos artefactos son una especificación ejecutable de M1, no el motor del juego
 ## 10. Entregas siguientes
 
 - #25 documenta las ramas preparada y vulnerable y su convergencia en [`vertical-beta-1-crisis-branches.md`](vertical-beta-1-crisis-branches.md);
-- #26 fijará condiciones, prioridades y comportamiento ante estados inválidos;
+- #26 documenta las condiciones, prioridades y estados inválidos en [`vertical-beta-1-graph-transitions.md`](vertical-beta-1-graph-transitions.md);
 - #27 validará alcanzabilidad, ausencia de ciclos y formato declarativo del grafo completo;
 - #68 implementará el contrato común `GameScene` y el validador del catálogo cuando M1 esté listo.
