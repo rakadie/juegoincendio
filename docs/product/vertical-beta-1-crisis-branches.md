@@ -176,6 +176,6 @@ Estos artefactos validan forma, recorrido e invariantes de M1. No implementan to
 ## 12. Entregas siguientes
 
 - #26 especifica predicados, prioridad, conservación de rama y errores de estado en [`vertical-beta-1-graph-transitions.md`](vertical-beta-1-graph-transitions.md);
-- #27 validará alcanzabilidad, convergencias, ausencia de ciclos y formato declarativo;
+- #27 valida alcanzabilidad, convergencias, ausencia de ciclos y formato declarativo en [`vertical-beta-1-graph-validation.md`](vertical-beta-1-graph-validation.md);
 - #35 aporta los efectos de `inheritedState` que condicionan la experiencia de crisis;
 - #68 implementará el contrato común y el validador del grafo cuando M1 esté listo.
