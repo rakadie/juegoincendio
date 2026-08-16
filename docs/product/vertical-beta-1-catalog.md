@@ -42,6 +42,8 @@ El núcleo del MVP es la gestión de combustible, continuidad vegetal, caminos, 
 
 Comunicación, 112, evacuación y población vulnerable pueden aparecer como consecuencias o contenido complementario, pero no desplazan el eje territorial.
 
+Las ocho actuaciones preventivas oficiales y las consecuencias observables de las dos ramas se normalizan en [`vertical-beta-1-causal-inventory.md`](vertical-beta-1-causal-inventory.md) como entrega de #36.
+
 ## 3. Convención de IDs
 
 Formato:
