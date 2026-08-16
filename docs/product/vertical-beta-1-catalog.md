@@ -117,6 +117,8 @@ Las dos ramas de crisis, el nodo compartido y su convergencia final se especific
 
 Los predicados deterministas, su prioridad, la conservación de rama y el tratamiento de estados inválidos se especifican en [`vertical-beta-1-graph-transitions.md`](vertical-beta-1-graph-transitions.md) como entrega de #26.
 
+La integridad, alcanzabilidad, ausencia de ciclos y estructura TypeScript de referencia se validan en [`vertical-beta-1-graph-validation.md`](vertical-beta-1-graph-validation.md) como entrega de #27.
+
 ## 5. Tabla definitiva
 
 | Posición | Fase | Rama | Unidad actual | ID canónico | Tipo | Fuente actual | Dependencias de entrada | Estado editorial | Destino en `campaign.ts` / flujo | Salidas canónicas |

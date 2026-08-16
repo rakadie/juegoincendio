@@ -215,4 +215,4 @@ Los tests actuales demuestran forma, orden y aristas. Los umbrales, la validaci√
 
 ## 11. Entrega siguiente
 
-#27 podr√° validar el grafo completo como estructura declarativa: unicidad de IDs, alcanzabilidad desde el inicio, ausencia de ciclos, convergencias permitidas y correspondencia entre predicados y destinos.
+#27 valida el grafo completo en [`vertical-beta-1-graph-validation.md`](vertical-beta-1-graph-validation.md): unicidad de IDs, alcanzabilidad desde el inicio, ausencia de ciclos, convergencias permitidas y correspondencia entre predicados y destinos.
