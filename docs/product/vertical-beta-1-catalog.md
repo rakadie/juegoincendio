@@ -46,6 +46,8 @@ Las ocho actuaciones preventivas oficiales y las consecuencias observables de la
 
 Las cadenas directas entre actuación, estado heredado, capacidad operativa, escena y resultado se documentan en [`vertical-beta-1-causal-matrix.md`](vertical-beta-1-causal-matrix.md) como entrega de #37.
 
+Las cinco combinaciones de alto valor, sus umbrales reproducibles y el estado de validación de cada afirmación se documentan en [`vertical-beta-1-causal-combinations-validation.md`](vertical-beta-1-causal-combinations-validation.md) como entrega de #38.
+
 ## 3. Convención de IDs
 
 Formato:
