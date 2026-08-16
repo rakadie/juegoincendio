@@ -307,7 +307,7 @@ Esta entrega no:
 
 ## 13. Entregas siguientes
 
-- #38 clasificará combinaciones y afirmaciones según su necesidad de validación experta;
+- #38 clasifica combinaciones, umbrales y afirmaciones según su necesidad de validación experta en [`vertical-beta-1-causal-combinations-validation.md`](vertical-beta-1-causal-combinations-validation.md);
 - #39 convertirá las cadenas prioritarias en explicaciones del informe final;
 - #45 y #46 usarán los dos perfiles para construir recorridos completos;
 - #72 podrá implementar reglas y evidencias sin reconstruir causalidad en la vista.
