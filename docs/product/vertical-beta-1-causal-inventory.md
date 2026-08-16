@@ -154,7 +154,7 @@ campaña de comunicación
 → rama alternativa de verano
 ```
 
-Los IDs concretos de explicación y evidencia secundaria pertenecen a #39; #36 solo fija su posición subordinada en la cadena.
+Los IDs y reglas de explicación, así como el tratamiento de evidencia secundaria, se definen en [`vertical-beta-1-causal-report.md`](vertical-beta-1-causal-report.md), entrega de #39. #36 solo fija su posición subordinada en la cadena.
 
 ## 7. Contraste con el contenido actual
 
