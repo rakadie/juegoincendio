@@ -44,6 +44,8 @@ Comunicación, 112, evacuación y población vulnerable pueden aparecer como con
 
 Las ocho actuaciones preventivas oficiales y las consecuencias observables de las dos ramas se normalizan en [`vertical-beta-1-causal-inventory.md`](vertical-beta-1-causal-inventory.md) como entrega de #36.
 
+Las cadenas directas entre actuación, estado heredado, capacidad operativa, escena y resultado se documentan en [`vertical-beta-1-causal-matrix.md`](vertical-beta-1-causal-matrix.md) como entrega de #37.
+
 ## 3. Convención de IDs
 
 Formato:

@@ -194,7 +194,7 @@ Tampoco se definen aquí combinaciones entre varias actuaciones, umbrales expert
 
 ## 10. Entrega siguiente
 
-#37 podrá construir la matriz directa:
+#37 construye la matriz directa en [`vertical-beta-1-causal-matrix.md`](vertical-beta-1-causal-matrix.md):
 
 ```text
 actionId
