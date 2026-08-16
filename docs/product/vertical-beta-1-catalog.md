@@ -48,6 +48,8 @@ Las cadenas directas entre actuación, estado heredado, capacidad operativa, esc
 
 Las cinco combinaciones de alto valor, sus umbrales reproducibles y el estado de validación de cada afirmación se documentan en [`vertical-beta-1-causal-combinations-validation.md`](vertical-beta-1-causal-combinations-validation.md) como entrega de #38.
 
+La selección trazable de relaciones, el contrato i18n y los ejemplos `contained` y `overwhelmed` del nodo terminal se documentan en [`vertical-beta-1-causal-report.md`](vertical-beta-1-causal-report.md) como entrega de #39.
+
 ## 3. Convención de IDs
 
 Formato:

@@ -16,6 +16,7 @@
 - Inventario causal invierno–verano: [docs/product/vertical-beta-1-causal-inventory.md](product/vertical-beta-1-causal-inventory.md)
 - Matriz causal directa prevención–crisis: [docs/product/vertical-beta-1-causal-matrix.md](product/vertical-beta-1-causal-matrix.md)
 - Combinaciones causales, umbrales y validación experta: [docs/product/vertical-beta-1-causal-combinations-validation.md](product/vertical-beta-1-causal-combinations-validation.md)
+- Informe causal final y ejemplos de resultado: [docs/product/vertical-beta-1-causal-report.md](product/vertical-beta-1-causal-report.md)
 - Arquitectura de sistema: [docs/architecture/system-architecture.md](architecture/system-architecture.md)
 - Stack y decisiones técnicas: [docs/architecture/tech-stack-and-decisions.md](architecture/tech-stack-and-decisions.md)
 - Dominio y reglas del juego: [docs/domain/game-design-spec.md](domain/game-design-spec.md)

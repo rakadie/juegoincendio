@@ -286,6 +286,6 @@ Esta entrega no:
 ## 13. Entregas siguientes
 
 - #10 ejecutará la revisión de `OP-*` y las pruebas ciudadanas; permanece abierta como puerta editorial y de publicación;
-- #39 podrá ordenar las combinaciones y evidencias prioritarias en el informe causal final;
+- #39 ordena las combinaciones y evidencias prioritarias en el informe causal final definido en [`vertical-beta-1-causal-report.md`](vertical-beta-1-causal-report.md);
 - #45–#47 convertirán los perfiles y fronteras en recorridos reproducibles;
 - #72 podrá implementar las reglas puras sin duplicar el selector de rama.
