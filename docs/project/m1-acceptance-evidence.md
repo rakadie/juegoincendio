@@ -208,6 +208,6 @@ Esta entrega no:
 
 ## 11. Entregas siguientes
 
-- #42 compondrá la Definition of Ready de M2 a partir de los 35 `m1-blocker`, sus firmas y el tratamiento de reapertura;
+- #42 compone la [`Definition of Ready de M2`](m2-definition-of-ready.md) a partir de los 35 `m1-blocker`, sus firmas y el tratamiento de reapertura;
 - #44–#47 producirán EV-10..13;
 - #43 congelará el SHA, producirá EV-15 y evaluará cada fila.
