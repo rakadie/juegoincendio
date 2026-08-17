@@ -20,7 +20,7 @@ Convertir esta base documental en entregables de código incremental, con trazab
 
 ## Definition of Ready por issue
 
-La aceptación previa de la especificación M1 se evalúa con las puertas numeradas de [`m1-acceptance-gates.md`](m1-acceptance-gates.md) y la matriz de [`m1-acceptance-evidence.md`](m1-acceptance-evidence.md). #42–#43 completarán la Definition of Ready de M2 y la revisión final.
+La aceptación previa de la especificación M1 se evalúa con las puertas numeradas de [`m1-acceptance-gates.md`](m1-acceptance-gates.md), la matriz de [`m1-acceptance-evidence.md`](m1-acceptance-evidence.md) y la [`Definition of Ready de M2`](m2-definition-of-ready.md). #43 realizará la revisión final y solo `R-ACCEPTANCE` podrá autorizar #67 cuando se cumplan todos los requisitos `DR-01..DR-08`.
 
 - Contexto funcional claro.
 - Criterio de aceptación verificable.
