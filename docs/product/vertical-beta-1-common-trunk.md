@@ -144,4 +144,5 @@ Estos artefactos son una especificación ejecutable de M1, no el motor del juego
 - #25 documenta las ramas preparada y vulnerable y su convergencia en [`vertical-beta-1-crisis-branches.md`](vertical-beta-1-crisis-branches.md);
 - #26 documenta las condiciones, prioridades y estados inválidos en [`vertical-beta-1-graph-transitions.md`](vertical-beta-1-graph-transitions.md);
 - #27 valida alcanzabilidad, ausencia de ciclos y formato declarativo en [`vertical-beta-1-graph-validation.md`](vertical-beta-1-graph-validation.md);
+- #44 fija el contexto inmutable de las dos partidas en [`vertical-beta-1-reference-common.md`](vertical-beta-1-reference-common.md);
 - #68 implementará el contrato común `GameScene` y el validador del catálogo cuando M1 esté listo.
