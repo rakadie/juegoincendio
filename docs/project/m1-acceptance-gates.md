@@ -18,7 +18,7 @@ Cada criterio tiene:
 - un resultado binario observable;
 - una procedencia explícita entre #13–#17 y #19.
 
-Este documento define **qué** se acepta. #41 añadirá evidencia, responsable y carácter bloqueante; #42 compondrá la Definition of Ready de M2; #43 ejecutará la revisión final cuando #44–#47 estén integradas.
+Este documento define **qué** se acepta. #41 asigna evidencia, responsable y carácter bloqueante en [`m1-acceptance-evidence.md`](m1-acceptance-evidence.md); #42 compondrá la Definition of Ready de M2; #43 ejecutará la revisión final cuando #44–#47 estén integradas.
 
 ## 2. Estado de evaluación
 
@@ -163,7 +163,7 @@ Esta entrega no:
 
 ## 14. Entregas siguientes
 
-- #41 asociará a cada ID evidencia requerida, responsable de validación y carácter bloqueante o no bloqueante;
+- #41 asocia a cada ID evidencia requerida, responsable de validación y carácter bloqueante en [`m1-acceptance-evidence.md`](m1-acceptance-evidence.md);
 - #42 convertirá el subconjunto requerido en Definition of Ready para M2;
 - #44–#47 completarán la fuente pendiente de G6;
 - #43 evaluará todas las filas sobre un SHA único de `main` al final del milestone.
