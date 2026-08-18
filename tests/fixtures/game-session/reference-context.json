@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "referenceContextId": "vb1-reference-context-v1",
+  "municipalityProfileId": "fictional-ravine-interface-municipality-v1",
+  "weatherProfile": {
+    "id": "dry-windy-daylight-v1",
+    "alertTime": "13:42",
+    "daylight": true,
+    "precipitation": "none",
+    "temperature": "warm",
+    "humidity": "low",
+    "windPattern": "irregular-gusts",
+    "windDirection": "lower-ravine-to-interface",
+    "changesDuringSession": false
+  },
+  "ignitionProfile": {
+    "id": "lower-ravine-rural-track-v1",
+    "location": "lower-ravine-rural-track-edge",
+    "cause": "unconfirmed",
+    "initialObservation": "smoke-column-and-incipient-flames"
+  },
+  "externalCapacityProfileId": "standard-response-capacity-v1",
+  "exposureProfileId": "same-homes-and-positions-v1",
+  "rulesetId": "m1-reference-rules-v1",
+  "gameSessionSchemaVersion": 1,
+  "randomness": "none",
+  "selectionLimits": {
+    "territory": 3,
+    "housing": 2
+  },
+  "firstAlertActionId": "movilizar-y-verificar",
+  "expectedDecisionCount": 9,
+  "expectedVisitedNodeCount": 10,
+  "targetDurationMinutes": {
+    "min": 20,
+    "max": 25
+  }
+}

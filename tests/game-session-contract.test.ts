@@ -15,7 +15,9 @@ const SESSION_FIXTURES = [
   'initial.json',
   'prevention-completed.json',
   'crisis-prepared.json',
-  'completed-contained.json'
+  'completed-contained.json',
+  'reference-contained.json',
+  'reference-overwhelmed.json'
 ] as const;
 
 const TOP_LEVEL_SESSION_FIELDS = new Set([
@@ -48,67 +50,6 @@ function expectContractError(value: unknown, code: GameSessionContractErrorCode)
   expect(result.errors.map((error) => error.code)).toContain(code);
 }
 
-function buildVulnerableCompletedSession(source: MutableJson): MutableJson {
-  const session = clone(source);
-  const sceneMap: Record<string, string> = {
-    'crisis-decision-emergency-fuel-break': 'crisis-decision-access-blockage',
-    'crisis-decision-housing-defense': 'crisis-decision-crown-fire'
-  };
-  const actionMap: Record<string, string> = {
-    'autorizar-maniobra-condicionada': 'despejar-corredor-operativo',
-    'defender-desde-posicion-segura': 'replegar-ante-fuego-de-copas'
-  };
-
-  session.crisisBranch = 'vulnerable';
-  session.progress.completedSceneIds = session.progress.completedSceneIds.map(
-    (sceneId: string) => sceneMap[sceneId] ?? sceneId
-  );
-  session.decisions = session.decisions.map((decision: MutableJson) => ({
-    ...decision,
-    sceneId: sceneMap[decision.sceneId] ?? decision.sceneId,
-    actionId: actionMap[decision.actionId] ?? decision.actionId
-  }));
-
-  session.history = session.history.map((event: MutableJson) => {
-    const mapped = clone(event);
-    if (mapped.sceneId) mapped.sceneId = sceneMap[mapped.sceneId] ?? mapped.sceneId;
-    if (mapped.fromSceneId) mapped.fromSceneId = sceneMap[mapped.fromSceneId] ?? mapped.fromSceneId;
-    if (mapped.toSceneId) mapped.toSceneId = sceneMap[mapped.toSceneId] ?? mapped.toSceneId;
-    if (mapped.actionId) mapped.actionId = actionMap[mapped.actionId] ?? mapped.actionId;
-
-    if (mapped.type === 'crisis-branch-selected') {
-      mapped.branch = 'vulnerable';
-      mapped.nextSceneId = 'crisis-decision-access-blockage';
-      mapped.evidenceIds = ['operational-access-insufficient', 'attack-opportunity-unavailable'];
-    }
-    if (mapped.type === 'scene-completed' && mapped.sceneId === 'ending-result-causal-report') {
-      mapped.evidenceIds = [
-        'fuel-load-high',
-        'fuel-continuity-maintained',
-        'operational-access-insufficient',
-        'attack-opportunity-unavailable',
-        'crown-fire-transition'
-      ];
-    }
-    if (mapped.type === 'session-completed') {
-      mapped.result = {
-        variant: 'overwhelmed',
-        evidenceIds: [
-          'fuel-load-high',
-          'fuel-continuity-maintained',
-          'operational-access-insufficient',
-          'attack-opportunity-unavailable',
-          'crown-fire-transition'
-        ]
-      };
-    }
-    return mapped;
-  });
-
-  session.result = clone(session.history.at(-1).result);
-  return session;
-}
-
 describe('GameSession fixture contract', () => {
   for (const fixtureName of SESSION_FIXTURES) {
     it(`${fixtureName} is valid and survives a JSON round trip`, async () => {
@@ -133,8 +74,8 @@ describe('GameSession fixture contract', () => {
   });
 
   it('represents the vulnerable branch and overwhelmed result without adding fields', async () => {
-    const prepared = await loadJson('completed-contained.json');
-    const vulnerable = buildVulnerableCompletedSession(prepared);
+    const prepared = await loadJson('reference-contained.json');
+    const vulnerable = await loadJson('reference-overwhelmed.json');
 
     expect(validateGameSessionContract(vulnerable)).toEqual({ valid: true, errors: [] });
     expect(vulnerable.crisisBranch).toBe('vulnerable');

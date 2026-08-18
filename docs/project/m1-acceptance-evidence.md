@@ -85,7 +85,7 @@ Reglas:
 | `EV-10-REFERENCE-BASE` | [`vertical-beta-1-reference-common.md`](../product/vertical-beta-1-reference-common.md): contexto versionado, supuestos, estado base, tronco, presupuesto temporal y variables inmutables compartidas. | Disponible. |
 | `EV-11-REFERENCE-PREPARED` | [`vertical-beta-1-reference-prepared.md`](../product/vertical-beta-1-reference-prepared.md): decisiones, evidencias, cálculo, opciones, consecuencias, duración, recorrido e informe `contained`. | Disponible. |
 | `EV-12-REFERENCE-VULNERABLE` | [`vertical-beta-1-reference-vulnerable.md`](../product/vertical-beta-1-reference-vulnerable.md): decisiones/omisiones, evidencias, cálculo, opciones, consecuencias, duración, recorrido e informe `overwhelmed`. | Disponible. |
-| `EV-13-REFERENCE-AUTO` | Entrega de #47: `tests/fixtures/game-session/reference-contained.json`, `reference-overwhelmed.json` y `tests/reference-game-sessions.test.ts`; ejecutar suite, round-trip y comparación de contexto/dimensiones/rutas. | Pendiente de #47. |
+| `EV-13-REFERENCE-AUTO` | [`vertical-beta-1-reference-comparison.md`](../product/vertical-beta-1-reference-comparison.md), `tests/fixtures/game-session/reference-context.json`, `reference-contained.json`, `reference-overwhelmed.json` y `tests/reference-game-sessions.test.ts`; ejecutar suite, round-trip y comparación de contexto/dimensiones/rutas. | Disponible. |
 | `EV-14-I18N-SPEC` | Sección i18n de [`vertical-beta-1-catalog.md`](../product/vertical-beta-1-catalog.md) y contrato de [`vertical-beta-1-causal-report.md`](../product/vertical-beta-1-causal-report.md). Inventariar 12 nodos y familias de claves, sin fallback como resultado válido. | Disponible; completar con #45–#46. |
 | `EV-15-CROSS-AUDIT` | Informe de #43 en `docs/project/m1-final-acceptance.md`: manifest de fuentes normativas, SHA único, conteos cruzados, hallazgos y estado de las 35 filas. | Pendiente de #43. |
 
@@ -173,7 +173,7 @@ La matriz contiene:
 - 35 severidades `m1-blocker` justificadas por el carácter obligatorio de #40;
 - 35 estados `not-evaluated`, porque #43 aún no se ha ejecutado.
 
-G1–G5 disponen de fuentes; G6 ya dispone de `EV-10..EV-12` y depende de #47 para `EV-13`; G7 necesita la auditoría cruzada final de #43. Esta diferencia de disponibilidad no cambia el estado de aceptación.
+G1–G6 disponen de `EV-01..EV-14`; G7 necesita la auditoría cruzada final de #43 para `EV-15`. Esta diferencia de disponibilidad no cambia el estado de aceptación.
 
 ## 8. Trabajo posterior y no bloqueante para M1
 
@@ -209,5 +209,5 @@ Esta entrega no:
 ## 11. Entregas siguientes
 
 - #42 compone la [`Definition of Ready de M2`](m2-definition-of-ready.md) a partir de los 35 `m1-blocker`, sus firmas y el tratamiento de reapertura;
-- #44–#47 producirán EV-10..13;
+- #44–#47 produjeron EV-10..13;
 - #43 congelará el SHA, producirá EV-15 y evaluará cada fila.

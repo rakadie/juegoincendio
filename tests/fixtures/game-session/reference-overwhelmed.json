@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "id": "reference-overwhelmed-v1",
+  "status": "completed",
+  "progress": {
+    "currentSceneId": "ending-result-causal-report",
+    "completedSceneIds": [
+      "intro-briefing-mission",
+      "prevention-inspection-territory-fuel",
+      "prevention-inspection-housing-interface",
+      "transition-summary-prevention",
+      "crisis-decision-first-alert",
+      "crisis-router-causal-map",
+      "crisis-decision-access-blockage",
+      "crisis-decision-ravine-fire",
+      "crisis-decision-crown-fire",
+      "ending-result-causal-report"
+    ]
+  },
+  "decisions": [
+    { "sequence": 1, "sceneId": "prevention-inspection-territory-fuel", "actionId": "gestionar-restos-poda" },
+    { "sequence": 2, "sceneId": "prevention-inspection-territory-fuel", "actionId": "activar-pastoreo-preventivo" },
+    { "sequence": 3, "sceneId": "prevention-inspection-territory-fuel", "actionId": "evaluar-quema-tecnica" },
+    { "sequence": 4, "sceneId": "prevention-inspection-housing-interface", "actionId": "podar-ramas-y-retirar-seco" },
+    { "sequence": 5, "sceneId": "prevention-inspection-housing-interface", "actionId": "separar-copas" },
+    { "sequence": 6, "sceneId": "crisis-decision-first-alert", "actionId": "movilizar-y-verificar" },
+    { "sequence": 7, "sceneId": "crisis-decision-access-blockage", "actionId": "despejar-corredor-operativo" },
+    { "sequence": 8, "sceneId": "crisis-decision-ravine-fire", "actionId": "asegurar-flancos-y-repliegue" },
+    { "sequence": 9, "sceneId": "crisis-decision-crown-fire", "actionId": "replegar-ante-fuego-de-copas" }
+  ],
+  "inheritedState": {
+    "fuelLoad": 25,
+    "fuelContinuity": 35,
+    "operationalAccess": 20,
+    "defensibility": 30,
+    "attackOpportunity": 24
+  },
+  "crisisBranch": "vulnerable",
+  "result": {
+    "variant": "overwhelmed",
+    "evidenceIds": [
+      "fuel-behavior-buffer",
+      "crown-transition-buffer",
+      "access-chain-unavailable",
+      "ravine-position-not-holdable-safe-retreat",
+      "safe-retreat-before-crown-fire"
+    ]
+  },
+  "history": [
+    { "sequence": 1, "type": "session-created", "sessionId": "reference-overwhelmed-v1", "schemaVersion": 1, "initialSceneId": "intro-briefing-mission" },
+    { "sequence": 2, "type": "scene-completed", "sceneId": "intro-briefing-mission", "evidenceIds": [] },
+    { "sequence": 3, "type": "scene-transitioned", "fromSceneId": "intro-briefing-mission", "toSceneId": "prevention-inspection-territory-fuel" },
+    { "sequence": 4, "type": "decision-applied", "decisionSequence": 1, "sceneId": "prevention-inspection-territory-fuel", "actionId": "gestionar-restos-poda" },
+    { "sequence": 5, "type": "decision-applied", "decisionSequence": 2, "sceneId": "prevention-inspection-territory-fuel", "actionId": "activar-pastoreo-preventivo" },
+    { "sequence": 6, "type": "decision-applied", "decisionSequence": 3, "sceneId": "prevention-inspection-territory-fuel", "actionId": "evaluar-quema-tecnica" },
+    {
+      "sequence": 7,
+      "type": "scene-completed",
+      "sceneId": "prevention-inspection-territory-fuel",
+      "evidenceIds": [
+        "pruning-residues-removed-or-processed",
+        "preventive-grazing-completed-in-priority-strips",
+        "professional-line-assessed",
+        "professional-line-feasible"
+      ]
+    },
+    { "sequence": 8, "type": "scene-transitioned", "fromSceneId": "prevention-inspection-territory-fuel", "toSceneId": "prevention-inspection-housing-interface" },
+    { "sequence": 9, "type": "decision-applied", "decisionSequence": 4, "sceneId": "prevention-inspection-housing-interface", "actionId": "podar-ramas-y-retirar-seco" },
+    { "sequence": 10, "type": "decision-applied", "decisionSequence": 5, "sceneId": "prevention-inspection-housing-interface", "actionId": "separar-copas" },
+    {
+      "sequence": 11,
+      "type": "scene-completed",
+      "sceneId": "prevention-inspection-housing-interface",
+      "evidenceIds": [
+        "vertical-fuel-continuity-reduced",
+        "crown-fuel-continuity-reduced"
+      ]
+    },
+    {
+      "sequence": 12,
+      "type": "inherited-state-calculated",
+      "state": {
+        "fuelLoad": 25,
+        "fuelContinuity": 35,
+        "operationalAccess": 20,
+        "defensibility": 30,
+        "attackOpportunity": 24
+      },
+      "sourceDecisionSequences": [1, 2, 3, 4, 5],
+      "evidenceIds": [
+        "pruning-residues-removed-or-processed",
+        "preventive-grazing-completed-in-priority-strips",
+        "professional-line-assessed",
+        "professional-line-feasible",
+        "vertical-fuel-continuity-reduced",
+        "crown-fuel-continuity-reduced",
+        "territorial-vegetation-continuity-present",
+        "rural-road-margins-obstructed",
+        "fire-engine-access-obstructed"
+      ]
+    },
+    { "sequence": 13, "type": "scene-transitioned", "fromSceneId": "prevention-inspection-housing-interface", "toSceneId": "transition-summary-prevention" },
+    { "sequence": 14, "type": "scene-completed", "sceneId": "transition-summary-prevention", "evidenceIds": ["preparedness-summary-produced"] },
+    { "sequence": 15, "type": "scene-transitioned", "fromSceneId": "transition-summary-prevention", "toSceneId": "crisis-decision-first-alert" },
+    { "sequence": 16, "type": "decision-applied", "decisionSequence": 6, "sceneId": "crisis-decision-first-alert", "actionId": "movilizar-y-verificar" },
+    { "sequence": 17, "type": "scene-completed", "sceneId": "crisis-decision-first-alert", "evidenceIds": ["initial-response-mobilized"] },
+    { "sequence": 18, "type": "scene-transitioned", "fromSceneId": "crisis-decision-first-alert", "toSceneId": "crisis-router-causal-map" },
+    {
+      "sequence": 19,
+      "type": "crisis-branch-selected",
+      "branch": "vulnerable",
+      "nextSceneId": "crisis-decision-access-blockage",
+      "evidenceIds": [
+        "operational-access-critical",
+        "access-chain-unavailable",
+        "attack-opportunity-critical"
+      ]
+    },
+    { "sequence": 20, "type": "scene-completed", "sceneId": "crisis-router-causal-map", "evidenceIds": ["vulnerable-branch-selected"] },
+    { "sequence": 21, "type": "scene-transitioned", "fromSceneId": "crisis-router-causal-map", "toSceneId": "crisis-decision-access-blockage" },
+    { "sequence": 22, "type": "decision-applied", "decisionSequence": 7, "sceneId": "crisis-decision-access-blockage", "actionId": "despejar-corredor-operativo" },
+    { "sequence": 23, "type": "scene-completed", "sceneId": "crisis-decision-access-blockage", "evidenceIds": ["temporary-operational-corridor-limited"] },
+    { "sequence": 24, "type": "scene-transitioned", "fromSceneId": "crisis-decision-access-blockage", "toSceneId": "crisis-decision-ravine-fire" },
+    { "sequence": 25, "type": "decision-applied", "decisionSequence": 8, "sceneId": "crisis-decision-ravine-fire", "actionId": "asegurar-flancos-y-repliegue" },
+    { "sequence": 26, "type": "scene-completed", "sceneId": "crisis-decision-ravine-fire", "evidenceIds": ["ravine-position-not-holdable-safe-retreat"] },
+    { "sequence": 27, "type": "scene-transitioned", "fromSceneId": "crisis-decision-ravine-fire", "toSceneId": "crisis-decision-crown-fire" },
+    { "sequence": 28, "type": "decision-applied", "decisionSequence": 9, "sceneId": "crisis-decision-crown-fire", "actionId": "replegar-ante-fuego-de-copas" },
+    { "sequence": 29, "type": "scene-completed", "sceneId": "crisis-decision-crown-fire", "evidenceIds": ["safe-retreat-before-crown-fire"] },
+    { "sequence": 30, "type": "scene-transitioned", "fromSceneId": "crisis-decision-crown-fire", "toSceneId": "ending-result-causal-report" },
+    {
+      "sequence": 31,
+      "type": "scene-completed",
+      "sceneId": "ending-result-causal-report",
+      "evidenceIds": [
+        "fuel-behavior-buffer",
+        "crown-transition-buffer",
+        "access-chain-unavailable",
+        "ravine-position-not-holdable-safe-retreat",
+        "safe-retreat-before-crown-fire"
+      ]
+    },
+    {
+      "sequence": 32,
+      "type": "session-completed",
+      "result": {
+        "variant": "overwhelmed",
+        "evidenceIds": [
+          "fuel-behavior-buffer",
+          "crown-transition-buffer",
+          "access-chain-unavailable",
+          "ravine-position-not-holdable-safe-retreat",
+          "safe-retreat-before-crown-fire"
+        ]
+      }
+    }
+  ]
+}
