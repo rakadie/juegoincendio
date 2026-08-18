@@ -195,7 +195,7 @@ Comunicación, evacuación y daños solo pueden aparecer después como consecuen
 
 ## 13. Entregas siguientes
 
-- #45 elegirá las cinco actuaciones de la partida preparada y completará su guion sobre este contexto;
+- #45 fija las cinco actuaciones y el guion preparado en [`vertical-beta-1-reference-prepared.md`](vertical-beta-1-reference-prepared.md);
 - #46 hará lo propio para la partida vulnerable sin modificar ninguna variable común;
 - #47 almacenará el manifest de contexto, construirá las dos sesiones JSON y comprobará igualdad y diferencias campo a campo;
 - #43 evaluará esta entrega como `EV-10-REFERENCE-BASE` junto con `EV-11..EV-15`.

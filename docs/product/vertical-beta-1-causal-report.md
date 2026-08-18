@@ -224,7 +224,7 @@ Cada mensaje es una frase completa traducible. Los parámetros solo insertan dat
 
 ## 8. Ejemplo completo — `contained`
 
-Este ejemplo reutiliza el perfil preparado aprobado en #37. #45 fijará después la partida canónica completa.
+Este ejemplo reutiliza el perfil preparado aprobado en #37. La partida canónica completa se fija en [`vertical-beta-1-reference-prepared.md`](vertical-beta-1-reference-prepared.md), entrega de #45.
 
 ### Estado y recorrido de entrada
 
@@ -356,6 +356,6 @@ Esta entrega no:
 
 - #17 podrá cerrarse cuando #39 se integre, al quedar completas sus cuatro tareas #36–#39;
 - #44 fijará el escenario común de las partidas de referencia;
-- #45 y #46 convertirán estos dos perfiles en sesiones canónicas completas;
+- #45 fija la partida preparada en [`vertical-beta-1-reference-prepared.md`](vertical-beta-1-reference-prepared.md) y #46 completará la vulnerable;
 - #47 comparará ambas sesiones y preparará fixtures de aceptación;
 - #72 implementará el generador del informe y #75 su cobertura i18n estricta.
