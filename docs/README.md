@@ -38,6 +38,7 @@
 
 - Puertas maestras de aceptación de M1: [docs/project/m1-acceptance-gates.md](project/m1-acceptance-gates.md)
 - Evidencias, responsables y bloqueantes de M1: [docs/project/m1-acceptance-evidence.md](project/m1-acceptance-evidence.md)
+- Acta final de aceptación de M1: [docs/project/m1-final-acceptance.md](project/m1-final-acceptance.md)
 - Definition of Ready de M2: [docs/project/m2-definition-of-ready.md](project/m2-definition-of-ready.md)
 - Gaps, riesgos y decisiones: [docs/analysis/gaps-and-decisions.md](analysis/gaps-and-decisions.md)
 - Auditoría de escenas e IDs: [docs/analysis/auditoria-escenas-ids.md](analysis/auditoria-escenas-ids.md)

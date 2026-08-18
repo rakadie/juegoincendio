@@ -86,8 +86,8 @@ Reglas:
 | `EV-11-REFERENCE-PREPARED` | [`vertical-beta-1-reference-prepared.md`](../product/vertical-beta-1-reference-prepared.md): decisiones, evidencias, cálculo, opciones, consecuencias, duración, recorrido e informe `contained`. | Disponible. |
 | `EV-12-REFERENCE-VULNERABLE` | [`vertical-beta-1-reference-vulnerable.md`](../product/vertical-beta-1-reference-vulnerable.md): decisiones/omisiones, evidencias, cálculo, opciones, consecuencias, duración, recorrido e informe `overwhelmed`. | Disponible. |
 | `EV-13-REFERENCE-AUTO` | [`vertical-beta-1-reference-comparison.md`](../product/vertical-beta-1-reference-comparison.md), `tests/fixtures/game-session/reference-context.json`, `reference-contained.json`, `reference-overwhelmed.json` y `tests/reference-game-sessions.test.ts`; ejecutar suite, round-trip y comparación de contexto/dimensiones/rutas. | Disponible. |
-| `EV-14-I18N-SPEC` | Sección i18n de [`vertical-beta-1-catalog.md`](../product/vertical-beta-1-catalog.md) y contrato de [`vertical-beta-1-causal-report.md`](../product/vertical-beta-1-causal-report.md). Inventariar 12 nodos y familias de claves, sin fallback como resultado válido. | Disponible; completar con #45–#46. |
-| `EV-15-CROSS-AUDIT` | Informe de #43 en `docs/project/m1-final-acceptance.md`: manifest de fuentes normativas, SHA único, conteos cruzados, hallazgos y estado de las 35 filas. | Pendiente de #43. |
+| `EV-14-I18N-SPEC` | Sección i18n de [`vertical-beta-1-catalog.md`](../product/vertical-beta-1-catalog.md) y contrato de [`vertical-beta-1-causal-report.md`](../product/vertical-beta-1-causal-report.md). Inventariar 12 nodos y familias de claves, sin fallback como resultado válido. | Disponible. |
+| `EV-15-CROSS-AUDIT` | [`m1-final-acceptance.md`](m1-final-acceptance.md) y `tests/m1-final-acceptance.test.ts`: manifest de fuentes normativas, SHA único, conteos cruzados, hallazgos y estado de las 35 filas. | Disponible al integrar #43. |
 
 Las rutas previstas para #44–#47 fijan el nombre de la evidencia, no su contenido. Esas issues siguen siendo responsables de diseñar los artefactos.
 
@@ -171,9 +171,9 @@ La matriz contiene:
 - 35 evidencias mínimas asignadas;
 - 35 responsables identificables;
 - 35 severidades `m1-blocker` justificadas por el carácter obligatorio de #40;
-- 35 estados `not-evaluated`, porque #43 aún no se ha ejecutado.
+- 35 estados iniciales `not-evaluated`, conservados como línea base previa a #43.
 
-G1–G6 disponen de `EV-01..EV-14`; G7 necesita la auditoría cruzada final de #43 para `EV-15`. Esta diferencia de disponibilidad no cambia el estado de aceptación.
+G1–G7 disponen de `EV-01..EV-15` en la entrega de #43. Los resultados efectivos y los requisitos de firma se registran en [`m1-final-acceptance.md`](m1-final-acceptance.md); esta matriz conserva el estado inicial previo a la revisión.
 
 ## 8. Trabajo posterior y no bloqueante para M1
 
@@ -210,4 +210,4 @@ Esta entrega no:
 
 - #42 compone la [`Definition of Ready de M2`](m2-definition-of-ready.md) a partir de los 35 `m1-blocker`, sus firmas y el tratamiento de reapertura;
 - #44–#47 produjeron EV-10..13;
-- #43 congelará el SHA, producirá EV-15 y evaluará cada fila.
+- #43 congela el SHA, produce EV-15 y evalúa cada fila en [`m1-final-acceptance.md`](m1-final-acceptance.md).
