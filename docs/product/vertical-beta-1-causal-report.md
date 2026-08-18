@@ -264,7 +264,7 @@ El orden del estado es `fuelLoad`, `fuelContinuity`, `operationalAccess`, `defen
 
 ## 9. Ejemplo completo — `overwhelmed`
 
-Este ejemplo reutiliza el perfil vulnerable aprobado en #37. #46 fijará después la partida canónica completa.
+Este ejemplo reutiliza el perfil vulnerable aprobado en #37. La partida canónica completa se fija en [`vertical-beta-1-reference-vulnerable.md`](vertical-beta-1-reference-vulnerable.md), entrega de #46.
 
 ### Estado y recorrido de entrada
 
@@ -356,6 +356,6 @@ Esta entrega no:
 
 - #17 podrá cerrarse cuando #39 se integre, al quedar completas sus cuatro tareas #36–#39;
 - #44 fijará el escenario común de las partidas de referencia;
-- #45 fija la partida preparada en [`vertical-beta-1-reference-prepared.md`](vertical-beta-1-reference-prepared.md) y #46 completará la vulnerable;
+- #45 y #46 fijan las partidas canónicas en [`vertical-beta-1-reference-prepared.md`](vertical-beta-1-reference-prepared.md) y [`vertical-beta-1-reference-vulnerable.md`](vertical-beta-1-reference-vulnerable.md);
 - #47 comparará ambas sesiones y preparará fixtures de aceptación;
 - #72 implementará el generador del informe y #75 su cobertura i18n estricta.
