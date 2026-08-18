@@ -6,7 +6,7 @@ Implementación de motor: fuera de alcance; corresponde a #69.
 
 ## Propósito
 
-Esta entrega convierte el contrato documental de `GameSession` en una especificación ejecutable mediante cuatro snapshots JSON, una matriz de cobertura y un validador puro utilizado únicamente por las pruebas.
+Esta entrega convierte el contrato documental de `GameSession` en una especificación ejecutable mediante snapshots JSON provisionales de contrato, dos partidas canónicas, un manifest de contexto, una matriz de cobertura y un validador puro utilizado únicamente por las pruebas.
 
 El objetivo no es simular todavía la partida. El objetivo es demostrar que cualquier implementación posterior puede:
 
@@ -24,13 +24,17 @@ tests/fixtures/game-session/
 ├── prevention-completed.json
 ├── crisis-prepared.json
 ├── completed-contained.json
+├── reference-context.json
+├── reference-contained.json
+├── reference-overwhelmed.json
 └── coverage.json
 
 tests/support/game-session-contract.ts
 tests/game-session-contract.test.ts
+tests/reference-game-sessions.test.ts
 ```
 
-Los valores causales incluidos son ejemplos válidos para comprobar forma y coherencia. No fijan los rangos, impactos o umbrales que deben definir #32–#35, ni sustituyen los fixtures canónicos de #44–#47.
+Los cuatro snapshots originales contienen valores causales provisionales válidos para comprobar forma y coherencia. No son parámetros normativos. `reference-contained.json` y `reference-overwhelmed.json` sí materializan los perfiles aprobados por #44–#47; `reference-context.json` mantiene sus invariantes externas fuera del contrato `GameSession`.
 
 ## Snapshots
 
@@ -50,7 +54,11 @@ Representa una sesión activa después de que el router haya seleccionado `prepa
 
 Representa una sesión cerrada sobre la rama preparada, con el nodo terminal completado y resultado `contained`.
 
-La prueba construye además en memoria una variante vulnerable completa y verifica que el mismo contrato admite `vulnerable` y `overwhelmed` sin añadir campos ni crear un segundo modelo de sesión.
+### Partidas canónicas de referencia
+
+`reference-contained.json` y `reference-overwhelmed.json` son dos sesiones completas, independientes y directamente consumibles por #76. Ambas conservan exactamente las mismas claves de `GameSession`; la segunda demuestra `vulnerable` y `overwhelmed` sin crear un segundo modelo.
+
+`reference-context.json` no es una sesión. Es el manifest determinista compartido que fija municipio, meteorología, ignición, reglas, límites y presupuesto de aceptación. Su separación evita añadir contexto externo, avatar o configuración al snapshot.
 
 ## Matriz de cobertura
 

@@ -326,5 +326,5 @@ Esta entrega no crea todavía el JSON canónico de #47, no altera el perfil apro
 
 ## 16. Entregas siguientes
 
-- #47 materializará `reference-overwhelmed.json` y comparará las dos sesiones y su contexto;
+- #47 materializa `reference-overwhelmed.json` y compara las dos sesiones y su contexto en [`vertical-beta-1-reference-comparison.md`](vertical-beta-1-reference-comparison.md);
 - #43 evaluará esta entrega como `EV-12-REFERENCE-VULNERABLE`.

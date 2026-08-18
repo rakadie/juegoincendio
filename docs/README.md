@@ -20,6 +20,7 @@
 - Escenario base común de las partidas de referencia: [docs/product/vertical-beta-1-reference-common.md](product/vertical-beta-1-reference-common.md)
 - Partida de referencia Municipio preparado: [docs/product/vertical-beta-1-reference-prepared.md](product/vertical-beta-1-reference-prepared.md)
 - Partida de referencia Territorio vulnerable: [docs/product/vertical-beta-1-reference-vulnerable.md](product/vertical-beta-1-reference-vulnerable.md)
+- Comparación y fixtures canónicos de las partidas de referencia: [docs/product/vertical-beta-1-reference-comparison.md](product/vertical-beta-1-reference-comparison.md)
 - Arquitectura de sistema: [docs/architecture/system-architecture.md](architecture/system-architecture.md)
 - Stack y decisiones técnicas: [docs/architecture/tech-stack-and-decisions.md](architecture/tech-stack-and-decisions.md)
 - Dominio y reglas del juego: [docs/domain/game-design-spec.md](domain/game-design-spec.md)

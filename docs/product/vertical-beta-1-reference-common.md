@@ -197,5 +197,5 @@ Comunicación, evacuación y daños solo pueden aparecer después como consecuen
 
 - #45 fija las cinco actuaciones y el guion preparado en [`vertical-beta-1-reference-prepared.md`](vertical-beta-1-reference-prepared.md);
 - #46 fija la partida vulnerable sin modificar ninguna variable común en [`vertical-beta-1-reference-vulnerable.md`](vertical-beta-1-reference-vulnerable.md);
-- #47 almacenará el manifest de contexto, construirá las dos sesiones JSON y comprobará igualdad y diferencias campo a campo;
+- #47 almacena el manifest, las dos sesiones y la comparación campo a campo en [`vertical-beta-1-reference-comparison.md`](vertical-beta-1-reference-comparison.md);
 - #43 evaluará esta entrega como `EV-10-REFERENCE-BASE` junto con `EV-11..EV-15`.
