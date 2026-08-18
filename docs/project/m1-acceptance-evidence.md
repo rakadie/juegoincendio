@@ -82,7 +82,7 @@ Reglas:
 | `EV-07-INHERITED-STATE` | Decisiones cerradas #32–#35, [`vertical-beta-1-graph-transitions.md`](../product/vertical-beta-1-graph-transitions.md) y [`vertical-beta-1-causal-inventory.md`](../product/vertical-beta-1-causal-inventory.md). Revisar cinco claves, escala, ocho actuaciones, ejecución, cálculo, vetos, rama y proyección de crisis. | Disponible. |
 | `EV-08-CAUSAL-SPEC` | [`vertical-beta-1-causal-inventory.md`](../product/vertical-beta-1-causal-inventory.md), [`vertical-beta-1-causal-matrix.md`](../product/vertical-beta-1-causal-matrix.md) y [`vertical-beta-1-causal-combinations-validation.md`](../product/vertical-beta-1-causal-combinations-validation.md). Recontar 8 actuaciones, 10 consecuencias y C-01–C-05. | Disponible. |
 | `EV-09-CAUSAL-REPORT` | [`vertical-beta-1-causal-report.md`](../product/vertical-beta-1-causal-report.md). Comprobar 3–5 relaciones, trazabilidad de omisiones, separación operativa, dos variantes y ausencia de puntuaciones visibles. | Disponible. |
-| `EV-10-REFERENCE-BASE` | Entrega de #44 en `docs/product/vertical-beta-1-reference-common.md`: contexto externo, supuestos, tronco, reloj/duración y campos inmutables compartidos. | Pendiente de #44. |
+| `EV-10-REFERENCE-BASE` | [`vertical-beta-1-reference-common.md`](../product/vertical-beta-1-reference-common.md): contexto versionado, supuestos, estado base, tronco, presupuesto temporal y variables inmutables compartidas. | Disponible. |
 | `EV-11-REFERENCE-PREPARED` | Entrega de #45 en `docs/product/vertical-beta-1-reference-prepared.md`: decisiones, evidencias, estado, opciones, consecuencias, duración, recorrido e informe `contained`. | Pendiente de #45. |
 | `EV-12-REFERENCE-VULNERABLE` | Entrega de #46 en `docs/product/vertical-beta-1-reference-vulnerable.md`: decisiones/omisiones, evidencias, estado, opciones, consecuencias, duración, recorrido e informe `overwhelmed`. | Pendiente de #46. |
 | `EV-13-REFERENCE-AUTO` | Entrega de #47: `tests/fixtures/game-session/reference-contained.json`, `reference-overwhelmed.json` y `tests/reference-game-sessions.test.ts`; ejecutar suite, round-trip y comparación de contexto/dimensiones/rutas. | Pendiente de #47. |
@@ -173,7 +173,7 @@ La matriz contiene:
 - 35 severidades `m1-blocker` justificadas por el carácter obligatorio de #40;
 - 35 estados `not-evaluated`, porque #43 aún no se ha ejecutado.
 
-G1–G5 disponen de fuentes; G6 depende de #44–#47; G7 necesita la auditoría cruzada final de #43. Esta diferencia de disponibilidad no cambia el estado de aceptación.
+G1–G5 disponen de fuentes; G6 ya dispone de `EV-10` y depende de #45–#47 para `EV-11..EV-13`; G7 necesita la auditoría cruzada final de #43. Esta diferencia de disponibilidad no cambia el estado de aceptación.
 
 ## 8. Trabajo posterior y no bloqueante para M1
 
