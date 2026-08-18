@@ -293,6 +293,6 @@ Esta entrega no crea todavía el JSON canónico de #47, no modifica el fixture p
 
 ## 14. Entregas siguientes
 
-- #46 debe utilizar el mismo contexto y contrastar este guion con la partida vulnerable;
+- #46 utiliza el mismo contexto y contrasta este guion en [`vertical-beta-1-reference-vulnerable.md`](vertical-beta-1-reference-vulnerable.md);
 - #47 materializará `reference-contained.json`, validará esta secuencia y comparará ambas sesiones;
 - #43 evaluará esta entrega como `EV-11-REFERENCE-PREPARED`.
