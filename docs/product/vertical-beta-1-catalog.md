@@ -2,14 +2,13 @@
 
 Fecha: 28 de julio de 2026  
 Issue: #23  
-Rama: `docs/vertical-beta-1-catalog`  
 Estado contrastado: `main@d08db13fd9330ba297d8b92ca8a77cce7e35aef3`  
 Implementación posterior: #67  
 Milestone de implementación: **M2 — Motor modular** (`#2`)
 
 ## 1. Propósito y alcance formal
 
-Este documento publica y valida el **catálogo objetivo** de la Vertical Beta 1. Es la fuente de verdad de M1 para:
+Este documento es la fuente de verdad de M1 para:
 
 - IDs canónicos;
 - orden y fases;
@@ -22,17 +21,15 @@ Este documento publica y valida el **catálogo objetivo** de la Vertical Beta 1.
 - clasificación completa de las 51 escenas;
 - desviaciones entre la especificación aprobada y el runtime auditado.
 
-La incidencia #23 se considera una **entrega documental de M1**. No exige que `main` implemente todavía el catálogo. La implementación física de IDs, payload, inspecciones, flujo, renderer, resultado e i18n se traslada a #67 y a sus tareas #68–#76.
+#23 es una **entrega documental de M1**. No afirma que `main` implemente ya el catálogo. La implementación física de IDs, payload, inspecciones, flujo, renderer, resultado e i18n se traslada a #67 y a sus tareas #68–#76.
 
-La validación de #23 significa:
+La validación documental significa:
 
-1. que los nodos objetivo están definidos de forma única;
-2. que cada unidad tiene fuente y posición;
-3. que las salidas del **grafo objetivo** solo apuntan a IDs canónicos oficiales;
-4. que toda desviación del runtime queda registrada y enlazada a implementación;
-5. que el documento puede utilizarse como entrada estable de #14 sin esperar a M2.
-
-No significa que el runtime auditado cumpla ya el grafo.
+1. los nodos objetivo están definidos de forma única;
+2. cada unidad tiene fuente y posición;
+3. las salidas del grafo objetivo solo apuntan a IDs canónicos oficiales;
+4. toda desviación del runtime queda registrada y enlazada a implementación;
+5. el documento puede utilizarse como entrada estable de #14 sin esperar a M2.
 
 ## 2. Principio causal
 
@@ -67,7 +64,7 @@ Reglas:
 - un nodo compartido conserva un único ID;
 - los resultados calculados son variantes del mismo nodo final;
 - no se reutilizan IDs retirados;
-- migración atómica y sin alias ejecutables.
+- migración atómica y sin aliases ejecutables.
 
 Fases:
 
@@ -105,7 +102,7 @@ intro-briefing-mission
 crisis-decision-emergency-fuel-break
 → crisis-decision-ravine-fire
 → crisis-decision-housing-defense
-→ ending-result-causal-report [contained]
+→ ending-result-causal-report
 ```
 
 ### Rama vulnerable
@@ -114,10 +111,17 @@ crisis-decision-emergency-fuel-break
 crisis-decision-access-blockage
 → crisis-decision-ravine-fire
 → crisis-decision-crown-fire
-→ ending-result-causal-report [overwhelmed]
+→ ending-result-causal-report
 ```
 
-`contained` y `overwhelmed` son resultados calculados, no IDs independientes.
+Existe un único nodo terminal. `contained` y `overwhelmed` son variantes calculadas dentro de `ending-result-causal-report`, no IDs independientes ni salidas fijadas por el router.
+
+La variante final se calcula desde `GameSession`, `inheritedState`, las decisiones de crisis y el historial causal. Las partidas de referencia esperan:
+
+- recorrido preparado → `contained`;
+- recorrido vulnerable → `overwhelmed`.
+
+Estas expectativas pertenecen a los fixtures de aceptación. Los daños parciales y las correcciones durante la crisis se expresan en el informe causal sin crear una tercera variante terminal.
 
 La especificación detallada del tronco común, sus fases y condiciones mínimas de avance se publica en [`vertical-beta-1-common-trunk.md`](vertical-beta-1-common-trunk.md) como entrega de #24.
 
@@ -131,18 +135,18 @@ La integridad, alcanzabilidad, ausencia de ciclos y estructura TypeScript de ref
 
 | Posición | Fase | Rama | Unidad actual | ID canónico | Tipo | Fuente actual | Dependencias de entrada | Estado editorial | Destino en `campaign.ts` / flujo | Salidas canónicas |
 |---:|---|---|---|---|---|---|---|---|---|---|
-| 1 | `intro` | Común | Briefing hardcodeado | `intro-briefing-mission` | `briefing` | `src/interfaces/http/prototype-page.ts` | Inicio de sesión | `beta-oficial`; migrar a nodo declarativo | Añadir como nodo inicial; retirar texto y navegación hardcodeados | `prevention-inspection-territory-fuel` |
-| 2 | `prevention` | Común | `p-002-fincas-vegetacion-combustible` | `prevention-inspection-territory-fuel` | `inspection` | `src/content/prevention-inspections.ts` | `intro-briefing-mission` | `beta-oficial`; reducir | Primera entrada de `preventionInspections` | `prevention-inspection-housing-interface` |
-| 3 | `prevention` | Común | `p-001-viviendas-interfaz` | `prevention-inspection-housing-interface` | `inspection` | `src/content/prevention-inspections.ts` | `prevention-inspection-territory-fuel` | `beta-oficial`; reducir | Segunda entrada de `preventionInspections` | `transition-summary-prevention` |
-| 4 | `transition` | Común | `balance-prevencion` | `transition-summary-prevention` | `summary` | `src/content/prevention-balance.ts` | Dos inspecciones completadas | `beta-oficial`; reorientar | Mantener como `preventionBalance` | `crisis-decision-first-alert` |
-| 5 | `crisis` | Común | `s-040-primer-aviso-incendio` | `crisis-decision-first-alert` | `decision` | `src/content/prevention-balance.ts` | `transition-summary-prevention` | `beta-oficial`; conservar función | Mantener como `firstAlert` | `crisis-router-causal-map` |
-| 6 | `crisis` | Común | `m-001-apertura-tres-frentes` | `crisis-router-causal-map` | `router` | `src/content/prevention-balance.ts` | Primer aviso resuelto + estado heredado calculado | `beta-oficial`; reescribir | Mantener como `crisisRouteModule`; solo dos rutas automáticas | `crisis-decision-emergency-fuel-break`<br>`crisis-decision-access-blockage` |
-| 7A | `crisis` | Preparada | `s-025-cortafuego-emergencia` | `crisis-decision-emergency-fuel-break` | `decision` | `src/content/scenarios/operaciones/os-025-cortafuego-emergencia.ts` | Rama preparada + oportunidad de ataque | `beta-oficial`; conservar | Referenciar desde el flujo oficial; no duplicar contenido en `campaign.ts` | `crisis-decision-ravine-fire` |
-| 7B | `crisis` | Vulnerable | `s-011-corte-carretera-acceso` | `crisis-decision-access-blockage` | `decision` | `src/content/scenarios/operaciones/os-011-corte-carretera-acceso.ts` | Rama vulnerable + accesibilidad insuficiente | `beta-oficial`; conservar | Referenciar desde el flujo oficial; no duplicar contenido en `campaign.ts` | `crisis-decision-ravine-fire` |
-| 8 | `crisis` | Ambas | `s-027-fuego-en-barranco` | `crisis-decision-ravine-fire` | `decision` | `src/content/scenarios/operaciones/os-027-fuego-en-barranco.ts` | Una de las dos escenas de apertura completada | `beta-oficial`; conservar compartida | Referenciar una sola vez desde el flujo; comportamiento condicionado por estado heredado | `crisis-decision-housing-defense`<br>`crisis-decision-crown-fire` |
-| 9A | `crisis` | Preparada | `s-026-defensa-operativa-nucleo-viviendas` | `crisis-decision-housing-defense` | `decision` | `src/content/scenarios/operaciones/os-026-defensa-operativa-nucleo-viviendas.ts` | Barranco + rama preparada | `beta-oficial`; conservar | Referenciar desde la salida preparada del flujo | `ending-result-causal-report` |
-| 9B | `crisis` | Vulnerable | `s-030-fuego-de-copas` | `crisis-decision-crown-fire` | `decision` | `src/content/scenarios/operaciones/os-030-fuego-de-copas.ts` | Barranco + rama vulnerable | `beta-oficial`; conservar | Referenciar desde la salida vulnerable del flujo | `ending-result-causal-report` |
-| 10 | `ending` | Común | `resultado-beta` y resultado hardcodeado | `ending-result-causal-report` | `result` | `src/interfaces/http/prototype-page.ts` | `crisis-decision-housing-defense` o `crisis-decision-crown-fire` | `beta-oficial`; sustituir sentinela | Añadir como nodo terminal declarativo y retirar mecanismos duplicados | — |
+| 1 | `intro` | Común | Briefing hardcodeado | `intro-briefing-mission` | `briefing` | `src/interfaces/http/prototype-page.ts` | Inicio de sesión | `beta-oficial`; migrar | Nodo inicial declarativo | `prevention-inspection-territory-fuel` |
+| 2 | `prevention` | Común | `p-002-fincas-vegetacion-combustible` | `prevention-inspection-territory-fuel` | `inspection` | `src/content/prevention-inspections.ts` | `intro-briefing-mission` | `beta-oficial`; reducir | Primera inspección | `prevention-inspection-housing-interface` |
+| 3 | `prevention` | Común | `p-001-viviendas-interfaz` | `prevention-inspection-housing-interface` | `inspection` | `src/content/prevention-inspections.ts` | `prevention-inspection-territory-fuel` | `beta-oficial`; reducir | Segunda inspección | `transition-summary-prevention` |
+| 4 | `transition` | Común | `balance-prevencion` | `transition-summary-prevention` | `summary` | `src/content/prevention-balance.ts` | Dos inspecciones completadas | `beta-oficial`; reorientar | Resumen preventivo | `crisis-decision-first-alert` |
+| 5 | `crisis` | Común | `s-040-primer-aviso-incendio` | `crisis-decision-first-alert` | `decision` | `src/content/prevention-balance.ts` | `transition-summary-prevention` | `beta-oficial`; conservar función | Entrada común de crisis | `crisis-router-causal-map` |
+| 6 | `crisis` | Común | `m-001-apertura-tres-frentes` | `crisis-router-causal-map` | `router` | `src/content/prevention-balance.ts` | Primer aviso + estado heredado | `beta-oficial`; reescribir | Router automático de dos ramas | `crisis-decision-emergency-fuel-break`<br>`crisis-decision-access-blockage` |
+| 7A | `crisis` | Preparada | `s-025-cortafuego-emergencia` | `crisis-decision-emergency-fuel-break` | `decision` | `src/content/scenarios/operaciones/os-025-cortafuego-emergencia.ts` | Rama preparada | `beta-oficial`; conservar | Referencia desde flujo | `crisis-decision-ravine-fire` |
+| 7B | `crisis` | Vulnerable | `s-011-corte-carretera-acceso` | `crisis-decision-access-blockage` | `decision` | `src/content/scenarios/operaciones/os-011-corte-carretera-acceso.ts` | Rama vulnerable | `beta-oficial`; conservar | Referencia desde flujo | `crisis-decision-ravine-fire` |
+| 8 | `crisis` | Ambas | `s-027-fuego-en-barranco` | `crisis-decision-ravine-fire` | `decision` | `src/content/scenarios/operaciones/os-027-fuego-en-barranco.ts` | Escena de apertura completada | `beta-oficial`; compartida | Una sola definición condicionada por estado | `crisis-decision-housing-defense`<br>`crisis-decision-crown-fire` |
+| 9A | `crisis` | Preparada | `s-026-defensa-operativa-nucleo-viviendas` | `crisis-decision-housing-defense` | `decision` | `src/content/scenarios/operaciones/os-026-defensa-operativa-nucleo-viviendas.ts` | Barranco + rama preparada | `beta-oficial`; conservar | Salida preparada | `ending-result-causal-report` |
+| 9B | `crisis` | Vulnerable | `s-030-fuego-de-copas` | `crisis-decision-crown-fire` | `decision` | `src/content/scenarios/operaciones/os-030-fuego-de-copas.ts` | Barranco + rama vulnerable | `beta-oficial`; conservar | Salida vulnerable | `ending-result-causal-report` |
+| 10 | `ending` | Común | `resultado-beta` y resultado hardcodeado | `ending-result-causal-report` | `result` | `src/interfaces/http/prototype-page.ts` | Última decisión de crisis | `beta-oficial`; sustituir sentinela | Nodo terminal declarativo; calcula variante | — |
 
 El catálogo contiene **12 nodos funcionales únicos**. Cinco proceden de objetos `Scenario` actuales.
 
@@ -158,7 +162,7 @@ Cinco actuaciones candidatas; el jugador selecciona tres:
 4. activar pastoreo preventivo;
 5. evaluar una quema prescrita o línea preventiva profesional.
 
-Replantación y regulación general de quemas agrícolas no aparecen como decisiones independientes en el MVP.
+Replantación y regulación general de quemas agrícolas no aparecen como decisiones independientes.
 
 ### `prevention-inspection-housing-interface`
 
@@ -267,21 +271,17 @@ Total: **5 + 36 + 10 = 51**.
 Regla de carga objetivo:
 
 - solo `beta-oficial` entra en el payload y el flujo;
-- la biblioteca permanece en el repositorio, fuera del índice ejecutable;
+- la biblioteca permanece en el repositorio fuera del índice ejecutable;
 - el archivo no se carga ni recibe compatibilidad de runtime.
 
 ## 10. Alcance obligatorio de i18n
 
-La cobertura i18n obligatoria del producto comprende **los 12 nodos oficiales que contienen texto**, no únicamente los cinco objetos `Scenario`.
+La cobertura obligatoria comprende **los 12 nodos oficiales con texto**, no únicamente los cinco objetos `Scenario`.
 
-Se distinguen dos validaciones:
+1. Los cinco `Scenario` deben tener traducción completa y estricta.
+2. Briefing, dos inspecciones, resumen, primer aviso, router y resultado deben resolverse mediante contenido traducible.
 
-1. **Cobertura de escenas:** los cinco `Scenario` oficiales deben tener traducción completa y estricta en el catálogo de escenas.
-2. **Cobertura de flujo:** briefing, dos inspecciones, resumen, primer aviso, router y resultado deben resolverse mediante un catálogo de contenido traducible o mecanismo equivalente.
-
-El sistema final no debe aceptar fallback silencioso para un nodo oficial. La validación debe fallar cuando falte contenido obligatorio de cualquiera de los 12 IDs canónicos.
-
-La biblioteca candidata no necesita migrar ni completar i18n durante esta fase.
+El sistema final no debe aceptar fallback silencioso para un nodo oficial. La biblioteca candidata no necesita migrar ni completar i18n en esta fase.
 
 ## 11. Validación contra el commit auditado
 
@@ -293,62 +293,57 @@ main@d08db13fd9330ba297d8b92ca8a77cce7e35aef3
 
 | Comprobación | Resultado en el commit auditado |
 |---|---|
-| Los 12 IDs canónicos son únicos en la tabla | Correcto |
-| Las 51 escenas están clasificadas exactamente | Correcto: 5 oficiales, 36 de biblioteca y 10 históricas |
-| Las cinco escenas oficiales tienen fuente existente | Correcto |
-| Todas las unidades de la tabla tienen posición y dependencia | Correcto en este documento |
-| Todas las salidas objetivo enumeran IDs canónicos verificables | Correcto en este documento |
-| Los IDs canónicos existen en TypeScript | Pendiente: el código conserva IDs históricos |
-| El payload expone solo cinco `Scenario` | Incorrecto: expone los 51 |
+| Los 12 IDs canónicos son únicos | Correcto |
+| Las 51 escenas están clasificadas exactamente | Correcto: 5/36/10 |
+| Las fuentes declaradas existen | Correcto |
+| Las salidas usan IDs canónicos verificables | Correcto en este documento |
+| Los IDs canónicos existen en TypeScript | Pendiente |
+| El payload expone solo cinco `Scenario` | Incorrecto: expone 51 |
 | Solo se cargan dos inspecciones | Incorrecto: también se carga `p-003` |
-| `p-002` ofrece cinco candidatas y permite tres | Incorrecto: mantiene siete y permite cuatro |
-| `p-001` ofrece tres candidatas y permite dos | Incorrecto: mantiene siete y permite cuatro |
-| No se cargan nodos `invierno_*`/`verano_*` | Incorrecto: siguen en `CAMPAIGN_CONTENT` |
-| El primer aviso referencia solo contenido oficial | Incorrecto: desbloquea escenas excluidas |
-| El mapa solo representa las dos ramas aprobadas | Incorrecto: conserva comunicación, senderistas y población |
-| La rama se selecciona por estado causal | Incorrecto: `activeCrisisRoute()` fuerza `ruta-comunicacion` |
-| Briefing y resultado son declarativos | Incorrecto: siguen hardcodeados |
-| Las cinco escenas funcionan con el renderer actual | Incompatible: el renderer inicia solo `action-selection` y las elegidas son preguntas de opciones simples |
-| i18n cubre los 12 nodos oficiales | Incorrecto |
-| Falta de traducción produce error | Incorrecto: existe fallback silencioso |
+| `p-002` es 3 de 5 | Incorrecto: mantiene 4 de 7 |
+| `p-001` es 2 de 3 | Incorrecto: mantiene 4 de 7 |
+| No se cargan `invierno_*`/`verano_*` | Incorrecto |
+| El primer aviso referencia solo contenido oficial | Incorrecto |
+| El mapa representa solo dos ramas | Incorrecto |
+| La rama se selecciona por estado causal | Incorrecto: se fuerza `ruta-comunicacion` |
+| Briefing y resultado son declarativos | Incorrecto |
+| Las cinco escenas funcionan con el renderer actual | Incompatible |
+| i18n cubre los 12 nodos | Incorrecto |
+| La falta de traducción produce error | Incorrecto: fallback silencioso |
 | Existe prueba automática del catálogo | No localizada |
 
 ## 12. Desviaciones trasladadas a M2
 
-Toda implementación derivada de esta validación se centraliza en la épica:
-
-- #67 — **M2 — Implementar la Vertical Beta 1 ejecutable**.
-
-Tareas de la épica:
-
-- #68 — contrato común `GameScene` y validador del catálogo;
-- #69 — `GameSession`, eventos e invariantes;
-- #70 — dos inspecciones preventivas oficiales;
-- #71 — adaptación de las cinco escenas oficiales;
-- #72 — balance, flujo declarativo, router causal y resultado;
-- #73 — interfaz conectada al motor y renderers;
-- #74 — separación beta/biblioteca/archivo y retirada de campaña heredada;
-- #75 — migración atómica de IDs e i18n;
+- #67 — épica **M2 — Implementar la Vertical Beta 1 ejecutable**.
+- #68 — contrato `GameScene` y validador.
+- #69 — `GameSession`, eventos e invariantes.
+- #70 — dos inspecciones oficiales.
+- #71 — cinco escenas oficiales.
+- #72 — balance, flujo, router y resultado calculado.
+- #73 — interfaz conectada al motor.
+- #74 — separación beta/biblioteca/archivo.
+- #75 — migración atómica de IDs e i18n.
 - #76 — aceptación integral automatizada.
 
-Todas están asignadas al milestone GitHub **M2 — Motor modular** (`#2`). Permanecen fuera de `Ready` hasta que M1 complete sus puertas estructurales.
+Todas están asignadas al milestone **M2 — Motor modular** (`#2`).
 
 ## 13. Validaciones automatizables requeridas en M2
 
-Tras aplicar la migración, una prueba debe verificar:
+Una prueba debe verificar:
 
 1. 12 nodos funcionales oficiales;
 2. cinco `Scenario` ejecutables;
 3. dos inspecciones en el orden aprobado;
 4. unicidad global de IDs;
-5. existencia de las fuentes declaradas;
+5. existencia de fuentes;
 6. ausencia de referencias a biblioteca o archivo;
 7. ausencia de `invierno_*`, `verano_*` y `resultado-beta` en el payload;
-8. cobertura i18n estricta de los 12 nodos oficiales;
+8. cobertura i18n estricta de 12 nodos;
 9. una entrada y un terminal;
 10. ambas ramas alcanzables y convergentes;
-11. ausencia de nodos huérfanos y ciclos;
-12. uso compartido de `crisis-decision-ravine-fire` sin duplicación.
+11. ausencia de huérfanos y ciclos;
+12. barranco compartido sin duplicación;
+13. variante terminal calculada desde el estado final, no fijada por el router.
 
 Archivo orientativo:
 
@@ -356,21 +351,6 @@ Archivo orientativo:
 tests/vertical-beta-catalog.test.ts
 ```
 
-## 14. Criterio de cierre de #23
+## 14. Estado de la entrega
 
-#23 puede cerrarse como `completed` cuando:
-
-- este documento esté revisado;
-- la rama se integre en `main`;
-- `docs/README.md` lo enlace;
-- el cambio de alcance documental esté formalizado en GitHub;
-- #67 recoja las desviaciones técnicas;
-- el documento quede aprobado como entrada de #14.
-
-No es requisito de cierre de #23 que M2 haya implementado el runtime.
-
-Después del cierre de #23:
-
-- #13 puede cerrarse al quedar fijadas escenas e IDs;
-- #14 puede continuar sin esperar a M2;
-- #67 permanece fuera de `Ready` hasta que M1 complete sus puertas estructurales.
+#23 está completada y el catálogo está publicado en `main`. #13 quedó cerrado al fijarse escenas e IDs. #14 puede continuar sin esperar a M2.
