@@ -28,7 +28,7 @@
 
 - Nivel de realismo físico del incendio en MVP.
 - Modo offline-first vs online-first en frontend.
-- Estrategia final de despliegue (proveedor cloud definitivo).
+- Estrategia final de despliegue: resuelta para la primera publicación por #9.
 
 ## Actualización posterior (resuelta)
 
@@ -36,7 +36,7 @@ Se cierran las decisiones pendientes con el marco MVP acordado:
 
 1. **Motor de simulación MVP:** grilla 2D con reglas celulares simples (sin física avanzada).
 2. **Modo de operación:** online-first con caché de tiles.
-3. **Despliegue objetivo:** Railway (backend + DB) y Vercel (frontend).
+3. **Despliegue objetivo:** un único Render Web Service para Node.js/Fastify, primero como piloto controlado. La separación Railway + Vercel queda sustituida por [`publication-and-hosting-decision.md`](../devops/publication-and-hosting-decision.md).
 
 ## Gaps que aún quedan (ejecución)
 

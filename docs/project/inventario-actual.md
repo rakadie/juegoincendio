@@ -47,7 +47,7 @@ El dominio técnico oficial será ligero y estará centrado en una **`GameSessio
 | Vertical Beta 1 | Existe y es aprovechable | `docs/product/vertical-beta-1.md` | Recorrido oficial cerrado para la siguiente fase. |
 | Duración objetivo | Existe, pero necesita validación | Definición de la beta | Referencia inicial: 20–25 minutos. Debe comprobarse con usuarios. |
 | KPIs | Es solo documentación o propuesta | Documentación de producto | Falta convertirlos en métricas concretas de validación. |
-| Modelo de publicación y explotación | Falta implementar | Issue #9 | Debe definirse el formato inicial y el proveedor de despliegue. |
+| Modelo de publicación y explotación | Definido; despliegue aún no ejecutado | [`publication-and-hosting-decision.md`](../devops/publication-and-hosting-decision.md), #9 | Piloto controlado en un único Render Web Service; publicación pública condicionada a #10 y #76. |
 
 ### Recorrido oficial de la Vertical Beta 1
 
@@ -242,7 +242,7 @@ Operaciones principales previstas:
 |---|---|---|---|
 | Ejecución local | Existe y es aprovechable | Scripts npm | Base suficiente para desarrollo. |
 | Despliegue de una app Fastify | Falta implementar | Issue #9 | Elegir un proveedor compatible con una única aplicación. |
-| Separación Railway + Vercel | Fuera del alcance de la beta | Documentación previa | No es necesaria al mantener una sola aplicación. |
+| Separación Railway + Vercel | Sustituida | [`publication-and-hosting-decision.md`](../devops/publication-and-hosting-decision.md), #9 | Se mantiene una sola aplicación Fastify en Render. |
 | Docker | No prioritario | No localizado | Evaluar solo si facilita el despliegue elegido. |
 | Publicación automatizada | Falta implementar | Sin CI/CD activo | Incorporar después de estabilizar la rama. |
 
