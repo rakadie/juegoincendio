@@ -85,7 +85,7 @@ M2 no se bloquea por una corrección posterior de ortografía, puntuación, gram
 - tiene issue o PR propia, clasificación `editorial-safe` y revisión de `R-EDITORIAL`;
 - no invalida ninguna fila `G*`, firma ni evidencia aceptada.
 
-La validación experta o ciudadana de #10 continúa siendo una puerta editorial o de publicación posterior. Solo bloquea o revoca esta DoR si descubre un cambio necesario que afecte a la estructura o a una fila `G*`.
+El plan #10 se ejecuta mediante la revisión experta #99 y las pruebas ciudadanas #100 como puertas editoriales o de publicación posteriores. Solo bloquean o revocan esta DoR si descubren un cambio necesario que afecte a la estructura o a una fila `G*`.
 
 ## 7. Cambios que bloquean o revocan Ready
 

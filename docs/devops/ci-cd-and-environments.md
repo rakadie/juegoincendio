@@ -35,5 +35,5 @@ flowchart LR
 - Resumen en Markdown de resultados.
 - Riesgo y rollback por PR.
 
-Un run correcto no autoriza por sí solo publicación pública: también deben cumplirse #10, #76 y las puertas editoriales, operativas y de seguridad de la decisión de alojamiento.
+Un run correcto no autoriza por sí solo publicación pública: también deben cumplirse #76, la revisión experta #99, las pruebas ciudadanas #100 y las puertas editoriales, operativas y de seguridad de la decisión de alojamiento.
 

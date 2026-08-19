@@ -11,7 +11,7 @@ La primera versión publicada será un **piloto controlado para entidades**, acc
 
 El proveedor recomendado es **Render**, mediante un único **Web Service** que construye y ejecuta el repositorio completo. Frontend, rutas HTTP, recursos estáticos y motor permanecen en el mismo proceso Fastify.
 
-La beta pública solo se habilitará después de completar la validación experta y ciudadana de #10 y las puertas de la sección 9.
+La beta pública solo se habilitará después de ejecutar el plan de #10 mediante la revisión experta #99 y las pruebas ciudadanas #100, además de las puertas de la sección 9.
 
 ## 2. Motivo
 
@@ -71,7 +71,7 @@ El servicio gratuito se suspende tras 15 minutos sin tráfico y puede tardar alr
 | Base de datos | `0 USD` mientras no exista persistencia servidor |
 | Total de infraestructura inicial | `7 USD/mes` más dominio opcional |
 
-No se aprueba Postgres por anticipado. Si #10 exige guardar sesiones o consentimiento, se diseñará primero el contrato de datos, retención y privacidad y se presupuestará como recurso separado dentro de Render.
+No se aprueba Postgres por anticipado. El plan #10 mantiene contactos, consentimientos y notas fuera del producto y no activa persistencia de partidas. Si una validación futura exige almacenamiento servidor, se diseñará primero el contrato de datos, retención y privacidad y se presupuestará como recurso separado dentro de Render.
 
 ## 5. Arquitectura de despliegue
 
@@ -135,7 +135,7 @@ Render aporta TLS y mitigación DDoS de plataforma, pero no sustituye autenticac
 |---|---|---|---|
 | Development | Local | Equipo | Desarrollo y pruebas rápidas. |
 | Staging | Render Free o preview temporal | Revisión restringida | Smoke test del commit candidato. Se acepta cold start. |
-| Pilot | Render Starter | Invitación/control de acceso | Sesiones de #10 y entidades colaboradoras. |
+| Pilot | Render Starter | Invitación/control de acceso | Sesiones de #99/#100 y entidades colaboradoras. |
 | Public | Render Starter o superior | Público | Solo después de superar las puertas de publicación. |
 
 No se mantiene producción en Vercel ni se separa frontend/backend. Si el producto supera la capacidad del servicio inicial, se abre una decisión nueva con métricas reales antes de migrar o dividir.
@@ -145,7 +145,7 @@ No se mantiene producción en Vercel ni se separa frontend/backend. Si el produc
 La beta pública requiere simultáneamente:
 
 1. M2 implementada y aceptación integral #76 correcta;
-2. validación experta y ciudadana #10 completada, con bloqueantes resueltos;
+2. plan #10 ejecutado: revisión experta #99 y pruebas ciudadanas #100 completadas, con bloqueantes resueltos;
 3. accesibilidad y comprensión verificadas en los perfiles objetivo;
 4. revisión editorial, licencias, atribuciones, privacidad y aviso educativo aprobados;
 5. control de acceso retirado de forma consciente, no por omisión;
@@ -155,7 +155,7 @@ La beta pública requiere simultáneamente:
 9. presupuesto mensual aprobado y alertas configuradas;
 10. cero secretos o datos personales expuestos en código, logs o payload público.
 
-Un pase técnico de CI no sustituye #10 ni autoriza publicación.
+Un pase técnico de CI no sustituye #99/#100 ni autoriza publicación.
 
 ## 10. Fuera de alcance
 
@@ -164,7 +164,7 @@ Esta decisión no:
 - crea la cuenta de Render, conecta GitHub ni despliega servicios;
 - compra dominio o activa un plan de pago;
 - implementa autenticación, rate limiting, analítica o persistencia;
-- aprueba publicación pública antes de #10 y #76;
+- aprueba publicación pública antes de #76, #99 y #100;
 - adopta Postgres, Redis, Docker, Kubernetes o arquitectura multi-proveedor;
 - define una licencia institucional o un modelo comercial.
 

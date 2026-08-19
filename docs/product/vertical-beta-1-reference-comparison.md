@@ -147,4 +147,4 @@ Los JSON no dependen de HTTP, DOM, Fastify, texto traducido ni reloj real. Por e
 
 ## 10. Exclusiones
 
-Esta entrega no implementa el motor #69, el renderer, las opciones de interfaz ni la aceptación integral #76. Tampoco convierte valores de diseño en garantías científicas o de respuesta real; mantiene las puertas de validación experta de #10.
+Esta entrega no implementa el motor #69, el renderer, las opciones de interfaz ni la aceptación integral #76. Tampoco convierte valores de diseño en garantías científicas o de respuesta real; mantiene la revisión experta #99 definida por el plan #10.
