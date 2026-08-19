@@ -128,6 +128,8 @@ Los participantes no reciben antes de jugar una explicación de la relación cau
 
 Se ejecuta antes un piloto interno para probar el guion y los instrumentos. El piloto no se mezcla con la evidencia ciudadana.
 
+El screener, la información y consentimiento, el guion neutral, las claves canónicas, las rúbricas y el cuadro agregado se materializan en [`vertical-beta-1-citizen-test-kit.md`](../validation/vertical-beta-1-citizen-test-kit.md).
+
 ### 5.4 Preguntas antes de jugar
 
 1. ¿Qué cosas pueden cambiar las consecuencias de un incendio antes de que empiece?
