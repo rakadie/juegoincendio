@@ -73,6 +73,8 @@ Cada revisor recibe un manifiesto inmutable con:
 - aviso educativo y límites de uso del producto;
 - formulario de dictamen y registro de hallazgos.
 
+El manifiesto, la matriz de escenas y afirmaciones, el formato de dictamen y el acta se materializan en [`vertical-beta-1-expert-review-package.md`](../validation/vertical-beta-1-expert-review-package.md).
+
 La revisión toma como referencia territorial el INFOCA y las recomendaciones oficiales vigentes del Gobierno de Canarias. Las fuentes sostienen el contraste; no convierten al equipo en autoridad operativa.
 
 ### 4.3 Método

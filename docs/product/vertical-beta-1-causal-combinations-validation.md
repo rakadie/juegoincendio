@@ -181,6 +181,8 @@ Referencias:
 
 ## 8. Paquete de revisión para #99 según el plan #10
 
+La ejecución usa el manifiesto, las matrices y el acta de [`vertical-beta-1-expert-review-package.md`](../validation/vertical-beta-1-expert-review-package.md). Las definiciones normativas de esta sección no se copian ni se alteran en el formulario.
+
 ### Perfiles revisores mínimos
 
 1. especialista en prevención, combustibles y comportamiento del fuego;

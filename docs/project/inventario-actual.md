@@ -110,7 +110,7 @@ Dos partidas con decisiones preventivas diferentes deben producir condiciones, d
 | Modelo unificado de escenas | Es solo documentación o propuesta | `docs/architecture/decision-game-domain.md` | Crear una unión tipada para decisiones, inspecciones, resúmenes, rutas y selección de acciones. |
 | Grafo narrativo completo | Falta implementar | `nextLogic`, `routeLogic` parciales | Debe documentarse el flujo oficial y sus bifurcaciones. |
 | Coherencia de IDs y categorías | Existe, pero necesita revisión | Historial de renombrados | Hay que localizar duplicados, escenarios huérfanos y saltos de numeración. |
-| Validación experta | Plan definido; ejecución pendiente | [`vertical-beta-1-validation-plan.md`](../product/vertical-beta-1-validation-plan.md), #99 | Cinco dominios, revisión por afirmación, acta y firma sobre versión candidata. |
+| Validación experta | Paquete preparado; revisores y ejecución pendientes | [`vertical-beta-1-expert-review-package.md`](../validation/vertical-beta-1-expert-review-package.md), #99 | Cinco dominios, revisión por afirmación, acta y firma sobre versión candidata. |
 
 ## 3. Motor de juego y dominio
 
