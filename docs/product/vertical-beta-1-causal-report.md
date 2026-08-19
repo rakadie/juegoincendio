@@ -336,7 +336,7 @@ Esta entrega no:
 - introduce comunicación o evacuación como dimensión, rama o selector;
 - modifica el contrato persistido de `GameSession`;
 - implementa UI, catálogos i18n ni reglas de producción;
-- sustituye la validación experta de #10;
+- sustituye la revisión experta #99 definida por el plan #10;
 - fija las partidas canónicas completas, alcance de #44–#47.
 
 ## 12. Matriz de aceptación de #39

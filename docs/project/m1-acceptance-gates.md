@@ -150,7 +150,7 @@ Esta entrega no:
 - fija la Definition of Ready de M2;
 - sustituye las partidas y fixtures de #44–#47;
 - exige que el runtime actual implemente ya la especificación objetivo de M1;
-- evalúa la aprobación editorial o de publicación dependiente de #10.
+- evalúa la aprobación editorial o de publicación dependiente del plan #10 y su ejecución en #99/#100.
 
 ## 13. Matriz de aceptación de #40
 

@@ -28,7 +28,7 @@ La matriz responde a cuatro preguntas:
 
 Una misma persona puede ejercer más de un rol, pero las firmas técnica y editorial se registran por separado. Si una persona delega, #43 debe identificar la cuenta sustituta antes de evaluar la primera fila de ese rol; no se acepta una firma anónima como “equipo”.
 
-Esta asignación no sustituye revisores especialistas de incendios. Su designación y trabajo pertenecen a #10 y bloquean la aprobación editorial/publicación cuando proceda, no la definición estructural de M1.
+Esta asignación no sustituye revisores especialistas de incendios. El método pertenece al plan #10 y su designación y trabajo a #99; bloquean la aprobación editorial/publicación cuando proceda, no la definición estructural de M1.
 
 ## 3. Severidad
 
@@ -179,9 +179,9 @@ G1–G6 disponen de `EV-01..EV-14`; G7 necesita la auditoría cruzada final de #
 
 | Trabajo | Clasificación | Motivo | Seguimiento |
 |---|---|---|---|
-| Validación experta de afirmaciones operativas y pruebas con ciudadanía | Puerta editorial/de publicación posterior; no bloquea el diseño estructural de M1 ni iniciar implementación. | Requiere perfiles externos y sesiones que no forman parte de la especificación ejecutable. | #10 |
+| Validación experta de afirmaciones operativas y pruebas con ciudadanía | Puerta editorial/de publicación posterior; no bloquea el diseño estructural de M1 ni iniciar implementación. | El plan está en #10; requiere perfiles externos y sesiones que no forman parte de la especificación ejecutable. | #99 y #100 |
 | Implementación del catálogo, motor, flujo, UI, separación de contenido, migración i18n y aceptación integral | Entrega M2, no evidencia de M1. | M1 define contratos objetivo; exigir el runtime nuevo para cerrar M1 produciría una dependencia circular. | #67–#76 |
-| Ajustes derivados de pruebas expertas o ciudadanas que no cambien contratos estructurales | `post-m1-improvement`. | Pueden versionarse sobre la implementación; si cambian un criterio G*, M1 debe reabrirse o revalidarse. | Issue específica creada desde #10 |
+| Ajustes derivados de pruebas expertas o ciudadanas que no cambien contratos estructurales | `post-m1-improvement`. | Pueden versionarse sobre la implementación; si cambian un criterio G*, M1 debe reabrirse o revalidarse. | Issue específica creada desde #99/#100 |
 
 Una mejora posterior nunca transforma en aceptable un `fail` de G1–G7.
 
@@ -193,7 +193,7 @@ Esta entrega no:
 - define la combinación final de puertas que formará la DoR de #42;
 - crea los artefactos de #44–#47 o #43;
 - exige implementar #67–#76 para cerrar M1;
-- declara realizada la validación experta de #10;
+- declara realizada la revisión experta #99 o las pruebas ciudadanas #100;
 - asigna automáticamente personas en GitHub ni envía solicitudes de revisión;
 - permite sustituir evidencia técnica por aprobación editorial, o al contrario.
 
