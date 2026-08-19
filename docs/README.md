@@ -23,6 +23,7 @@
 - Comparación y fixtures canónicos de las partidas de referencia: [docs/product/vertical-beta-1-reference-comparison.md](product/vertical-beta-1-reference-comparison.md)
 - Plan de validación experta y ciudadana: [docs/product/vertical-beta-1-validation-plan.md](product/vertical-beta-1-validation-plan.md)
 - Paquete de revisión experta: [docs/validation/vertical-beta-1-expert-review-package.md](validation/vertical-beta-1-expert-review-package.md)
+- Kit de pruebas ciudadanas: [docs/validation/vertical-beta-1-citizen-test-kit.md](validation/vertical-beta-1-citizen-test-kit.md)
 - Arquitectura de sistema: [docs/architecture/system-architecture.md](architecture/system-architecture.md)
 - Stack y decisiones técnicas: [docs/architecture/tech-stack-and-decisions.md](architecture/tech-stack-and-decisions.md)
 - Dominio y reglas del juego: [docs/domain/game-design-spec.md](domain/game-design-spec.md)

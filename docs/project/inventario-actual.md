@@ -233,7 +233,7 @@ Operaciones principales previstas:
 | Tests end-to-end | Falta implementar | No Playwright activo | Cubrir al menos dos partidas preventivas diferentes. |
 | Typecheck y build | Existe y es aprovechable | Scripts disponibles | Deben ejecutarse en CI. |
 | CI | Falta implementar | Sin checks activos verificados | Añadir GitHub Actions para typecheck, build y tests. |
-| Validación del objetivo educativo | Plan definido; ejecución pendiente | [`vertical-beta-1-validation-plan.md`](../product/vertical-beta-1-validation-plan.md), #100 | Dos rondas de seis personas con criterios de comprensión, duración y accesibilidad. |
+| Validación del objetivo educativo | Kit preparado; reclutamiento y ejecución pendientes | [`vertical-beta-1-citizen-test-kit.md`](../validation/vertical-beta-1-citizen-test-kit.md), #100 | Dos rondas de seis personas con criterios de comprensión, duración y accesibilidad. |
 | Validación editorial automatizada | Falta implementar | No localizada | Comprobar IDs, claves i18n, textos ausentes y divergencias antes de integrar cambios. |
 
 ## 10. Despliegue y operación
