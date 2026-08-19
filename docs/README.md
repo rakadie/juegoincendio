@@ -30,6 +30,7 @@
 - Backend: [docs/backend/backend-spec.md](backend/backend-spec.md)
 - Estrategia de testing (Vitest): [docs/testing/testing-strategy-vitest.md](testing/testing-strategy-vitest.md)
 - DevOps y entornos: [docs/devops/ci-cd-and-environments.md](devops/ci-cd-and-environments.md)
+- Publicación inicial y proveedor de alojamiento: [docs/devops/publication-and-hosting-decision.md](devops/publication-and-hosting-decision.md)
 - Seguridad: [docs/security/security-spec.md](security/security-spec.md)
 - Gobierno IA y trazabilidad: [docs/governance/ai-playbook-alignment.md](governance/ai-playbook-alignment.md)
 - Especificación funcional/técnica ejecutable por IA: [docs/specs/functional-technical-spec.md](specs/functional-technical-spec.md)
