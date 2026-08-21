@@ -1,0 +1,104 @@
+name: Sync Project status
+
+on:
+  issues:
+    types:
+      - opened
+      - reopened
+      - edited
+      - assigned
+      - unassigned
+      - labeled
+      - unlabeled
+      - closed
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - ready_for_review
+      - converted_to_draft
+      - closed
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: Optional issue number. Leave empty to reconcile dependencies and terminal statuses.
+        required: false
+        type: number
+      status:
+        description: Status to apply, or auto to calculate it.
+        required: true
+        default: auto
+        type: choice
+        options:
+          - auto
+          - Backlog
+          - Ready
+          - In Progress
+          - Blocked
+          - Review
+          - Done
+          - Superseded
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+
+concurrency:
+  group: project-status-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  sync-project-status:
+    if: >-
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_NUMBER: ${{ vars.PROJECT_NUMBER }}
+      PROJECT_STATUS_FIELD: ${{ vars.PROJECT_STATUS_FIELD || 'Status' }}
+      PROJECT_STATUS_BACKLOG: ${{ vars.PROJECT_STATUS_BACKLOG || 'Backlog' }}
+      PROJECT_STATUS_READY: ${{ vars.PROJECT_STATUS_READY || 'Ready' }}
+      PROJECT_STATUS_IN_PROGRESS: ${{ vars.PROJECT_STATUS_IN_PROGRESS || 'In Progress' }}
+      PROJECT_STATUS_BLOCKED: ${{ vars.PROJECT_STATUS_BLOCKED || 'Blocked' }}
+      PROJECT_STATUS_REVIEW: ${{ vars.PROJECT_STATUS_REVIEW || 'Review' }}
+      PROJECT_STATUS_DONE: ${{ vars.PROJECT_STATUS_DONE || 'Done' }}
+      PROJECT_STATUS_SUPERSEDED: ${{ vars.PROJECT_STATUS_SUPERSEDED || 'Superseded' }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate Project configuration
+        id: configuration
+        env:
+          PROJECTS_TOKEN: ${{ secrets.PROJECTS_TOKEN }}
+        shell: bash
+        run: |
+          if [[ -z "$PROJECTS_TOKEN" || -z "$PROJECT_NUMBER" ]]; then
+            if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+              echo "::notice::Project synchronization skipped until PROJECTS_TOKEN and PROJECT_NUMBER are configured."
+              echo "enabled=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "PROJECTS_TOKEN and PROJECT_NUMBER are required." >&2
+            exit 1
+          fi
+          echo "enabled=true" >> "$GITHUB_OUTPUT"
+
+      - name: Synchronize Project Status
+        if: steps.configuration.outputs.enabled == 'true'
+        uses: actions/github-script@v7
+        env:
+          PROJECTS_TOKEN: ${{ secrets.PROJECTS_TOKEN }}
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const synchronize = require('./.github/scripts/project-status-sync.cjs');
+            const projectGraphql = github.graphql.defaults({
+              headers: { authorization: `token ${process.env.PROJECTS_TOKEN}` },
+            });
+            await synchronize({ github, projectGraphql, context, core });

@@ -49,6 +49,7 @@
 - Dudas abiertas: [docs/project/dudas-abiertas.md](project/dudas-abiertas.md)
 - Plan de scripts de ejecución: [docs/project/scripts-plan.md](project/scripts-plan.md)
 - Plan de transición documental a ejecución: [docs/project/transition-plan.md](project/transition-plan.md)
+- Automatización de estados del Project: [docs/project/project-status-automation.md](project/project-status-automation.md)
 
 ## Migración de documentación histórica (TXT → MD)
 
