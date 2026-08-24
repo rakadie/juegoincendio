@@ -1,8 +1,8 @@
 ﻿import type { CampaignContent, CampaignNode } from '../domain/types/campaign-node.js';
 import {
-  PREVENTION_INSPECTION_INTERFAZ,
-  PREVENTION_INSPECTIONS
-} from './prevention-inspections.js';
+  OFFICIAL_PREVENTION_INSPECTIONS,
+  PREVENTION_INSPECTION_TERRITORY_FUEL
+} from './official-prevention-inspections.js';
 import {
   CRISIS_ROUTE_MODULE,
   FIRST_ALERT_SCENARIO,
@@ -279,8 +279,8 @@ export const SUMMER_CAMPAIGN_NODES: CampaignNode[] = [
       ];
 
 export const CAMPAIGN_CONTENT: CampaignContent = {
-  preventionInspection: PREVENTION_INSPECTION_INTERFAZ,
-  preventionInspections: PREVENTION_INSPECTIONS,
+  preventionInspection: PREVENTION_INSPECTION_TERRITORY_FUEL,
+  preventionInspections: [...OFFICIAL_PREVENTION_INSPECTIONS],
   preventionBalance: PREVENTION_BALANCE,
   firstAlert: FIRST_ALERT_SCENARIO,
   crisisRouteModule: CRISIS_ROUTE_MODULE,

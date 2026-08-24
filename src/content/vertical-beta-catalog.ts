@@ -25,7 +25,7 @@ export const VERTICAL_BETA_FLOW = [
   {
     id: 'prevention-inspection-territory-fuel',
     type: 'inspection',
-    contentRef: 'inspection:p-002-fincas-vegetacion-combustible',
+    contentRef: 'inspection:prevention-inspection-territory-fuel',
     transitions: [
       { predicate: 'scene-completed', target: 'prevention-inspection-housing-interface' }
     ]
@@ -33,7 +33,7 @@ export const VERTICAL_BETA_FLOW = [
   {
     id: 'prevention-inspection-housing-interface',
     type: 'inspection',
-    contentRef: 'inspection:p-001-viviendas-interfaz',
+    contentRef: 'inspection:prevention-inspection-housing-interface',
     transitions: [{ predicate: 'scene-completed', target: 'transition-summary-prevention' }]
   },
   {
