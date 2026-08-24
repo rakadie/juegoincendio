@@ -8,17 +8,19 @@
 
 ## 1. Propósito
 
-Este informe valida que el grafo aprobado de la Vertical Beta 1 es completo, alcanzable, acíclico y traducible al futuro `vertical-beta-flow.ts`. La entrega incluye un ejemplo TypeScript compilable y una prueba automática, ambos aislados del runtime hasta M2.
+Este informe valida que el grafo aprobado de la Vertical Beta 1 es completo, alcanzable y acíclico. #68 convirtió el ejemplo TypeScript de M1 en el catálogo productivo `vertical-beta-catalog.ts` y mantuvo las pruebas automáticas como puerta del contrato.
 
 ## 2. Artefactos de validación
 
 | Artefacto | Función |
 |---|---|
-| `tests/support/vertical-beta-flow-example.ts` | Modelo declarativo mínimo, tipado y basado en referencias. |
-| `tests/vertical-beta-graph-integrity.test.ts` | Validación automática de nodos, aristas, alcance, ciclos, ramas y exclusiones. |
+| `src/domain/types/game-scene.ts` | Unión discriminada productiva `GameScene`, IDs y vocabularios cerrados. |
+| `src/content/vertical-beta-catalog.ts` | Catálogo declarativo oficial basado exclusivamente en referencias. |
+| `src/domain/validation/game-scene-catalog-validator.ts` | Validador puro de catálogo, contenido y grafo. |
+| `tests/game-scene-catalog.test.ts` y `tests/vertical-beta-graph-integrity.test.ts` | Validación positiva y negativa de nodos, referencias, alcance, ciclos, ramas y exclusiones. |
 | `docs/product/vertical-beta-1-graph-validation.md` | Método, resultados, límites y trazabilidad del estudio. |
 
-El ejemplo no contiene textos, impactos ni fórmulas. Cada nodo referencia contenido mediante `contentRef` y cada arista referencia un predicado aprobado en #26.
+El catálogo no contiene textos, impactos ni fórmulas. Cada nodo referencia contenido mediante `contentRef` y cada arista referencia un predicado aprobado en #26. El ejemplo de soporte de M1 fue retirado al convertirse esta estructura en fuente productiva mediante #68.
 
 ## 3. Formato declarativo propuesto
 
@@ -153,13 +155,7 @@ Los cinco escenarios ejecutables se incorporan únicamente mediante `contentRef`
 
 Esta entrega valida la especificación de referencia, no la campaña heredada de `src/content/campaign.ts`. Esa campaña todavía contiene `invierno_*` y `verano_*` y será retirada por #74.
 
-M2 deberá:
-
-1. trasladar el tipo y los datos aprobados a `src/content/vertical-beta-flow.ts`;
-2. resolver `contentRef` contra el catálogo oficial;
-3. conectar los predicados con el evaluador de #72;
-4. ejecutar estas mismas invariantes contra el flujo real, no contra el ejemplo;
-5. eliminar el ejemplo de soporte cuando la implementación sea la fuente única.
+La entrega #68 materializa el contrato y los datos aprobados en producción, valida cada `contentRef` contra un registro clasificado, ejecuta estas invariantes contra el catálogo real y elimina el ejemplo duplicado de soporte. La conexión de predicados con la lógica causal continúa destinada a #72 y la retirada de la campaña heredada a #74.
 
 Esta frontera evita presentar una prueba de referencia como evidencia falsa de que el runtime ya fue migrado.
 

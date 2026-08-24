@@ -1,48 +1,18 @@
 import {
   CANONICAL_SCENE_IDS,
+  GAME_SCENE_TYPES,
   type CanonicalSceneId,
   type CrisisBranch,
-  type ResultVariant
-} from './game-session-contract-base.js';
-
-export const VERTICAL_BETA_NODE_TYPES = [
-  'briefing',
-  'inspection',
-  'summary',
-  'decision',
-  'router',
-  'result'
-] as const;
-
-export type VerticalBetaNodeType = (typeof VERTICAL_BETA_NODE_TYPES)[number];
-
-export type VerticalBetaTransitionPredicate =
-  | 'scene-completed'
-  | 'scene-completed:router-prepared'
-  | 'scene-completed:router-vulnerable'
-  | 'scene-completed:branch-prepared'
-  | 'scene-completed:branch-vulnerable';
-
-export interface VerticalBetaTransition {
-  readonly predicate: VerticalBetaTransitionPredicate;
-  readonly target: CanonicalSceneId;
-}
-
-export interface VerticalBetaFlowNode {
-  readonly id: CanonicalSceneId;
-  readonly type: VerticalBetaNodeType;
-  readonly contentRef: string;
-  readonly transitions: readonly VerticalBetaTransition[];
-  readonly resultVariants?: readonly ResultVariant[];
-}
+  type GameScene,
+  type GameSceneCatalog,
+  type GameSceneTransition,
+  type GameSceneTransitionPredicate
+} from '../domain/types/game-scene.js';
 
 export const VERTICAL_BETA_ENTRY_ID: CanonicalSceneId = 'intro-briefing-mission';
-export const VERTICAL_BETA_TERMINAL_ID: CanonicalSceneId = 'ending-result-causal-report';
+export const VERTICAL_BETA_TERMINAL_ID: CanonicalSceneId =
+  'ending-result-causal-report';
 
-/**
- * Reference-only declarative graph for M1. Runtime integration belongs to M2.
- * Content and transition logic are referenced by ID instead of being copied here.
- */
 export const VERTICAL_BETA_FLOW = [
   {
     id: 'intro-briefing-mission',
@@ -106,7 +76,10 @@ export const VERTICAL_BETA_FLOW = [
     type: 'decision',
     contentRef: 'scenario:s-011-corte-carretera-acceso',
     transitions: [
-      { predicate: 'scene-completed:branch-vulnerable', target: 'crisis-decision-ravine-fire' }
+      {
+        predicate: 'scene-completed:branch-vulnerable',
+        target: 'crisis-decision-ravine-fire'
+      }
     ]
   },
   {
@@ -129,7 +102,10 @@ export const VERTICAL_BETA_FLOW = [
     type: 'decision',
     contentRef: 'scenario:s-026-defensa-operativa-nucleo-viviendas',
     transitions: [
-      { predicate: 'scene-completed:branch-prepared', target: 'ending-result-causal-report' }
+      {
+        predicate: 'scene-completed:branch-prepared',
+        target: 'ending-result-causal-report'
+      }
     ]
   },
   {
@@ -137,7 +113,10 @@ export const VERTICAL_BETA_FLOW = [
     type: 'decision',
     contentRef: 'scenario:s-030-fuego-de-copas',
     transitions: [
-      { predicate: 'scene-completed:branch-vulnerable', target: 'ending-result-causal-report' }
+      {
+        predicate: 'scene-completed:branch-vulnerable',
+        target: 'ending-result-causal-report'
+      }
     ]
   },
   {
@@ -147,13 +126,27 @@ export const VERTICAL_BETA_FLOW = [
     transitions: [],
     resultVariants: ['contained', 'overwhelmed']
   }
-] as const satisfies readonly VerticalBetaFlowNode[];
+] as const satisfies readonly GameScene[];
 
-// Compile-time alignment: changes to the canonical contract must be reflected here.
-export const VERTICAL_BETA_CANONICAL_IDS: readonly CanonicalSceneId[] = CANONICAL_SCENE_IDS;
+export const VERTICAL_BETA_CONTENT = VERTICAL_BETA_FLOW.map((scene) => ({
+  ref: scene.contentRef,
+  scope: 'official' as const
+}));
+
+export const VERTICAL_BETA_CATALOG = {
+  scenes: VERTICAL_BETA_FLOW,
+  content: VERTICAL_BETA_CONTENT
+} as const satisfies GameSceneCatalog;
+
+export const VERTICAL_BETA_CANONICAL_IDS: readonly CanonicalSceneId[] =
+  CANONICAL_SCENE_IDS;
+export const VERTICAL_BETA_NODE_TYPES = GAME_SCENE_TYPES;
+
+export type VerticalBetaTransition = GameSceneTransition;
+export type VerticalBetaTransitionPredicate = GameSceneTransitionPredicate;
 
 export function transitionAppliesToBranch(
-  predicate: VerticalBetaTransitionPredicate,
+  predicate: GameSceneTransitionPredicate,
   branch: CrisisBranch
 ): boolean {
   return predicate === 'scene-completed' || predicate.endsWith(branch);

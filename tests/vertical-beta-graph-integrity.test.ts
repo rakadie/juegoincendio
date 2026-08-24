@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { CanonicalSceneId, CrisisBranch } from './support/game-session-contract-base.js';
+import type { CanonicalSceneId, CrisisBranch } from '../src/domain/types/game-scene.js';
 import {
   transitionAppliesToBranch,
   VERTICAL_BETA_CANONICAL_IDS,
@@ -8,7 +8,7 @@ import {
   VERTICAL_BETA_NODE_TYPES,
   VERTICAL_BETA_TERMINAL_ID,
   type VerticalBetaTransition
-} from './support/vertical-beta-flow-example.js';
+} from '../src/content/vertical-beta-catalog.js';
 
 const nodesById = new Map(VERTICAL_BETA_FLOW.map((node) => [node.id, node]));
 
