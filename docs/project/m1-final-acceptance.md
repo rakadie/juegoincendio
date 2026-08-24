@@ -137,10 +137,10 @@ No se encontraron incumplimientos de los criterios G1–G7. Sí quedan requisito
 
 | ID | Requisito | Severidad | Estado | Tratamiento y destino |
 |---|---|---|---|---|
-| `F-43-01` | Firma técnica separada de `R-TECH` | `m1-blocker` | Abierto | Solicitar revisión de `dunay2` en la PR de #43. No integrar ni autorizar M2 sin su firma explícita sobre el SHA evaluado. |
-| `F-43-02` | Acta integrada en el historial de la línea base | `m1-blocker` | Abierto hasta merge | Integrar la PR de #43 solo después de la firma técnica; verificar que el merge desciende de `8ef0916`. |
+| `F-43-01` | Firma técnica separada de `R-TECH` | `m1-blocker` | Resuelto | `rakadie` asumió el rol mediante una [sustitución identificada](https://github.com/rakadie/juegoincendio/issues/43#issuecomment-5397966258) y publicó la [firma técnica separada](https://github.com/rakadie/juegoincendio/issues/43#issuecomment-5397966632) sobre el SHA evaluado. |
+| `F-43-02` | Acta integrada en el historial de la línea base | `m1-blocker` | Abierto hasta merge | La firma técnica ya permite integrar esta PR; verificar que el merge desciende de `8ef0916`. |
 | `F-43-03` | Cierre de #18 y #12 | `m1-blocker` | Abierto | Tras integrar el acta, cerrar ambas épicas con enlaces a #43 y al merge. #19 ya se cerró tras #44–#47. |
-| `F-43-04` | Autorización y etiquetas M2 | `m1-blocker` | Bloqueado por F-43-01..03 | Publicar el registro `DR-08` en #67 y aplicar `status:ready` únicamente a #67 y #68. |
+| `F-43-04` | Autorización y etiquetas M2 | `m1-blocker` | Bloqueado por F-43-02..03 | Publicar el registro `DR-08` en #67 y aplicar `status:ready` únicamente a #67 y #68. |
 
 No se abre una issue adicional para estos puntos: pertenecen al flujo de cierre ya definido en #43 y #42, tienen responsable y destino identificables, y separar su seguimiento duplicaría la puerta existente.
 
@@ -156,14 +156,14 @@ Mejoras no bloqueantes ya destinadas:
 |---|---|---|---|---|
 | `R-PRODUCT` | `rakadie` | Filas de Producto | Comentario separado en #43 sobre `8ef0916` | Registrada |
 | `R-EDITORIAL` | `rakadie` | Filas de Narrativa | Comentario separado en #43 sobre `8ef0916` | Registrada |
-| `R-TECH` | `dunay2` | Filas de Arquitectura | Revisión explícita de la PR de #43 | **Pendiente; bloqueante** |
-| `R-ACCEPTANCE` | `rakadie` | Conteos, firmas y DoR | Registro final en #43 y autorización posterior en #67 | Pendiente de las anteriores |
+| `R-TECH` | `rakadie` | Filas de Arquitectura | Sustitución identificada y firma técnica separada en #43 sobre `8ef0916` | Registrada |
+| `R-ACCEPTANCE` | `rakadie` | Conteos, firmas y DoR | Registro final en #43 y autorización posterior en #67 | Pendiente de integración y cierre de gobierno |
 
 Las firmas no se infieren del cierre de issues, del autor del commit ni de una suite verde.
 
 ## 13. Decisión
 
-La especificación M1 demuestra **35/35 criterios `pass`** y no presenta bloqueantes técnicos o editoriales ocultos. Sin embargo, la Definition of Ready exige además firma técnica, acta integrada, cierre de gobierno y autorización explícita.
+La especificación M1 demuestra **35/35 criterios `pass`** y no presenta bloqueantes técnicos o editoriales ocultos. Las tres firmas requeridas ya están registradas. La Definition of Ready exige todavía el acta integrada, el cierre de gobierno y la autorización explícita.
 
 Por tanto:
 
