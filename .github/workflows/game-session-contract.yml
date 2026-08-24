@@ -5,8 +5,10 @@ on:
     paths:
       - 'package.json'
       - 'package-lock.json'
+      - 'src/**'
       - 'tests/**'
       - 'docs/domain/game-session-serialization.md'
+      - 'docs/product/vertical-beta-1-graph-validation.md'
       - '.github/workflows/game-session-contract.yml'
 
 permissions:
