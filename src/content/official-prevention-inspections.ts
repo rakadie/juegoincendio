@@ -91,7 +91,7 @@ const TERRITORY_ACTIONS: ActionContract[] = [
   {
     actionId: 'evaluar-quema-tecnica',
     inheritedStateImpact: {},
-    evidenceIds: ['professional-line-assessed'],
+    evidenceIds: ['professional-line-assessed', 'professional-line-feasible'],
     conditionIfOmitted: 'strategic-area-without-assessed-line'
   }
 ];

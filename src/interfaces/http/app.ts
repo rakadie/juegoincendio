@@ -5,6 +5,7 @@ import { GetActiveFiresQueryHandler } from '../../application/queries/get-active
 import { EMERGENCY_GAME_VARIABLES } from '../../domain/entities/emergency-training-content.js';
 import { CAMPAIGN_CONTENT } from '../../content/campaign.js';
 import { OFFICIAL_OPERATIONAL_SCENES } from '../../content/official-operational-scenes.js';
+import { VERTICAL_BETA_DECLARATIVE_CONTENT } from '../../content/vertical-beta-flow-content.js';
 import { NEW_GAME_SCENARIOS } from '../../content/scenarios/index.js';
 import { InMemoryFireIncidentRepository } from '../../infrastructure/repositories/in-memory-fire-incident-repository.js';
 import { renderGameContentPage } from './game-content-page.js';
@@ -30,6 +31,7 @@ export function buildApp(): FastifyInstance {
       variables: EMERGENCY_GAME_VARIABLES,
       scenarios: NEW_GAME_SCENARIOS,
       operationalScenes: OFFICIAL_OPERATIONAL_SCENES,
+      verticalBetaFlowContent: VERTICAL_BETA_DECLARATIVE_CONTENT,
       campaign: CAMPAIGN_CONTENT
     };
   });

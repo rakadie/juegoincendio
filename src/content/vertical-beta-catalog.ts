@@ -39,19 +39,19 @@ export const VERTICAL_BETA_FLOW = [
   {
     id: 'transition-summary-prevention',
     type: 'summary',
-    contentRef: 'summary:balance-prevencion',
+    contentRef: 'summary:transition-summary-prevention',
     transitions: [{ predicate: 'scene-completed', target: 'crisis-decision-first-alert' }]
   },
   {
     id: 'crisis-decision-first-alert',
     type: 'decision',
-    contentRef: 'scenario:s-040-primer-aviso-incendio',
+    contentRef: 'scenario:crisis-decision-first-alert',
     transitions: [{ predicate: 'scene-completed', target: 'crisis-router-causal-map' }]
   },
   {
     id: 'crisis-router-causal-map',
     type: 'router',
-    contentRef: 'router:m-001-apertura-tres-frentes',
+    contentRef: 'router:crisis-router-causal-map',
     transitions: [
       {
         predicate: 'scene-completed:router-prepared',
