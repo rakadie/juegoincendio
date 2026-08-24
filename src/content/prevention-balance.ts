@@ -11,7 +11,7 @@ export const PREVENTION_BALANCE: PreventionBalanceContent = {
   type: 'summary',
   intro: 'Lo que se hizo antes del fuego empieza a contar ahora.',
   context:
-    'Tras las visitas municipales, tienes una fotografia bastante clara del estado del territorio: viviendas mas o menos defendibles, fincas con mayor o menor continuidad vegetal, caminos rurales mejor o peor preparados y una comunidad con distinto nivel de informacion. La epoca de mayor riesgo se acerca. No existe el riesgo cero, pero las decisiones tomadas durante la fase preventiva pueden cambiar el margen de maniobra si se declara un incendio.',
+    'Tras las visitas municipales, tienes una fotografia bastante clara del estado del territorio: viviendas mas o menos defendibles, fincas con mayor o menor continuidad vegetal y caminos rurales mejor o peor preparados. La epoca de mayor riesgo se acerca. No existe el riesgo cero, pero las decisiones tomadas durante la fase preventiva pueden cambiar el margen de maniobra si se declara un incendio.',
   objective:
     'Revisar el nivel de preparacion alcanzado antes de entrar en la fase de emergencia.',
   indicators: [
@@ -26,16 +26,6 @@ export const PREVENTION_BALANCE: PreventionBalanceContent = {
       variables: ['continuidadCombustible', 'riesgoPropagacion', 'riesgoIgnicion']
     },
     {
-      id: 'preparacion-comunitaria',
-      label: 'Preparacion comunitaria',
-      variables: ['preparacionFamiliar', 'poblacionProtegida', 'inclusionVulnerables']
-    },
-    {
-      id: 'claridad-informativa',
-      label: 'Claridad informativa',
-      variables: ['confusionPublica', 'saturacion112', 'confianzaVecinal']
-    },
-    {
       id: 'riesgo-ignicion',
       label: 'Riesgo de ignicion',
       variables: ['riesgoIgnicion', 'cumplimientoPreventivo']
@@ -46,22 +36,19 @@ export const PREVENTION_BALANCE: PreventionBalanceContent = {
       id: 'municipio-preparado',
       title: 'Municipio preparado',
       text:
-        'Las actuaciones preventivas han reducido vulnerabilidades importantes. Varias viviendas tienen mejores condiciones de defensa, parte del combustible en fincas y caminos se ha gestionado, y la poblacion cuenta con instrucciones mas claras. El municipio no es invulnerable. Ninguno lo es. Pero si el fuego aparece, no encontrara todas las puertas abiertas.',
+        'Las actuaciones preventivas han reducido vulnerabilidades importantes. Varias viviendas tienen mejores condiciones de defensa y parte del combustible en fincas y caminos se ha gestionado. El municipio no es invulnerable. Ninguno lo es. Pero si el fuego aparece, no encontrara todas las puertas abiertas.',
       crisisImpact: {
         danosViviendas: -3,
-        confusionPublica: -3,
         riesgoPropagacion: -2,
-        seguridadEquipos: 2,
-        poblacionProtegida: 2
+        seguridadEquipos: 2
       }
     },
     {
       id: 'preparacion-desigual',
       title: 'Preparacion desigual',
       text:
-        'La prevencion ha mejorado algunos puntos, pero quedan debilidades: viviendas con elementos vulnerables, fincas con combustible acumulado, dudas vecinales o canales de informacion que no todo el mundo conoce. El municipio llega mejor que antes, pero no de forma homogenea. Y el fuego suele tener buen ojo para encontrar lo pendiente.',
+        'La prevencion ha mejorado algunos puntos, pero quedan debilidades: viviendas con elementos vulnerables, fincas con combustible acumulado o caminos con acceso limitado. El municipio llega mejor que antes, pero no de forma homogenea. Y el fuego suele tener buen ojo para encontrar lo pendiente.',
       crisisImpact: {
-        confusionPublica: 1,
         riesgoPropagacion: 1,
         danosViviendas: 1
       }
@@ -70,10 +57,9 @@ export const PREVENTION_BALANCE: PreventionBalanceContent = {
       id: 'territorio-vulnerable',
       title: 'Territorio vulnerable',
       text:
-        'Las medidas preventivas han sido insuficientes o demasiado parciales. Persisten combustible junto a viviendas, caminos complicados, dudas sobre evacuacion y confinamiento, y actividades de riesgo poco controladas. El incendio todavia no ha empezado, pero ya tiene ventaja. No es dramatismo: es combustible esperando una mala tarde.',
+        'Las medidas preventivas han sido insuficientes o demasiado parciales. Persisten combustible junto a viviendas, continuidad vegetal y caminos complicados. El incendio todavia no ha empezado, pero ya tiene ventaja. No es dramatismo: es combustible esperando una mala tarde.',
       crisisImpact: {
         danosViviendas: 4,
-        confusionPublica: 4,
         riesgoPropagacion: 4,
         riesgoAtrapamiento: 2,
         seguridadEquipos: -1

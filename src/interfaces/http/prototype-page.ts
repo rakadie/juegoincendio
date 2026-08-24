@@ -1498,7 +1498,7 @@ export function renderPrototypePage(): string {
     <script>
       const STAGES = [
         { id: 'briefing', label: '01 · Inicio', subtitle: 'Rol y objetivo' },
-        { id: 'inspection', label: '02 · Prevencion', subtitle: 'Tres inspecciones' },
+        { id: 'inspection', label: '02 · Prevencion', subtitle: 'Dos inspecciones' },
         { id: 'balance', label: '03 · Primer aviso', subtitle: 'Balance y ruptura' },
         { id: 'fronts', label: '04 · Tres frentes', subtitle: 'Mapa de crisis' },
         { id: 'crisis', label: '05 · Crisis', subtitle: 'Ruta comunicacion' },
@@ -1512,7 +1512,7 @@ export function renderPrototypePage(): string {
         },
         inspection: {
           title: 'Acto I · Prevencion',
-          subtitle: 'Lee el territorio antes de que haya humo y prioriza cuatro actuaciones por pantalla.'
+          subtitle: 'Lee el territorio antes de que haya humo y prioriza las actuaciones disponibles.'
         },
         balance: {
           title: 'Puente narrativo · Primer aviso',
