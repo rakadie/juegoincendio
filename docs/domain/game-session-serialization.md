@@ -1,12 +1,12 @@
 # GameSession — serialización y validación de contrato
 
-Estado: propuesta ejecutable de M1 para #31.  
+Estado: contrato productivo de dominio implementado por #69.
 Entradas: #29 (`GameSession`) y #30 (eventos e invariantes).  
-Implementación de motor: fuera de alcance; corresponde a #69.
+Reglas causales de escenas y resultado: fuera de alcance; corresponden a #70–#72.
 
 ## Propósito
 
-Esta entrega convierte el contrato documental de `GameSession` en una especificación ejecutable mediante snapshots JSON provisionales de contrato, dos partidas canónicas, un manifest de contexto, una matriz de cobertura y un validador puro utilizado únicamente por las pruebas.
+Esta entrega convierte el contrato documental de `GameSession` en un agregado de dominio serializable, un servicio puro de comandos y replay, dos partidas canónicas, un manifest de contexto, una matriz de cobertura y un validador reutilizable por producción y pruebas.
 
 El objetivo no es simular todavía la partida. El objetivo es demostrar que cualquier implementación posterior puede:
 
@@ -29,7 +29,10 @@ tests/fixtures/game-session/
 ├── reference-overwhelmed.json
 └── coverage.json
 
-tests/support/game-session-contract.ts
+src/domain/game-session/game-session.ts
+src/domain/game-session/game-session-engine.ts
+src/domain/game-session/game-session-validator.ts
+tests/game-session-engine.test.ts
 tests/game-session-contract.test.ts
 tests/reference-game-sessions.test.ts
 ```
@@ -132,19 +135,16 @@ Los tests utilizan códigos estables agrupados en:
 
 El texto visible de los errores no forma parte del contrato de dominio y puede cambiar. Los códigos son la interfaz comprobable.
 
-## Límites de M1
+## Límites tras #69
 
-Esta entrega no implementa:
+Esta entrega implementa creación, aplicación de decisiones, finalización de escenas, registro de `InheritedState`, conservación de rama, avance canónico, cierre, serialización, deserialización y replay. Mantiene fuera de alcance:
 
-- aplicación de decisiones;
 - cálculo real de las cinco dimensiones;
 - selección causal de la rama;
-- avance del flujo;
-- resultado final;
 - persistencia en navegador o servidor;
 - endpoints o renderer.
 
-El helper se mantiene en `tests/support`. Durante #69 podrá promoverse total o parcialmente a dominio si la implementación necesita reutilizar las mismas comprobaciones.
+Los archivos de `tests/support` son ahora reexportaciones de compatibilidad: la implementación y validación únicas viven en `src/domain/game-session`.
 
 ## Ejecución
 
