@@ -10,7 +10,7 @@ import {
 import {
   VERTICAL_BETA_CANONICAL_IDS,
   VERTICAL_BETA_NODE_TYPES
-} from './support/vertical-beta-flow-example.js';
+} from '../src/content/vertical-beta-catalog.js';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 

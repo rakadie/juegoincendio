@@ -1,31 +1,24 @@
-export const CANONICAL_SCENE_IDS = [
-  'intro-briefing-mission',
-  'prevention-inspection-territory-fuel',
-  'prevention-inspection-housing-interface',
-  'transition-summary-prevention',
-  'crisis-decision-first-alert',
-  'crisis-router-causal-map',
-  'crisis-decision-emergency-fuel-break',
-  'crisis-decision-access-blockage',
-  'crisis-decision-ravine-fire',
-  'crisis-decision-housing-defense',
-  'crisis-decision-crown-fire',
-  'ending-result-causal-report'
-] as const;
+import {
+  CANONICAL_SCENE_IDS,
+  CRISIS_BRANCHES,
+  DECISION_SCENE_IDS,
+  RESULT_VARIANTS,
+  type CanonicalSceneId,
+  type CrisisBranch,
+  type DecisionSceneId,
+  type ResultVariant
+} from '../../src/domain/types/game-scene.js';
 
-export const DECISION_SCENE_IDS = [
-  'prevention-inspection-territory-fuel',
-  'prevention-inspection-housing-interface',
-  'crisis-decision-first-alert',
-  'crisis-decision-emergency-fuel-break',
-  'crisis-decision-access-blockage',
-  'crisis-decision-ravine-fire',
-  'crisis-decision-housing-defense',
-  'crisis-decision-crown-fire'
-] as const;
-
-export const CRISIS_BRANCHES = ['prepared', 'vulnerable'] as const;
-export const RESULT_VARIANTS = ['contained', 'overwhelmed'] as const;
+export {
+  CANONICAL_SCENE_IDS,
+  CRISIS_BRANCHES,
+  DECISION_SCENE_IDS,
+  RESULT_VARIANTS,
+  type CanonicalSceneId,
+  type CrisisBranch,
+  type DecisionSceneId,
+  type ResultVariant
+};
 export const INHERITED_STATE_KEYS = [
   'fuelLoad',
   'fuelContinuity',
@@ -33,11 +26,6 @@ export const INHERITED_STATE_KEYS = [
   'defensibility',
   'attackOpportunity'
 ] as const;
-
-export type CanonicalSceneId = (typeof CANONICAL_SCENE_IDS)[number];
-export type DecisionSceneId = (typeof DECISION_SCENE_IDS)[number];
-export type CrisisBranch = (typeof CRISIS_BRANCHES)[number];
-export type ResultVariant = (typeof RESULT_VARIANTS)[number];
 
 export type GameSessionContractErrorCode =
   | 'invalid-json-value'
