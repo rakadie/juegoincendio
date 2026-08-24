@@ -1,18 +1,22 @@
 import { describe, expect, it } from 'vitest';
-import type { CanonicalSceneId, CrisisBranch } from './support/game-session-contract-base.js';
 import {
-  transitionAppliesToBranch,
-  VERTICAL_BETA_CANONICAL_IDS,
+  VERTICAL_BETA_CATALOG,
   VERTICAL_BETA_ENTRY_ID,
-  VERTICAL_BETA_FLOW,
-  VERTICAL_BETA_NODE_TYPES,
-  VERTICAL_BETA_TERMINAL_ID,
-  type VerticalBetaTransition
-} from './support/vertical-beta-flow-example.js';
+  VERTICAL_BETA_SCENES,
+  VERTICAL_BETA_TERMINAL_ID
+} from '../src/content/vertical-beta-flow.js';
+import {
+  CANONICAL_SCENE_IDS,
+  GAME_SCENE_TYPES,
+  type CanonicalSceneId,
+  type CrisisBranch,
+  type GameSceneTransition
+} from '../src/domain/types/game-scene.js';
+import { validateGameSceneCatalog } from '../src/domain/validation/game-scene-catalog-validator.js';
 
-const nodesById = new Map(VERTICAL_BETA_FLOW.map((node) => [node.id, node]));
+const nodesById = new Map(VERTICAL_BETA_SCENES.map((node) => [node.id, node]));
 
-function outgoing(id: CanonicalSceneId): readonly VerticalBetaTransition[] {
+function outgoing(id: CanonicalSceneId): readonly GameSceneTransition[] {
   return nodesById.get(id)?.transitions ?? [];
 }
 
@@ -47,7 +51,11 @@ function hasCycle(): boolean {
     return false;
   };
 
-  return VERTICAL_BETA_FLOW.some((node) => visit(node.id));
+  return VERTICAL_BETA_SCENES.some((node) => visit(node.id));
+}
+
+function transitionAppliesToBranch(predicate: string, branch: CrisisBranch): boolean {
+  return predicate === 'scene-completed' || predicate.endsWith(branch);
 }
 
 function pathForBranch(branch: CrisisBranch): CanonicalSceneId[] {
@@ -74,20 +82,24 @@ function pathForBranch(branch: CrisisBranch): CanonicalSceneId[] {
   return path;
 }
 
-describe('Vertical Beta 1 declarative graph integrity', () => {
-  it('contains the exact canonical nodes, types, references and variants', () => {
-    const ids = VERTICAL_BETA_FLOW.map((node) => node.id);
-    const types = new Set(VERTICAL_BETA_FLOW.map((node) => node.type));
-    const contentRefs = VERTICAL_BETA_FLOW.map((node) => node.contentRef);
-    const serialized = JSON.stringify(VERTICAL_BETA_FLOW);
+describe('Vertical Beta 1 production catalog integrity', () => {
+  it('passes the production catalog validator', () => {
+    expect(validateGameSceneCatalog(VERTICAL_BETA_CATALOG)).toEqual({ valid: true, errors: [] });
+  });
 
-    expect(ids).toEqual(VERTICAL_BETA_CANONICAL_IDS);
+  it('contains the exact canonical nodes, types, references and variants', () => {
+    const ids = VERTICAL_BETA_SCENES.map((node) => node.id);
+    const types = new Set(VERTICAL_BETA_SCENES.map((node) => node.type));
+    const contentRefs = VERTICAL_BETA_SCENES.map((node) => node.contentRef);
+    const serialized = JSON.stringify(VERTICAL_BETA_CATALOG);
+
+    expect(ids).toEqual(CANONICAL_SCENE_IDS);
     expect(new Set(ids).size).toBe(12);
-    expect(types).toEqual(new Set(VERTICAL_BETA_NODE_TYPES));
+    expect(types).toEqual(new Set(GAME_SCENE_TYPES));
     expect(new Set(contentRefs).size).toBe(12);
     expect(serialized).not.toMatch(/comunicaci[oó]n|evacuaci[oó]n|p-003|invierno_|verano_|resultado-beta/i);
 
-    const resultNodes = VERTICAL_BETA_FLOW.filter((node) => node.type === 'result');
+    const resultNodes = VERTICAL_BETA_SCENES.filter((node) => node.type === 'result');
     expect(resultNodes).toHaveLength(1);
     expect(resultNodes[0].id).toBe(VERTICAL_BETA_TERMINAL_ID);
     expect(resultNodes[0].resultVariants).toEqual(['contained', 'overwhelmed']);
@@ -96,10 +108,10 @@ describe('Vertical Beta 1 declarative graph integrity', () => {
   });
 
   it('has valid references, one entry, one terminal and thirteen unique edges', () => {
-    const indegree = new Map(VERTICAL_BETA_FLOW.map((node) => [node.id, 0]));
+    const indegree = new Map(VERTICAL_BETA_SCENES.map((node) => [node.id, 0]));
     const edgeKeys: string[] = [];
 
-    for (const node of VERTICAL_BETA_FLOW) {
+    for (const node of VERTICAL_BETA_SCENES) {
       for (const transition of node.transitions) {
         expect(nodesById.has(transition.target)).toBe(true);
         indegree.set(transition.target, (indegree.get(transition.target) ?? 0) + 1);
@@ -107,8 +119,8 @@ describe('Vertical Beta 1 declarative graph integrity', () => {
       }
     }
 
-    const entries = VERTICAL_BETA_FLOW.filter((node) => indegree.get(node.id) === 0);
-    const terminals = VERTICAL_BETA_FLOW.filter((node) => node.transitions.length === 0);
+    const entries = VERTICAL_BETA_SCENES.filter((node) => indegree.get(node.id) === 0);
+    const terminals = VERTICAL_BETA_SCENES.filter((node) => node.transitions.length === 0);
 
     expect(entries.map((node) => node.id)).toEqual([VERTICAL_BETA_ENTRY_ID]);
     expect(terminals.map((node) => node.id)).toEqual([VERTICAL_BETA_TERMINAL_ID]);
@@ -118,19 +130,19 @@ describe('Vertical Beta 1 declarative graph integrity', () => {
 
   it('has no orphan nodes, dead routes or cycles', () => {
     const reachable = reachableFrom(VERTICAL_BETA_ENTRY_ID);
-    expect(reachable).toEqual(new Set(VERTICAL_BETA_CANONICAL_IDS));
+    expect(reachable).toEqual(new Set(CANONICAL_SCENE_IDS));
     expect(hasCycle()).toBe(false);
 
-    for (const node of VERTICAL_BETA_FLOW) {
+    for (const node of VERTICAL_BETA_SCENES) {
       expect(reachableFrom(node.id).has(VERTICAL_BETA_TERMINAL_ID)).toBe(true);
     }
   });
 
   it('keeps one shared ravine and resolves exactly one path per branch', () => {
-    const ravineNodes = VERTICAL_BETA_FLOW.filter(
+    const ravineNodes = VERTICAL_BETA_SCENES.filter(
       (node) => node.id === 'crisis-decision-ravine-fire'
     );
-    const ravinePredecessors = VERTICAL_BETA_FLOW.filter((node) =>
+    const ravinePredecessors = VERTICAL_BETA_SCENES.filter((node) =>
       node.transitions.some((transition) => transition.target === 'crisis-decision-ravine-fire')
     ).map((node) => node.id);
 
