@@ -19,7 +19,7 @@ Se usan exactamente tres estados:
 | Estado | Significado | Uso permitido |
 |---|---|---|
 | `validated-product-rule` | Invariante de producto ya acordada, determinista y comprobable en el repositorio. | Forma de datos, precedencia, reproducibilidad y correspondencia con el grafo. No implica aval científico u operativo externo. |
-| `plausible-pending-expert-review` | La dirección causal es coherente con las fuentes técnicas consultadas, pero su formulación para este territorio y contexto debe revisarse en #10. | Afirmaciones sobre comportamiento del fuego, acceso, repliegue, defensa o ataque. |
+| `plausible-pending-expert-review` | La dirección causal es coherente con las fuentes técnicas consultadas, pero su formulación para este territorio y contexto debe revisarse según el plan #10 y registrarse en #99. | Afirmaciones sobre comportamiento del fuego, acceso, repliegue, defensa o ataque. |
 | `gameplay-simplification` | Abstracción deliberada para ofrecer reglas legibles y dos recorridos de beta. | Escala `0..100`, cortes exactos y reducción de un sistema real a cinco dimensiones y dos ramas. |
 
 No se utilizará la etiqueta “validado” sin el sufijo `product-rule`. Una afirmación operativa pendiente no asciende de estado por estar implementada o cubierta por tests.
@@ -147,7 +147,7 @@ Los cortes son parámetros de juego propuestos en #34. Son comprobables, pero no
 
 ## 6. Registro de afirmaciones
 
-| ID | Afirmación sometida a control | Estado | Revisión necesaria en #10 |
+| ID | Afirmación sometida a control | Estado | Revisión necesaria en #99 |
 |---|---|---|---|
 | `PR-001` | Estado y evidencias iguales producen la misma salida. | `validated-product-rule` | No; mantener test de determinismo. |
 | `PR-002` | Un veto crítico precede a toda ventaja parcial. | `validated-product-rule` | Revisar por experto solo la suficiencia de la lista de vetos. |
@@ -179,7 +179,9 @@ Referencias:
 - [NWCG — Lookouts, Communications, Escape Routes, and Safety Zones](https://www.nwcg.gov/publications/pms205/nwcg-glossary-of-wildland-fire-pms-205/lookouts-communications-escape-routes-and-safety-zones-139)
 - [NWCG — S-215 Fire Operations in the Wildland/Urban Interface](https://training.nwcg.gov/dl/s215/s-215-ig.pdf)
 
-## 8. Paquete de revisión para #10
+## 8. Paquete de revisión para #99 según el plan #10
+
+La ejecución usa el manifiesto, las matrices y el acta de [`vertical-beta-1-expert-review-package.md`](../validation/vertical-beta-1-expert-review-package.md). Las definiciones normativas de esta sección no se copian ni se alteran en el formulario.
 
 ### Perfiles revisores mínimos
 
@@ -211,7 +213,7 @@ Una ronda queda aprobada cuando:
 - los perfiles preparado y vulnerable siguen siendo reproducibles y diferentes;
 - los textos no presentan `contained` como garantía ni `vulnerable` como predicción universal.
 
-Cerrar #38 deja preparado este paquete. No cierra #10 ni autoriza la publicación de la beta.
+Cerrar #38 deja preparado este paquete. No ejecuta #99/#100 ni autoriza la publicación de la beta.
 
 ## 9. Forma de regla pura
 
@@ -268,7 +270,7 @@ Esta entrega no:
 - define comunicación, evacuación o población vulnerable como causa de rama;
 - garantiza que un tratamiento o una maniobra controle un incendio real;
 - implementa código de producción, textos finales ni las partidas completas;
-- sustituye el proceso de validación experta y ciudadana de #10.
+- sustituye el plan #10 ni las ejecuciones experta #99 y ciudadana #100.
 
 ## 12. Matriz de aceptación de #38
 
@@ -285,7 +287,7 @@ Esta entrega no:
 
 ## 13. Entregas siguientes
 
-- #10 ejecutará la revisión de `OP-*` y las pruebas ciudadanas; permanece abierta como puerta editorial y de publicación;
+- #10 define el método; #99 ejecutará la revisión de `OP-*` y #100 las pruebas ciudadanas como puertas editoriales y de publicación;
 - #39 ordena las combinaciones y evidencias prioritarias en el informe causal final definido en [`vertical-beta-1-causal-report.md`](vertical-beta-1-causal-report.md);
 - #45–#47 convertirán los perfiles y fronteras en recorridos reproducibles;
 - #72 podrá implementar las reglas puras sin duplicar el selector de rama.

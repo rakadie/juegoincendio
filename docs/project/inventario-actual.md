@@ -45,9 +45,9 @@ El dominio técnico oficial será ligero y estará centrado en una **`GameSessio
 | Objetivo educativo | Existe y es aprovechable | Decisión de producto | Mostrar que la prevención de invierno modifica las condiciones y consecuencias de la emergencia de verano. |
 | Estructura temporal | Existe y es aprovechable | `campaign.ts`, inspecciones y escenarios | Invierno y verano no son modos separados, sino dos momentos causales de una misma partida. |
 | Vertical Beta 1 | Existe y es aprovechable | `docs/product/vertical-beta-1.md` | Recorrido oficial cerrado para la siguiente fase. |
-| Duración objetivo | Existe, pero necesita validación | Definición de la beta | Referencia inicial: 20–25 minutos. Debe comprobarse con usuarios. |
-| KPIs | Es solo documentación o propuesta | Documentación de producto | Falta convertirlos en métricas concretas de validación. |
-| Modelo de publicación y explotación | Falta implementar | Issue #9 | Debe definirse el formato inicial y el proveedor de despliegue. |
+| Duración objetivo | Criterio definido; validación pendiente | [`vertical-beta-1-validation-plan.md`](../product/vertical-beta-1-validation-plan.md), #10 | Mediana final no superior a 25 minutos; se medirá en #100. |
+| KPIs | Criterios concretos definidos; medición pendiente | [`vertical-beta-1-validation-plan.md`](../product/vertical-beta-1-validation-plan.md) | Comprensión, atribución, informe, diferencia, duración, finalización y accesibilidad se medirán en #100. |
+| Modelo de publicación y explotación | Definido; despliegue aún no ejecutado | [`publication-and-hosting-decision.md`](../devops/publication-and-hosting-decision.md), #9 | Piloto controlado en Render; publicación pública condicionada a #76, #99 y #100. |
 
 ### Recorrido oficial de la Vertical Beta 1
 
@@ -110,7 +110,7 @@ Dos partidas con decisiones preventivas diferentes deben producir condiciones, d
 | Modelo unificado de escenas | Es solo documentación o propuesta | `docs/architecture/decision-game-domain.md` | Crear una unión tipada para decisiones, inspecciones, resúmenes, rutas y selección de acciones. |
 | Grafo narrativo completo | Falta implementar | `nextLogic`, `routeLogic` parciales | Debe documentarse el flujo oficial y sus bifurcaciones. |
 | Coherencia de IDs y categorías | Existe, pero necesita revisión | Historial de renombrados | Hay que localizar duplicados, escenarios huérfanos y saltos de numeración. |
-| Validación experta | Falta implementar | Issue #10 | Debe definirse quién revisa el contenido operativo y cómo queda aprobado. |
+| Validación experta | Paquete preparado; revisores y ejecución pendientes | [`vertical-beta-1-expert-review-package.md`](../validation/vertical-beta-1-expert-review-package.md), #99 | Cinco dominios, revisión por afirmación, acta y firma sobre versión candidata. |
 
 ## 3. Motor de juego y dominio
 
@@ -233,7 +233,7 @@ Operaciones principales previstas:
 | Tests end-to-end | Falta implementar | No Playwright activo | Cubrir al menos dos partidas preventivas diferentes. |
 | Typecheck y build | Existe y es aprovechable | Scripts disponibles | Deben ejecutarse en CI. |
 | CI | Falta implementar | Sin checks activos verificados | Añadir GitHub Actions para typecheck, build y tests. |
-| Validación del objetivo educativo | Falta implementar | Issue #10 | Comprobar que el usuario entiende la relación prevención–impacto. |
+| Validación del objetivo educativo | Kit preparado; reclutamiento y ejecución pendientes | [`vertical-beta-1-citizen-test-kit.md`](../validation/vertical-beta-1-citizen-test-kit.md), #100 | Dos rondas de seis personas con criterios de comprensión, duración y accesibilidad. |
 | Validación editorial automatizada | Falta implementar | No localizada | Comprobar IDs, claves i18n, textos ausentes y divergencias antes de integrar cambios. |
 
 ## 10. Despliegue y operación
@@ -242,7 +242,7 @@ Operaciones principales previstas:
 |---|---|---|---|
 | Ejecución local | Existe y es aprovechable | Scripts npm | Base suficiente para desarrollo. |
 | Despliegue de una app Fastify | Falta implementar | Issue #9 | Elegir un proveedor compatible con una única aplicación. |
-| Separación Railway + Vercel | Fuera del alcance de la beta | Documentación previa | No es necesaria al mantener una sola aplicación. |
+| Separación Railway + Vercel | Sustituida | [`publication-and-hosting-decision.md`](../devops/publication-and-hosting-decision.md), #9 | Se mantiene una sola aplicación Fastify en Render. |
 | Docker | No prioritario | No localizado | Evaluar solo si facilita el despliegue elegido. |
 | Publicación automatizada | Falta implementar | Sin CI/CD activo | Incorporar después de estabilizar la rama. |
 
@@ -256,7 +256,7 @@ Operaciones principales previstas:
 | Decisión de dominio del juego | Existe y es aprovechable | `docs/architecture/decision-game-domain.md` | Define el dominio ligero centrado en partida y el plan de retirada del código de ejemplo. |
 | Backlog previo | Existe, pero necesita revisión | `docs/project/backlog-pendiente.md` | Está orientado a una arquitectura más ambiciosa. |
 | Material histórico | Existe, pero necesita revisión | `docs/legacy`, `buzon` | Separar vigente, referencia y archivo. |
-| Issues como gestión | Existe, pero necesita revisión | Issues #9 y #10 | Ya se registran decisiones diferidas; falta trasladar el roadmap técnico cuando se apruebe. |
+| Issues como gestión | Existe y es aprovechable | Issues #9, #10, #99 y #100 | Decisiones de publicación y validación documentadas; ejecución externa separada y trazable. |
 | Criterios de terminado | Es solo documentación o propuesta | Plantillas | Aplicarlos a los próximos hitos. |
 
 ---
@@ -274,12 +274,12 @@ Operaciones principales previstas:
 9. **Dominio:** modelo ligero centrado en `GameSession`; reglas TypeScript puras; escenas unificadas; `campaign.ts` como flujo; retirada de `FireIncident` y `/fires/active`.
 10. **Simulación física, MapLibre y PostGIS:** fuera del alcance de la beta.
 
-## Decisiones aún pendientes antes del roadmap
+## Decisiones externas al roadmap técnico
 
-1. **Publicación — Issue #9:** formato de explotación y proveedor inicial.
-2. **Validación — Issue #10:** quién revisará el rigor operativo y cómo se probará el aprendizaje con ciudadanía.
+1. **Publicación — Issue #9:** decisión definida; despliegue y exposición aún no ejecutados.
+2. **Validación — Issue #10:** plan definido; revisión experta #99 y pruebas ciudadanas #100 pendientes.
 
-Estas decisiones están registradas como incidencias y no bloquean la especificación ni la implementación inicial del dominio del juego.
+La ejecución de #99/#100 no bloquea la implementación inicial del dominio, pero sí la aprobación editorial y la publicación pública.
 
 ## Vacíos prioritarios
 

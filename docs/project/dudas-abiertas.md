@@ -7,18 +7,21 @@
 
 ## Técnica
 
-3. ¿Se adopta despliegue cloud único o multi-proveedor?
-4. ¿Se requiere modo offline completo en frontend?
-5. ¿Qué volumen de datos geoespaciales se espera por escenario?
+3. ¿Se requiere modo offline completo en frontend?
+4. ¿Qué volumen de datos geoespaciales se espera por escenario?
 
 ## Operación
 
-6. ¿Cuál será la política formal de versionado de API?
-7. ¿Quién aprueba decisiones arquitectónicas críticas?
-8. ¿Qué métricas de negocio son obligatorias en release inicial?
+5. ¿Cuál será la política formal de versionado de API?
+6. ¿Quién aprueba decisiones arquitectónicas críticas?
+7. ¿Qué métricas de negocio son obligatorias en release inicial?
 
 ## Testing
 
-9. ¿Se exige cobertura por paquete además de global?
-10. ¿Qué tests Vitest serán obligatorios para merge a `main`?
+8. ¿Se exige cobertura por paquete además de global?
+9. ¿Qué tests Vitest serán obligatorios para merge a `main`?
+
+## Resueltas
+
+- Despliegue cloud: proveedor único Render y una sola aplicación Fastify; decisión y criterios en [`publication-and-hosting-decision.md`](../devops/publication-and-hosting-decision.md), #9.
 
