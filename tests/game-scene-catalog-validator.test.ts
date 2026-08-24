@@ -46,11 +46,20 @@ describe('validateGameSceneCatalog', () => {
     expect(errorCodes(catalog)).toContain('missing-transition-target');
   });
 
-  it('rejects orphan nodes and dead routes', () => {
+  it('rejects orphan nodes', () => {
     const catalog = cloneCatalog();
     catalog.scenes[0].transitions[0].target = 'ending-result-causal-report';
 
-    expect(errorCodes(catalog)).toEqual(expect.arrayContaining(['orphan-scene', 'dead-route']));
+    expect(errorCodes(catalog)).toContain('orphan-scene');
+  });
+
+  it('rejects routes that cannot reach the canonical terminal', () => {
+    const catalog = cloneCatalog();
+    const crownFire = catalog.scenes.find((scene) => scene.id === 'crisis-decision-crown-fire');
+    if (crownFire === undefined) throw new Error('Crown fire scene is required.');
+    crownFire.transitions = [];
+
+    expect(errorCodes(catalog)).toContain('dead-route');
   });
 
   it('rejects cycles in either branch', () => {
