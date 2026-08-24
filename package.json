@@ -13,7 +13,7 @@
     "i18n:extract-scenarios": "tsx scripts/extract-scenario-i18n.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:contract": "vitest run tests/game-scene-catalog.test.ts tests/game-session-contract.test.ts tests/game-session-engine.test.ts tests/game-session-transition-contract.test.ts tests/game-session-inherited-state-order.test.ts tests/game-session-key-order-contract.test.ts tests/prevention-inspections.test.ts tests/vertical-beta-graph-integrity.test.ts tests/reference-game-sessions.test.ts",
+    "test:contract": "vitest run tests/game-scene-catalog.test.ts tests/game-session-contract.test.ts tests/game-session-engine.test.ts tests/game-session-transition-contract.test.ts tests/game-session-inherited-state-order.test.ts tests/game-session-key-order-contract.test.ts tests/prevention-inspections.test.ts tests/operational-scenes.test.ts tests/vertical-beta-graph-integrity.test.ts tests/reference-game-sessions.test.ts",
     "test:m1-acceptance": "vitest run tests/game-session-contract.test.ts tests/game-session-transition-contract.test.ts tests/game-session-inherited-state-order.test.ts tests/game-session-key-order-contract.test.ts tests/vertical-beta-graph-integrity.test.ts tests/reference-game-sessions.test.ts tests/m1-final-acceptance.test.ts",
     "test:watch": "vitest"
   },

@@ -66,7 +66,7 @@ export const VERTICAL_BETA_FLOW = [
   {
     id: 'crisis-decision-emergency-fuel-break',
     type: 'decision',
-    contentRef: 'scenario:s-025-cortafuego-emergencia',
+    contentRef: 'scenario:crisis-decision-emergency-fuel-break',
     transitions: [
       { predicate: 'scene-completed:branch-prepared', target: 'crisis-decision-ravine-fire' }
     ]
@@ -74,7 +74,7 @@ export const VERTICAL_BETA_FLOW = [
   {
     id: 'crisis-decision-access-blockage',
     type: 'decision',
-    contentRef: 'scenario:s-011-corte-carretera-acceso',
+    contentRef: 'scenario:crisis-decision-access-blockage',
     transitions: [
       {
         predicate: 'scene-completed:branch-vulnerable',
@@ -85,7 +85,7 @@ export const VERTICAL_BETA_FLOW = [
   {
     id: 'crisis-decision-ravine-fire',
     type: 'decision',
-    contentRef: 'scenario:s-027-fuego-en-barranco',
+    contentRef: 'scenario:crisis-decision-ravine-fire',
     transitions: [
       {
         predicate: 'scene-completed:branch-prepared',
@@ -100,7 +100,7 @@ export const VERTICAL_BETA_FLOW = [
   {
     id: 'crisis-decision-housing-defense',
     type: 'decision',
-    contentRef: 'scenario:s-026-defensa-operativa-nucleo-viviendas',
+    contentRef: 'scenario:crisis-decision-housing-defense',
     transitions: [
       {
         predicate: 'scene-completed:branch-prepared',
@@ -111,7 +111,7 @@ export const VERTICAL_BETA_FLOW = [
   {
     id: 'crisis-decision-crown-fire',
     type: 'decision',
-    contentRef: 'scenario:s-030-fuego-de-copas',
+    contentRef: 'scenario:crisis-decision-crown-fire',
     transitions: [
       {
         predicate: 'scene-completed:branch-vulnerable',

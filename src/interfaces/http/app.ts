@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { GetActiveFiresQueryHandler } from '../../application/queries/get-active-fires-query-handler.js';
 import { EMERGENCY_GAME_VARIABLES } from '../../domain/entities/emergency-training-content.js';
 import { CAMPAIGN_CONTENT } from '../../content/campaign.js';
+import { OFFICIAL_OPERATIONAL_SCENES } from '../../content/official-operational-scenes.js';
 import { NEW_GAME_SCENARIOS } from '../../content/scenarios/index.js';
 import { InMemoryFireIncidentRepository } from '../../infrastructure/repositories/in-memory-fire-incident-repository.js';
 import { renderGameContentPage } from './game-content-page.js';
@@ -28,6 +29,7 @@ export function buildApp(): FastifyInstance {
     return {
       variables: EMERGENCY_GAME_VARIABLES,
       scenarios: NEW_GAME_SCENARIOS,
+      operationalScenes: OFFICIAL_OPERATIONAL_SCENES,
       campaign: CAMPAIGN_CONTENT
     };
   });
