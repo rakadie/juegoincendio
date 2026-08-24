@@ -71,6 +71,37 @@ export const VERTICAL_BETA_RESULT_VARIANTS = {
   }
 } as const satisfies Readonly<Record<ResultVariant, VerticalBetaResultContent>>;
 
+export const VERTICAL_BETA_DIMENSION_LABELS = {
+  fuelLoad: 'Carga de combustible',
+  fuelContinuity: 'Continuidad del combustible',
+  operationalAccess: 'Acceso operativo',
+  defensibility: 'Defensibilidad',
+  attackOpportunity: 'Oportunidad de ataque'
+} as const;
+
+export const VERTICAL_BETA_CAUSAL_RELATION_CONTENT = {
+  'fuel-load': {
+    title: 'La carga de combustible condicionó la intensidad',
+    effect: 'La cantidad de combustible disponible se manifestó en la intensidad afrontada por los equipos.'
+  },
+  'fuel-continuity': {
+    title: 'La continuidad cambió la propagación',
+    effect: 'Las discontinuidades realizadas u omitidas determinaron los puntos de anclaje disponibles.'
+  },
+  'operational-access': {
+    title: 'El acceso decidió la capacidad de maniobra',
+    effect: 'La entrada, la maniobra de medios y el repliegue dependieron de la cadena de acceso preparada.'
+  },
+  defensibility: {
+    title: 'La posición tenía límites concretos',
+    effect: 'La vegetación tratada y el acceso convirtieron —o no— el lugar en una posición sostenible.'
+  },
+  'attack-opportunity': {
+    title: 'Las cinco condiciones formaron la oportunidad de ataque',
+    effect: 'Combustible, continuidad, acceso y posición actuaron conjuntamente; una ventaja aislada no ocultó un veto crítico.'
+  }
+} as const;
+
 export const VERTICAL_BETA_DECLARATIVE_CONTENT = [
   VERTICAL_BETA_BRIEFING,
   VERTICAL_BETA_PREVENTION_SUMMARY,

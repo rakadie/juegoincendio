@@ -1,46 +1,47 @@
 import { describe, expect, it } from 'vitest';
-import { FIRST_ALERT_SCENARIO } from '../src/content/prevention-balance.js';
 import { renderPrototypePage } from '../src/interfaces/http/prototype-page.js';
 
-function sectionHtml(html: string, sectionId: string): string {
-  const start = html.indexOf(`id="${sectionId}"`);
-  const end = html.indexOf('</section>', start);
-
-  return html.slice(start, end);
-}
-
-describe('product experience shell', () => {
-  it('presents one primary start action without internal tooling', () => {
+describe('motor-backed product experience shell', () => {
+  it('starts one session through the application API and keeps one primary mission action', () => {
     const html = renderPrototypePage();
-    const briefing = sectionHtml(html, 'screen-briefing');
 
-    expect(briefing.match(/class="primary"/g)).toHaveLength(1);
-    expect(briefing).toContain('Comenzar la prevención');
+    expect(html).toContain("request('/api/game-sessions', { method: 'POST'");
+    expect(html).toContain('data-action-id');
+    expect(html).toContain('id="advance-button"');
+    expect(html).toContain('Misión municipal');
     expect(html).not.toContain('Panel de contenido técnico');
-    expect(html).not.toContain('JSON de incendios activos');
-    expect(html).not.toContain('API: comprobando');
     expect(html).not.toContain('Bitácora operativa');
   });
 
-  it('keeps complete context available through an accessible dialog', () => {
+  it('has an exhaustive renderer for the six official scene types', () => {
     const html = renderPrototypePage();
 
-    expect(html).toContain('aria-controls="context-dialog"');
-    expect(html).toContain('<dialog class="context-dialog" id="context-dialog"');
-    expect(html).toContain('aria-label="Cerrar contexto"');
-    expect(html).toContain("{ title: 'Situación', text: screen.context }");
-    expect(html).toContain("{ title: 'Criterio operativo', text: scenario.briefing }");
+    expect(html).toContain('briefing: renderBriefing');
+    expect(html).toContain('inspection: renderInspection');
+    expect(html).toContain('summary: renderSummary');
+    expect(html).toContain('decision: renderDecision');
+    expect(html).toContain('router: renderRouter');
+    expect(html).toContain('result: renderResult');
   });
-});
 
-describe('first alert content layers', () => {
-  it('provides concise reviewed summaries while preserving complete option text', () => {
-    FIRST_ALERT_SCENARIO.options.forEach((option) => {
-      expect(option.shortLabel).toBeTruthy();
-      expect(option.shortLabel!.length).toBeLessThanOrEqual(32);
-      expect(option.summary).toBeTruthy();
-      expect(option.summary!.length).toBeLessThanOrEqual(140);
-      expect(option.text.length).toBeGreaterThan(option.summary!.length);
-    });
+  it('does not retain causal calculations or the parallel campaign state in the view', () => {
+    const html = renderPrototypePage();
+    const forbidden = [
+      'aggregateInspectionMetrics',
+      'chooseBalanceOutcome',
+      'crisisRouteState',
+      'activeCrisisRoute',
+      'preventionPreparednessScore',
+      'chooseCrisisOutcome',
+      'applySummerFireModel',
+      'finalizeCampaignResult',
+      'resultado-beta',
+      'ruta-comunicacion',
+      'buildInitialState'
+    ];
+
+    forbidden.forEach((term) => expect(html).not.toContain(term));
+    expect(html).toContain('let currentView = null');
+    expect(html).not.toContain('let state =');
   });
 });
