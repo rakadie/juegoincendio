@@ -167,6 +167,8 @@ function crisisSvg(model: PresentedSceneVisualModel): string {
   const pressure = byId(model, 'crisis-pressure');
   const attack = byId(model, 'crisis-attack-window');
   const crown = byId(model, 'crisis-crown');
+  const professionalLine = byId(model, 'crisis-professional-line');
+  const houseAccess = byId(model, 'crisis-house-access');
 
   return `<svg class="territory-svg crisis-svg" viewBox="0 0 900 500" role="img" aria-label="${escapeHtml(
     model.ariaLabel
@@ -181,6 +183,20 @@ function crisisSvg(model: PresentedSceneVisualModel): string {
     <g id="crisis-pressure" class="${stateClass(pressure)}">${titleFor(pressure)}<path class="visual-fire" d="M560 365 C525 315 574 286 553 244 C620 268 636 320 616 369 C599 405 568 402 560 365 Z" /></g>
     <g id="crisis-attack-window" class="${stateClass(attack)}">${titleFor(attack)}<path class="visual-attack-window" d="M395 264 Q465 218 545 252" /></g>
     <g id="crisis-crown" class="${stateClass(crown)}">${titleFor(crown)}<circle class="visual-canopy" cx="630" cy="205" r="62" /><circle class="visual-canopy" cx="710" cy="194" r="62" /><circle class="visual-canopy" cx="782" cy="214" r="58" /></g>
+    ${
+      professionalLine === undefined
+        ? ''
+        : `<g id="crisis-professional-line" class="${stateClass(professionalLine)}">${titleFor(
+            professionalLine
+          )}<path class="visual-professional-line" d="M300 250 Q410 195 520 230" /><circle class="visual-line-marker" cx="410" cy="215" r="12" /></g>`
+    }
+    ${
+      houseAccess === undefined
+        ? ''
+        : `<g id="crisis-house-access" class="${stateClass(houseAccess)}">${titleFor(
+            houseAccess
+          )}<path class="visual-house" d="M690 305 l55 -42 58 42 v92 h-113 z" /><path class="visual-road local" d="M615 420 Q710 390 850 405" /></g>`
+    }
     <g class="visual-label-group" aria-hidden="true"><text x="385" y="475">mismo barranco · estado heredado distinto</text></g>
   </svg>`;
 }
