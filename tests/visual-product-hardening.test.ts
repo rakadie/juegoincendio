@@ -91,8 +91,28 @@ describe('M3 product hardening', () => {
     expect(fuelLoad?.causeActionLabels).toEqual(
       expect.arrayContaining([
         expect.stringContaining('Sin tratar: Gestionar restos de poda'),
-        expect.stringContaining('Sin tratar: Ejecutar pastoreo preventivo'),
-        expect.stringContaining('Sin tratar: Podar ramas y gestionar la biomasa')
+        expect.stringContaining('Sin tratar: Ejecutar pastoreo preventivo')
+      ])
+    );
+  });
+
+  it('prioritizes missing access treatments when attack opportunity is critical', () => {
+    const service = new VerticalBetaApplicationService();
+    const id = 'visual-critical-attack-opportunity';
+    applyPrevention(
+      service,
+      id,
+      ['gestionar-restos-poda', 'activar-pastoreo-preventivo', 'evaluar-quema-tecnica'],
+      ['podar-ramas-y-retirar-seco', 'separar-copas']
+    );
+
+    const model = presentSceneVisualModel(service.view(id).session);
+    const opportunity = model.dimensions.find(({ id }) => id === 'attackOpportunity');
+    expect(opportunity).toMatchObject({ state: 'critical', value: 24 });
+    expect(opportunity?.causeActionLabels).toEqual(
+      expect.arrayContaining([
+        'Sin tratar: Limpiar márgenes de caminos rurales',
+        'Sin tratar: Despejar accesos para autobombas'
       ])
     );
   });
@@ -128,10 +148,13 @@ describe('M3 product hardening', () => {
     );
   });
 
-  it('honours reduced motion in the visual shortcut scroll behaviour and has no invalid CSS state', async () => {
+  it('honours reduced motion and focuses the card when its official action is disabled', async () => {
     const source = await readFile(`${ROOT}src/interfaces/http/prototype-page.ts`, 'utf8');
     expect(source).toContain("matchMedia('(prefers-reduced-motion: reduce)')");
     expect(source).toContain("behavior: reducedMotion ? 'auto' : 'smooth'");
+    expect(source).toContain('if (button.disabled)');
+    expect(source).toContain("card.setAttribute('tabindex', '-1')");
+    expect(source).toContain('card.focus()');
     expect(source).not.toContain('state-conditionned');
   });
 });
