@@ -76,12 +76,14 @@ function statusLegend(model: PresentedSceneVisualModel): string {
         `<button class="visual-status ${stateClass(element)}" type="button"${
           element.actionId === undefined
             ? ' disabled'
-            : ` data-focus-action-id="${escapeHtml(element.actionId)}" aria-pressed="${
-                element.selected === true ? 'true' : 'false'
-              }"`
+            : ` data-focus-action-id="${escapeHtml(element.actionId)}"`
         }><span class="visual-status-symbol" aria-hidden="true"></span><span><strong>${escapeHtml(
           element.label
-        )}</strong><small>${escapeHtml(element.stateLabel)}</small></span></button>`
+        )}</strong><small>${escapeHtml(element.stateLabel)}${
+          element.selected === true ? ' · Seleccionada' : ''
+        }</small><span class="visual-explanation">${escapeHtml(
+          element.explanation
+        )}</span></span></button>`
     )
     .join('')}</div>`;
 }
@@ -214,7 +216,9 @@ function dimensionSummary(model: PresentedSceneVisualModel): string {
           dimension.causeActionLabels.length === 0
             ? ''
             : `<small>${escapeHtml(dimension.causeActionLabels.join(' · '))}</small>`
-        }<details><summary>Valor del modelo</summary><span>${dimension.value}/100</span></details></div></article>`
+        }<details><summary>${escapeHtml(
+          `Valor del modelo: ${dimension.label}`
+        )}</summary><span>${dimension.value}/100</span></details></div></article>`
     )
     .join('')}</div>`;
 }
