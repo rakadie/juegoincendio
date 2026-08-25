@@ -239,7 +239,7 @@ function crisisElements(session: VisualSessionSource): PresentedVisualElement[] 
   const positionState: VisualElementState = prepared ? 'sustainable' : 'unsustainable';
   const pressureState: VisualElementState = prepared ? 'surface' : 'severe';
   const crownState: VisualElementState = crown ? 'crownFire' : prepared ? 'reduced' : 'crownRisk';
-  const capacityState: VisualElementState = prepared ? 'withinCapacity' : 'exceeded';
+  const capacityState: VisualElementState = prepared ? 'withinCapacity' : crown ? 'exceeded' : 'limited';
 
   const professionalLineEvaluated = selected.has('evaluar-quema-tecnica');
   const localAccessClear = selected.has('despejar-accesos');
@@ -300,8 +300,10 @@ function crisisElements(session: VisualSessionSource): PresentedVisualElement[] 
       'extinctionCapacity',
       capacityState,
       prepared
-        ? 'La respuesta permanece dentro de capacidad en la partida de referencia.'
-        : 'La respuesta queda superada en la partida vulnerable de referencia.'
+        ? 'La respuesta conserva capacidad operativa en este punto del recorrido.'
+        : crown
+          ? 'La escalada a copas supera la capacidad de ataque directo en esta partida.'
+          : 'La capacidad de extinción está condicionada, pero el desenlace aún no se presenta.'
     ),
     ...(sceneId === 'crisis-decision-emergency-fuel-break'
       ? [
@@ -364,7 +366,9 @@ function dimensionModels(session: VisualSessionSource): PresentedVisualDimension
 }
 
 function templateFor(sceneId: CanonicalSceneId): VisualTemplateId {
-  if (sceneId === 'intro-briefing-mission') return 'briefing';
+  if (sceneId === 'intro-briefing-mission' || sceneId === 'crisis-decision-first-alert') {
+    return 'briefing';
+  }
   if (sceneId === 'prevention-inspection-territory-fuel') return 'territory';
   if (sceneId === 'prevention-inspection-housing-interface') return 'housing';
   if (sceneId === 'transition-summary-prevention' || sceneId === 'crisis-router-causal-map') {
@@ -403,7 +407,7 @@ export function presentSceneVisualModel(
               ? 'Resumen visual de las condiciones heredadas por la emergencia.'
               : templateId === 'result'
                 ? 'Resumen visual de la cadena causal de la partida.'
-                : 'Misión de la Vertical Beta 1.',
+                : 'Misión y aviso común de la Vertical Beta 1.',
     elements,
     dimensions: dimensionModels(session)
   };
