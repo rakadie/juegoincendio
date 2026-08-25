@@ -14,6 +14,7 @@ describe('M3.8 north-star interface', () => {
     expect(html).toContain('data-stage-id="housing"');
     expect(html).toContain('data-stage-id="crisis"');
     expect(html).toContain('data-stage-id="result"');
+    expect(html).toContain("stage.setAttribute('aria-current', 'step')");
     expect(html).toContain('class="session-footer"');
     expect(html).not.toContain('<aside>');
   });
@@ -37,6 +38,16 @@ describe('M3.8 north-star interface', () => {
     expect(html).not.toContain('prepared-vs-vulnerable');
     expect(html).not.toContain('Estado preparado</');
     expect(html).not.toContain('Estado vulnerable</');
+  });
+
+  it('uses user-facing Spanish labels instead of leaking internal scene and branch enums', () => {
+    const html = renderPrototypePage();
+
+    expect(html).toContain("briefing: 'Misión'");
+    expect(html).toContain("inspection: 'Inspección'");
+    expect(html).toContain("prepared: 'preparada'");
+    expect(html).toContain("vulnerable: 'vulnerable'");
+    expect(html).toContain("'Ruta ' + (BRANCH_LABELS[session.branch] || session.branch)");
   });
 
   it('keeps the implementation minimal and accessible', async () => {
