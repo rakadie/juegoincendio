@@ -43,6 +43,7 @@
       "territorial-and-local-access-ready",
       "safe-attack-envelope",
       "ravine-position-held-with-safe-retreat",
+      "conditioned-emergency-maneuver-authorized",
       "housing-defense-sustained-selectively"
     ]
   },
@@ -60,7 +61,9 @@
       "evidenceIds": [
         "pruning-residues-removed-or-processed",
         "strategic-vegetation-discontinuity-created",
-        "rural-road-margins-cleared"
+        "rural-road-margins-cleared",
+        "fine-fuel-accumulated-in-priority-strips",
+        "strategic-area-without-assessed-line"
       ]
     },
     { "sequence": 8, "type": "scene-transitioned", "fromSceneId": "prevention-inspection-territory-fuel", "toSceneId": "prevention-inspection-housing-interface" },
@@ -72,7 +75,8 @@
       "sceneId": "prevention-inspection-housing-interface",
       "evidenceIds": [
         "vertical-fuel-continuity-reduced",
-        "fire-engine-access-cleared"
+        "fire-engine-access-cleared",
+        "crown-fuel-continuity-present"
       ]
     },
     {
@@ -90,8 +94,11 @@
         "pruning-residues-removed-or-processed",
         "strategic-vegetation-discontinuity-created",
         "rural-road-margins-cleared",
+        "fine-fuel-accumulated-in-priority-strips",
+        "strategic-area-without-assessed-line",
         "vertical-fuel-continuity-reduced",
-        "fire-engine-access-cleared"
+        "fire-engine-access-cleared",
+        "crown-fuel-continuity-present"
       ]
     },
     { "sequence": 13, "type": "scene-transitioned", "fromSceneId": "prevention-inspection-housing-interface", "toSceneId": "transition-summary-prevention" },
@@ -127,6 +134,7 @@
         "territorial-and-local-access-ready",
         "safe-attack-envelope",
         "ravine-position-held-with-safe-retreat",
+        "conditioned-emergency-maneuver-authorized",
         "housing-defense-sustained-selectively"
       ]
     },
@@ -140,6 +148,7 @@
           "territorial-and-local-access-ready",
           "safe-attack-envelope",
           "ravine-position-held-with-safe-retreat",
+          "conditioned-emergency-maneuver-authorized",
           "housing-defense-sustained-selectively"
         ]
       }
