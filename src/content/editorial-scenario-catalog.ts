@@ -1,7 +1,8 @@
 import type { Scenario } from '../domain/types/scenario.js';
+import { OFFICIAL_SOURCE_SCENARIOS } from './official-scenario-sources.js';
 import { NEW_GAME_SCENARIOS } from './scenarios/index.js';
 
-export const OFFICIAL_SOURCE_SCENARIO_IDS = [
+export const MIGRATED_HISTORICAL_SCENARIO_IDS = [
   's-011-corte-carretera-acceso',
   's-025-cortafuego-emergencia',
   's-026-defensa-operativa-nucleo-viviendas',
@@ -19,10 +20,10 @@ export const HISTORICAL_ARCHIVE_SCENARIO_IDS = [
   's-010d-zona-barranco',
   's-024-quema-tecnica',
   's-035-limpieza-alrededor-viviendas',
-  's-038-eleccion-vegetacion-finca'
+  's-038-eleccion-vegetacion-finca',
+  ...MIGRATED_HISTORICAL_SCENARIO_IDS
 ] as const;
 
-const officialIdSet = new Set<string>(OFFICIAL_SOURCE_SCENARIO_IDS);
 const archiveIdSet = new Set<string>(HISTORICAL_ARCHIVE_SCENARIO_IDS);
 const scenarioById = new Map(NEW_GAME_SCENARIOS.map((scenario) => [scenario.id, scenario]));
 
@@ -34,33 +35,29 @@ function requireScenarios(ids: readonly string[]): Scenario[] {
   });
 }
 
-export const EDITORIAL_OFFICIAL_SOURCE_SCENARIOS = requireScenarios(
-  OFFICIAL_SOURCE_SCENARIO_IDS
-);
-
+export const EDITORIAL_OFFICIAL_SCENARIOS = OFFICIAL_SOURCE_SCENARIOS;
 export const HISTORICAL_ARCHIVE_SCENARIOS = requireScenarios(
   HISTORICAL_ARCHIVE_SCENARIO_IDS
 );
-
 export const LIBRARY_CANDIDATE_SCENARIOS = NEW_GAME_SCENARIOS.filter(
-  ({ id }) => !officialIdSet.has(id) && !archiveIdSet.has(id)
+  ({ id }) => !archiveIdSet.has(id)
 );
 
 if (
-  EDITORIAL_OFFICIAL_SOURCE_SCENARIOS.length !== 5 ||
+  EDITORIAL_OFFICIAL_SCENARIOS.length !== 5 ||
   LIBRARY_CANDIDATE_SCENARIOS.length !== 36 ||
-  HISTORICAL_ARCHIVE_SCENARIOS.length !== 10 ||
+  HISTORICAL_ARCHIVE_SCENARIOS.length !== 15 ||
   NEW_GAME_SCENARIOS.length !== 51
 ) {
   throw new Error(
-    `Unexpected editorial scenario classification: official=${EDITORIAL_OFFICIAL_SOURCE_SCENARIOS.length}, ` +
+    `Unexpected editorial scenario classification: official=${EDITORIAL_OFFICIAL_SCENARIOS.length}, ` +
       `library=${LIBRARY_CANDIDATE_SCENARIOS.length}, archive=${HISTORICAL_ARCHIVE_SCENARIOS.length}, ` +
-      `total=${NEW_GAME_SCENARIOS.length}.`
+      `historicalTotal=${NEW_GAME_SCENARIOS.length}.`
   );
 }
 
 export const EDITORIAL_SCENARIO_CATALOG = {
-  officialSources: EDITORIAL_OFFICIAL_SOURCE_SCENARIOS,
+  official: EDITORIAL_OFFICIAL_SCENARIOS,
   library: LIBRARY_CANDIDATE_SCENARIOS,
   archive: HISTORICAL_ARCHIVE_SCENARIOS
 } as const;
