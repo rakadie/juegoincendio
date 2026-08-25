@@ -2,7 +2,10 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { VerticalBetaApplicationService } from '../src/application/vertical-beta/vertical-beta-application-service.js';
-import { presentSceneVisualModel } from '../src/application/vertical-beta/vertical-beta-visual-presenter.js';
+import {
+  presentSceneVisualModel,
+  type PresentedSceneVisualModel
+} from '../src/application/vertical-beta/vertical-beta-visual-presenter.js';
 import { renderSceneVisual } from '../src/interfaces/http/scene-visual-renderer.js';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
@@ -107,6 +110,22 @@ describe('M3 product hardening', () => {
     const markup = renderSceneVisual(presentSceneVisualModel(service.view(id).session));
     expect(markup).toContain('visual-dimension-summary');
     expect(markup).not.toContain('visual-canvas');
+  });
+
+  it('fails explicitly when a visual scene loses a required element', () => {
+    const service = new VerticalBetaApplicationService();
+    const id = 'visual-incomplete';
+    service.create(id);
+    service.advance(id);
+    const model = presentSceneVisualModel(service.view(id).session);
+    const incomplete: PresentedSceneVisualModel = {
+      ...model,
+      elements: model.elements.filter(({ id: elementId }) => elementId !== 'territory-road')
+    };
+
+    expect(() => renderSceneVisual(incomplete)).toThrowError(
+      expect.stringContaining('missing territory-road')
+    );
   });
 
   it('honours reduced motion in the visual shortcut scroll behaviour and has no invalid CSS state', async () => {
