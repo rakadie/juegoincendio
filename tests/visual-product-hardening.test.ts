@@ -143,9 +143,7 @@ describe('M3 product hardening', () => {
       elements: model.elements.filter(({ id: elementId }) => elementId !== 'territory-road')
     };
 
-    expect(() => renderSceneVisual(incomplete)).toThrowError(
-      expect.stringContaining('missing territory-road')
-    );
+    expect(() => renderSceneVisual(incomplete)).toThrowError(/missing territory-road/);
   });
 
   it('honours reduced motion and focuses the card when its official action is disabled', async () => {
