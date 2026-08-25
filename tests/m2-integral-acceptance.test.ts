@@ -6,11 +6,14 @@ import type {
   PresentedDecisionScene,
   PresentedResultScene,
   PresentedSummaryScene,
-  PresentedVerticalBetaScene,
-  VerticalBetaApplicationView
+  PresentedVerticalBetaScene
 } from '../src/application/vertical-beta/vertical-beta-application-service.js';
-import { VERTICAL_BETA_PLAYER_CONTENT } from '../src/content/vertical-beta-player-content.js';
+import {
+  VERTICAL_BETA_REFERENCE_CONTEXT,
+  type VerticalBetaRuntimeContext
+} from '../src/application/vertical-beta/vertical-beta-runtime-context.js';
 import { validateVerticalBetaI18nCatalog } from '../src/content/i18n/vertical-beta-i18n.js';
+import { VERTICAL_BETA_PLAYER_CONTENT } from '../src/content/vertical-beta-player-content.js';
 import type {
   GameSessionEvent,
   InheritedState
@@ -22,7 +25,10 @@ import {
   type ResultVariant
 } from '../src/domain/types/game-scene.js';
 import { validateGameSceneCatalog } from '../src/domain/validation/game-scene-catalog-validator.js';
-import { buildApp } from '../src/interfaces/http/app.js';
+import {
+  buildApp,
+  type VerticalBetaHttpView
+} from '../src/interfaces/http/app.js';
 import { renderPrototypePage } from '../src/interfaces/http/prototype-page.js';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
@@ -65,14 +71,6 @@ interface JsonSession {
   history: GameSessionEvent[];
 }
 
-interface ReferenceContext {
-  randomness: 'none';
-  selectionLimits: { territory: number; housing: number };
-  expectedDecisionCount: number;
-  expectedVisitedNodeCount: number;
-  targetDurationMinutes: { min: number; max: number };
-}
-
 interface ReferencePlan {
   readonly fixture: 'reference-contained.json' | 'reference-overwhelmed.json';
   readonly branch: CrisisBranch;
@@ -82,8 +80,8 @@ interface ReferencePlan {
 }
 
 interface AcceptanceRun {
-  readonly initial: VerticalBetaApplicationView;
-  readonly completed: VerticalBetaApplicationView;
+  readonly initial: VerticalBetaHttpView;
+  readonly completed: VerticalBetaHttpView;
   readonly resultScene: PresentedResultScene;
   readonly visitedSceneIds: readonly CanonicalSceneId[];
   readonly sceneSnapshots: ReadonlyMap<CanonicalSceneId, PresentedVerticalBetaScene>;
@@ -137,10 +135,10 @@ async function injectView(
   method: 'GET' | 'POST',
   url: string,
   payload?: Record<string, unknown>
-): Promise<VerticalBetaApplicationView> {
+): Promise<VerticalBetaHttpView> {
   const response = await app.inject({ method, url, ...(payload === undefined ? {} : { payload }) });
   expect(response.statusCode, response.body).toBe(200);
-  return response.json() as VerticalBetaApplicationView;
+  return response.json() as VerticalBetaHttpView;
 }
 
 function actionById(scene: PresentedDecisionScene, actionId: string) {
@@ -149,23 +147,30 @@ function actionById(scene: PresentedDecisionScene, actionId: string) {
   return action;
 }
 
-async function playThroughHttp(plan: ReferencePlan): Promise<AcceptanceRun> {
-  const app = buildApp();
+async function playThroughHttp(
+  plan: ReferencePlan,
+  context: VerticalBetaRuntimeContext
+): Promise<AcceptanceRun> {
+  expect(context.randomness).toBe('none');
+  const app = buildApp({ context });
   openApps.push(app);
 
   const snapshots = new Map<CanonicalSceneId, PresentedVerticalBetaScene>();
   const feedbackByScene = new Map<CanonicalSceneId, string>();
   const visitedSceneIds: CanonicalSceneId[] = [];
 
-  const record = (view: VerticalBetaApplicationView): void => {
+  const record = (view: VerticalBetaHttpView): void => {
+    expect(view.context).toEqual(context);
+    expect(view.context.referenceContextId).toBe('vb1-reference-context-v1');
+    expect(view.context.randomness).toBe('none');
     if (!snapshots.has(view.scene.id)) snapshots.set(view.scene.id, structuredClone(view.scene));
     if (visitedSceneIds.at(-1) !== view.scene.id) visitedSceneIds.push(view.scene.id);
   };
 
   const act = async (
-    view: VerticalBetaApplicationView,
+    view: VerticalBetaHttpView,
     actionId: string
-  ): Promise<VerticalBetaApplicationView> => {
+  ): Promise<VerticalBetaHttpView> => {
     const next = await injectView(
       app,
       'POST',
@@ -179,9 +184,7 @@ async function playThroughHttp(plan: ReferencePlan): Promise<AcceptanceRun> {
     return next;
   };
 
-  const advance = async (
-    view: VerticalBetaApplicationView
-  ): Promise<VerticalBetaApplicationView> => {
+  const advance = async (view: VerticalBetaHttpView): Promise<VerticalBetaHttpView> => {
     const next = await injectView(
       app,
       'POST',
@@ -264,11 +267,16 @@ function materializeCanonicalSession(
 function expectAcceptedRun(
   run: AcceptanceRun,
   fixture: JsonSession,
-  context: ReferenceContext,
+  context: VerticalBetaRuntimeContext,
   plan: ReferencePlan
 ): void {
-  const actual = materializeCanonicalSession(run, fixture.id);
-  expect(actual).toEqual(fixture);
+  expect(run.initial.context).toEqual(context);
+  expect(run.completed.context).toEqual(context);
+  expect(run.initial.context.rulesetId).toBe('m1-reference-rules-v1');
+  expect(run.initial.context.weatherProfile.changesDuringSession).toBe(false);
+  expect(run.initial.context.randomness).toBe('none');
+
+  expect(materializeCanonicalSession(run, fixture.id)).toEqual(fixture);
   expect(run.initial.session).toMatchObject({
     status: 'active',
     currentSceneId: 'intro-briefing-mission',
@@ -284,7 +292,6 @@ function expectAcceptedRun(
   expect(run.completed.session.decisions).toHaveLength(context.expectedDecisionCount);
   expect(run.visitedSceneIds).toHaveLength(context.expectedVisitedNodeCount);
   expect(run.visitedSceneIds).toEqual(fixture.progress.completedSceneIds);
-  expect(context.randomness).toBe('none');
   expect(context.targetDurationMinutes.max).toBeLessThanOrEqual(25);
   expect(context.selectionLimits).toEqual({ territory: 3, housing: 2 });
 
@@ -299,7 +306,9 @@ function expectAcceptedRun(
 }
 
 describe('M2 integral acceptance gate', () => {
-  it('validates the only official catalog, payload and i18n contract', async () => {
+  it('validates the official catalog, payload, i18n and immutable reference context', async () => {
+    const context = await readJson<VerticalBetaRuntimeContext>('reference-context.json');
+    expect(context).toEqual(VERTICAL_BETA_REFERENCE_CONTEXT);
     expect(validateGameSceneCatalog(VERTICAL_BETA_PLAYER_CONTENT.catalog)).toEqual({
       valid: true,
       errors: []
@@ -317,29 +326,40 @@ describe('M2 integral acceptance gate', () => {
     expect(VERTICAL_BETA_PLAYER_CONTENT.inspections).toHaveLength(2);
     expect(Object.keys(VERTICAL_BETA_PLAYER_CONTENT.i18n.scenes)).toHaveLength(12);
 
-    const app = buildApp();
+    const app = buildApp({ context });
     openApps.push(app);
-    const response = await app.inject({ method: 'GET', url: '/api/vertical-beta/content' });
-    expect(response.statusCode).toBe(200);
-    const payload = response.json() as typeof VERTICAL_BETA_PLAYER_CONTENT;
-    expect(payload).toEqual(VERTICAL_BETA_PLAYER_CONTENT);
+    const [contentResponse, contextResponse] = await Promise.all([
+      app.inject({ method: 'GET', url: '/api/vertical-beta/content' }),
+      app.inject({ method: 'GET', url: '/api/vertical-beta/context' })
+    ]);
+    expect(contentResponse.statusCode).toBe(200);
+    expect(contextResponse.statusCode).toBe(200);
+    expect(contentResponse.json()).toEqual(VERTICAL_BETA_PLAYER_CONTENT);
+    expect(contextResponse.json()).toEqual(context);
 
-    const serialized = JSON.stringify(payload);
+    const serialized = contentResponse.body;
     for (const historicalId of HISTORICAL_RUNTIME_IDS) {
       expect(serialized).not.toContain(historicalId);
     }
+
+    const drifted = structuredClone(context) as unknown as Record<string, unknown>;
+    drifted.randomness = 'seeded';
+    expect(() =>
+      buildApp({ context: drifted as unknown as VerticalBetaRuntimeContext })
+    ).toThrowError(expect.objectContaining({ code: 'invalid-runtime-context' }));
   });
 
-  it('replays the prepared reference twice through HTTP and matches the canonical fixture exactly', async () => {
+  it('replays the prepared reference twice through HTTP under the same fixed context', async () => {
     const [context, fixture] = await Promise.all([
-      readJson<ReferenceContext>('reference-context.json'),
+      readJson<VerticalBetaRuntimeContext>('reference-context.json'),
       readJson<JsonSession>(PREPARED_PLAN.fixture)
     ]);
-    const first = await playThroughHttp(PREPARED_PLAN);
-    const repeated = await playThroughHttp(PREPARED_PLAN);
+    const first = await playThroughHttp(PREPARED_PLAN, context);
+    const repeated = await playThroughHttp(PREPARED_PLAN, context);
 
     expectAcceptedRun(first, fixture, context, PREPARED_PLAN);
     expect(materializeCanonicalSession(repeated, fixture.id)).toEqual(fixture);
+    expect(repeated.initial.context).toEqual(first.initial.context);
 
     const summary = first.sceneSnapshots.get(
       'transition-summary-prevention'
@@ -359,16 +379,17 @@ describe('M2 integral acceptance gate', () => {
     expect(fixture.inheritedState.attackOpportunity).toBe(66);
   });
 
-  it('replays the vulnerable reference twice through HTTP and matches the canonical fixture exactly', async () => {
+  it('replays the vulnerable reference twice through HTTP under the same fixed context', async () => {
     const [context, fixture] = await Promise.all([
-      readJson<ReferenceContext>('reference-context.json'),
+      readJson<VerticalBetaRuntimeContext>('reference-context.json'),
       readJson<JsonSession>(VULNERABLE_PLAN.fixture)
     ]);
-    const first = await playThroughHttp(VULNERABLE_PLAN);
-    const repeated = await playThroughHttp(VULNERABLE_PLAN);
+    const first = await playThroughHttp(VULNERABLE_PLAN, context);
+    const repeated = await playThroughHttp(VULNERABLE_PLAN, context);
 
     expectAcceptedRun(first, fixture, context, VULNERABLE_PLAN);
     expect(materializeCanonicalSession(repeated, fixture.id)).toEqual(fixture);
+    expect(repeated.initial.context).toEqual(first.initial.context);
 
     const access = first.sceneSnapshots.get(
       'crisis-decision-access-blockage'
