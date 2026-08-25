@@ -1,7 +1,33 @@
 import type {
   PresentedSceneVisualModel,
-  PresentedVisualElement
+  PresentedVisualElement,
+  VisualTemplateId
 } from '../../application/vertical-beta/vertical-beta-visual-presenter.js';
+
+const REQUIRED_ELEMENT_IDS: Readonly<Partial<Record<VisualTemplateId, readonly string[]>>> = {
+  territory: [
+    'territory-residues',
+    'territory-continuity',
+    'territory-road',
+    'territory-grazing',
+    'territory-professional-line'
+  ],
+  housing: [
+    'housing-vertical-fuel',
+    'housing-canopy',
+    'housing-local-access',
+    'housing-home'
+  ],
+  crisis: [
+    'crisis-road',
+    'crisis-retreat',
+    'crisis-position',
+    'crisis-pressure',
+    'crisis-attack-window',
+    'crisis-crown',
+    'crisis-capacity'
+  ]
+};
 
 function escapeHtml(value: string): string {
   return value
@@ -10,6 +36,18 @@ function escapeHtml(value: string): string {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
+}
+
+function assertCompleteVisualModel(model: PresentedSceneVisualModel): void {
+  const expected = REQUIRED_ELEMENT_IDS[model.templateId];
+  if (expected === undefined) return;
+  const actual = new Set(model.elements.map(({ id }) => id));
+  const missing = expected.filter((id) => !actual.has(id));
+  if (missing.length > 0) {
+    throw new Error(
+      `Incomplete ${model.templateId} visual model for ${model.sceneId}: missing ${missing.join(', ')}.`
+    );
+  }
 }
 
 function byId(model: PresentedSceneVisualModel, id: string): PresentedVisualElement | undefined {
@@ -166,6 +204,7 @@ function dimensionSummary(model: PresentedSceneVisualModel): string {
 }
 
 export function renderSceneVisual(model: PresentedSceneVisualModel): string {
+  assertCompleteVisualModel(model);
   const visual =
     model.templateId === 'territory'
       ? territorySvg(model)
