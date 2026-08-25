@@ -446,7 +446,7 @@ export function renderPrototypePage(): string {
 
       <footer class="session-footer" aria-label="Resumen de la partida">
         <div class="footer-cell"><strong>¿Por qué importa?</strong><p>La prevención modifica el territorio. El territorio condiciona las opciones disponibles durante el incendio.</p></div>
-        <div class="footer-cell"><strong>Tu recorrido</strong><p id="progress-copy">0 nodos completados</p><div class="progress-line" aria-hidden="true"><span id="progress-bar" style="width:0%"></span></div><div class="meta-row"><span class="chip accent" id="scene-type">briefing</span><span class="chip" id="branch-chip">Ruta pendiente</span><span class="chip" id="session-status">Partida activa</span></div></div>
+        <div class="footer-cell"><strong>Tu recorrido</strong><p id="progress-copy">0 nodos completados</p><div class="progress-line" aria-hidden="true"><span id="progress-bar" style="width:0%"></span></div><div class="meta-row"><span class="chip accent" id="scene-type">Misión</span><span class="chip" id="branch-chip">Ruta pendiente</span><span class="chip" id="session-status">Partida activa</span></div></div>
         <div class="footer-cell"><strong>Últimas decisiones</strong><ol class="decision-history" id="decision-history"><li>Aún no hay decisiones.</li></ol></div>
       </footer>
     </div>
@@ -565,6 +565,20 @@ export function renderPrototypePage(): string {
         result: renderResult
       };
 
+      const SCENE_TYPE_LABELS = {
+        briefing: 'Misión',
+        inspection: 'Inspección',
+        summary: 'Balance',
+        decision: 'Decisión',
+        router: 'Transición',
+        result: 'Resultado'
+      };
+
+      const BRANCH_LABELS = {
+        prepared: 'preparada',
+        vulnerable: 'vulnerable'
+      };
+
       function focusAction(actionId) {
         const button = Array.from(document.querySelectorAll('.action-button')).find(function (candidate) { return candidate.dataset.actionId === actionId; });
         if (!button) return;
@@ -605,10 +619,13 @@ export function renderPrototypePage(): string {
         const activeStage = stageForScene(currentView.session.currentSceneId);
         document.querySelectorAll('.stage').forEach(function (stage, index) {
           const stageNumber = index + 1;
-          stage.classList.toggle('complete', stageNumber < activeStage || currentView.session.status === 'completed');
-          stage.classList.toggle('active', stageNumber === activeStage && currentView.session.status !== 'completed');
+          const completed = stageNumber < activeStage || currentView.session.status === 'completed';
+          const active = stageNumber === activeStage && currentView.session.status !== 'completed';
+          stage.classList.toggle('complete', completed);
+          stage.classList.toggle('active', active);
+          if (active) stage.setAttribute('aria-current', 'step'); else stage.removeAttribute('aria-current');
           const dot = stage.querySelector('.stage-dot');
-          if (dot) dot.textContent = stageNumber < activeStage || currentView.session.status === 'completed' ? '✓' : String(stageNumber);
+          if (dot) dot.textContent = completed ? '✓' : String(stageNumber);
         });
       }
 
@@ -616,8 +633,8 @@ export function renderPrototypePage(): string {
         const session = currentView.session;
         document.getElementById('progress-copy').textContent = session.completedSceneIds.length + ' nodos completados';
         document.getElementById('progress-bar').style.width = Math.min(100, session.completedSceneIds.length * 10) + '%';
-        document.getElementById('scene-type').textContent = currentView.scene.type;
-        document.getElementById('branch-chip').textContent = session.branch ? 'Ruta ' + session.branch : 'Ruta pendiente';
+        document.getElementById('scene-type').textContent = SCENE_TYPE_LABELS[currentView.scene.type] || 'Escena';
+        document.getElementById('branch-chip').textContent = session.branch ? 'Ruta ' + (BRANCH_LABELS[session.branch] || session.branch) : 'Ruta pendiente';
         document.getElementById('session-status').textContent = session.status === 'completed' ? 'Partida completada' : 'Partida activa';
         const decisions = session.decisionReview.slice(-3);
         document.getElementById('decision-history').innerHTML = decisions.length === 0 ? '<li>Aún no hay decisiones.</li>' : decisions.map(function (decision) { return '<li>' + escapeHtml(decision.label) + '</li>'; }).join('');
