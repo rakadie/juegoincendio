@@ -38,14 +38,38 @@ describe('Vertical Beta 1 canonical i18n', () => {
       expect(missingSceneResult.errors.join(' ')).toContain('12 canonical scene IDs');
     }
 
-    const missingAction = structuredClone(VERTICAL_BETA_I18N_ES) as unknown as Record<string, any>;
-    missingAction.scenes['crisis-decision-crown-fire'].actions[
+    const blankAction = structuredClone(VERTICAL_BETA_I18N_ES) as unknown as Record<string, any>;
+    blankAction.scenes['crisis-decision-crown-fire'].actions[
       'replegar-ante-fuego-de-copas'
     ].label = '';
+    const blankActionResult = validateVerticalBetaI18nCatalog(blankAction);
+    expect(blankActionResult.valid).toBe(false);
+    if (!blankActionResult.valid) {
+      expect(blankActionResult.errors.join(' ')).toContain('non-empty translated string');
+    }
+  });
+
+  it('requires the exact official actions and hotspots for every scene', () => {
+    const missingAction = structuredClone(VERTICAL_BETA_I18N_ES) as unknown as Record<string, any>;
+    delete missingAction.scenes['crisis-decision-crown-fire'].actions[
+      'replegar-ante-fuego-de-copas'
+    ];
     const missingActionResult = validateVerticalBetaI18nCatalog(missingAction);
     expect(missingActionResult.valid).toBe(false);
     if (!missingActionResult.valid) {
-      expect(missingActionResult.errors.join(' ')).toContain('non-empty translated string');
+      expect(missingActionResult.errors.join(' ')).toContain(
+        'replegar-ante-fuego-de-copas'
+      );
+    }
+
+    const missingHotspot = structuredClone(VERTICAL_BETA_I18N_ES) as unknown as Record<string, any>;
+    delete missingHotspot.scenes['prevention-inspection-territory-fuel'].hotspots[
+      'restos-poda-acumulados'
+    ];
+    const missingHotspotResult = validateVerticalBetaI18nCatalog(missingHotspot);
+    expect(missingHotspotResult.valid).toBe(false);
+    if (!missingHotspotResult.valid) {
+      expect(missingHotspotResult.errors.join(' ')).toContain('restos-poda-acumulados');
     }
   });
 
