@@ -10,9 +10,14 @@ import {
   VERTICAL_BETA_REFERENCE_CONTEXT,
   type VerticalBetaRuntimeContext
 } from '../../application/vertical-beta/vertical-beta-runtime-context.js';
+import {
+  presentSceneVisualModel,
+  type PresentedSceneVisualModel
+} from '../../application/vertical-beta/vertical-beta-visual-presenter.js';
 import { VERTICAL_BETA_PLAYER_CONTENT } from '../../content/vertical-beta-player-content.js';
 import { registerImageRoutes } from './image-routes.js';
 import { renderPrototypePage } from './prototype-page.js';
+import { renderSceneVisual } from './scene-visual-renderer.js';
 
 export interface BuildAppOptions {
   readonly context?: VerticalBetaRuntimeContext;
@@ -20,6 +25,8 @@ export interface BuildAppOptions {
 
 export interface VerticalBetaHttpView extends VerticalBetaApplicationView {
   readonly context: VerticalBetaRuntimeContext;
+  readonly visual: PresentedSceneVisualModel;
+  readonly visualMarkup: string;
 }
 
 export function buildApp(options: BuildAppOptions = {}): FastifyInstance {
@@ -28,10 +35,15 @@ export function buildApp(options: BuildAppOptions = {}): FastifyInstance {
   );
   const verticalBeta = new VerticalBetaApplicationService();
   const app = Fastify();
-  const present = (view: VerticalBetaApplicationView): VerticalBetaHttpView => ({
-    context,
-    ...view
-  });
+  const present = (view: VerticalBetaApplicationView): VerticalBetaHttpView => {
+    const visual = presentSceneVisualModel(view.session);
+    return {
+      context,
+      ...view,
+      visual,
+      visualMarkup: renderSceneVisual(visual)
+    };
+  };
 
   app.setErrorHandler((error, _request, reply) => {
     const isKnownDomainError = error instanceof Error && 'code' in error;
