@@ -1,19 +1,38 @@
 import type { Scenario } from '../domain/types/scenario.js';
-import { os011CorteCarreteraAcceso } from './scenarios/operaciones/os-011-corte-carretera-acceso.js';
-import { os025CortafuegoEmergencia } from './scenarios/operaciones/os-025-cortafuego-emergencia.js';
-import { os026DefensaOperativaNucleoViviendas } from './scenarios/operaciones/os-026-defensa-operativa-nucleo-viviendas.js';
-import { os027FuegoEnBarranco } from './scenarios/operaciones/os-027-fuego-en-barranco.js';
-import { os030FuegoDeCopas } from './scenarios/operaciones/os-030-fuego-de-copas.js';
+import { OFFICIAL_OPERATIONAL_SCENES } from './official-operational-scenes.js';
 
 /**
- * Historical source objects reused by the five canonical operational scenes.
- * This module imports only the official subset; it must never depend on the
- * editorial scenario index.
+ * Canonical Scenario projections exposed by the player payload.
+ * Historical source IDs remain only in the editorial library and archive.
  */
-export const OFFICIAL_SOURCE_SCENARIOS = [
-  os011CorteCarreteraAcceso,
-  os025CortafuegoEmergencia,
-  os026DefensaOperativaNucleoViviendas,
-  os027FuegoEnBarranco,
-  os030FuegoDeCopas
-] as const satisfies readonly Scenario[];
+export const OFFICIAL_SOURCE_SCENARIOS = OFFICIAL_OPERATIONAL_SCENES.map(
+  (scene): Scenario => ({
+    id: scene.id,
+    title: scene.title,
+    category: 'operaciones',
+    phase: 'crisis',
+    block: 'vertical-beta-1',
+    type: 'question',
+    difficulty: scene.difficulty,
+    estimatedTime: '2 min',
+    tags: ['vertical-beta-1', 'canonical'],
+    status: 'available',
+    context: scene.context,
+    question: scene.context,
+    briefing: scene.briefing,
+    requirements: null,
+    options: scene.actions.map((action) => ({
+      id: action.id,
+      text: action.description,
+      evaluation: action.evaluation,
+      rationale: action.feedback,
+      shortFeedback: action.feedback,
+      impacts: [...action.effects],
+      flags: [...action.flags]
+    })),
+    unlocks: [],
+    sourceNotes: [
+      `Canonical Vertical Beta 1 scene ${scene.id}; historical correspondence is documentation-only.`
+    ]
+  })
+) as readonly Scenario[];
