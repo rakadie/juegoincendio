@@ -249,9 +249,12 @@ describe('Vertical Beta 1 complete domain flow', () => {
     expect(Object.keys(VERTICAL_BETA_RESULT_VARIANTS)).toEqual(['contained', 'overwhelmed']);
 
     const app = buildApp();
-    const response = await app.inject({ method: 'GET', url: '/game-content/data' });
+    const response = await app.inject({
+      method: 'GET',
+      url: '/api/vertical-beta/content'
+    });
     expect(response.statusCode).toBe(200);
-    expect(response.json().verticalBetaFlowContent).toEqual(VERTICAL_BETA_DECLARATIVE_CONTENT);
+    expect(response.json().declarativeContent).toEqual(VERTICAL_BETA_DECLARATIVE_CONTENT);
     await app.close();
   });
 });
