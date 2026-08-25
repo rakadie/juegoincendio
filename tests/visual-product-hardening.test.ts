@@ -1,6 +1,11 @@
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { VerticalBetaApplicationService } from '../src/application/vertical-beta/vertical-beta-application-service.js';
 import { presentSceneVisualModel } from '../src/application/vertical-beta/vertical-beta-visual-presenter.js';
+import { renderSceneVisual } from '../src/interfaces/http/scene-visual-renderer.js';
+
+const ROOT = fileURLToPath(new URL('../', import.meta.url));
 
 function applyPrevention(
   service: VerticalBetaApplicationService,
@@ -65,5 +70,49 @@ describe('M3 product hardening', () => {
     expect(service.view(id).scene.id).toBe('crisis-decision-crown-fire');
     expect(model.elements.find(({ id }) => id === 'crisis-capacity')?.state).toBe('exceeded');
     expect(model.elements.find(({ id }) => id === 'crisis-crown')?.state).toBe('crownFire');
+  });
+
+  it('explains a critical inherited dimension with omitted treatments', () => {
+    const service = new VerticalBetaApplicationService();
+    const id = 'visual-omitted-causes';
+    applyPrevention(
+      service,
+      id,
+      ['crear-discontinuidades-vegetales', 'limpiar-margenes-caminos', 'evaluar-quema-tecnica'],
+      ['separar-copas', 'despejar-accesos']
+    );
+
+    const model = presentSceneVisualModel(service.view(id).session);
+    const fuelLoad = model.dimensions.find(({ id }) => id === 'fuelLoad');
+    expect(fuelLoad?.state).toBe('critical');
+    expect(fuelLoad?.causeActionLabels).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('Sin tratar: Gestionar restos de poda'),
+        expect.stringContaining('Sin tratar: Ejecutar pastoreo preventivo'),
+        expect.stringContaining('Sin tratar: Podar ramas y gestionar la biomasa')
+      ])
+    );
+  });
+
+  it('does not render an empty visual canvas for summary-only markup', () => {
+    const service = new VerticalBetaApplicationService();
+    const id = 'visual-summary-no-canvas';
+    applyPrevention(
+      service,
+      id,
+      ['gestionar-restos-poda', 'crear-discontinuidades-vegetales', 'limpiar-margenes-caminos'],
+      ['podar-ramas-y-retirar-seco', 'despejar-accesos']
+    );
+
+    const markup = renderSceneVisual(presentSceneVisualModel(service.view(id).session));
+    expect(markup).toContain('visual-dimension-summary');
+    expect(markup).not.toContain('visual-canvas');
+  });
+
+  it('honours reduced motion in the visual shortcut scroll behaviour and has no invalid CSS state', async () => {
+    const source = await readFile(`${ROOT}src/interfaces/http/prototype-page.ts`, 'utf8');
+    expect(source).toContain("matchMedia('(prefers-reduced-motion: reduce)')");
+    expect(source).toContain("behavior: reducedMotion ? 'auto' : 'smooth'");
+    expect(source).not.toContain('state-conditionned');
   });
 });
