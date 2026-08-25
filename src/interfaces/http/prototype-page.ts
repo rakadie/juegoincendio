@@ -181,7 +181,7 @@ export function renderPrototypePage(): string {
       .state-favorable .visual-status-symbol { border-radius: 4px; transform: rotate(45deg); }
       .state-blocked .visual-status-symbol, .state-unavailable .visual-status-symbol, .state-unsustainable .visual-status-symbol,
       .state-exceeded .visual-status-symbol, .state-critical .visual-status-symbol { border-radius: 0; transform: rotate(45deg); }
-      .state-constrained .visual-status-symbol, .state-limited .visual-status-symbol, .state-conditionned .visual-status-symbol,
+      .state-constrained .visual-status-symbol, .state-limited .visual-status-symbol,
       .state-conditioned .visual-status-symbol { border-style: dashed; }
 
       .visual-dimension-summary {
@@ -422,7 +422,10 @@ export function renderPrototypePage(): string {
         if (button) {
           button.focus();
           const card = button.closest('.action-card');
-          if (card) card.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          if (card) {
+            const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            card.scrollIntoView({ block: 'nearest', behavior: reducedMotion ? 'auto' : 'smooth' });
+          }
         }
       }
 
