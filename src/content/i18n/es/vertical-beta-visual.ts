@@ -37,6 +37,7 @@ export const VERTICAL_BETA_VISUAL_COPY_ES = {
     unsustainable: 'no sostenible',
     surface: 'presión controlable',
     severe: 'presión severa',
+    noCrownFire: 'sin escalada a copas',
     crownRisk: 'riesgo de copas',
     crownFire: 'fuego de copas',
     withinCapacity: 'dentro de capacidad',
