@@ -9,6 +9,7 @@
 
 - Producto y alcance: [docs/product/vision-and-scope.md](product/vision-and-scope.md)
 - Catálogo canónico de la Vertical Beta 1: [docs/product/vertical-beta-1-catalog.md](product/vertical-beta-1-catalog.md)
+- Migración atómica de IDs e i18n: [docs/product/vertical-beta-1-id-i18n-migration.md](product/vertical-beta-1-id-i18n-migration.md)
 - Tronco común y fases del grafo: [docs/product/vertical-beta-1-common-trunk.md](product/vertical-beta-1-common-trunk.md)
 - Ramas y convergencias de crisis: [docs/product/vertical-beta-1-crisis-branches.md](product/vertical-beta-1-crisis-branches.md)
 - Condiciones y transiciones del grafo: [docs/product/vertical-beta-1-graph-transitions.md](product/vertical-beta-1-graph-transitions.md)
