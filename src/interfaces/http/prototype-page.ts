@@ -32,6 +32,10 @@ export function renderPrototypePage(): string {
       }
 
       button { font: inherit; }
+      button:focus-visible, [data-focus-action-id]:focus-visible, summary:focus-visible {
+        outline: 3px solid var(--primary);
+        outline-offset: 3px;
+      }
       .shell { min-height: 100vh; display: grid; grid-template-columns: 260px minmax(0, 1fr); }
       aside {
         padding: 24px 20px;
@@ -58,7 +62,7 @@ export function renderPrototypePage(): string {
       .history-card { margin-top: auto; }
       .history-card ol { margin: 10px 0 0; padding-left: 20px; color: var(--muted); font-size: .82rem; line-height: 1.5; }
 
-      main { width: 100%; max-width: 1160px; margin: 0 auto; padding: 28px clamp(18px, 4vw, 54px) 48px; }
+      main { width: 100%; max-width: 1240px; margin: 0 auto; padding: 28px clamp(18px, 4vw, 54px) 48px; }
       header { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 22px; }
       .status-row { display: flex; flex-wrap: wrap; gap: 8px; }
       .chip { padding: 7px 11px; border: 1px solid var(--stroke); border-radius: 999px; color: var(--muted); font-size: .78rem; }
@@ -88,6 +92,116 @@ export function renderPrototypePage(): string {
       p { line-height: 1.6; }
       .lead { max-width: 760px; color: #d9e0da; font-size: 1.08rem; }
       .objective { margin: 24px 0; padding: 16px 18px; border-left: 3px solid var(--accent); background: rgba(15, 26, 20, .55); }
+
+      .visual-scene {
+        margin: 28px 0;
+        display: grid;
+        gap: 14px;
+      }
+      .visual-canvas {
+        min-width: 0;
+        border: 1px solid var(--stroke);
+        border-radius: 18px;
+        overflow: hidden;
+        background: #111a15;
+      }
+      .territory-svg { display: block; width: 100%; height: auto; max-height: 560px; }
+      .visual-sky { fill: #24372d; }
+      .visual-sky.crisis { fill: #342b24; }
+      .visual-hill-back { fill: #355645; }
+      .visual-hill-front { fill: #294536; }
+      .visual-ravine { fill: #1c3026; stroke: #607c6d; stroke-width: 3; }
+      .visual-ravine.crisis { fill: #2a2921; }
+      .visual-road { fill: none; stroke: #d7c69d; stroke-width: 24; stroke-linecap: round; }
+      .visual-road.local { stroke-width: 32; }
+      .visual-vegetation-band { fill: none; stroke: #7aa25c; stroke-width: 28; stroke-linecap: round; }
+      .visual-vegetation-band.secondary { stroke-width: 18; opacity: .75; }
+      .visual-residues { fill: none; stroke: #c28a58; stroke-width: 9; stroke-linecap: round; }
+      .visual-grazing { fill: #7c8852; stroke: #bdc985; stroke-width: 3; }
+      .visual-professional-line, .visual-attack-window { fill: none; stroke: #f0c86b; stroke-width: 10; stroke-dasharray: 18 12; }
+      .visual-line-marker { fill: #f0c86b; }
+      .visual-house { fill: #b98e6c; stroke: #f0dfc5; stroke-width: 4; }
+      .visual-door { fill: #574236; }
+      .visual-window { fill: #b8dbe0; }
+      .visual-trunk { fill: none; stroke: #72543a; stroke-width: 14; }
+      .visual-branches { fill: none; stroke: #837055; stroke-width: 10; stroke-linecap: round; }
+      .visual-canopy { fill: #466a47; stroke: #82a76e; stroke-width: 4; }
+      .visual-engine { fill: #b64d42; stroke: #f2e8dd; stroke-width: 3; }
+      .visual-engine + circle, .visual-engine ~ circle { fill: #171b18; }
+      .visual-retreat { fill: none; stroke: #68c9b1; stroke-width: 11; stroke-dasharray: 15 10; }
+      .visual-arrow { fill: none; stroke: #68c9b1; stroke-width: 8; }
+      .visual-position { fill: rgba(98,196,173,.18); stroke: #62c4ad; stroke-width: 5; }
+      .visual-position + path { stroke: #d9fff5; stroke-width: 5; }
+      .visual-fire { fill: #e66f4e; stroke: #ffd166; stroke-width: 5; }
+      .visual-label-group text { fill: #d4dfd8; font-size: 17px; font-weight: 700; paint-order: stroke; stroke: #172019; stroke-width: 5; }
+      .visual-hotspot { cursor: pointer; }
+      .visual-hotspot:hover { filter: brightness(1.16); }
+
+      .state-treated .visual-residues { opacity: .18; stroke-dasharray: 8 18; }
+      .state-broken .visual-vegetation-band, .state-broken .visual-canopy { stroke-dasharray: 20 28; opacity: .58; }
+      .state-reduced .visual-vegetation-band, .state-reduced .visual-canopy, .state-reduced .visual-branches { opacity: .48; stroke-dasharray: 25 16; }
+      .state-constrained .visual-road, .state-limited .visual-retreat { stroke-dasharray: 24 19; opacity: .68; }
+      .state-blocked .visual-road { stroke: #8b645d; stroke-dasharray: 12 21; }
+      .state-unevaluated .visual-professional-line { opacity: .3; stroke-dasharray: 5 22; }
+      .state-unavailable .visual-attack-window, .state-unsustainable .visual-position { opacity: .28; stroke-dasharray: 8 18; }
+      .state-severe .visual-fire { transform-origin: 585px 340px; transform: scale(1.16); }
+      .state-crownRisk .visual-canopy { stroke: #d69a5b; stroke-width: 8; }
+      .state-crownFire .visual-canopy { fill: #7f483a; stroke: #f3a348; stroke-width: 10; }
+
+      .visual-status-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 9px;
+      }
+      .visual-status {
+        min-height: 58px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: 1px solid var(--stroke);
+        border-radius: 12px;
+        padding: 10px 12px;
+        text-align: left;
+        color: var(--text);
+        background: #152019;
+      }
+      .visual-status:not(:disabled) { cursor: pointer; }
+      .visual-status:disabled { opacity: 1; cursor: default; }
+      .visual-status span:last-child { display: grid; gap: 2px; }
+      .visual-status small, .visual-dimension small { color: var(--muted); }
+      .visual-status-symbol {
+        width: 18px;
+        height: 18px;
+        flex: 0 0 18px;
+        border: 2px solid currentColor;
+        border-radius: 50%;
+      }
+      .state-clear .visual-status-symbol, .state-treated .visual-status-symbol, .state-broken .visual-status-symbol,
+      .state-viable .visual-status-symbol, .state-sustainable .visual-status-symbol, .state-withinCapacity .visual-status-symbol,
+      .state-favorable .visual-status-symbol { border-radius: 4px; transform: rotate(45deg); }
+      .state-blocked .visual-status-symbol, .state-unavailable .visual-status-symbol, .state-unsustainable .visual-status-symbol,
+      .state-exceeded .visual-status-symbol, .state-critical .visual-status-symbol { border-radius: 0; transform: rotate(45deg); }
+      .state-constrained .visual-status-symbol, .state-limited .visual-status-symbol, .state-conditionned .visual-status-symbol,
+      .state-conditioned .visual-status-symbol { border-style: dashed; }
+
+      .visual-dimension-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 10px;
+      }
+      .visual-dimension {
+        display: flex;
+        gap: 12px;
+        min-height: 116px;
+        padding: 15px;
+        border: 1px solid var(--stroke);
+        border-radius: 13px;
+        background: rgba(12,20,15,.58);
+      }
+      .visual-dimension > div { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+      .visual-dimension-state { font-size: 1.25rem; font-weight: 850; text-transform: capitalize; }
+      .visual-dimension details { margin-top: auto; font-size: .8rem; }
+      .visual-dimension summary { color: var(--muted); }
 
       .actions, .relations, .dimension-grid { display: grid; gap: 12px; margin-top: 24px; }
       .actions { grid-template-columns: repeat(auto-fit, minmax(235px, 1fr)); }
@@ -123,6 +237,8 @@ export function renderPrototypePage(): string {
       .router-mark { width: 72px; height: 72px; display: grid; place-items: center; margin-bottom: 22px; border-radius: 50%; color: #10231d; background: var(--accent); font-size: 2rem; }
       .result-contained { border-color: #4d8e7c; }
       .result-overwhelmed { border-color: #9f665b; }
+      .relation { position: relative; padding-left: 48px; }
+      .relation::before { content: '→'; position: absolute; left: 17px; top: 16px; font-weight: 900; color: var(--accent); }
       .relation.decisive { border-left: 4px solid var(--primary); }
       .relation p { margin-bottom: 0; color: var(--muted); }
       .cause-list { color: #dce6df; font-size: .88rem; }
@@ -137,6 +253,12 @@ export function renderPrototypePage(): string {
         .history-card { display: none; }
         main { padding-top: 18px; }
         .scene { min-height: auto; }
+        .visual-status-list, .visual-dimension-summary { grid-template-columns: 1fr; }
+        .territory-svg { min-height: 320px; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .001ms !important; animation-duration: .001ms !important; animation-iteration-count: 1 !important; }
       }
     </style>
   </head>
@@ -212,12 +334,16 @@ export function renderPrototypePage(): string {
         }
       }
 
+      function visualMarkup() {
+        return currentView && currentView.visualMarkup ? currentView.visualMarkup : '';
+      }
+
       function actionCards(scene) {
         return '<div class="actions">' + scene.actions.map(function (action) {
           const selected = action.selected ? ' selected' : '';
           const disabled = !action.available ? ' disabled' : '';
           const label = action.selected ? 'Seleccionada' : 'Elegir';
-          return '<article class="action-card' + selected + '">' +
+          return '<article class="action-card' + selected + '" data-action-card-id="' + escapeHtml(action.id) + '">' +
             '<h3>' + escapeHtml(action.label) + '</h3>' +
             '<p>' + escapeHtml(action.description) + '</p>' +
             (action.unavailableReason ? '<small>' + escapeHtml(action.unavailableReason) + '</small>' : '') +
@@ -243,23 +369,20 @@ export function renderPrototypePage(): string {
         return '<section class="scene"><p class="eyebrow">Inspección preventiva · ' + scene.selectedCount + '/' + scene.actionQuota + '</p>' +
           '<h2>' + escapeHtml(scene.title) + '</h2><p class="lead">' + escapeHtml(scene.body) + '</p>' +
           '<div class="objective"><strong>Objetivo</strong><br>' + escapeHtml(scene.objective) + '</div>' +
-          actionCards(scene) + advanceButton(scene) + '</section>';
+          visualMarkup() + actionCards(scene) + advanceButton(scene) + '</section>';
       }
 
       function renderSummary(scene) {
         return '<section class="scene"><p class="eyebrow">Lo que heredará la emergencia</p>' +
           '<h2>' + escapeHtml(scene.title) + '</h2><p class="lead">' + escapeHtml(scene.body) + '</p>' +
-          '<div class="dimension-grid">' + scene.dimensions.map(function (dimension) {
-            return '<article class="dimension"><span class="muted">' + escapeHtml(dimension.label) + '</span>' +
-              '<strong>' + dimension.value + '<small>/100</small></strong>' +
-              '<div class="meter"><span style="width:' + dimension.value + '%"></span></div></article>';
-          }).join('') + '</div>' + advanceButton(scene) + '</section>';
+          '<div class="objective"><strong>Puente causal</strong><br>Lo que trataste en prevención define las condiciones con las que empieza la emergencia.</div>' +
+          visualMarkup() + advanceButton(scene) + '</section>';
       }
 
       function renderDecision(scene) {
         return '<section class="scene"><p class="eyebrow">Decisión operativa' + (scene.difficulty ? ' · ' + escapeHtml(scene.difficulty) : '') + '</p>' +
           '<h2>' + escapeHtml(scene.title) + '</h2><p class="lead">' + escapeHtml(scene.body) + '</p>' +
-          '<div class="objective">' + escapeHtml(scene.context) + '</div>' + actionCards(scene) +
+          '<div class="objective">' + escapeHtml(scene.context) + '</div>' + visualMarkup() + actionCards(scene) +
           (scene.feedback ? '<div class="feedback"><strong>Consecuencia</strong><br>' + escapeHtml(scene.feedback) + '</div>' : '') +
           advanceButton(scene) + '</section>';
       }
@@ -267,15 +390,15 @@ export function renderPrototypePage(): string {
       function renderRouter(scene) {
         return '<section class="scene"><div class="router-mark" aria-hidden="true">↝</div>' +
           '<p class="eyebrow">Router causal automático</p><h2>' + escapeHtml(scene.title) + '</h2>' +
-          '<p class="lead">' + escapeHtml(scene.body) + '</p>' + advanceButton(scene) + '</section>';
+          '<p class="lead">' + escapeHtml(scene.body) + '</p>' + visualMarkup() + advanceButton(scene) + '</section>';
       }
 
       function renderResult(scene) {
         return '<section class="scene result-' + escapeHtml(scene.variant) + '"><p class="eyebrow">Informe causal · ' + escapeHtml(scene.variant) + '</p>' +
-          '<h2>' + escapeHtml(scene.title) + '</h2><p class="lead">' + escapeHtml(scene.body) + '</p>' +
-          '<div class="relations">' + scene.relations.map(function (relation) {
+          '<h2>' + escapeHtml(scene.title) + '</h2><p class="lead">' + escapeHtml(scene.body) + '</p>' + visualMarkup() +
+          '<div class="relations" aria-label="Cadenas causales de la partida">' + scene.relations.map(function (relation) {
             return '<article class="relation' + (relation.branchDecisive ? ' decisive' : '') + '"><h3>' + escapeHtml(relation.title) + '</h3>' +
-              '<div class="cause-list">Prevención: ' + relation.causeActionLabels.map(escapeHtml).join(' · ') + '</div>' +
+              '<div class="cause-list">Prevención → ' + relation.causeActionLabels.map(escapeHtml).join(' · ') + '</div>' +
               '<p>' + escapeHtml(relation.effect) + '</p></article>';
           }).join('') + '</div><div class="feedback">' + escapeHtml(scene.closing) + '</div>' +
           '<details><summary>Revisar mis decisiones preventivas</summary><ul>' +
@@ -292,6 +415,17 @@ export function renderPrototypePage(): string {
         result: renderResult
       };
 
+      function focusAction(actionId) {
+        const button = Array.from(document.querySelectorAll('.action-button')).find(function (candidate) {
+          return candidate.dataset.actionId === actionId;
+        });
+        if (button) {
+          button.focus();
+          const card = button.closest('.action-card');
+          if (card) card.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+      }
+
       function wireCommands() {
         document.querySelectorAll('.action-button').forEach(function (button) {
           button.addEventListener('click', function () {
@@ -300,6 +434,12 @@ export function renderPrototypePage(): string {
               method: 'POST',
               body: JSON.stringify({ actionId: button.dataset.actionId })
             });
+          });
+        });
+        document.querySelectorAll('[data-focus-action-id]').forEach(function (element) {
+          element.addEventListener('click', function (event) {
+            event.preventDefault();
+            focusAction(element.dataset.focusActionId);
           });
         });
         const advance = document.getElementById('advance-button');
