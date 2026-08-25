@@ -1,3 +1,5 @@
+import { VERTICAL_BETA_I18N_ES } from '../../content/i18n/es/vertical-beta.js';
+import { requireVerticalBetaSceneMessages } from '../../content/i18n/vertical-beta-i18n.js';
 import {
   getOfficialPreventionInspection,
   OFFICIAL_PREVENTION_INSPECTIONS,
@@ -11,6 +13,7 @@ import {
   VERTICAL_BETA_DIMENSION_LABELS,
   VERTICAL_BETA_FIRST_ALERT,
   VERTICAL_BETA_PREVENTION_SUMMARY,
+  VERTICAL_BETA_RESULT_ADVANCE_LABEL,
   VERTICAL_BETA_RESULT_VARIANTS
 } from '../../content/vertical-beta-flow-content.js';
 import {
@@ -189,7 +192,10 @@ function actionLabel(actionId: string): string {
   if (operational !== undefined) return operational;
   const firstAlert = VERTICAL_BETA_FIRST_ALERT.actions.find(({ id }) => id === actionId)?.label;
   if (firstAlert !== undefined) return firstAlert;
-  return actionId.replaceAll('-', ' ');
+  throw new VerticalBetaApplicationError(
+    'unsupported-command',
+    `Missing official translation for action ${actionId}.`
+  );
 }
 
 function sessionView(session: GameSession): VerticalBetaSessionView {
@@ -225,8 +231,12 @@ function selectedIds(session: GameSession, sceneId: CanonicalSceneId): Set<strin
   );
 }
 
-function presentInspection(session: GameSession, sceneId: PreventionInspectionSceneId): PresentedInspectionScene {
+function presentInspection(
+  session: GameSession,
+  sceneId: PreventionInspectionSceneId
+): PresentedInspectionScene {
   const inspection = getOfficialPreventionInspection(sceneId);
+  const copy = requireVerticalBetaSceneMessages(VERTICAL_BETA_I18N_ES, sceneId);
   const selected = selectedIds(session, sceneId);
   return {
     id: sceneId,
@@ -244,15 +254,13 @@ function presentInspection(session: GameSession, sceneId: PreventionInspectionSc
       available: !selected.has(action.id) && selected.size < inspection.maxActions
     })),
     canAdvance: selected.size === inspection.maxActions,
-    advanceLabel:
-      sceneId === 'prevention-inspection-territory-fuel'
-        ? 'Continuar a viviendas'
-        : 'Ver balance preventivo'
+    advanceLabel: copy.advanceLabel!
   };
 }
 
 function presentOperationalDecision(session: GameSession): PresentedDecisionScene {
   const view = getOperationalSceneView(session);
+  const copy = requireVerticalBetaSceneMessages(VERTICAL_BETA_I18N_ES, view.id);
   const selected = session.decisions.find(({ sceneId }) => sceneId === view.id);
   const selectedAction = view.actions.find(({ id }) => id === selected?.actionId);
   const completed = session.progress.completedSceneIds.includes(view.id);
@@ -277,9 +285,7 @@ function presentOperationalDecision(session: GameSession): PresentedDecisionScen
       ? {}
       : { feedback: selectedAction.resolution.consequence }),
     canAdvance: completed,
-    advanceLabel: view.id === 'crisis-decision-housing-defense' || view.id === 'crisis-decision-crown-fire'
-      ? 'Ver resultado'
-      : 'Continuar'
+    advanceLabel: copy.advanceLabel!
   };
 }
 
@@ -307,7 +313,9 @@ function presentResult(session: GameSession): PresentedResultScene {
       };
     }),
     canAdvance: session.status === 'active',
-    ...(session.status === 'active' ? { advanceLabel: 'Cerrar partida' } : {})
+    ...(session.status === 'active'
+      ? { advanceLabel: VERTICAL_BETA_RESULT_ADVANCE_LABEL }
+      : {})
   };
 }
 
@@ -324,13 +332,16 @@ function presentScene(session: GameSession): PresentedVerticalBetaScene {
   if (isInspectionScene(sceneId)) return presentInspection(session, sceneId);
   if (sceneId === 'transition-summary-prevention') {
     if (session.inheritedState === null) {
-      throw new VerticalBetaApplicationError('unsupported-command', 'The summary requires InheritedState.');
+      throw new VerticalBetaApplicationError(
+        'unsupported-command',
+        'The summary requires InheritedState.'
+      );
     }
     return {
       id: sceneId,
       type: 'summary',
       title: VERTICAL_BETA_PREVENTION_SUMMARY.title,
-      body: 'Estas son las condiciones que heredará la respuesta durante el incendio.',
+      body: VERTICAL_BETA_PREVENTION_SUMMARY.body,
       dimensions: VERTICAL_BETA_PREVENTION_SUMMARY.dimensionOrder.map((id) => ({
         id,
         label: VERTICAL_BETA_DIMENSION_LABELS[id],
@@ -346,11 +357,11 @@ function presentScene(session: GameSession): PresentedVerticalBetaScene {
       type: 'decision',
       title: VERTICAL_BETA_FIRST_ALERT.title,
       body: VERTICAL_BETA_FIRST_ALERT.prompt,
-      context: 'El aviso es común a ambos recorridos. La rama se decidirá después desde la preparación real.',
+      context: VERTICAL_BETA_FIRST_ALERT.context,
       actions: VERTICAL_BETA_FIRST_ALERT.actions.map((action) => ({
         id: action.id,
         label: action.label,
-        description: VERTICAL_BETA_FIRST_ALERT.prompt,
+        description: action.description,
         selected: false,
         available: true
       })),
@@ -365,13 +376,16 @@ function presentScene(session: GameSession): PresentedVerticalBetaScene {
       body: VERTICAL_BETA_CAUSAL_ROUTER.body,
       automatic: true,
       canAdvance: true,
-      advanceLabel: 'Aplicar condiciones del territorio'
+      advanceLabel: VERTICAL_BETA_CAUSAL_ROUTER.continueLabel
     };
   }
   if (isOperationalScene(sceneId)) return presentOperationalDecision(session);
   if (sceneId === 'ending-result-causal-report') return presentResult(session);
   const exhaustive: never = sceneId;
-  throw new VerticalBetaApplicationError('unsupported-command', `Unsupported scene ${exhaustive}.`);
+  throw new VerticalBetaApplicationError(
+    'unsupported-command',
+    `Unsupported scene ${exhaustive}.`
+  );
 }
 
 export class VerticalBetaApplicationService {
@@ -462,7 +476,10 @@ export class VerticalBetaApplicationService {
   private requireSession(sessionId: string): GameSession {
     const session = this.sessions.get(sessionId);
     if (session === undefined) {
-      throw new VerticalBetaApplicationError('session-not-found', `Session ${sessionId} was not found.`);
+      throw new VerticalBetaApplicationError(
+        'session-not-found',
+        `Session ${sessionId} was not found.`
+      );
     }
     return session;
   }
