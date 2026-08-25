@@ -17,6 +17,8 @@
     "test": "vitest run",
     "test:contract": "vitest run tests/game-scene-catalog.test.ts tests/game-session-contract.test.ts tests/game-session-engine.test.ts tests/game-session-transition-contract.test.ts tests/game-session-inherited-state-order.test.ts tests/game-session-key-order-contract.test.ts tests/prevention-inspections.test.ts tests/operational-scenes.test.ts tests/vertical-beta-flow.test.ts tests/vertical-beta-application.test.ts tests/content-boundaries.test.ts tests/vertical-beta-i18n.test.ts tests/vertical-beta-graph-integrity.test.ts tests/reference-game-sessions.test.ts",
     "test:m1-acceptance": "vitest run tests/game-session-contract.test.ts tests/game-session-transition-contract.test.ts tests/game-session-inherited-state-order.test.ts tests/game-session-key-order-contract.test.ts tests/vertical-beta-graph-integrity.test.ts tests/reference-game-sessions.test.ts tests/m1-final-acceptance.test.ts",
+    "test:m2-acceptance": "vitest run tests/m2-integral-acceptance.test.ts",
+    "accept:m2": "npm audit && npm run typecheck && npm run build && npm test",
     "test:watch": "vitest"
   },
   "dependencies": {
