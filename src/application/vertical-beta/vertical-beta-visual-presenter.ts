@@ -63,6 +63,16 @@ const actionById = new Map(
   )
 );
 
+/** Presentation bands mirror the stable M2 routing interpretation.
+ * They never choose a branch; they only translate an already-calculated state for users.
+ */
+const PRESENTATION_BANDS = {
+  lowerFavorableMax: 49,
+  lowerConditionedMax: 74,
+  higherFavorableMin: 50,
+  higherCriticalMax: 24
+} as const;
+
 const DIMENSION_ACTIONS: Readonly<Record<keyof InheritedState, readonly string[]>> = {
   fuelLoad: [
     'gestionar-restos-poda',
@@ -82,15 +92,16 @@ const DIMENSION_ACTIONS: Readonly<Record<keyof InheritedState, readonly string[]
     'separar-copas',
     'despejar-accesos'
   ],
+  // Access omissions are intentionally first because they can cap attack opportunity.
   attackOpportunity: [
-    'gestionar-restos-poda',
-    'crear-discontinuidades-vegetales',
     'limpiar-margenes-caminos',
-    'activar-pastoreo-preventivo',
+    'despejar-accesos',
     'evaluar-quema-tecnica',
+    'crear-discontinuidades-vegetales',
+    'gestionar-restos-poda',
+    'activar-pastoreo-preventivo',
     'podar-ramas-y-retirar-seco',
-    'separar-copas',
-    'despejar-accesos'
+    'separar-copas'
   ]
 };
 
@@ -238,7 +249,7 @@ function crisisElements(session: VisualSessionSource): PresentedVisualElement[] 
   const attackState: VisualElementState = prepared ? 'viable' : 'unavailable';
   const positionState: VisualElementState = prepared ? 'sustainable' : 'unsustainable';
   const pressureState: VisualElementState = prepared ? 'surface' : 'severe';
-  const crownState: VisualElementState = crown ? 'crownFire' : prepared ? 'reduced' : 'crownRisk';
+  const crownState: VisualElementState = crown ? 'crownFire' : prepared ? 'noCrownFire' : 'crownRisk';
   const capacityState: VisualElementState = prepared ? 'withinCapacity' : crown ? 'exceeded' : 'limited';
 
   const professionalLineEvaluated = selected.has('evaluar-quema-tecnica');
@@ -292,7 +303,7 @@ function crisisElements(session: VisualSessionSource): PresentedVisualElement[] 
       crown
         ? 'La escalada a copas ya se manifiesta en esta escena.'
         : prepared
-          ? 'La continuidad tratada reduce la escalada visible.'
+          ? 'En este recorrido no se manifiesta escalada a copas antes del resultado.'
           : 'La continuidad mantiene riesgo de escalada a copas.'
     ),
     visualElement(
@@ -338,9 +349,17 @@ function visualDimensionState(
 ): VisualDimensionState {
   const lowerIsBetter = dimension === 'fuelLoad' || dimension === 'fuelContinuity';
   if (lowerIsBetter) {
-    return value <= 49 ? 'favorable' : value <= 74 ? 'conditioned' : 'critical';
+    return value <= PRESENTATION_BANDS.lowerFavorableMax
+      ? 'favorable'
+      : value <= PRESENTATION_BANDS.lowerConditionedMax
+        ? 'conditioned'
+        : 'critical';
   }
-  return value >= 50 ? 'favorable' : value >= 25 ? 'conditioned' : 'critical';
+  return value >= PRESENTATION_BANDS.higherFavorableMin
+    ? 'favorable'
+    : value > PRESENTATION_BANDS.higherCriticalMax
+      ? 'conditioned'
+      : 'critical';
 }
 
 function actionLabel(actionId: string): string | undefined {
@@ -365,7 +384,9 @@ function dimensionCauseLabels(
     .filter((label): label is string => label !== undefined)
     .map((label) => `Sin tratar: ${label}`);
 
-  return [...applied, ...omitted].slice(0, 4);
+  const prioritizedOmissions = omitted.slice(0, 2);
+  const remainingSlots = Math.max(0, 4 - prioritizedOmissions.length);
+  return [...prioritizedOmissions, ...applied.slice(0, remainingSlots)];
 }
 
 function dimensionModels(session: VisualSessionSource): PresentedVisualDimension[] {
