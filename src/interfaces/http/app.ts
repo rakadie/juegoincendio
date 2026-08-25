@@ -1,26 +1,15 @@
 import Fastify, { FastifyInstance } from 'fastify';
 import { randomUUID } from 'node:crypto';
-import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
-import { GetActiveFiresQueryHandler } from '../../application/queries/get-active-fires-query-handler.js';
 import {
   VerticalBetaApplicationError,
   VerticalBetaApplicationService
 } from '../../application/vertical-beta/vertical-beta-application-service.js';
-import { EMERGENCY_GAME_VARIABLES } from '../../domain/entities/emergency-training-content.js';
-import { CAMPAIGN_CONTENT } from '../../content/campaign.js';
-import { OFFICIAL_OPERATIONAL_SCENES } from '../../content/official-operational-scenes.js';
-import { VERTICAL_BETA_DECLARATIVE_CONTENT } from '../../content/vertical-beta-flow-content.js';
-import { NEW_GAME_SCENARIOS } from '../../content/scenarios/index.js';
-import { InMemoryFireIncidentRepository } from '../../infrastructure/repositories/in-memory-fire-incident-repository.js';
-import { renderGameContentPage } from './game-content-page.js';
+import { VERTICAL_BETA_PLAYER_CONTENT } from '../../content/vertical-beta-player-content.js';
+import { registerImageRoutes } from './image-routes.js';
 import { renderPrototypePage } from './prototype-page.js';
 
 export function buildApp(): FastifyInstance {
-  const repository = new InMemoryFireIncidentRepository();
-  const getActiveFires = new GetActiveFiresQueryHandler(repository);
   const verticalBeta = new VerticalBetaApplicationService();
-
   const app = Fastify();
 
   app.setErrorHandler((error, _request, reply) => {
@@ -37,18 +26,11 @@ export function buildApp(): FastifyInstance {
     });
   });
 
-  app.get('/health', async () => {
-    return { status: 'ok' };
-  });
+  app.get('/health', async () => ({ status: 'ok' }));
 
-  app.get('/fires/active', async () => {
-    const data = await getActiveFires.execute();
-    return { fires: data };
-  });
+  app.get('/api/vertical-beta/content', async () => VERTICAL_BETA_PLAYER_CONTENT);
 
-  app.post('/api/game-sessions', async () => {
-    return verticalBeta.create(randomUUID());
-  });
+  app.post('/api/game-sessions', async () => verticalBeta.create(randomUUID()));
 
   app.get<{ Params: { sessionId: string } }>(
     '/api/game-sessions/:sessionId',
@@ -78,56 +60,7 @@ export function buildApp(): FastifyInstance {
     async (request) => verticalBeta.advance(request.params.sessionId)
   );
 
-  app.get('/game-content/data', async () => {
-    return {
-      variables: EMERGENCY_GAME_VARIABLES,
-      scenarios: NEW_GAME_SCENARIOS,
-      operationalScenes: OFFICIAL_OPERATIONAL_SCENES,
-      verticalBetaFlowContent: VERTICAL_BETA_DECLARATIVE_CONTENT,
-      campaign: CAMPAIGN_CONTENT
-    };
-  });
-
-  app.get('/game-content', async (_request, reply) => {
-    reply.type('text/html; charset=utf-8');
-    return renderGameContentPage();
-  });
-
-  app.get('/images/primer-aviso-humo.png', async (_request, reply) => {
-    const image = await readFile(join(process.cwd(), 'public', 'images', 'primer-aviso-humo.png'));
-    reply.type('image/png');
-    return image;
-  });
-
-  app.get('/images/operational-command-hero.png', async (_request, reply) => {
-    const image = await readFile(join(process.cwd(), 'public', 'images', 'operational-command-hero.png'));
-    reply.type('image/png');
-    return image;
-  });
-
-  app.get('/images/gameplay-wildfire-scene.png', async (_request, reply) => {
-    const image = await readFile(join(process.cwd(), 'public', 'images', 'gameplay-wildfire-scene.png'));
-    reply.type('image/png');
-    return image;
-  });
-
-  app.get('/images/avatar-forestal-hombre.png', async (_request, reply) => {
-    const image = await readFile(join(process.cwd(), 'public', 'images', 'avatar-forestal-hombre.png'));
-    reply.type('image/png');
-    return image;
-  });
-
-  app.get('/images/avatar-forestal-mujer.png', async (_request, reply) => {
-    const image = await readFile(join(process.cwd(), 'public', 'images', 'avatar-forestal-mujer.png'));
-    reply.type('image/png');
-    return image;
-  });
-
-  app.get('/images/avatar-forestal-neutro.png', async (_request, reply) => {
-    const image = await readFile(join(process.cwd(), 'public', 'images', 'avatar-forestal-neutro.png'));
-    reply.type('image/png');
-    return image;
-  });
+  registerImageRoutes(app);
 
   app.get('/', async (_request, reply) => {
     reply.type('text/html; charset=utf-8');
@@ -141,4 +74,3 @@ export function buildApp(): FastifyInstance {
 
   return app;
 }
-
