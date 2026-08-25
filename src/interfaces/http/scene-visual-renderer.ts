@@ -22,7 +22,7 @@ function stateClass(element: PresentedVisualElement | undefined): string {
 
 function hotspotAttributes(element: PresentedVisualElement | undefined): string {
   if (element?.actionId === undefined) return '';
-  return ` data-focus-action-id="${escapeHtml(element.actionId)}" role="button" tabindex="-1"`;
+  return ` data-focus-action-id="${escapeHtml(element.actionId)}" aria-hidden="true"`;
 }
 
 function titleFor(element: PresentedVisualElement | undefined): string {
@@ -38,7 +38,9 @@ function statusLegend(model: PresentedSceneVisualModel): string {
         `<button class="visual-status ${stateClass(element)}" type="button"${
           element.actionId === undefined
             ? ' disabled'
-            : ` data-focus-action-id="${escapeHtml(element.actionId)}"`
+            : ` data-focus-action-id="${escapeHtml(element.actionId)}" aria-pressed="${
+                element.selected === true ? 'true' : 'false'
+              }"`
         }><span class="visual-status-symbol" aria-hidden="true"></span><span><strong>${escapeHtml(
           element.label
         )}</strong><small>${escapeHtml(element.stateLabel)}</small></span></button>`
