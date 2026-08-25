@@ -32,7 +32,7 @@ export function renderPrototypePage(): string {
       }
 
       button { font: inherit; }
-      button:focus-visible, [data-focus-action-id]:focus-visible, summary:focus-visible {
+      button:focus-visible, [data-focus-action-id]:focus-visible, .action-card:focus-visible, summary:focus-visible {
         outline: 3px solid var(--primary);
         outline-offset: 3px;
       }
@@ -140,6 +140,7 @@ export function renderPrototypePage(): string {
       .state-treated .visual-residues { opacity: .18; stroke-dasharray: 8 18; }
       .state-broken .visual-vegetation-band, .state-broken .visual-canopy { stroke-dasharray: 20 28; opacity: .58; }
       .state-reduced .visual-vegetation-band, .state-reduced .visual-canopy, .state-reduced .visual-branches { opacity: .48; stroke-dasharray: 25 16; }
+      .state-noCrownFire .visual-canopy { opacity: .7; stroke-dasharray: 22 14; }
       .state-constrained .visual-road, .state-limited .visual-retreat { stroke-dasharray: 24 19; opacity: .68; }
       .state-blocked .visual-road { stroke: #8b645d; stroke-dasharray: 12 21; }
       .state-unevaluated .visual-professional-line { opacity: .3; stroke-dasharray: 5 22; }
@@ -168,7 +169,8 @@ export function renderPrototypePage(): string {
       .visual-status:not(:disabled) { cursor: pointer; }
       .visual-status:disabled { opacity: 1; cursor: default; }
       .visual-status span:last-child { display: grid; gap: 2px; }
-      .visual-status small, .visual-dimension small { color: var(--muted); }
+      .visual-status small, .visual-dimension small, .visual-explanation { color: var(--muted); }
+      .visual-explanation { font-size: .78rem; line-height: 1.35; }
       .visual-status-symbol {
         width: 18px;
         height: 18px;
@@ -178,7 +180,7 @@ export function renderPrototypePage(): string {
       }
       .state-clear .visual-status-symbol, .state-treated .visual-status-symbol, .state-broken .visual-status-symbol,
       .state-viable .visual-status-symbol, .state-sustainable .visual-status-symbol, .state-withinCapacity .visual-status-symbol,
-      .state-favorable .visual-status-symbol { border-radius: 4px; transform: rotate(45deg); }
+      .state-favorable .visual-status-symbol, .state-noCrownFire .visual-status-symbol { border-radius: 4px; transform: rotate(45deg); }
       .state-blocked .visual-status-symbol, .state-unavailable .visual-status-symbol, .state-unsustainable .visual-status-symbol,
       .state-exceeded .visual-status-symbol, .state-critical .visual-status-symbol { border-radius: 0; transform: rotate(45deg); }
       .state-constrained .visual-status-symbol, .state-limited .visual-status-symbol,
@@ -419,14 +421,17 @@ export function renderPrototypePage(): string {
         const button = Array.from(document.querySelectorAll('.action-button')).find(function (candidate) {
           return candidate.dataset.actionId === actionId;
         });
-        if (button) {
+        if (!button) return;
+        const card = button.closest('.action-card');
+        if (!card) return;
+        if (button.disabled) {
+          card.setAttribute('tabindex', '-1');
+          card.focus();
+        } else {
           button.focus();
-          const card = button.closest('.action-card');
-          if (card) {
-            const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            card.scrollIntoView({ block: 'nearest', behavior: reducedMotion ? 'auto' : 'smooth' });
-          }
         }
+        const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        card.scrollIntoView({ block: 'nearest', behavior: reducedMotion ? 'auto' : 'smooth' });
       }
 
       function wireCommands() {
