@@ -69,9 +69,12 @@ describe('official operational scene catalog', () => {
     );
   });
 
-  it('exposes the same canonical contract in the content payload', async () => {
+  it('exposes the same canonical contract in the official player payload', async () => {
     const app = buildApp();
-    const response = await app.inject({ method: 'GET', url: '/game-content/data' });
+    const response = await app.inject({
+      method: 'GET',
+      url: '/api/vertical-beta/content'
+    });
     await app.close();
 
     expect(response.statusCode).toBe(200);
