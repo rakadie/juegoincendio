@@ -18,6 +18,53 @@ export const VERTICAL_BETA_CAUSAL_RELATION_IDS = [
   'attack-opportunity'
 ] as const;
 
+export const VERTICAL_BETA_HOTSPOT_IDS_BY_SCENE = {
+  'prevention-inspection-territory-fuel': [
+    'restos-poda-acumulados',
+    'vegetacion-densa-borde-fincas',
+    'camino-rural-invadido',
+    'pastoreo-preventivo',
+    'quema-tecnica-profesional'
+  ],
+  'prevention-inspection-housing-interface': [
+    'ramas-bajas-vegetacion-seca',
+    'copas-tocandose',
+    'acceso-estrecho'
+  ]
+} as const;
+
+export const VERTICAL_BETA_ACTION_IDS_BY_SCENE = {
+  'crisis-decision-first-alert': ['movilizar-y-verificar'],
+  'crisis-decision-emergency-fuel-break': [
+    'autorizar-maniobra-condicionada',
+    'mantener-evaluacion-sin-maniobra',
+    'usar-linea-profesional-no-evaluada'
+  ],
+  'crisis-decision-access-blockage': [
+    'despejar-corredor-operativo',
+    'cerrar-acceso-y-reorganizar-medios',
+    'introducir-maquinaria-sin-repliegue',
+    'usar-linea-profesional-sin-acceso'
+  ],
+  'crisis-decision-ravine-fire': [
+    'asegurar-flancos-y-repliegue',
+    'mantener-ataque-anclado',
+    'vigilancia-y-proteccion-indirecta',
+    'ataque-directo-sin-anclaje'
+  ],
+  'crisis-decision-housing-defense': [
+    'defender-desde-posicion-segura',
+    'defensa-selectiva-con-prioridades',
+    'defensa-total-sin-repliegue'
+  ],
+  'crisis-decision-crown-fire': [
+    'replegar-ante-fuego-de-copas',
+    'ataque-indirecto-y-vigilancia',
+    'sostener-ataque-directo',
+    'defender-posicion-sin-salida'
+  ]
+} as const;
+
 export type VerticalBetaCausalRelationId =
   (typeof VERTICAL_BETA_CAUSAL_RELATION_IDS)[number];
 
@@ -116,6 +163,16 @@ function validateTranslatedValue(value: unknown, path: string, errors: string[])
   }
 }
 
+function requireNonEmptyString(
+  value: unknown,
+  path: string,
+  errors: string[]
+): void {
+  if (typeof value !== 'string' || value.trim() === '') {
+    errors.push(`${path} is missing.`);
+  }
+}
+
 export function validateVerticalBetaI18nCatalog(
   value: unknown
 ): VerticalBetaI18nValidationResult {
@@ -124,9 +181,7 @@ export function validateVerticalBetaI18nCatalog(
     return { valid: false, errors: ['Catalog must be a plain object.'] };
   }
 
-  if (typeof value.locale !== 'string' || value.locale.trim() === '') {
-    errors.push('locale must be a non-empty string.');
-  }
+  requireNonEmptyString(value.locale, 'locale', errors);
   if (value.namespace !== 'verticalBeta') {
     errors.push('namespace must be verticalBeta.');
   }
@@ -143,65 +198,80 @@ export function validateVerticalBetaI18nCatalog(
         errors.push(`scenes.${sceneId} is missing.`);
         continue;
       }
-      if (typeof scene.title !== 'string' || scene.title.trim() === '') {
-        errors.push(`scenes.${sceneId}.title is missing.`);
-      }
-      if (typeof scene.body !== 'string' || scene.body.trim() === '') {
-        errors.push(`scenes.${sceneId}.body is missing.`);
-      }
+      requireNonEmptyString(scene.title, `scenes.${sceneId}.title`, errors);
+      requireNonEmptyString(scene.body, `scenes.${sceneId}.body`, errors);
       validateTranslatedValue(scene, `scenes.${sceneId}`, errors);
     }
 
     for (const sceneId of [
       'intro-briefing-mission',
+      'prevention-inspection-territory-fuel',
+      'prevention-inspection-housing-interface',
       'transition-summary-prevention',
-      'crisis-router-causal-map'
+      'crisis-router-causal-map',
+      'crisis-decision-emergency-fuel-break',
+      'crisis-decision-access-blockage',
+      'crisis-decision-ravine-fire',
+      'crisis-decision-housing-defense',
+      'crisis-decision-crown-fire',
+      'ending-result-causal-report'
     ] as const) {
       const scene = value.scenes[sceneId];
-      if (isRecord(scene) && (typeof scene.advanceLabel !== 'string' || scene.advanceLabel.trim() === '')) {
-        errors.push(`scenes.${sceneId}.advanceLabel is missing.`);
+      if (isRecord(scene)) {
+        requireNonEmptyString(scene.advanceLabel, `scenes.${sceneId}.advanceLabel`, errors);
       }
     }
 
-    for (const sceneId of [
-      'prevention-inspection-territory-fuel',
-      'prevention-inspection-housing-interface'
-    ] as const) {
+    for (const sceneId of Object.keys(VERTICAL_BETA_HOTSPOT_IDS_BY_SCENE) as Array<
+      keyof typeof VERTICAL_BETA_HOTSPOT_IDS_BY_SCENE
+    >) {
       const scene = value.scenes[sceneId];
       if (!isRecord(scene)) continue;
-      if (typeof scene.shortTitle !== 'string' || scene.shortTitle.trim() === '') {
-        errors.push(`scenes.${sceneId}.shortTitle is missing.`);
-      }
-      if (typeof scene.context !== 'string' || scene.context.trim() === '') {
-        errors.push(`scenes.${sceneId}.context is missing.`);
-      }
-      if (typeof scene.objective !== 'string' || scene.objective.trim() === '') {
-        errors.push(`scenes.${sceneId}.objective is missing.`);
-      }
-      if (!isRecord(scene.hotspots) || Object.keys(scene.hotspots).length === 0) {
-        errors.push(`scenes.${sceneId}.hotspots is missing.`);
+      requireNonEmptyString(scene.shortTitle, `scenes.${sceneId}.shortTitle`, errors);
+      requireNonEmptyString(scene.context, `scenes.${sceneId}.context`, errors);
+      requireNonEmptyString(scene.objective, `scenes.${sceneId}.objective`, errors);
+      const expectedHotspots = VERTICAL_BETA_HOTSPOT_IDS_BY_SCENE[sceneId];
+      if (!isRecord(scene.hotspots) || !exactKeys(scene.hotspots, expectedHotspots)) {
+        errors.push(
+          `scenes.${sceneId}.hotspots must contain exactly: ${expectedHotspots.join(', ')}.`
+        );
       }
       if (!isRecord(scene.outcomes) || !exactKeys(scene.outcomes, ['alto', 'medio', 'bajo'])) {
         errors.push(`scenes.${sceneId}.outcomes must contain alto, medio and bajo.`);
       }
     }
 
-    for (const sceneId of [
-      'crisis-decision-first-alert',
-      'crisis-decision-emergency-fuel-break',
-      'crisis-decision-access-blockage',
-      'crisis-decision-ravine-fire',
-      'crisis-decision-housing-defense',
-      'crisis-decision-crown-fire'
-    ] as const) {
+    for (const sceneId of Object.keys(VERTICAL_BETA_ACTION_IDS_BY_SCENE) as Array<
+      keyof typeof VERTICAL_BETA_ACTION_IDS_BY_SCENE
+    >) {
       const scene = value.scenes[sceneId];
-      if (!isRecord(scene) || !isRecord(scene.actions) || Object.keys(scene.actions).length === 0) {
-        errors.push(`scenes.${sceneId}.actions is missing.`);
+      if (!isRecord(scene)) continue;
+      const expectedActions = VERTICAL_BETA_ACTION_IDS_BY_SCENE[sceneId];
+      if (!isRecord(scene.actions) || !exactKeys(scene.actions, expectedActions)) {
+        errors.push(
+          `scenes.${sceneId}.actions must contain exactly: ${expectedActions.join(', ')}.`
+        );
+      }
+      if (sceneId !== 'crisis-decision-first-alert') {
+        requireNonEmptyString(scene.context, `scenes.${sceneId}.context`, errors);
       }
     }
 
+    const firstAlert = value.scenes['crisis-decision-first-alert'];
+    if (isRecord(firstAlert)) {
+      requireNonEmptyString(
+        firstAlert.context,
+        'scenes.crisis-decision-first-alert.context',
+        errors
+      );
+    }
+
     const result = value.scenes['ending-result-causal-report'];
-    if (!isRecord(result) || !isRecord(result.variants) || !exactKeys(result.variants, RESULT_VARIANTS)) {
+    if (
+      !isRecord(result) ||
+      !isRecord(result.variants) ||
+      !exactKeys(result.variants, RESULT_VARIANTS)
+    ) {
       errors.push('ending-result-causal-report must contain contained and overwhelmed variants.');
     }
   }
