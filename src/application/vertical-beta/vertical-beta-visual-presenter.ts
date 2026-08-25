@@ -2,10 +2,13 @@ import { VERTICAL_BETA_VISUAL_COPY_ES } from '../../content/i18n/es/vertical-bet
 import { OFFICIAL_PREVENTION_INSPECTIONS } from '../../content/official-prevention-inspections.js';
 import { VERTICAL_BETA_DIMENSION_LABELS } from '../../content/vertical-beta-flow-content.js';
 import type {
-  GameSession,
+  GameDecision,
   InheritedState
 } from '../../domain/game-session/game-session.js';
-import type { CanonicalSceneId } from '../../domain/types/game-scene.js';
+import type {
+  CanonicalSceneId,
+  CrisisBranch
+} from '../../domain/types/game-scene.js';
 
 export type VisualTemplateId =
   | 'briefing'
@@ -19,6 +22,13 @@ export type VisualElementKind = keyof typeof VERTICAL_BETA_VISUAL_COPY_ES.elemen
 export type VisualElementState = keyof typeof VERTICAL_BETA_VISUAL_COPY_ES.states;
 export type VisualDimensionState = 'favorable' | 'conditioned' | 'critical';
 
+export interface VisualSessionSource {
+  readonly currentSceneId: CanonicalSceneId;
+  readonly branch: CrisisBranch | null;
+  readonly inheritedState: InheritedState | null;
+  readonly decisions: readonly GameDecision[];
+}
+
 export interface PresentedVisualElement {
   readonly id: string;
   readonly kind: VisualElementKind;
@@ -27,7 +37,6 @@ export interface PresentedVisualElement {
   readonly stateLabel: string;
   readonly actionId?: string;
   readonly selected?: boolean;
-  readonly available?: boolean;
   readonly explanation: string;
 }
 
@@ -85,7 +94,7 @@ const DIMENSION_ACTIONS: Readonly<Record<keyof InheritedState, readonly string[]
   ]
 };
 
-function selectedIds(session: GameSession): Set<string> {
+function selectedIds(session: VisualSessionSource): Set<string> {
   return new Set(session.decisions.map(({ actionId }) => actionId));
 }
 
@@ -95,8 +104,7 @@ function visualElement(
   state: VisualElementState,
   explanation: string,
   actionId?: string,
-  selected?: boolean,
-  available?: boolean
+  selected?: boolean
 ): PresentedVisualElement {
   return {
     id,
@@ -106,7 +114,6 @@ function visualElement(
     stateLabel: VERTICAL_BETA_VISUAL_COPY_ES.states[state],
     ...(actionId === undefined ? {} : { actionId }),
     ...(selected === undefined ? {} : { selected }),
-    ...(available === undefined ? {} : { available }),
     explanation
   };
 }
@@ -216,9 +223,9 @@ function housingElements(selected: Set<string>): PresentedVisualElement[] {
   ];
 }
 
-function crisisElements(session: GameSession): PresentedVisualElement[] {
-  const branch = session.crisisBranch;
-  const sceneId = session.progress.currentSceneId;
+function crisisElements(session: VisualSessionSource): PresentedVisualElement[] {
+  const branch = session.branch;
+  const sceneId = session.currentSceneId;
   const selected = selectedIds(session);
   const prepared = branch === 'prepared';
   const crown = sceneId === 'crisis-decision-crown-fire';
@@ -334,7 +341,7 @@ function visualDimensionState(
   return value >= 50 ? 'favorable' : value >= 25 ? 'conditioned' : 'critical';
 }
 
-function dimensionModels(session: GameSession): PresentedVisualDimension[] {
+function dimensionModels(session: VisualSessionSource): PresentedVisualDimension[] {
   if (session.inheritedState === null) return [];
   const selected = selectedIds(session);
   return (Object.keys(VERTICAL_BETA_DIMENSION_LABELS) as Array<keyof InheritedState>).map(
@@ -367,8 +374,10 @@ function templateFor(sceneId: CanonicalSceneId): VisualTemplateId {
   return 'crisis';
 }
 
-export function presentSceneVisualModel(session: GameSession): PresentedSceneVisualModel {
-  const sceneId = session.progress.currentSceneId;
+export function presentSceneVisualModel(
+  session: VisualSessionSource
+): PresentedSceneVisualModel {
+  const sceneId = session.currentSceneId;
   const selected = selectedIds(session);
   const templateId = templateFor(sceneId);
   const elements =
