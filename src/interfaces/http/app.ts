@@ -2,15 +2,36 @@ import Fastify, { FastifyInstance } from 'fastify';
 import { randomUUID } from 'node:crypto';
 import {
   VerticalBetaApplicationError,
-  VerticalBetaApplicationService
+  VerticalBetaApplicationService,
+  type VerticalBetaApplicationView
 } from '../../application/vertical-beta/vertical-beta-application-service.js';
+import {
+  createVerticalBetaRuntimeContext,
+  VERTICAL_BETA_REFERENCE_CONTEXT,
+  type VerticalBetaRuntimeContext
+} from '../../application/vertical-beta/vertical-beta-runtime-context.js';
 import { VERTICAL_BETA_PLAYER_CONTENT } from '../../content/vertical-beta-player-content.js';
 import { registerImageRoutes } from './image-routes.js';
 import { renderPrototypePage } from './prototype-page.js';
 
-export function buildApp(): FastifyInstance {
+export interface BuildAppOptions {
+  readonly context?: VerticalBetaRuntimeContext;
+}
+
+export interface VerticalBetaHttpView extends VerticalBetaApplicationView {
+  readonly context: VerticalBetaRuntimeContext;
+}
+
+export function buildApp(options: BuildAppOptions = {}): FastifyInstance {
+  const context = createVerticalBetaRuntimeContext(
+    options.context ?? VERTICAL_BETA_REFERENCE_CONTEXT
+  );
   const verticalBeta = new VerticalBetaApplicationService();
   const app = Fastify();
+  const present = (view: VerticalBetaApplicationView): VerticalBetaHttpView => ({
+    context,
+    ...view
+  });
 
   app.setErrorHandler((error, _request, reply) => {
     const isKnownDomainError = error instanceof Error && 'code' in error;
@@ -26,20 +47,25 @@ export function buildApp(): FastifyInstance {
     });
   });
 
-  app.get('/health', async () => ({ status: 'ok' }));
+  app.get('/health', async () => ({
+    status: 'ok',
+    referenceContextId: context.referenceContextId,
+    randomness: context.randomness
+  }));
 
+  app.get('/api/vertical-beta/context', async () => context);
   app.get('/api/vertical-beta/content', async () => VERTICAL_BETA_PLAYER_CONTENT);
 
-  app.post('/api/game-sessions', async () => verticalBeta.create(randomUUID()));
+  app.post('/api/game-sessions', async () => present(verticalBeta.create(randomUUID())));
 
   app.get<{ Params: { sessionId: string } }>(
     '/api/game-sessions/:sessionId',
-    async (request) => verticalBeta.view(request.params.sessionId)
+    async (request) => present(verticalBeta.view(request.params.sessionId))
   );
 
   app.post<{ Params: { sessionId: string } }>(
     '/api/game-sessions/:sessionId/restart',
-    async (request) => verticalBeta.restart(request.params.sessionId)
+    async (request) => present(verticalBeta.restart(request.params.sessionId))
   );
 
   app.post<{ Params: { sessionId: string }; Body: { actionId?: string } }>(
@@ -51,13 +77,13 @@ export function buildApp(): FastifyInstance {
           'A non-empty actionId is required.'
         );
       }
-      return verticalBeta.applyAction(request.params.sessionId, request.body.actionId);
+      return present(verticalBeta.applyAction(request.params.sessionId, request.body.actionId));
     }
   );
 
   app.post<{ Params: { sessionId: string } }>(
     '/api/game-sessions/:sessionId/advance',
-    async (request) => verticalBeta.advance(request.params.sessionId)
+    async (request) => present(verticalBeta.advance(request.params.sessionId))
   );
 
   registerImageRoutes(app);
