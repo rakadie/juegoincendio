@@ -11,6 +11,10 @@ import type {
 } from '../src/application/vertical-beta/vertical-beta-application-service.js';
 import { VERTICAL_BETA_PLAYER_CONTENT } from '../src/content/vertical-beta-player-content.js';
 import { validateVerticalBetaI18nCatalog } from '../src/content/i18n/vertical-beta-i18n.js';
+import type {
+  GameSessionEvent,
+  InheritedState
+} from '../src/domain/game-session/game-session.js';
 import {
   GAME_SCENE_TYPES,
   type CanonicalSceneId,
@@ -55,10 +59,10 @@ interface JsonSession {
     completedSceneIds: CanonicalSceneId[];
   };
   decisions: Array<{ sequence: number; sceneId: CanonicalSceneId; actionId: string }>;
-  inheritedState: Record<string, number>;
+  inheritedState: InheritedState;
   crisisBranch: CrisisBranch;
   result: { variant: ResultVariant; evidenceIds: string[] };
-  history: Array<Record<string, unknown>>;
+  history: GameSessionEvent[];
 }
 
 interface ReferenceContext {
@@ -229,10 +233,17 @@ function materializeCanonicalSession(
   run: AcceptanceRun,
   fixtureId: string
 ): JsonSession {
-  const history = structuredClone(run.completed.session.history) as Array<Record<string, unknown>>;
-  const created = history[0];
-  if (created?.type !== 'session-created') throw new Error('Acceptance history must start with session-created.');
-  created.sessionId = fixtureId;
+  const history: GameSessionEvent[] = run.completed.session.history.map((event) =>
+    event.type === 'session-created'
+      ? { ...event, sessionId: fixtureId }
+      : structuredClone(event)
+  );
+  const inheritedState = structuredClone(run.completed.session.inheritedState);
+  const crisisBranch = run.completed.session.branch;
+  const result = structuredClone(run.completed.session.result);
+  if (inheritedState === null || crisisBranch === null || result === null) {
+    throw new Error('Completed acceptance session is missing state, branch or result.');
+  }
 
   return {
     schemaVersion: 1,
@@ -243,9 +254,9 @@ function materializeCanonicalSession(
       completedSceneIds: [...run.completed.session.completedSceneIds]
     },
     decisions: structuredClone(run.completed.session.decisions) as JsonSession['decisions'],
-    inheritedState: structuredClone(run.completed.session.inheritedState) as Record<string, number>,
-    crisisBranch: run.completed.session.branch!,
-    result: structuredClone(run.completed.session.result) as JsonSession['result'],
+    inheritedState,
+    crisisBranch,
+    result: { variant: result.variant, evidenceIds: [...result.evidenceIds] },
     history
   };
 }
