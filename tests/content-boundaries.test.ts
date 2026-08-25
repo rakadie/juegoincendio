@@ -122,7 +122,8 @@ describe('content boundaries', () => {
     [
       'editorial-content',
       'scenarios/index',
-      'prevention-inspections',
+      "from './prevention-inspections",
+      "from '../prevention-inspections",
       "from './campaign",
       '/library/',
       '/archive/',
