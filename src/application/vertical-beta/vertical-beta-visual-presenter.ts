@@ -343,23 +343,44 @@ function visualDimensionState(
   return value >= 50 ? 'favorable' : value >= 25 ? 'conditioned' : 'critical';
 }
 
+function actionLabel(actionId: string): string | undefined {
+  return actionById.get(actionId)?.label;
+}
+
+function dimensionCauseLabels(
+  id: keyof InheritedState,
+  state: VisualDimensionState,
+  selected: Set<string>
+): string[] {
+  const related = DIMENSION_ACTIONS[id];
+  const applied = related
+    .filter((actionId) => selected.has(actionId))
+    .map(actionLabel)
+    .filter((label): label is string => label !== undefined);
+  if (state === 'favorable') return applied;
+
+  const omitted = related
+    .filter((actionId) => !selected.has(actionId))
+    .map(actionLabel)
+    .filter((label): label is string => label !== undefined)
+    .map((label) => `Sin tratar: ${label}`);
+
+  return [...applied, ...omitted].slice(0, 4);
+}
+
 function dimensionModels(session: VisualSessionSource): PresentedVisualDimension[] {
   if (session.inheritedState === null) return [];
   const selected = selectedIds(session);
   return (Object.keys(VERTICAL_BETA_DIMENSION_LABELS) as Array<keyof InheritedState>).map(
     (id) => {
       const state = visualDimensionState(id, session.inheritedState![id]);
-      const causeActionLabels = DIMENSION_ACTIONS[id]
-        .filter((actionId) => selected.has(actionId))
-        .map((actionId) => actionById.get(actionId)?.label)
-        .filter((label): label is string => label !== undefined);
       return {
         id,
         label: VERTICAL_BETA_DIMENSION_LABELS[id],
         value: session.inheritedState![id],
         state,
         stateLabel: VERTICAL_BETA_VISUAL_COPY_ES.states[state],
-        causeActionLabels
+        causeActionLabels: dimensionCauseLabels(id, state, selected)
       };
     }
   );
