@@ -2,7 +2,8 @@
 
 - Issue: #75
 - Milestone: M2 — Motor modular
-- Estado: implementado en una única entrega, pendiente de integración
+- Estado: integrado en `main` mediante PR #132
+- Commit de integración: `fafa55eb42d41653a02431397afb9db66a094b4b`
 
 ## Objetivo
 
@@ -71,8 +72,8 @@ Reglas:
 
 1. `scenes` contiene exactamente los 12 IDs canónicos.
 2. Cada nodo tiene `title` y `body` no vacíos.
-3. Las dos inspecciones cubren hotspots, actuaciones y tres resultados.
-4. Las seis escenas de decisión cubren todas sus actuaciones oficiales.
+3. Las dos inspecciones cubren exactamente sus ocho hotspots y actuaciones.
+4. Las seis escenas de decisión cubren exactamente sus actuaciones oficiales.
 5. El nodo final cubre `contained` y `overwhelmed`.
 6. Las cinco dimensiones y las cinco relaciones causales tienen traducción.
 7. Una traducción ausente o vacía falla en validación.
@@ -91,15 +92,12 @@ herramienta editorial
 
 La migración no cambia decisiones preventivas, fórmulas, rutas, fixtures ni resultados. Solo elimina la convivencia activa entre identidad histórica e identidad canónica y hace obligatoria la cobertura editorial de la Vertical Beta 1.
 
-## Evidencia automática
+## Evidencia integrada
 
-Las pruebas deben demostrar:
-
-- 12 nodos y cinco `Scenario` canónicos;
-- ausencia de los cinco IDs históricos en el payload y grafo de imports del jugador;
-- conservación de esos IDs en el archivo editorial;
-- catálogo i18n completo;
-- fallo al eliminar una escena o una traducción anidada;
-- fallo ante un locale no soportado;
-- ausencia de alias y fallback;
-- ejecución intacta de las dos partidas de referencia.
+- `npm audit`: 0 vulnerabilidades.
+- `npm run test:contract`: 97/97.
+- `npm test`: 106/106.
+- `npm run typecheck`: correcto.
+- `npm run build`: correcto.
+- Revisión independiente Codex: tres P2 corregidos y resueltos antes de la fusión.
+- Las dos partidas de referencia continúan terminando `contained` y `overwhelmed`.
