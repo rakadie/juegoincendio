@@ -176,7 +176,8 @@ export function renderSceneVisual(model: PresentedSceneVisualModel): string {
           : '';
   const dimensions = dimensionSummary(model);
   if (visual === '' && dimensions === '') return '';
+  const canvas = visual === '' ? '' : `<div class="visual-canvas">${visual}</div>`;
   return `<section class="visual-scene" data-visual-template="${model.templateId}" data-visual-scene-id="${escapeHtml(
     model.sceneId
-  )}"><div class="visual-canvas">${visual}</div>${statusLegend(model)}${dimensions}</section>`;
+  )}">${canvas}${statusLegend(model)}${dimensions}</section>`;
 }
