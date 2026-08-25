@@ -196,7 +196,8 @@ describe('M3 visual HTTP and renderer boundaries', () => {
     expect(payload.visualMarkup).toContain('<svg');
     expect(payload.visualMarkup).toContain('role="img"');
     expect(payload.visualMarkup).toContain('data-focus-action-id="limpiar-margenes-caminos"');
-    expect(payload.visualMarkup).toContain('aria-pressed="false"');
+    expect(payload.visualMarkup).toContain('visual-explanation');
+    expect(payload.visualMarkup).not.toContain('aria-pressed');
     await app.close();
   });
 
@@ -209,7 +210,7 @@ describe('M3 visual HTTP and renderer boundaries', () => {
     expect(pageSource).toContain('currentView.visualMarkup');
     expect(pageSource).toContain("document.querySelectorAll('.action-button')");
     expect(pageSource).toContain('prefers-reduced-motion');
-    expect(visualRendererSource).toContain('aria-pressed');
+    expect(visualRendererSource).toContain('visual-explanation');
     expect(visualRendererSource).toContain('aria-hidden="true"');
     expect(rendererBoundary).not.toContain('selectCrisisBranch');
     expect(rendererBoundary).not.toContain('calculatePreventionBalance');
