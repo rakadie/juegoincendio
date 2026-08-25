@@ -43,6 +43,7 @@
       "crown-transition-buffer",
       "access-chain-unavailable",
       "ravine-position-not-holdable-safe-retreat",
+      "temporary-operational-corridor-limited",
       "safe-retreat-before-crown-fire"
     ]
   },
@@ -61,7 +62,9 @@
         "pruning-residues-removed-or-processed",
         "preventive-grazing-completed-in-priority-strips",
         "professional-line-assessed",
-        "professional-line-feasible"
+        "professional-line-feasible",
+        "territorial-vegetation-continuity-present",
+        "rural-road-margins-obstructed"
       ]
     },
     { "sequence": 8, "type": "scene-transitioned", "fromSceneId": "prevention-inspection-territory-fuel", "toSceneId": "prevention-inspection-housing-interface" },
@@ -73,7 +76,8 @@
       "sceneId": "prevention-inspection-housing-interface",
       "evidenceIds": [
         "vertical-fuel-continuity-reduced",
-        "crown-fuel-continuity-reduced"
+        "crown-fuel-continuity-reduced",
+        "fire-engine-access-obstructed"
       ]
     },
     {
@@ -92,10 +96,10 @@
         "preventive-grazing-completed-in-priority-strips",
         "professional-line-assessed",
         "professional-line-feasible",
-        "vertical-fuel-continuity-reduced",
-        "crown-fuel-continuity-reduced",
         "territorial-vegetation-continuity-present",
         "rural-road-margins-obstructed",
+        "vertical-fuel-continuity-reduced",
+        "crown-fuel-continuity-reduced",
         "fire-engine-access-obstructed"
       ]
     },
@@ -136,6 +140,7 @@
         "crown-transition-buffer",
         "access-chain-unavailable",
         "ravine-position-not-holdable-safe-retreat",
+        "temporary-operational-corridor-limited",
         "safe-retreat-before-crown-fire"
       ]
     },
@@ -149,6 +154,7 @@
           "crown-transition-buffer",
           "access-chain-unavailable",
           "ravine-position-not-holdable-safe-retreat",
+          "temporary-operational-corridor-limited",
           "safe-retreat-before-crown-fire"
         ]
       }
