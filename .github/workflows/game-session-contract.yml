@@ -1,22 +1,23 @@
-name: GameSession contract
+name: Vertical Beta 1 acceptance
 
 on:
   pull_request:
-    paths:
-      - 'package.json'
-      - 'package-lock.json'
-      - 'src/**'
-      - 'tests/**'
-      - 'docs/domain/game-session-serialization.md'
-      - 'docs/product/vertical-beta-1-graph-validation.md'
-      - '.github/workflows/game-session-contract.yml'
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: vertical-beta-acceptance-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  validate:
+  acceptance:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -30,17 +31,5 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Audit dependencies
-        run: npm audit
-
-      - name: Run GameSession contract tests
-        run: npm run test:contract
-
-      - name: Run complete test suite
-        run: npm test
-
-      - name: Typecheck
-        run: npm run typecheck
-
-      - name: Build
-        run: npm run build
+      - name: Run the complete M2 acceptance gate
+        run: npm run accept:m2
