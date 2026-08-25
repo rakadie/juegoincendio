@@ -54,7 +54,7 @@ import { ps037PlanFamiliarEmergencia } from './prevencion/ps-037-plan-familiar-e
 import { ps038EleccionVegetacionFinca } from './prevencion/ps-038-eleccion-vegetacion-finca.js';
 import { ps039UsoMaquinariaEpocaRiesgo } from './prevencion/ps-039-uso-maquinaria-epoca-riesgo.js';
 
-export const BASE_GAME_SCENARIOS: Scenario[] = [
+export const BASE_EDITORIAL_SCENARIOS: Scenario[] = [
   cs000Introduccion,
   cs000bAvatarEmergencias,
   ps000cContextoPrevencionOtono,
@@ -108,4 +108,7 @@ export const BASE_GAME_SCENARIOS: Scenario[] = [
   os034VecinosSinMediosParaSalir,
 ];
 
-export const NEW_GAME_SCENARIOS: Scenario[] = applyScenarioI18n(BASE_GAME_SCENARIOS, scenarioI18nEs);
+export const EDITORIAL_SCENARIO_LIBRARY: Scenario[] = applyScenarioI18n(
+  BASE_EDITORIAL_SCENARIOS,
+  scenarioI18nEs
+);

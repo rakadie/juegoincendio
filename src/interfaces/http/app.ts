@@ -7,13 +7,8 @@ import {
   VerticalBetaApplicationError,
   VerticalBetaApplicationService
 } from '../../application/vertical-beta/vertical-beta-application-service.js';
-import { EMERGENCY_GAME_VARIABLES } from '../../domain/entities/emergency-training-content.js';
-import { CAMPAIGN_CONTENT } from '../../content/campaign.js';
-import { OFFICIAL_OPERATIONAL_SCENES } from '../../content/official-operational-scenes.js';
-import { VERTICAL_BETA_DECLARATIVE_CONTENT } from '../../content/vertical-beta-flow-content.js';
-import { NEW_GAME_SCENARIOS } from '../../content/scenarios/index.js';
+import { OFFICIAL_PLAYER_CONTENT } from '../../content/official-player-content.js';
 import { InMemoryFireIncidentRepository } from '../../infrastructure/repositories/in-memory-fire-incident-repository.js';
-import { renderGameContentPage } from './game-content-page.js';
 import { renderPrototypePage } from './prototype-page.js';
 
 export function buildApp(): FastifyInstance {
@@ -79,18 +74,7 @@ export function buildApp(): FastifyInstance {
   );
 
   app.get('/game-content/data', async () => {
-    return {
-      variables: EMERGENCY_GAME_VARIABLES,
-      scenarios: NEW_GAME_SCENARIOS,
-      operationalScenes: OFFICIAL_OPERATIONAL_SCENES,
-      verticalBetaFlowContent: VERTICAL_BETA_DECLARATIVE_CONTENT,
-      campaign: CAMPAIGN_CONTENT
-    };
-  });
-
-  app.get('/game-content', async (_request, reply) => {
-    reply.type('text/html; charset=utf-8');
-    return renderGameContentPage();
+    return OFFICIAL_PLAYER_CONTENT;
   });
 
   app.get('/images/primer-aviso-humo.png', async (_request, reply) => {

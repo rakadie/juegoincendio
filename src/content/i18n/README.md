@@ -5,7 +5,7 @@ Ruta editable principal:
 - `src/content/i18n/es/scenarios.ts`
 
 Esta plantilla contiene los textos extraidos de `src/content/scenarios`. El juego exporta
-`NEW_GAME_SCENARIOS` con estos textos aplicados, asi que cambiar una cadena en la plantilla
+`EDITORIAL_SCENARIO_LIBRARY` con estos textos aplicados, asi que cambiar una cadena en la plantilla
 afecta a `/game-content/data`, `/game-content` y el prototipo que consuma esos escenarios.
 
 ## Nomenclatura

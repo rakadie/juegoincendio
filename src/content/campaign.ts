@@ -9,7 +9,7 @@ import {
   PREVENTION_BALANCE
 } from './prevention-balance.js';
 
-export const WINTER_CAMPAIGN_NODES: CampaignNode[] = [
+export const ARCHIVED_WINTER_CAMPAIGN_NODES: CampaignNode[] = [
         {
           id: 'invierno_1',
           title: 'Invierno · Limpieza estratégica de matorral',
@@ -146,7 +146,7 @@ export const WINTER_CAMPAIGN_NODES: CampaignNode[] = [
         }
       ];
 
-export const SUMMER_CAMPAIGN_NODES: CampaignNode[] = [
+export const ARCHIVED_SUMMER_CAMPAIGN_NODES: CampaignNode[] = [
         {
           id: 'verano_1',
           title: 'Verano · Conato en ladera de alta pendiente',
@@ -278,14 +278,14 @@ export const SUMMER_CAMPAIGN_NODES: CampaignNode[] = [
         }
       ];
 
-export const CAMPAIGN_CONTENT: CampaignContent = {
+export const ARCHIVED_CAMPAIGN_CONTENT: CampaignContent = {
   preventionInspection: PREVENTION_INSPECTION_TERRITORY_FUEL,
   preventionInspections: [...OFFICIAL_PREVENTION_INSPECTIONS],
   preventionBalance: PREVENTION_BALANCE,
   firstAlert: FIRST_ALERT_SCENARIO,
   crisisRouteModule: CRISIS_ROUTE_MODULE,
-  winterNodes: WINTER_CAMPAIGN_NODES,
-  summerNodes: SUMMER_CAMPAIGN_NODES
+  winterNodes: ARCHIVED_WINTER_CAMPAIGN_NODES,
+  summerNodes: ARCHIVED_SUMMER_CAMPAIGN_NODES
 };
 
 

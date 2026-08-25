@@ -1659,7 +1659,7 @@ export function renderGameContentPage(): string {
       }
 
       async function init() {
-        const response = await fetch('/game-content/data');
+        const response = await fetch('/editorial-content/data');
         state.data = await response.json();
 
         const hashId = window.location.hash.replace('#', '');

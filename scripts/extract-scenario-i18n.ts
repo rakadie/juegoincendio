@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { BASE_GAME_SCENARIOS } from '../src/content/scenarios/index.js';
+import { BASE_EDITORIAL_SCENARIOS } from '../src/content/scenarios/index.js';
 import type {
   MediaOutput,
   NarrativeEffects,
@@ -168,7 +168,7 @@ const catalog = {
   locale: 'es',
   namespace: 'scenarios',
   scenarios: Object.fromEntries(
-    BASE_GAME_SCENARIOS.map((scenario) => [scenario.id, scenarioTemplate(scenario)])
+    BASE_EDITORIAL_SCENARIOS.map((scenario) => [scenario.id, scenarioTemplate(scenario)])
   )
 };
 
