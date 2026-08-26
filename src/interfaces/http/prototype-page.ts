@@ -271,6 +271,7 @@ export function renderPrototypePage(): string {
         box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
       }
       .territory-svg { display: block; width: 100%; height: 100%; min-height: 390px; max-height: 620px; object-fit: cover; }
+
       .visual-sky { fill: #6f8b76; }
       .visual-sky.crisis { fill: #49535a; }
       .visual-hill-back { fill: #708b5c; }
@@ -542,7 +543,7 @@ export function renderPrototypePage(): string {
                 <span id="entry-duration">Duración orientativa</span>
               </div>
               <div class="entry-actions"><button class="primary" id="start-session-button" type="button">Comenzar partida</button></div>
-              <p class="entry-note">La entrada no crea una partida hasta que tú lo decidas. El briefing de misión aparecerá después de comenzar.</p>
+              <p class="entry-note">Cuando comiences, conocerás la misión antes de tomar tu primera decisión.</p>
             </div>
             <div class="entry-visual" role="img" aria-label="Territorio de barranco e interfaz urbano-forestal del ejercicio">
               <div class="entry-visual-card"><strong>Una preparación, una emergencia.</strong><p>Observa cómo las decisiones preventivas se vuelven condiciones operativas cuando comienza el incendio.</p></div>
