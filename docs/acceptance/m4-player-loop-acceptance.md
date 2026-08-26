@@ -45,9 +45,12 @@ El smoke reproduce en navegador real:
 9. cinco dimensiones por cada lado de la comparación;
 10. `Jugar otra partida` desde el cierre comparativo;
 11. vuelta a misión con el mismo id técnico y journal `commands: []`;
-12. ausencia de excepciones JavaScript y llamadas `console.error` durante el recorrido.
+12. cambio real a viewport desktop de 1280 × 900;
+13. reload de la landing en desktop y comprobación del layout de entrada en dos columnas;
+14. activación por teclado de `Continuar partida` también en desktop y vuelta a la misión;
+15. ausencia de excepciones JavaScript y llamadas `console.error` durante todo el recorrido.
 
-El script imprime `M4_BROWSER_SMOKE_OK` únicamente al completar la secuencia.
+El script imprime `M4_BROWSER_SMOKE_OK` únicamente al completar la secuencia móvil + desktop.
 
 ## Evidencia de candidato
 
@@ -56,7 +59,7 @@ La PR final de #151 debe registrar:
 - SHA candidato;
 - ejecución verde de `Vertical Beta 1 acceptance`;
 - resultado de `accept:m4`;
-- resultado `M4_BROWSER_SMOKE_OK`;
+- resultado `M4_BROWSER_SMOKE_OK` cubriendo móvil y desktop;
 - dictamen Product Owner;
 - dictamen QA.
 
