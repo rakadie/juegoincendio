@@ -66,14 +66,23 @@ describe('M4.2 local session continuity', () => {
     await app.close();
   });
 
-  it('rejects incompatible or oversized journals', async () => {
+  it('rejects incompatible version, incompatible context and oversized journals', async () => {
     const app = buildApp();
-    const incompatible = await app.inject({
+    const incompatibleVersion = await app.inject({
       method: 'POST',
-      url: '/api/game-sessions/incompatible/restore',
+      url: '/api/game-sessions/incompatible-version/restore',
       payload: {
         resumeSchemaVersion: 2,
         referenceContextId: 'vb1-reference-context-v1',
+        commands: []
+      }
+    });
+    const incompatibleContext = await app.inject({
+      method: 'POST',
+      url: '/api/game-sessions/incompatible-context/restore',
+      payload: {
+        resumeSchemaVersion: 1,
+        referenceContextId: 'otro-contexto',
         commands: []
       }
     });
@@ -87,8 +96,11 @@ describe('M4.2 local session continuity', () => {
       }
     });
 
-    expect(incompatible.statusCode).toBe(400);
+    expect(incompatibleVersion.statusCode).toBe(400);
+    expect(incompatibleContext.statusCode).toBe(400);
     expect(oversized.statusCode).toBe(400);
+    const lookup = await app.inject({ method: 'GET', url: '/api/game-sessions/incompatible-context' });
+    expect(lookup.statusCode).toBe(404);
     await app.close();
   });
 
