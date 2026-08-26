@@ -17,7 +17,7 @@ concurrency:
 jobs:
   acceptance:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -31,5 +31,30 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run the complete M2 acceptance gate
-        run: npm run accept:m2
+      - name: Run the complete M4 acceptance gate
+        run: npm run accept:m4
+
+      - name: Run the M4 browser smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PORT=3001
+          npm start >/tmp/m4-server.log 2>&1 &
+          SERVER_PID=$!
+          cleanup() {
+            kill "$SERVER_PID" 2>/dev/null || true
+            cat /tmp/m4-server.log || true
+          }
+          trap cleanup EXIT
+
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:3001/health >/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:3001/health >/dev/null
+
+          CHROME_BIN="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser || true)"
+          test -n "$CHROME_BIN"
+          CHROME_BIN="$CHROME_BIN" M4_BASE_URL=http://127.0.0.1:3001 npm run smoke:m4
