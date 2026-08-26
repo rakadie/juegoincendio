@@ -26,11 +26,8 @@ function contrastRatio(foreground: string, background: string): number {
 describe('M3.8 north-star interface', () => {
   it('uses the approved four-stage journey instead of the legacy dominant sidebar', () => {
     const html = renderPrototypePage();
-
     expect(html).toContain('class="northstar-shell"');
-    for (const stage of ['territory', 'housing', 'crisis', 'result']) {
-      expect(html).toContain(`data-stage-id="${stage}"`);
-    }
+    for (const stage of ['territory', 'housing', 'crisis', 'result']) expect(html).toContain(`data-stage-id="${stage}"`);
     expect(html).toContain("stage.setAttribute('aria-current', 'step')");
     expect(html).toContain('class="session-footer"');
     expect(html).not.toContain('<aside>');
@@ -38,7 +35,6 @@ describe('M3.8 north-star interface', () => {
 
   it('keeps inspections visual-first and exposes the official selection quota', () => {
     const html = renderPrototypePage();
-
     expect(html).toContain('class="selection-counter"');
     expect(html).toContain('Acciones seleccionadas');
     expect(html).toContain('function visualMarkup()');
@@ -48,7 +44,6 @@ describe('M3.8 north-star interface', () => {
 
   it('shows only the current crisis branch and gives result state and causality separate hierarchy', () => {
     const html = renderPrototypePage();
-
     expect(html).toContain("'Preparado'");
     expect(html).toContain("'Vulnerable'");
     expect(html).toContain('class="result-layout"');
@@ -61,7 +56,6 @@ describe('M3.8 north-star interface', () => {
 
   it('derives journey stages from the visual presenter contract instead of canonical scene IDs', () => {
     const html = renderPrototypePage();
-
     expect(html).toContain('STAGE_BY_VISUAL_TEMPLATE');
     expect(html).toContain('currentView.visual.templateId');
     expect(html).not.toContain('function stageForScene');
@@ -70,7 +64,6 @@ describe('M3.8 north-star interface', () => {
 
   it('uses the route contract for progress instead of a hard-coded node multiplier', () => {
     const html = renderPrototypePage();
-
     expect(html).toContain('expectedVisitedNodeCount');
     expect(html).toContain("' de ' + total + ' pasos completados'");
     expect(html).toContain("setAttribute('aria-valuenow', String(progress))");
@@ -80,18 +73,14 @@ describe('M3.8 north-star interface', () => {
   it('preserves the four journey labels on narrow screens', () => {
     const html = renderPrototypePage();
     const mobileSection = html.slice(html.indexOf('@media (max-width: 700px)'));
-
     expect(mobileSection).toContain('grid-template-columns: 1fr');
     expect(mobileSection).toContain('white-space: normal');
-    for (const label of ['Territorio', 'Vivienda', 'Crisis', 'Resultado']) {
-      expect(html).toContain(`>${label}</span>`);
-    }
+    for (const label of ['Territorio', 'Vivienda', 'Crisis', 'Resultado']) expect(html).toContain(`>${label}</span>`);
   });
 
   it('meets text contrast for the primary action color', () => {
     const html = renderPrototypePage();
     const primaryAction = html.match(/--primary-action:\s*(#[0-9a-fA-F]{6})/)?.[1];
-
     expect(primaryAction).toBeDefined();
     expect(contrastRatio('#ffffff', primaryAction!)).toBeGreaterThanOrEqual(4.5);
     expect(html).toContain('background: var(--primary-action)');
@@ -99,7 +88,6 @@ describe('M3.8 north-star interface', () => {
 
   it('uses user-facing Spanish labels instead of leaking internal scene and branch enums', () => {
     const html = renderPrototypePage();
-
     expect(html).toContain("briefing: 'Misión'");
     expect(html).toContain("inspection: 'Inspección'");
     expect(html).toContain("prepared: 'preparada'");
@@ -112,23 +100,16 @@ describe('M3.8 north-star interface', () => {
       readFile(`${ROOT}src/interfaces/http/prototype-page.ts`, 'utf8'),
       readFile(`${ROOT}package.json`, 'utf8')
     ]);
-    const packageJson = JSON.parse(packageSource) as {
-      dependencies?: Record<string, string>;
-      devDependencies?: Record<string, string>;
-    };
+    const packageJson = JSON.parse(packageSource) as { dependencies?: Record<string, string>; devDependencies?: Record<string, string> };
     const dependencyNames = new Set([
       ...Object.keys(packageJson.dependencies ?? {}),
       ...Object.keys(packageJson.devDependencies ?? {})
     ]);
-
     expect(pageSource).toContain('prefers-reduced-motion');
     expect(pageSource).toContain("document.querySelectorAll('.action-button')");
     expect(pageSource).toContain("card.setAttribute('tabindex', '-1')");
     expect(pageSource).not.toContain('selectCrisisBranch');
     expect(pageSource).not.toContain('calculatePreventionBalance');
-
-    for (const forbidden of ['react', 'next', 'maplibre', 'pixi', 'konva', 'phaser']) {
-      expect(dependencyNames.has(forbidden)).toBe(false);
-    }
+    for (const forbidden of ['react', 'next', 'maplibre', 'pixi', 'konva', 'phaser']) expect(dependencyNames.has(forbidden)).toBe(false);
   });
 });
