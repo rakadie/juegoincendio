@@ -205,6 +205,13 @@ try {
     );
   }
 
+  async function chooseAndWait(actionId, nextSelector) {
+    const selector = `[data-action-id=${JSON.stringify(actionId)}]`;
+    await waitForSelector(selector);
+    await pressEnter(selector);
+    await waitForSelector(nextSelector);
+  }
+
   async function advanceAndWait(selector) {
     await waitForSelector('#advance-button');
     await pressEnter('#advance-button');
@@ -265,8 +272,7 @@ try {
   await waitFor(`document.body.textContent.includes('Balance preventivo')`, 'prevention summary');
   await pressEnter('#advance-button');
   await waitForSelector('[data-action-id="movilizar-y-verificar"]');
-  await choose('movilizar-y-verificar');
-  await waitForSelector('#advance-button');
+  await chooseAndWait('movilizar-y-verificar', '#advance-button');
   await pressEnter('#advance-button');
   await waitForSelector('[data-action-id="autorizar-maniobra-condicionada"]');
   await choose('autorizar-maniobra-condicionada');
