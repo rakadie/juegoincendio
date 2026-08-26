@@ -176,8 +176,18 @@ try {
       return document.activeElement === element;
     })()`);
     assert(focused, `Could not focus ${selector}`);
-    const key = { key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13, nativeVirtualKeyCode: 13 };
-    await send('Input.dispatchKeyEvent', { type: 'keyDown', ...key });
+    const key = {
+      key: 'Enter',
+      code: 'Enter',
+      windowsVirtualKeyCode: 13,
+      nativeVirtualKeyCode: 13
+    };
+    await send('Input.dispatchKeyEvent', {
+      type: 'keyDown',
+      ...key,
+      text: '\r',
+      unmodifiedText: '\r'
+    });
     await send('Input.dispatchKeyEvent', { type: 'keyUp', ...key });
   }
 
