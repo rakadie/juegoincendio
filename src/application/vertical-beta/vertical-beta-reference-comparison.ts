@@ -56,11 +56,13 @@ export const CANONICAL_REFERENCE_RECIPES = {
   prepared: {
     schemaVersion: CANONICAL_REFERENCE_RECIPE_VERSION,
     branch: 'prepared',
+    sessionId: 'reference-contained-v1',
     commands: PREPARED_COMMANDS
   },
   vulnerable: {
     schemaVersion: CANONICAL_REFERENCE_RECIPE_VERSION,
     branch: 'vulnerable',
+    sessionId: 'reference-overwhelmed-v1',
     commands: VULNERABLE_COMMANDS
   }
 } as const;
@@ -103,7 +105,7 @@ function requireResult(view: VerticalBetaApplicationView): PresentedResultScene 
 export function runCanonicalReference(branch: CrisisBranch): VerticalBetaApplicationView {
   const recipe = CANONICAL_REFERENCE_RECIPES[branch];
   const service = new VerticalBetaApplicationService();
-  const view = service.restore(`m4-reference-${branch}-v${recipe.schemaVersion}`, recipe.commands);
+  const view = service.restore(recipe.sessionId, recipe.commands);
   const result = requireResult(view);
   if (view.session.branch !== branch) {
     throw new VerticalBetaApplicationError(
