@@ -9,9 +9,7 @@ export function renderPrototypePage(): string {
       :root {
         color-scheme: light;
         --navy: #071726;
-        --navy-soft: #102536;
         --surface: #f7f8f6;
-        --surface-muted: #eef1ee;
         --line: #cbd2cf;
         --ink: #17242d;
         --muted: #617079;
@@ -20,6 +18,7 @@ export function renderPrototypePage(): string {
         --orange: #d8780f;
         --red: #b73228;
         --accent: #f0b44b;
+        --primary-action: #a95000;
         --focus: #0b7b67;
         --shadow: 0 18px 48px rgba(7, 23, 38, .14);
       }
@@ -81,12 +80,20 @@ export function renderPrototypePage(): string {
       .brand-copy small { display: block; margin-top: 2px; color: #b9c8d2; font-size: .69rem; }
 
       .journey { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: center; }
-      .stage { position: relative; display: grid; grid-template-columns: 32px 1fr; align-items: center; gap: 8px; min-width: 0; color: #9db0bc; }
+      .stage {
+        position: relative;
+        display: grid;
+        grid-template-columns: 32px minmax(0, 1fr);
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+        color: #9db0bc;
+      }
       .stage:not(:last-child)::after {
         content: '';
         position: absolute;
         height: 2px;
-        left: calc(32px + 10px);
+        left: 42px;
         right: 8px;
         top: 15px;
         background: #4d6170;
@@ -105,10 +112,14 @@ export function renderPrototypePage(): string {
         font-size: .78rem;
         font-weight: 850;
       }
-      .stage-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .8rem; font-weight: 780; }
+      .stage-label { min-width: 0; font-size: .8rem; font-weight: 780; line-height: 1.15; }
       .stage.complete, .stage.active { color: #fff; }
       .stage.complete .stage-dot { border-color: #6dab4a; background: #5b9d3f; }
-      .stage.active .stage-dot { border-color: #f4a93a; background: #c96b08; box-shadow: 0 0 0 4px rgba(240, 180, 75, .15); }
+      .stage.active .stage-dot {
+        border-color: #f4a93a;
+        background: var(--primary-action);
+        box-shadow: 0 0 0 4px rgba(240, 180, 75, .15);
+      }
       .stage.complete:not(:last-child)::after { background: #739e62; }
 
       .topbar-actions { display: flex; justify-content: flex-end; gap: 8px; }
@@ -207,7 +218,6 @@ export function renderPrototypePage(): string {
         box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
       }
       .territory-svg { display: block; width: 100%; height: 100%; min-height: 390px; max-height: 620px; object-fit: cover; }
-
       .visual-sky { fill: #6f8b76; }
       .visual-sky.crisis { fill: #49535a; }
       .visual-hill-back { fill: #708b5c; }
@@ -337,7 +347,12 @@ export function renderPrototypePage(): string {
         cursor: pointer;
         font-weight: 800;
       }
-      .primary { border: 1px solid #bf6b10; color: #fff; background: #c96b08; box-shadow: 0 6px 16px rgba(201, 107, 8, .18); }
+      .primary {
+        border: 1px solid #8f4300;
+        color: #fff;
+        background: var(--primary-action);
+        box-shadow: 0 6px 16px rgba(169, 80, 0, .2);
+      }
       .secondary { border: 1px solid #9aa7a2; color: #263941; background: #eef2ef; }
       button:disabled { cursor: not-allowed; opacity: .52; }
       .footer-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
@@ -354,7 +369,7 @@ export function renderPrototypePage(): string {
         background: #fff;
       }
       .relation::before { content: '↓'; position: absolute; left: 16px; top: 13px; font-weight: 900; color: #647780; }
-      .relation.decisive { border-left: 4px solid #c96b08; }
+      .relation.decisive { border-left: 4px solid var(--primary-action); }
       .relation h3 { font-size: .95rem; }
       .relation p { margin-bottom: 0; color: var(--muted); font-size: .84rem; }
       .cause-list { color: #344952; font-size: .78rem; font-weight: 700; }
@@ -378,7 +393,7 @@ export function renderPrototypePage(): string {
       .footer-cell p { margin: 0; color: #5b6c74; font-size: .8rem; line-height: 1.4; }
       .decision-history { margin: 0; padding-left: 18px; color: #5b6c74; font-size: .78rem; }
       .progress-line { height: 6px; margin-top: 8px; overflow: hidden; border-radius: 999px; background: #d4dbd8; }
-      .progress-line span { display: block; height: 100%; background: linear-gradient(90deg, #5b9d3f, #c96b08); transition: width .2s ease; }
+      .progress-line span { display: block; height: 100%; background: linear-gradient(90deg, #5b9d3f, var(--primary-action)); transition: width .2s ease; }
       .meta-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
       .chip { padding: 5px 8px; border: 1px solid #c5ceca; border-radius: 999px; color: #53656e; background: #f8faf9; font-size: .7rem; }
       .chip.accent { color: #24543e; border-color: #9cc0aa; background: #e8f2ea; }
@@ -401,11 +416,27 @@ export function renderPrototypePage(): string {
       @media (max-width: 700px) {
         .topbar { position: static; min-height: 0; grid-template-columns: 1fr auto; gap: 12px; padding: 11px 12px; }
         .brand-copy small { display: none; }
-        .journey { gap: 4px; }
-        .stage { grid-template-columns: 28px minmax(0, 1fr); gap: 5px; }
+        .journey { gap: 4px; align-items: start; }
+        .stage {
+          grid-template-columns: 1fr;
+          grid-template-rows: 28px auto;
+          justify-items: center;
+          gap: 4px;
+          text-align: center;
+        }
         .stage-dot { width: 28px; height: 28px; }
-        .stage:not(:last-child)::after { top: 13px; left: 36px; right: 4px; }
-        .stage-label { font-size: .68rem; }
+        .stage:not(:last-child)::after {
+          top: 13px;
+          left: calc(50% + 18px);
+          right: calc(-50% + 18px);
+        }
+        .stage-label {
+          overflow: visible;
+          text-overflow: clip;
+          white-space: normal;
+          font-size: .68rem;
+          line-height: 1.05;
+        }
         main { padding: 10px 8px; }
         .scene { min-height: auto; border-radius: 10px; }
         .scene-content { padding: 15px; }
@@ -446,7 +477,7 @@ export function renderPrototypePage(): string {
 
       <footer class="session-footer" aria-label="Resumen de la partida">
         <div class="footer-cell"><strong>¿Por qué importa?</strong><p>La prevención modifica el territorio. El territorio condiciona las opciones disponibles durante el incendio.</p></div>
-        <div class="footer-cell"><strong>Tu recorrido</strong><p id="progress-copy">0 nodos completados</p><div class="progress-line" aria-hidden="true"><span id="progress-bar" style="width:0%"></span></div><div class="meta-row"><span class="chip accent" id="scene-type">Misión</span><span class="chip" id="branch-chip">Ruta pendiente</span><span class="chip" id="session-status">Partida activa</span></div></div>
+        <div class="footer-cell"><strong>Tu recorrido</strong><p id="progress-copy">0 pasos completados</p><div class="progress-line" role="progressbar" aria-label="Progreso del recorrido" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="progress-bar" style="width:0%"></span></div><div class="meta-row"><span class="chip accent" id="scene-type">Misión</span><span class="chip" id="branch-chip">Ruta pendiente</span><span class="chip" id="session-status">Partida activa</span></div></div>
         <div class="footer-cell"><strong>Últimas decisiones</strong><ol class="decision-history" id="decision-history"><li>Aún no hay decisiones.</li></ol></div>
       </footer>
     </div>
@@ -579,6 +610,15 @@ export function renderPrototypePage(): string {
         vulnerable: 'vulnerable'
       };
 
+      const STAGE_BY_VISUAL_TEMPLATE = {
+        briefing: 1,
+        territory: 1,
+        housing: 2,
+        summary: 2,
+        crisis: 3,
+        result: 4
+      };
+
       function focusAction(actionId) {
         const button = Array.from(document.querySelectorAll('.action-button')).find(function (candidate) { return candidate.dataset.actionId === actionId; });
         if (!button) return;
@@ -608,15 +648,13 @@ export function renderPrototypePage(): string {
         }
       }
 
-      function stageForScene(sceneId) {
-        if (sceneId === 'ending-result-causal-report') return 4;
-        if (sceneId === 'prevention-inspection-housing-interface' || sceneId === 'transition-summary-prevention') return 2;
-        if (sceneId === 'intro-briefing-mission' || sceneId === 'prevention-inspection-territory-fuel') return 1;
-        return 3;
+      function currentJourneyStage() {
+        const templateId = currentView && currentView.visual ? currentView.visual.templateId : 'briefing';
+        return STAGE_BY_VISUAL_TEMPLATE[templateId] || 1;
       }
 
       function renderJourney() {
-        const activeStage = stageForScene(currentView.session.currentSceneId);
+        const activeStage = currentJourneyStage();
         document.querySelectorAll('.stage').forEach(function (stage, index) {
           const stageNumber = index + 1;
           const completed = stageNumber < activeStage || currentView.session.status === 'completed';
@@ -631,8 +669,15 @@ export function renderPrototypePage(): string {
 
       function renderFooter() {
         const session = currentView.session;
-        document.getElementById('progress-copy').textContent = session.completedSceneIds.length + ' nodos completados';
-        document.getElementById('progress-bar').style.width = Math.min(100, session.completedSceneIds.length * 10) + '%';
+        const total = currentView.context && Number.isInteger(currentView.context.expectedVisitedNodeCount)
+          ? currentView.context.expectedVisitedNodeCount
+          : 10;
+        const completed = Math.min(total, session.completedSceneIds.length);
+        const progress = total === 0 ? 0 : Math.round((completed / total) * 100);
+        document.getElementById('progress-copy').textContent = completed + ' de ' + total + ' pasos completados';
+        document.getElementById('progress-bar').style.width = progress + '%';
+        const progressLine = document.querySelector('.progress-line[role="progressbar"]');
+        if (progressLine) progressLine.setAttribute('aria-valuenow', String(progress));
         document.getElementById('scene-type').textContent = SCENE_TYPE_LABELS[currentView.scene.type] || 'Escena';
         document.getElementById('branch-chip').textContent = session.branch ? 'Ruta ' + (BRANCH_LABELS[session.branch] || session.branch) : 'Ruta pendiente';
         document.getElementById('session-status').textContent = session.status === 'completed' ? 'Partida completada' : 'Partida activa';
