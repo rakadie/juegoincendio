@@ -169,6 +169,10 @@ try {
   }
 
   async function pressEnter(selector) {
+    await waitFor(
+      `(() => { const element = document.querySelector(${JSON.stringify(selector)}); return element && !element.disabled; })()`,
+      `${selector} enabled`
+    );
     const focused = await evaluate(`(() => {
       const element = document.querySelector(${JSON.stringify(selector)});
       if (!element) return false;
