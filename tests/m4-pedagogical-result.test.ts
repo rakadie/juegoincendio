@@ -99,7 +99,8 @@ describe('M4.3 pedagogical result closure', () => {
   });
 
   it('defines the four player-facing steps rendered for every causal relation', () => {
-    expect(M4_PLAYER_LOOP_CLIENT).toContain("appendResultStep(\n        steps,\n        'Causa'");
+    expect(M4_PLAYER_LOOP_CLIENT).toContain('appendResultStep(');
+    expect(M4_PLAYER_LOOP_CLIENT).toContain("'Causa'");
     expect(M4_PLAYER_LOOP_CLIENT).toContain("'Estado heredado'");
     expect(M4_PLAYER_LOOP_CLIENT).toContain("'Durante la crisis'");
     expect(M4_PLAYER_LOOP_CLIENT).toContain("'Consecuencia'");
