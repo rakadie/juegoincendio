@@ -303,7 +303,12 @@ function presentResult(session: GameSession): PresentedResultScene {
   const report = buildCausalReport(session);
   const content = VERTICAL_BETA_RESULT_VARIANTS[report.variant];
   const visualDimensions = new Map(
-    presentSceneVisualModel(session).dimensions.map((dimension) => [dimension.id, dimension] as const)
+    presentSceneVisualModel({
+      currentSceneId: session.progress.currentSceneId,
+      branch: session.crisisBranch,
+      inheritedState: session.inheritedState,
+      decisions: session.decisions
+    }).dimensions.map((dimension) => [dimension.id, dimension] as const)
   );
   return {
     id: 'ending-result-causal-report',
