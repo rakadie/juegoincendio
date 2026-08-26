@@ -6,6 +6,7 @@ import {
   type VerticalBetaApplicationView,
   type VerticalBetaResumeCommand
 } from '../../application/vertical-beta/vertical-beta-application-service.js';
+import { buildReferenceComparison } from '../../application/vertical-beta/vertical-beta-reference-comparison.js';
 import {
   createVerticalBetaRuntimeContext,
   VERTICAL_BETA_REFERENCE_CONTEXT,
@@ -103,6 +104,11 @@ export function buildApp(options: BuildAppOptions = {}): FastifyInstance {
   app.get<{ Params: { sessionId: string } }>(
     '/api/game-sessions/:sessionId',
     async (request) => present(verticalBeta.view(request.params.sessionId))
+  );
+
+  app.get<{ Params: { sessionId: string } }>(
+    '/api/game-sessions/:sessionId/comparison',
+    async (request) => buildReferenceComparison(verticalBeta.view(request.params.sessionId))
   );
 
   app.post<{ Params: { sessionId: string } }>(
