@@ -57,6 +57,10 @@ import {
 
 export type VerticalBetaApplicationErrorCode = 'session-not-found' | 'unsupported-command';
 
+export type VerticalBetaResumeCommand =
+  | { readonly type: 'advance' }
+  | { readonly type: 'action'; readonly actionId: string };
+
 export class VerticalBetaApplicationError extends Error {
   constructor(
     readonly code: VerticalBetaApplicationErrorCode,
@@ -399,6 +403,27 @@ export class VerticalBetaApplicationService {
 
   restart(sessionId: string): VerticalBetaApplicationView {
     return this.create(sessionId);
+  }
+
+  restore(
+    sessionId: string,
+    commands: readonly VerticalBetaResumeCommand[]
+  ): VerticalBetaApplicationView {
+    const existing = this.sessions.get(sessionId);
+    if (existing !== undefined) return this.view(sessionId);
+
+    const candidate = new VerticalBetaApplicationService();
+    candidate.create(sessionId);
+    for (const command of commands) {
+      if (command.type === 'action') {
+        candidate.applyAction(sessionId, command.actionId);
+      } else {
+        candidate.advance(sessionId);
+      }
+    }
+    const restored = candidate.requireSession(sessionId);
+    this.sessions.set(sessionId, restored);
+    return this.view(sessionId);
   }
 
   view(sessionId: string): VerticalBetaApplicationView {
