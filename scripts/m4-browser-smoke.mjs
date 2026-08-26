@@ -6,6 +6,7 @@ const BASE_URL = process.env.M4_BASE_URL ?? 'http://127.0.0.1:3001';
 const CHROME_BIN = process.env.CHROME_BIN;
 const CDP_PORT = Number(process.env.M4_CDP_PORT ?? 9222);
 const STORAGE_KEY = 'vertical-beta.resume.v1';
+const CDP_COMMAND_TIMEOUT_MS = 5_000;
 const profileDirectory = `/tmp/m4-chrome-${process.pid}`;
 
 if (!CHROME_BIN) {
@@ -77,13 +78,30 @@ try {
 
   let nextId = 1;
   const pending = new Map();
+
+  function rejectPending(message) {
+    const error = new Error(message);
+    for (const [id, request] of pending) {
+      clearTimeout(request.timeout);
+      pending.delete(id);
+      request.reject(error);
+    }
+  }
+
+  socket.addEventListener('close', () => {
+    rejectPending('Chrome CDP connection closed.');
+  });
+  socket.addEventListener('error', () => {
+    rejectPending('Chrome CDP connection failed.');
+  });
   socket.addEventListener('message', (event) => {
     const message = JSON.parse(String(event.data));
     if (message.id && pending.has(message.id)) {
-      const { resolve, reject } = pending.get(message.id);
+      const request = pending.get(message.id);
       pending.delete(message.id);
-      if (message.error) reject(new Error(message.error.message));
-      else resolve(message.result ?? {});
+      clearTimeout(request.timeout);
+      if (message.error) request.reject(new Error(message.error.message));
+      else request.resolve(message.result ?? {});
       return;
     }
     if (message.method === 'Runtime.exceptionThrown') {
@@ -101,8 +119,22 @@ try {
   function send(method, params = {}) {
     const id = nextId++;
     return new Promise((resolve, reject) => {
-      pending.set(id, { resolve, reject });
-      socket.send(JSON.stringify({ id, method, params }));
+      if (socket.readyState !== 1) {
+        reject(new Error(`Chrome CDP is not open for ${method}.`));
+        return;
+      }
+      const timeout = setTimeout(() => {
+        pending.delete(id);
+        reject(new Error(`Chrome CDP command timed out: ${method}.`));
+      }, CDP_COMMAND_TIMEOUT_MS);
+      pending.set(id, { resolve, reject, timeout });
+      try {
+        socket.send(JSON.stringify({ id, method, params }));
+      } catch (error) {
+        clearTimeout(timeout);
+        pending.delete(id);
+        reject(error);
+      }
     });
   }
 
