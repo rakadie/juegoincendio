@@ -4,6 +4,7 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
   const RESUME_SCHEMA_VERSION = 1;
   const MAX_COMMANDS = 32;
   const originalFetch = window.fetch.bind(window);
+  let lastGameView = null;
 
   function isResumeCommand(value) {
     return value && typeof value === 'object' &&
@@ -73,6 +74,7 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
 
   function recordSuccessfulResponse(pathname, method, init, payload) {
     if (!payload || !payload.session || typeof payload.session.id !== 'string') return;
+    lastGameView = payload;
     const session = payload.session;
     const contextId = payloadContextId(payload);
 
@@ -126,11 +128,70 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
         const payload = await response.clone().json();
         recordSuccessfulResponse(pathnameFor(input), methodFor(init), init, payload);
       } catch {
-        // Non-JSON responses are irrelevant to the journal.
+        // Non-JSON responses are irrelevant to the player loop.
       }
     }
     return response;
   };
+
+  function ensureResultStyle() {
+    if (document.getElementById('m4-result-closure-style')) return;
+    const style = document.createElement('style');
+    style.id = 'm4-result-closure-style';
+    style.textContent =
+      '.m4-causal-steps{display:grid;gap:7px;margin:10px 0 0;padding:0;list-style:none}' +
+      '.m4-causal-step{display:grid;grid-template-columns:minmax(110px,.32fr) minmax(0,1fr);gap:10px;padding:8px 10px;border-radius:7px;background:#f4f6f4}' +
+      '.m4-causal-step strong{font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:#49606a}' +
+      '.m4-causal-step span{font-size:.84rem;color:#243740}' +
+      '@media(max-width:700px){.m4-causal-step{grid-template-columns:1fr;gap:2px}}';
+    document.head.appendChild(style);
+  }
+
+  function appendResultStep(list, label, value) {
+    const item = document.createElement('li');
+    item.className = 'm4-causal-step';
+    const name = document.createElement('strong');
+    name.textContent = label;
+    const text = document.createElement('span');
+    text.textContent = value;
+    item.append(name, text);
+    list.appendChild(item);
+  }
+
+  function enhanceResult() {
+    const view = lastGameView;
+    if (!view || !view.scene || view.scene.type !== 'result') return;
+    const container = document.querySelector('.relations');
+    if (!container || container.dataset.m4ClosureEnhanced === 'true') return;
+    const cards = Array.from(container.querySelectorAll('.relation'));
+    if (cards.length !== view.scene.relations.length) return;
+    ensureResultStyle();
+    view.scene.relations.forEach(function (relation, index) {
+      const card = cards[index];
+      const title = card.querySelector('h3');
+      const oldCause = card.querySelector('.cause-list');
+      const oldEffect = card.querySelector('p');
+      if (oldCause) oldCause.remove();
+      if (oldEffect) oldEffect.remove();
+      const steps = document.createElement('ol');
+      steps.className = 'm4-causal-steps';
+      steps.setAttribute('aria-label', 'Cadena causal de ' + relation.dimensionLabel);
+      appendResultStep(
+        steps,
+        'Causa',
+        relation.causeType + ': ' + relation.causeActionLabels.join(' · ')
+      );
+      appendResultStep(
+        steps,
+        'Estado heredado',
+        relation.dimensionLabel + ': ' + relation.stateLabel
+      );
+      appendResultStep(steps, 'Durante la crisis', relation.manifestationLabel);
+      appendResultStep(steps, 'Consecuencia', relation.effect);
+      if (title) title.insertAdjacentElement('afterend', steps); else card.appendChild(steps);
+    });
+    container.dataset.m4ClosureEnhanced = 'true';
+  }
 
   async function fetchReferenceContextId() {
     try {
@@ -218,6 +279,13 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
     }
   }
 
-  window.addEventListener('DOMContentLoaded', prepareResume, { once: true });
+  window.addEventListener('DOMContentLoaded', function () {
+    prepareResume();
+    const game = document.getElementById('game');
+    if (game) {
+      new MutationObserver(enhanceResult).observe(game, { childList: true, subtree: true });
+    }
+    enhanceResult();
+  }, { once: true });
 })();
 `;
