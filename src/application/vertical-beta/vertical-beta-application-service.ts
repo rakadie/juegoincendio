@@ -54,6 +54,7 @@ import {
   resolveCausalRouter,
   resolveFirstAlert
 } from '../../domain/vertical-beta/vertical-beta-flow-engine.js';
+import { presentSceneVisualModel } from './vertical-beta-visual-presenter.js';
 
 export type VerticalBetaApplicationErrorCode = 'session-not-found' | 'unsupported-command';
 
@@ -126,8 +127,13 @@ export interface PresentedResultScene extends PresentedSceneBase<'result'> {
     id: string;
     title: string;
     effect: string;
+    causeType: 'Acción aplicada' | 'Omisión relevante';
     causeActionLabels: readonly string[];
+    dimensionLabel: string;
+    stateLabel: string;
     manifestationSceneId: CanonicalSceneId;
+    manifestationLabel: string;
+    alternativeActionLabels: readonly string[];
     branchDecisive: boolean;
   }[];
 }
@@ -296,6 +302,9 @@ function presentOperationalDecision(session: GameSession): PresentedDecisionScen
 function presentResult(session: GameSession): PresentedResultScene {
   const report = buildCausalReport(session);
   const content = VERTICAL_BETA_RESULT_VARIANTS[report.variant];
+  const visualDimensions = new Map(
+    presentSceneVisualModel(session).dimensions.map((dimension) => [dimension.id, dimension] as const)
+  );
   return {
     id: 'ending-result-causal-report',
     type: 'result',
@@ -307,12 +316,29 @@ function presentResult(session: GameSession): PresentedResultScene {
       const copy = VERTICAL_BETA_CAUSAL_RELATION_CONTENT[
         relation.id as keyof typeof VERTICAL_BETA_CAUSAL_RELATION_CONTENT
       ];
+      const dimension = visualDimensions.get(relation.dimension);
+      if (dimension === undefined) {
+        throw new VerticalBetaApplicationError(
+          'unsupported-command',
+          `Missing presented state for result dimension ${relation.dimension}.`
+        );
+      }
+      const manifestation = requireVerticalBetaSceneMessages(
+        VERTICAL_BETA_I18N_ES,
+        relation.manifestation.sceneId
+      );
       return {
         id: relation.id,
         title: copy.title,
         effect: copy.effect,
+        causeType:
+          relation.cause.execution === 'completed' ? 'Acción aplicada' : 'Omisión relevante',
         causeActionLabels: relation.cause.actionIds.map(actionLabel),
+        dimensionLabel: dimension.label,
+        stateLabel: dimension.stateLabel,
         manifestationSceneId: relation.manifestation.sceneId,
+        manifestationLabel: manifestation.title,
+        alternativeActionLabels: relation.alternativeActionIds.map(actionLabel),
         branchDecisive: relation.branchDecisive
       };
     }),
