@@ -303,6 +303,26 @@ try {
   assert(replayEnvelope?.sessionId === firstSessionId, 'Replay changed the technical session id.');
   assert(replayEnvelope?.commands?.length === 0, 'Replay did not reset the resume journal.');
 
+  await send('Emulation.setDeviceMetricsOverride', {
+    width: 1280,
+    height: 900,
+    deviceScaleFactor: 1,
+    mobile: false
+  });
+  await send('Page.reload', { ignoreCache: true });
+  await waitFor(`document.readyState === 'complete'`, 'desktop page reload');
+  await waitForSelector('#continue-session-button');
+  assert(
+    await evaluate(`window.innerWidth >= 1280`),
+    'Desktop viewport override was not applied.'
+  );
+  assert(
+    await evaluate(`getComputedStyle(document.querySelector('.entry')).gridTemplateColumns.split(' ').length === 2`),
+    'Desktop landing did not render the approved two-column entry layout.'
+  );
+  await pressEnter('#continue-session-button');
+  await waitForSelector('.scene.briefing');
+
   assert(runtimeErrors.length === 0, `Browser console/runtime errors: ${runtimeErrors.join(' | ')}`);
   console.log('M4_BROWSER_SMOKE_OK');
 } catch (error) {
