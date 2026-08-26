@@ -126,27 +126,14 @@ export function runCanonicalReference(branch: CrisisBranch): VerticalBetaApplica
 function comparisonSide(view: VerticalBetaApplicationView): PresentedReferenceComparisonSide {
   const result = requireResult(view);
   const state = view.session.inheritedState!;
-  const relationByDimension = new Map(
-    result.relations.map((relation) => [relation.dimensionLabel, relation] as const)
-  );
-  const dimensions = VERTICAL_BETA_PREVENTION_SUMMARY.dimensionOrder.map((id) => {
-    const label = result.relations.find((relation) => relation.dimensionLabel && relation.id)?.dimensionLabel;
-    const relation = result.relations.find((candidate) => {
-      const normalized = candidate.dimensionLabel.toLowerCase();
-      return (
-        (id === 'fuelLoad' && normalized.includes('carga')) ||
-        (id === 'fuelContinuity' && normalized.includes('continuidad')) ||
-        (id === 'operationalAccess' && normalized.includes('acceso')) ||
-        (id === 'defensibility' && normalized.includes('defensibilidad')) ||
-        (id === 'attackOpportunity' && normalized.includes('oportunidad'))
-      );
-    });
-    if (!relation || !label) {
-      throw new VerticalBetaApplicationError(
-        'unsupported-command',
-        `Missing result relation for ${id}.`
-      );
-    }
+  if (result.relations.length !== VERTICAL_BETA_PREVENTION_SUMMARY.dimensionOrder.length) {
+    throw new VerticalBetaApplicationError(
+      'unsupported-command',
+      'Reference comparison requires the five canonical result relations.'
+    );
+  }
+  const dimensions = VERTICAL_BETA_PREVENTION_SUMMARY.dimensionOrder.map((id, index) => {
+    const relation = result.relations[index];
     return { id, label: relation.dimensionLabel, value: state[id], stateLabel: relation.stateLabel };
   });
   const manifestations = [...result.relations]
