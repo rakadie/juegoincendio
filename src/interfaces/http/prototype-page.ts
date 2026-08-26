@@ -140,6 +140,59 @@ export function renderPrototypePage(): string {
       #notice { min-height: 24px; margin-top: 10px; color: var(--red); font-weight: 700; }
       .loading { min-height: 62vh; display: grid; place-items: center; color: var(--muted); }
 
+      .entry {
+        min-height: min(720px, calc(100vh - 142px));
+        display: grid;
+        grid-template-columns: minmax(0, 1.08fr) minmax(320px, .92fr);
+        overflow: hidden;
+        border: 1px solid #c7cfcc;
+        border-radius: 14px;
+        background: rgba(250, 251, 249, .98);
+        box-shadow: var(--shadow);
+      }
+      .entry-copy {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: clamp(30px, 5vw, 76px);
+      }
+      .entry-copy h1 { max-width: 780px; margin-bottom: 18px; }
+      .entry-copy .lead { max-width: 720px; font-size: clamp(1rem, 1.5vw, 1.18rem); }
+      .entry-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 4px; }
+      .entry-meta span {
+        padding: 7px 10px;
+        border: 1px solid #c5ceca;
+        border-radius: 999px;
+        color: #4e626a;
+        background: #f5f8f6;
+        font-size: .78rem;
+        font-weight: 740;
+      }
+      .entry-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+      .entry-actions .primary { min-width: 190px; min-height: 48px; }
+      .entry-note { max-width: 660px; margin: 15px 0 0; color: #64757c; font-size: .82rem; }
+      .entry-visual {
+        position: relative;
+        min-height: 420px;
+        display: flex;
+        align-items: flex-end;
+        padding: clamp(22px, 4vw, 48px);
+        color: #fff;
+        background:
+          linear-gradient(180deg, rgba(7, 23, 38, .08), rgba(7, 23, 38, .82)),
+          url('/images/operational-command-hero.png') center / cover;
+      }
+      .entry-visual-card {
+        max-width: 420px;
+        padding: 16px 18px;
+        border: 1px solid rgba(255,255,255,.28);
+        border-radius: 10px;
+        background: rgba(7, 23, 38, .72);
+        backdrop-filter: blur(4px);
+      }
+      .entry-visual-card strong { display: block; margin-bottom: 5px; font-size: .92rem; }
+      .entry-visual-card p { margin: 0; color: #dce7ec; font-size: .82rem; }
+
       .scene {
         min-height: min(720px, calc(100vh - 142px));
         border: 1px solid #c7cfcc;
@@ -218,6 +271,7 @@ export function renderPrototypePage(): string {
         box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
       }
       .territory-svg { display: block; width: 100%; height: 100%; min-height: 390px; max-height: 620px; object-fit: cover; }
+
       .visual-sky { fill: #6f8b76; }
       .visual-sky.crisis { fill: #49535a; }
       .visual-hill-back { fill: #708b5c; }
@@ -388,6 +442,7 @@ export function renderPrototypePage(): string {
         background: #c4cdca;
         box-shadow: 0 10px 28px rgba(7,23,38,.08);
       }
+      .session-footer[hidden] { display: none; }
       .footer-cell { min-width: 0; padding: 13px 16px; background: #edf1ef; }
       .footer-cell strong { display: block; margin-bottom: 5px; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: #243944; }
       .footer-cell p { margin: 0; color: #5b6c74; font-size: .8rem; line-height: 1.4; }
@@ -404,6 +459,8 @@ export function renderPrototypePage(): string {
         .topbar { grid-template-columns: 1fr auto; }
         .journey { grid-column: 1 / -1; grid-row: 2; }
         .topbar-actions { grid-column: 2; grid-row: 1; }
+        .entry { grid-template-columns: 1fr; }
+        .entry-visual { min-height: 280px; }
         .visual-scene[data-visual-template="territory"],
         .visual-scene[data-visual-template="housing"],
         .visual-scene[data-visual-template="crisis"],
@@ -438,6 +495,10 @@ export function renderPrototypePage(): string {
           line-height: 1.05;
         }
         main { padding: 10px 8px; }
+        .entry { min-height: auto; border-radius: 10px; }
+        .entry-copy { padding: 24px 18px; }
+        .entry-copy h1 { font-size: clamp(2.25rem, 12vw, 3.5rem); }
+        .entry-visual { min-height: 220px; padding: 16px; }
         .scene { min-height: auto; border-radius: 10px; }
         .scene-content { padding: 15px; }
         .scene-heading { grid-template-columns: 1fr; gap: 10px; }
@@ -467,15 +528,32 @@ export function renderPrototypePage(): string {
           <div class="stage" data-stage-id="crisis"><span class="stage-dot">3</span><span class="stage-label">Crisis</span></div>
           <div class="stage" data-stage-id="result"><span class="stage-dot">4</span><span class="stage-label">Resultado</span></div>
         </nav>
-        <div class="topbar-actions"><button class="ghost-button" id="restart-button" type="button">↻ Reiniciar</button></div>
+        <div class="topbar-actions"><button class="ghost-button" id="restart-button" type="button" disabled>↻ Reiniciar</button></div>
       </header>
 
       <main>
-        <div id="game" aria-live="polite"><div class="loading">Creando sesión…</div></div>
+        <div id="game" aria-live="polite">
+          <section class="entry" aria-labelledby="entry-title">
+            <div class="entry-copy">
+              <p class="eyebrow">Simulación educativa municipal</p>
+              <h1 id="entry-title">Prepara hoy. Decide bajo presión después.</h1>
+              <p class="lead">Gestiona el territorio y la interfaz de vivienda antes del incendio. Cuando llegue la emergencia, las condiciones que hayas construido limitarán o ampliarán tus opciones.</p>
+              <div class="entry-meta" aria-label="Información de la partida">
+                <span>Recorrido guiado</span>
+                <span id="entry-duration">Duración orientativa</span>
+              </div>
+              <div class="entry-actions"><button class="primary" id="start-session-button" type="button">Comenzar partida</button></div>
+              <p class="entry-note">Cuando comiences, conocerás la misión antes de tomar tu primera decisión.</p>
+            </div>
+            <div class="entry-visual" role="img" aria-label="Territorio de barranco e interfaz urbano-forestal del ejercicio">
+              <div class="entry-visual-card"><strong>Una preparación, una emergencia.</strong><p>Observa cómo las decisiones preventivas se vuelven condiciones operativas cuando comienza el incendio.</p></div>
+            </div>
+          </section>
+        </div>
         <div id="notice" role="alert"></div>
       </main>
 
-      <footer class="session-footer" aria-label="Resumen de la partida">
+      <footer class="session-footer" id="session-footer" hidden aria-label="Resumen de la partida">
         <div class="footer-cell"><strong>¿Por qué importa?</strong><p>La prevención modifica el territorio. El territorio condiciona las opciones disponibles durante el incendio.</p></div>
         <div class="footer-cell"><strong>Tu recorrido</strong><p id="progress-copy">0 pasos completados</p><div class="progress-line" role="progressbar" aria-label="Progreso del recorrido" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="progress-bar" style="width:0%"></span></div><div class="meta-row"><span class="chip accent" id="scene-type">Misión</span><span class="chip" id="branch-chip">Ruta pendiente</span><span class="chip" id="session-status">Partida activa</span></div></div>
         <div class="footer-cell"><strong>Últimas decisiones</strong><ol class="decision-history" id="decision-history"><li>Aún no hay decisiones.</li></ol></div>
@@ -489,6 +567,10 @@ export function renderPrototypePage(): string {
 
       const game = document.getElementById('game');
       const notice = document.getElementById('notice');
+      const startButton = document.getElementById('start-session-button');
+      const restartButton = document.getElementById('restart-button');
+      const sessionFooter = document.getElementById('session-footer');
+      const entryDuration = document.getElementById('entry-duration');
 
       function escapeHtml(value) {
         return String(value)
@@ -499,7 +581,13 @@ export function renderPrototypePage(): string {
           .replaceAll("'", '&#039;');
       }
 
+      function setSessionChrome(active) {
+        restartButton.disabled = !active;
+        sessionFooter.hidden = !active;
+      }
+
       async function request(path, options) {
+        if (busy) return false;
         notice.textContent = '';
         busy = true;
         try {
@@ -508,11 +596,52 @@ export function renderPrototypePage(): string {
           if (!response.ok) throw new Error(payload.message || 'No se pudo completar la acción.');
           currentView = payload;
           sessionId = payload.session.id;
+          setSessionChrome(true);
           render();
+          return true;
         } catch (error) {
           notice.textContent = error instanceof Error ? error.message : 'Error inesperado.';
+          return false;
         } finally {
           busy = false;
+        }
+      }
+
+      async function hydrateEntryContext() {
+        if (!entryDuration) return;
+        try {
+          const response = await fetch('/api/vertical-beta/context');
+          if (!response.ok) return;
+          const context = await response.json();
+          const target = context.targetDurationMinutes;
+          if (target && Number.isInteger(target.min) && Number.isInteger(target.max)) {
+            entryDuration.textContent = 'Duración estimada: ' + target.min + '–' + target.max + ' min';
+          }
+        } catch {
+          entryDuration.textContent = 'Duración orientativa';
+        }
+      }
+
+      function focusCurrentSceneHeading() {
+        const heading = game.querySelector('h1, h2');
+        if (!heading) return;
+        heading.setAttribute('tabindex', '-1');
+        heading.focus();
+      }
+
+      async function startSession() {
+        if (busy || sessionId !== null) return;
+        if (!startButton) return;
+        startButton.disabled = true;
+        startButton.textContent = 'Preparando partida…';
+        const created = await request('/api/game-sessions', { method: 'POST', body: '{}' });
+        if (created) {
+          focusCurrentSceneHeading();
+          return;
+        }
+        if (!created && sessionId === null) {
+          startButton.disabled = false;
+          startButton.textContent = 'Comenzar partida';
         }
       }
 
@@ -695,12 +824,13 @@ export function renderPrototypePage(): string {
         wireCommands();
       }
 
-      document.getElementById('restart-button').addEventListener('click', function () {
+      restartButton.addEventListener('click', function () {
         if (!sessionId || busy) return;
         request('/api/game-sessions/' + encodeURIComponent(sessionId) + '/restart', { method: 'POST', body: '{}' });
       });
-
-      request('/api/game-sessions', { method: 'POST', body: '{}' });
+      startButton.addEventListener('click', startSession);
+      setSessionChrome(false);
+      hydrateEntryContext();
     </script>
   </body>
 </html>`;
