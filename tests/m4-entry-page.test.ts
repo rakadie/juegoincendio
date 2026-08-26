@@ -40,8 +40,9 @@ describe('M4.1 explicit product entry', () => {
     const html = renderPrototypePage();
 
     expect(html).toContain("fetch('/api/vertical-beta/context')");
-    expect(html).toContain('context.targetDurationMinutes.min');
-    expect(html).toContain('context.targetDurationMinutes.max');
+    expect(html).toContain('const target = context.targetDurationMinutes;');
+    expect(html).toContain('Number.isInteger(target.min)');
+    expect(html).toContain('Number.isInteger(target.max)');
     expect(html).toContain("setSessionChrome(true)");
     expect(html).toContain("restartButton.disabled = !active");
     expect(html).toContain("sessionFooter.hidden = !active");
