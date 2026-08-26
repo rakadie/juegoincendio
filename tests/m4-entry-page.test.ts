@@ -15,6 +15,18 @@ describe('M4.1 explicit product entry', () => {
     expect(html).not.toContain('<div class="loading">Creando sesión…</div>');
   });
 
+  it('keeps landing copy in player language rather than implementation language', () => {
+    const html = renderPrototypePage();
+    const entryStart = html.indexOf('<section class="entry"');
+    const entryEnd = html.indexOf('</section>', entryStart);
+    const entryMarkup = html.slice(entryStart, entryEnd);
+
+    expect(entryMarkup).toContain(
+      'Cuando comiences, conocerás la misión antes de tomar tu primera decisión.'
+    );
+    expect(entryMarkup.toLowerCase()).not.toContain('briefing');
+  });
+
   it('creates a session only from the explicit start handler', () => {
     const html = renderPrototypePage();
     const startFunction = html.indexOf('async function startSession()');
