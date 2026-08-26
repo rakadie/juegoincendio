@@ -49,8 +49,7 @@ describe('M3.8 north-star interface', () => {
   it('shows only the current crisis branch and gives result state and causality separate hierarchy', () => {
     const html = renderPrototypePage();
 
-    expect(html).toContain("'Preparado'");
-    expect(html).toContain("'Vulnerable'");
+    expect(html).toContain("? 'Preparado' : 'Vulnerable'");
     expect(html).toContain('class="result-layout"');
     expect(html).toContain('Cadena causal principal');
     expect(html).toContain('Estado heredado');
