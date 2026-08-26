@@ -1,0 +1,223 @@
+export const M4_PLAYER_LOOP_CLIENT = String.raw`
+(function () {
+  const STORAGE_KEY = 'vertical-beta.resume.v1';
+  const RESUME_SCHEMA_VERSION = 1;
+  const MAX_COMMANDS = 32;
+  const originalFetch = window.fetch.bind(window);
+
+  function isResumeCommand(value) {
+    return value && typeof value === 'object' &&
+      (value.type === 'advance' ||
+        (value.type === 'action' && typeof value.actionId === 'string' && value.actionId.length > 0));
+  }
+
+  function readEnvelope() {
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      const value = JSON.parse(raw);
+      if (!value || value.resumeSchemaVersion !== RESUME_SCHEMA_VERSION) return null;
+      if (typeof value.referenceContextId !== 'string' || value.referenceContextId.length === 0) return null;
+      if (typeof value.sessionId !== 'string' || value.sessionId.length === 0) return null;
+      if (!Array.isArray(value.commands) || value.commands.length > MAX_COMMANDS) return null;
+      if (!value.commands.every(isResumeCommand)) return null;
+      return value;
+    } catch {
+      return null;
+    }
+  }
+
+  function writeEnvelope(value) {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(value));
+    } catch {
+      // Storage can be unavailable; the active server session still works normally.
+    }
+  }
+
+  function clearEnvelope() {
+    try {
+      window.localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // No-op: continuity is optional when storage is unavailable.
+    }
+  }
+
+  function payloadContextId(payload) {
+    return payload && payload.context && typeof payload.context.referenceContextId === 'string'
+      ? payload.context.referenceContextId
+      : null;
+  }
+
+  function pathnameFor(input) {
+    try {
+      const raw = typeof input === 'string' ? input : input.url;
+      return new URL(raw, window.location.origin).pathname;
+    } catch {
+      return '';
+    }
+  }
+
+  function methodFor(init) {
+    return String(init && init.method ? init.method : 'GET').toUpperCase();
+  }
+
+  function parseActionId(init) {
+    try {
+      const body = init && typeof init.body === 'string' ? JSON.parse(init.body) : null;
+      return body && typeof body.actionId === 'string' ? body.actionId : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function recordSuccessfulResponse(pathname, method, init, payload) {
+    if (!payload || !payload.session || typeof payload.session.id !== 'string') return;
+    const session = payload.session;
+    const contextId = payloadContextId(payload);
+
+    if (method === 'POST' && pathname === '/api/game-sessions') {
+      if (session.status === 'active' && contextId) {
+        writeEnvelope({
+          resumeSchemaVersion: RESUME_SCHEMA_VERSION,
+          referenceContextId: contextId,
+          sessionId: session.id,
+          commands: []
+        });
+      }
+      return;
+    }
+
+    const sessionPrefix = '/api/game-sessions/' + encodeURIComponent(session.id);
+    if (!pathname.startsWith(sessionPrefix)) return;
+
+    if (session.status === 'completed') {
+      clearEnvelope();
+      return;
+    }
+
+    const current = readEnvelope();
+    if (!current || current.sessionId !== session.id) return;
+
+    if (method === 'POST' && pathname === sessionPrefix + '/restart') {
+      writeEnvelope({ ...current, commands: [] });
+      return;
+    }
+
+    if (method === 'POST' && pathname === sessionPrefix + '/advance') {
+      if (current.commands.length < MAX_COMMANDS) {
+        writeEnvelope({ ...current, commands: current.commands.concat([{ type: 'advance' }]) });
+      }
+      return;
+    }
+
+    if (method === 'POST' && pathname === sessionPrefix + '/actions') {
+      const actionId = parseActionId(init);
+      if (actionId && current.commands.length < MAX_COMMANDS) {
+        writeEnvelope({ ...current, commands: current.commands.concat([{ type: 'action', actionId }]) });
+      }
+    }
+  }
+
+  window.fetch = async function (input, init) {
+    const response = await originalFetch(input, init);
+    if (response.ok) {
+      try {
+        const payload = await response.clone().json();
+        recordSuccessfulResponse(pathnameFor(input), methodFor(init), init, payload);
+      } catch {
+        // Non-JSON responses are irrelevant to the journal.
+      }
+    }
+    return response;
+  };
+
+  async function fetchReferenceContextId() {
+    try {
+      const response = await originalFetch('/api/vertical-beta/context');
+      if (!response.ok) return null;
+      const context = await response.json();
+      return typeof context.referenceContextId === 'string' ? context.referenceContextId : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function addContinueButton(envelope, needsRestore) {
+    const actions = document.querySelector('.entry-actions');
+    if (!actions || document.getElementById('continue-session-button')) return;
+    const button = document.createElement('button');
+    button.className = 'secondary';
+    button.id = 'continue-session-button';
+    button.type = 'button';
+    button.textContent = 'Continuar partida';
+    button.addEventListener('click', async function () {
+      if (button.disabled) return;
+      button.disabled = true;
+      try {
+        if (needsRestore) {
+          const restored = await originalFetch(
+            '/api/game-sessions/' + encodeURIComponent(envelope.sessionId) + '/restore',
+            {
+              method: 'POST',
+              headers: { 'content-type': 'application/json' },
+              body: JSON.stringify({
+                resumeSchemaVersion: envelope.resumeSchemaVersion,
+                referenceContextId: envelope.referenceContextId,
+                commands: envelope.commands
+              })
+            }
+          );
+          if (!restored.ok) throw new Error('No se pudo recuperar la partida guardada.');
+        }
+        if (typeof window.request !== 'function') throw new Error('La partida todavía no está disponible.');
+        const loaded = await window.request(
+          '/api/game-sessions/' + encodeURIComponent(envelope.sessionId),
+          { method: 'GET' }
+        );
+        if (!loaded) throw new Error('No se pudo continuar la partida.');
+        if (typeof window.focusCurrentSceneHeading === 'function') window.focusCurrentSceneHeading();
+      } catch (error) {
+        const notice = document.getElementById('notice');
+        if (notice) notice.textContent = error instanceof Error ? error.message : 'No se pudo continuar la partida.';
+        button.disabled = false;
+      }
+    });
+    actions.appendChild(button);
+  }
+
+  async function prepareResume() {
+    const envelope = readEnvelope();
+    if (!envelope) {
+      clearEnvelope();
+      return;
+    }
+    const contextId = await fetchReferenceContextId();
+    if (!contextId || contextId !== envelope.referenceContextId) {
+      clearEnvelope();
+      return;
+    }
+    try {
+      const response = await originalFetch('/api/game-sessions/' + encodeURIComponent(envelope.sessionId));
+      if (response.ok) {
+        const payload = await response.json();
+        if (payload && payload.session && payload.session.status === 'active') {
+          addContinueButton(envelope, false);
+        } else {
+          clearEnvelope();
+        }
+        return;
+      }
+      if (response.status === 404) {
+        addContinueButton(envelope, true);
+        return;
+      }
+      clearEnvelope();
+    } catch {
+      // Keep the journal when the server is temporarily unreachable.
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', prepareResume, { once: true });
+})();
+`;
