@@ -45,15 +45,39 @@ async function waitForChromeTargets(chrome, port, stderrState, timeoutMs = CHROM
   throw new Error(`Timed out waiting for ${url}: ${String(lastError ?? 'no response')}`);
 }
 
+async function removeChromeProfile(profileDirectory) {
+  for (let attempt = 1; attempt <= 6; attempt += 1) {
+    try {
+      await rm(profileDirectory, { recursive: true, force: true });
+      return;
+    } catch (error) {
+      const retryable =
+        error && typeof error === 'object' &&
+        ['ENOTEMPTY', 'EBUSY', 'EPERM'].includes(error.code);
+      if (!retryable || attempt === 6) throw error;
+      await sleep(attempt * 120);
+    }
+  }
+}
+
+async function waitForChromeExit(chrome, timeoutMs) {
+  if (!chrome || chrome.exitCode !== null) return true;
+  return Promise.race([
+    new Promise((resolve) => chrome.once('exit', () => resolve(true))),
+    sleep(timeoutMs).then(() => false)
+  ]);
+}
+
 async function stopChrome(chrome, profileDirectory) {
   if (chrome && chrome.exitCode === null) {
     chrome.kill('SIGTERM');
-    await Promise.race([
-      new Promise((resolve) => chrome.once('exit', resolve)),
-      sleep(500)
-    ]);
+    const exited = await waitForChromeExit(chrome, 1_500);
+    if (!exited && chrome.exitCode === null) {
+      chrome.kill('SIGKILL');
+      await waitForChromeExit(chrome, 1_000);
+    }
   }
-  await rm(profileDirectory, { recursive: true, force: true });
+  await removeChromeProfile(profileDirectory);
 }
 
 async function launchChrome() {
@@ -61,7 +85,7 @@ async function launchChrome() {
   for (let attempt = 1; attempt <= CHROME_LAUNCH_ATTEMPTS; attempt += 1) {
     const port = BASE_CDP_PORT + attempt - 1;
     const profileDirectory = `/tmp/m4-chrome-${process.pid}-${attempt}`;
-    await rm(profileDirectory, { recursive: true, force: true });
+    await removeChromeProfile(profileDirectory);
     const stderrState = { value: '' };
     const chrome = spawn(
       CHROME_BIN,
