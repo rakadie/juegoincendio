@@ -3,6 +3,14 @@ import type {
   PresentedVisualElement,
   VisualTemplateId
 } from '../../application/vertical-beta/vertical-beta-visual-presenter.js';
+import {
+  renderSceneArtDefs,
+  renderSceneHaze,
+  renderSceneRocks,
+  renderSceneShrubs,
+  renderSceneSmoke,
+  renderSceneTree
+} from './scene-art-kit.js';
 
 const REQUIRED_ELEMENT_IDS: Readonly<Partial<Record<VisualTemplateId, readonly string[]>>> = {
   territory: [
@@ -98,10 +106,15 @@ function territorySvg(model: PresentedSceneVisualModel): string {
   return `<svg class="territory-svg" viewBox="0 0 900 500" role="img" aria-label="${escapeHtml(
     model.ariaLabel
   )}">
+    ${renderSceneArtDefs()}
     <rect class="visual-sky" x="0" y="0" width="900" height="500" rx="24" />
+    ${renderSceneHaze()}
     <path class="visual-hill-back" d="M0 250 Q160 110 320 230 T650 180 T900 235 V500 H0 Z" />
     <path class="visual-hill-front" d="M0 330 Q170 190 350 320 T680 275 T900 335 V500 H0 Z" />
     <path class="visual-ravine" d="M390 220 Q440 285 455 500 L585 500 Q548 325 520 235 Z" />
+    ${renderSceneTree(105, 345, 0.82)}
+    ${renderSceneShrubs(770, 335, 0.9)}
+    ${renderSceneRocks(505, 455, 0.75)}
     <g id="territory-road" class="visual-hotspot ${stateClass(road)}"${hotspotAttributes(road)}>${titleFor(
       road
     )}<path class="visual-road" d="M40 410 C210 360 335 390 455 330 C585 265 720 290 865 245" /></g>
@@ -137,8 +150,13 @@ function housingSvg(model: PresentedSceneVisualModel): string {
   return `<svg class="territory-svg" viewBox="0 0 900 500" role="img" aria-label="${escapeHtml(
     model.ariaLabel
   )}">
+    ${renderSceneArtDefs()}
     <rect class="visual-sky" x="0" y="0" width="900" height="500" rx="24" />
+    ${renderSceneHaze()}
     <path class="visual-hill-front" d="M0 350 Q200 285 410 340 T900 315 V500 H0 Z" />
+    ${renderSceneTree(112, 365, 0.76)}
+    ${renderSceneShrubs(790, 355, 0.82)}
+    ${renderSceneRocks(655, 438, 0.68)}
     <g id="housing-home" class="${stateClass(house)}">${titleFor(house)}
       <path class="visual-house" d="M345 225 l120 -85 125 85 v180 H345 Z" />
       <rect class="visual-door" x="447" y="317" width="48" height="88" />
@@ -175,10 +193,16 @@ function crisisSvg(model: PresentedSceneVisualModel): string {
   return `<svg class="territory-svg crisis-svg" viewBox="0 0 900 500" role="img" aria-label="${escapeHtml(
     model.ariaLabel
   )}" data-visual-base="shared-ravine-v1">
+    ${renderSceneArtDefs()}
     <rect class="visual-sky crisis" x="0" y="0" width="900" height="500" rx="24" />
+    ${renderSceneHaze()}
     <path class="visual-hill-back" d="M0 230 Q160 110 330 240 T650 185 T900 240 V500 H0 Z" />
     <path class="visual-hill-front" d="M0 345 Q170 195 350 340 T680 285 T900 345 V500 H0 Z" />
     <path class="visual-ravine crisis" d="M350 208 Q425 290 455 500 L605 500 Q555 300 520 215 Z" />
+    ${renderSceneTree(112, 348, 0.78, 'dry')}
+    ${renderSceneShrubs(800, 340, 0.82, 'dry')}
+    ${renderSceneRocks(395, 452, 0.72)}
+    ${renderSceneSmoke(590, 195, 0.9)}
     <g id="crisis-road" class="${stateClass(road)}">${titleFor(road)}<path class="visual-road" d="M30 430 C175 365 315 412 438 345 C565 275 715 318 865 250" /></g>
     <g id="crisis-retreat" class="${stateClass(retreat)}">${titleFor(retreat)}<path class="visual-retreat" d="M455 364 C350 315 240 322 128 360" /><path class="visual-arrow" d="M128 360 l35 -24 m-35 24 l38 18" /></g>
     <g id="crisis-position" class="${stateClass(position)}">${titleFor(position)}<circle class="visual-position" cx="470" cy="330" r="30" /><path d="M445 330 H495 M470 305 V355" /></g>
