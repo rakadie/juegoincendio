@@ -208,6 +208,18 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
     return button;
   }
 
+  function directResultDetails(sceneContent) {
+    return Array.from(sceneContent.children).find(function (child) {
+      return child.tagName === 'DETAILS';
+    }) || null;
+  }
+
+  function insertBeforeResultDetails(sceneContent, element) {
+    const details = directResultDetails(sceneContent);
+    if (details) details.insertAdjacentElement('beforebegin', element);
+    else sceneContent.appendChild(element);
+  }
+
   function renderComparisonSide(label, side) {
     const article = document.createElement('article');
     article.className = 'm4-comparison-side';
@@ -274,8 +286,7 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
     replayCopy.textContent = 'Prueba una preparación diferente y observa qué cambia durante la emergencia.';
     replay.append(makeReplayButton('comparison-replay-button'), replayCopy);
     section.append(title, explanation, grid, replay);
-    const details = sceneContent.querySelector('details');
-    if (details) details.insertAdjacentElement('beforebegin', section); else sceneContent.appendChild(section);
+    insertBeforeResultDetails(sceneContent, section);
     title.setAttribute('tabindex', '-1');
     title.focus();
   }
@@ -290,8 +301,7 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
       actions = document.createElement('div');
       actions.id = 'm4-result-actions';
       actions.className = 'm4-compare-actions';
-      const details = sceneContent.querySelector('details');
-      if (details) details.insertAdjacentElement('beforebegin', actions); else sceneContent.appendChild(actions);
+      insertBeforeResultDetails(sceneContent, actions);
     }
     if (!document.getElementById('compare-reference-button')) {
       const compare = document.createElement('button');
