@@ -11,10 +11,40 @@ export function renderSceneArtDefs(): string {
       <stop offset="0" stop-color="#dce5de" stop-opacity=".2" />
       <stop offset="1" stop-color="#e8c98d" stop-opacity=".04" />
     </linearGradient>
+    <linearGradient id="m5-sky-depth" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#789789" />
+      <stop offset=".62" stop-color="#91a686" />
+      <stop offset="1" stop-color="#c2b684" />
+    </linearGradient>
+    <linearGradient id="m5-hill-back" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7f9867" />
+      <stop offset="1" stop-color="#647a53" />
+    </linearGradient>
+    <linearGradient id="m5-hill-front" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#647e54" />
+      <stop offset="1" stop-color="#455f48" />
+    </linearGradient>
+    <linearGradient id="m5-ravine-depth" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#405748" />
+      <stop offset=".55" stop-color="#2f4639" />
+      <stop offset="1" stop-color="#24382f" />
+    </linearGradient>
+    <pattern id="m5-grazed-pattern" width="18" height="12" patternUnits="userSpaceOnUse">
+      <rect width="18" height="12" fill="#8e9769" />
+      <path d="M1 9 L7 5 M9 10 L15 6" stroke="#c9c88e" stroke-width="2" stroke-linecap="round" opacity=".8" />
+    </pattern>
+    <pattern id="m5-dense-fuel-pattern" width="14" height="14" patternUnits="userSpaceOnUse">
+      <rect width="14" height="14" fill="#6f8753" />
+      <path d="M2 13 L5 4 M7 13 L9 2 M11 13 L13 6" stroke="#aebd76" stroke-width="2" opacity=".75" />
+    </pattern>
     <linearGradient id="m5-smoke-fill" x1="0" y1="1" x2="0" y2="0">
       <stop offset="0" stop-color="#59636a" stop-opacity=".7" />
       <stop offset="1" stop-color="#c5c9c7" stop-opacity=".16" />
     </linearGradient>
+    <marker id="m5-hotspot-marker" viewBox="0 0 20 20" refX="10" refY="10" markerWidth="9" markerHeight="9" orient="0">
+      <circle cx="10" cy="10" r="8" fill="#f7f0dc" stroke="#263941" stroke-width="2" />
+      <circle cx="10" cy="10" r="3" fill="#a95000" />
+    </marker>
     <style>
       .m5-art-layer { pointer-events: none; }
       .m5-art-tree-trunk { fill: #67533d; }
@@ -28,6 +58,35 @@ export function renderSceneArtDefs(): string {
       .m5-art-rock { fill: #72766c; stroke: #9da197; stroke-width: 2; }
       .m5-art-smoke { fill: url(#m5-smoke-fill); }
       .m5-art-haze { fill: url(#m5-sky-haze); }
+
+      /* M5 territory art direction: one coherent place, five spatially anchored treatments. */
+      svg:has(#territory-road) .visual-sky { fill: url(#m5-sky-depth); }
+      svg:has(#territory-road) .visual-hill-back { fill: url(#m5-hill-back); }
+      svg:has(#territory-road) .visual-hill-front { fill: url(#m5-hill-front); }
+      svg:has(#territory-road) .visual-ravine { fill: url(#m5-ravine-depth); stroke: #b8c2b5; filter: url(#m5-soft-shadow); }
+
+      #territory-road .visual-road,
+      #territory-continuity .visual-vegetation-band:first-of-type,
+      #territory-residues .visual-residues,
+      #territory-grazing .visual-grazing,
+      #territory-professional-line .visual-professional-line { marker-start: url(#m5-hotspot-marker); }
+
+      #territory-road .visual-road { filter: url(#m5-soft-shadow); }
+      #territory-road.state-clear .visual-road { stroke-width: 30; stroke-dasharray: none; }
+      #territory-road.state-constrained .visual-road { stroke-width: 20; stroke-dasharray: 22 16; }
+
+      #territory-continuity.state-continuous .visual-vegetation-band { stroke-width: 31; opacity: .96; }
+      #territory-continuity.state-broken .visual-vegetation-band { stroke-width: 25; stroke-dasharray: 44 52; stroke-linecap: butt; opacity: .66; }
+
+      #territory-residues.state-untreated .visual-residues { stroke-width: 12; opacity: 1; }
+      #territory-residues.state-treated .visual-residues { stroke-width: 5; stroke-dasharray: 5 18; opacity: .26; }
+
+      #territory-grazing.state-untreated .visual-grazing { fill: url(#m5-dense-fuel-pattern); stroke-width: 4; }
+      #territory-grazing.state-treated .visual-grazing { fill: url(#m5-grazed-pattern); stroke-width: 3; stroke-dasharray: 14 8; }
+
+      #territory-professional-line.state-unevaluated .visual-professional-line { stroke-width: 7; stroke-dasharray: 5 20; opacity: .4; }
+      #territory-professional-line.state-evaluated .visual-professional-line { stroke-width: 11; stroke-dasharray: 18 8; opacity: 1; filter: url(#m5-soft-shadow); }
+      #territory-professional-line.state-evaluated .visual-line-marker { stroke: #f7f0dc; stroke-width: 5; }
     </style>
   </defs>`;
 }
