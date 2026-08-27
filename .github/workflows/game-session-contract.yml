@@ -31,19 +31,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run the complete M4 acceptance gate
-        run: npm run accept:m4
+      - name: Run the complete M5 acceptance gate
+        run: npm run accept:m5
 
-      - name: Run the M4 browser smoke
+      - name: Run the M5 visual browser smoke
         shell: bash
         run: |
           set -euo pipefail
           export PORT=3001
-          npm start >/tmp/m4-server.log 2>&1 &
+          npm start >/tmp/m5-server.log 2>&1 &
           SERVER_PID=$!
           cleanup() {
             kill "$SERVER_PID" 2>/dev/null || true
-            cat /tmp/m4-server.log || true
+            cat /tmp/m5-server.log || true
           }
           trap cleanup EXIT
 
@@ -57,4 +57,17 @@ jobs:
 
           CHROME_BIN="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser || true)"
           test -n "$CHROME_BIN"
-          CHROME_BIN="$CHROME_BIN" M4_BASE_URL=http://127.0.0.1:3001 npm run smoke:m4
+          mkdir -p artifacts/m5-visual
+          CHROME_BIN="$CHROME_BIN" \
+            M4_BASE_URL=http://127.0.0.1:3001 \
+            M5_CAPTURE_DIR=artifacts/m5-visual \
+            npm run smoke:m5
+
+      - name: Upload M5 visual evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: m5-visual-evidence
+          path: artifacts/m5-visual
+          if-no-files-found: warn
+          retention-days: 14
