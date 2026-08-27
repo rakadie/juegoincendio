@@ -29,6 +29,15 @@ export function renderSceneArtDefs(): string {
       <stop offset=".55" stop-color="#2f4639" />
       <stop offset="1" stop-color="#24382f" />
     </linearGradient>
+    <linearGradient id="m5-house-wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e6c7a3" />
+      <stop offset="1" stop-color="#b68a68" />
+    </linearGradient>
+    <linearGradient id="m5-window-glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d8f0f1" />
+      <stop offset=".55" stop-color="#95c7d2" />
+      <stop offset="1" stop-color="#6a9ca9" />
+    </linearGradient>
     <pattern id="m5-grazed-pattern" width="18" height="12" patternUnits="userSpaceOnUse">
       <rect width="18" height="12" fill="#8e9769" />
       <path d="M1 9 L7 5 M9 10 L15 6" stroke="#c9c88e" stroke-width="2" stroke-linecap="round" opacity=".8" />
@@ -87,6 +96,28 @@ export function renderSceneArtDefs(): string {
       #territory-professional-line.state-unevaluated .visual-professional-line { stroke-width: 7; stroke-dasharray: 5 20; opacity: .4; }
       #territory-professional-line.state-evaluated .visual-professional-line { stroke-width: 11; stroke-dasharray: 18 8; opacity: 1; filter: url(#m5-soft-shadow); }
       #territory-professional-line.state-evaluated .visual-line-marker { stroke: #f7f0dc; stroke-width: 5; }
+
+      /* M5 housing art direction: better conditions without implying a safe house. */
+      svg:has(#housing-home) .visual-sky { fill: url(#m5-sky-depth); }
+      svg:has(#housing-home) .visual-hill-front { fill: url(#m5-hill-front); }
+      #housing-home.state-conditioned .visual-house { fill: url(#m5-house-wall); stroke-width: 5; filter: url(#m5-soft-shadow); }
+      #housing-home .visual-window { fill: url(#m5-window-glass); stroke: #e6f4f4; stroke-width: 2; }
+
+      #housing-vertical-fuel .visual-branches,
+      #housing-local-access .visual-road { marker-start: url(#m5-hotspot-marker); }
+      #housing-vertical-fuel.state-continuous .visual-branches { stroke-width: 13; stroke-dasharray: none; opacity: 1; }
+      #housing-vertical-fuel.state-continuous .visual-trunk { stroke-width: 15; }
+      #housing-vertical-fuel.state-reduced .visual-branches { stroke-width: 6; stroke-dasharray: 16 18; opacity: .58; }
+      #housing-vertical-fuel.state-reduced .visual-trunk { stroke-width: 10; opacity: .72; }
+
+      #housing-canopy.state-continuous .visual-canopy { r: 76px; stroke-width: 5; opacity: 1; }
+      #housing-canopy.state-broken .visual-canopy { r: 43px; stroke-width: 4; stroke-dasharray: 12 8; opacity: .82; }
+
+      #housing-local-access .visual-road { filter: url(#m5-soft-shadow); }
+      #housing-local-access.state-clear .visual-road { stroke-width: 42; stroke-dasharray: none; }
+      #housing-local-access.state-clear .visual-engine { opacity: 1; }
+      #housing-local-access.state-blocked .visual-road { stroke-width: 21; stroke-dasharray: 20 16; opacity: .68; }
+      #housing-local-access.state-blocked .visual-engine { opacity: .46; }
     </style>
   </defs>`;
 }
