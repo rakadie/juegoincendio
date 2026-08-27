@@ -19,6 +19,7 @@ import {
 import { VERTICAL_BETA_PLAYER_CONTENT } from '../../content/vertical-beta-player-content.js';
 import { registerImageRoutes } from './image-routes.js';
 import { M4_PLAYER_LOOP_CLIENT } from './m4-player-loop-client.js';
+import { M5_RESULT_VISUAL_STYLE } from './m5-result-visual-style.js';
 import { renderPrototypePage } from './prototype-page.js';
 import { renderSceneVisual } from './scene-visual-renderer.js';
 
@@ -71,10 +72,15 @@ export function buildApp(options: BuildAppOptions = {}): FastifyInstance {
     };
   };
   const renderPlayerPage = () =>
-    renderPrototypePage().replace(
-      '    <script>\n',
-      '    <script src="/assets/m4-player-loop.js"></script>\n    <script>\n'
-    );
+    renderPrototypePage()
+      .replace(
+        '  </head>',
+        `    <style id="m5-result-visual-style">${M5_RESULT_VISUAL_STYLE}</style>\n  </head>`
+      )
+      .replace(
+        '    <script>\n',
+        '    <script src="/assets/m4-player-loop.js"></script>\n    <script>\n'
+      );
 
   app.setErrorHandler((error, _request, reply) => {
     const isKnownDomainError = error instanceof Error && 'code' in error;
