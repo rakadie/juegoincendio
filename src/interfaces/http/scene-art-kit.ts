@@ -16,6 +16,11 @@ export function renderSceneArtDefs(): string {
       <stop offset=".62" stop-color="#91a686" />
       <stop offset="1" stop-color="#c2b684" />
     </linearGradient>
+    <linearGradient id="m5-crisis-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#59686e" />
+      <stop offset=".58" stop-color="#777d73" />
+      <stop offset="1" stop-color="#a28d6d" />
+    </linearGradient>
     <linearGradient id="m5-hill-back" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#7f9867" />
       <stop offset="1" stop-color="#647a53" />
@@ -37,6 +42,16 @@ export function renderSceneArtDefs(): string {
       <stop offset="0" stop-color="#d8f0f1" />
       <stop offset=".55" stop-color="#95c7d2" />
       <stop offset="1" stop-color="#6a9ca9" />
+    </linearGradient>
+    <linearGradient id="m5-fire-surface" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#d4552d" />
+      <stop offset=".62" stop-color="#ef9937" />
+      <stop offset="1" stop-color="#f4c867" />
+    </linearGradient>
+    <linearGradient id="m5-fire-severe" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#91291f" />
+      <stop offset=".52" stop-color="#d84528" />
+      <stop offset="1" stop-color="#f0a135" />
     </linearGradient>
     <pattern id="m5-grazed-pattern" width="18" height="12" patternUnits="userSpaceOnUse">
       <rect width="18" height="12" fill="#8e9769" />
@@ -83,16 +98,12 @@ export function renderSceneArtDefs(): string {
       #territory-road .visual-road { filter: url(#m5-soft-shadow); }
       #territory-road.state-clear .visual-road { stroke-width: 30; stroke-dasharray: none; }
       #territory-road.state-constrained .visual-road { stroke-width: 20; stroke-dasharray: 22 16; }
-
       #territory-continuity.state-continuous .visual-vegetation-band { stroke-width: 31; opacity: .96; }
       #territory-continuity.state-broken .visual-vegetation-band { stroke-width: 25; stroke-dasharray: 44 52; stroke-linecap: butt; opacity: .66; }
-
       #territory-residues.state-untreated .visual-residues { stroke-width: 12; opacity: 1; }
       #territory-residues.state-treated .visual-residues { stroke-width: 5; stroke-dasharray: 5 18; opacity: .26; }
-
       #territory-grazing.state-untreated .visual-grazing { fill: url(#m5-dense-fuel-pattern); stroke-width: 4; }
       #territory-grazing.state-treated .visual-grazing { fill: url(#m5-grazed-pattern); stroke-width: 3; stroke-dasharray: 14 8; }
-
       #territory-professional-line.state-unevaluated .visual-professional-line { stroke-width: 7; stroke-dasharray: 5 20; opacity: .4; }
       #territory-professional-line.state-evaluated .visual-professional-line { stroke-width: 11; stroke-dasharray: 18 8; opacity: 1; filter: url(#m5-soft-shadow); }
       #territory-professional-line.state-evaluated .visual-line-marker { stroke: #f7f0dc; stroke-width: 5; }
@@ -102,22 +113,55 @@ export function renderSceneArtDefs(): string {
       svg:has(#housing-home) .visual-hill-front { fill: url(#m5-hill-front); }
       #housing-home.state-conditioned .visual-house { fill: url(#m5-house-wall); stroke-width: 5; filter: url(#m5-soft-shadow); }
       #housing-home .visual-window { fill: url(#m5-window-glass); stroke: #e6f4f4; stroke-width: 2; }
-
       #housing-vertical-fuel .visual-branches,
       #housing-local-access .visual-road { marker-start: url(#m5-hotspot-marker); }
       #housing-vertical-fuel.state-continuous .visual-branches { stroke-width: 13; stroke-dasharray: none; opacity: 1; }
       #housing-vertical-fuel.state-continuous .visual-trunk { stroke-width: 15; }
       #housing-vertical-fuel.state-reduced .visual-branches { stroke-width: 6; stroke-dasharray: 16 18; opacity: .58; }
       #housing-vertical-fuel.state-reduced .visual-trunk { stroke-width: 10; opacity: .72; }
-
       #housing-canopy.state-continuous .visual-canopy { r: 76px; stroke-width: 5; opacity: 1; }
       #housing-canopy.state-broken .visual-canopy { r: 43px; stroke-width: 4; stroke-dasharray: 12 8; opacity: .82; }
-
       #housing-local-access .visual-road { filter: url(#m5-soft-shadow); }
       #housing-local-access.state-clear .visual-road { stroke-width: 42; stroke-dasharray: none; }
       #housing-local-access.state-clear .visual-engine { opacity: 1; }
       #housing-local-access.state-blocked .visual-road { stroke-width: 21; stroke-dasharray: 20 16; opacity: .68; }
       #housing-local-access.state-blocked .visual-engine { opacity: .46; }
+
+      /* M5 crisis art direction: identical ravine geometry, state-driven operating envelope. */
+      svg:has(#crisis-road) .visual-sky.crisis { fill: url(#m5-crisis-sky); }
+      svg:has(#crisis-road) .visual-hill-back { fill: #68735c; }
+      svg:has(#crisis-road) .visual-hill-front { fill: #4e5d4b; }
+      svg:has(#crisis-road) .visual-ravine.crisis { fill: url(#m5-ravine-depth); stroke: #9ba49c; filter: url(#m5-soft-shadow); }
+
+      #crisis-road.state-clear .visual-road { stroke-width: 31; stroke-dasharray: none; filter: url(#m5-soft-shadow); }
+      #crisis-road.state-constrained .visual-road { stroke-width: 22; stroke-dasharray: 24 16; opacity: .78; }
+      #crisis-road.state-blocked .visual-road { stroke-width: 17; stroke-dasharray: 12 18; opacity: .52; }
+
+      #crisis-retreat.state-viable .visual-retreat { stroke-width: 13; stroke-dasharray: none; opacity: 1; }
+      #crisis-retreat.state-limited .visual-retreat { stroke-width: 8; stroke-dasharray: 18 18; opacity: .6; }
+      #crisis-retreat.state-limited .visual-arrow { opacity: .45; }
+
+      #crisis-position .visual-position { filter: url(#m5-soft-shadow); }
+      #crisis-position.state-sustainable .visual-position { r: 35px; stroke-width: 7; opacity: 1; }
+      #crisis-position.state-sustainable path { stroke-width: 6; }
+      #crisis-position.state-unsustainable .visual-position { r: 23px; stroke-width: 5; stroke-dasharray: 8 8; opacity: .48; }
+      #crisis-position.state-unsustainable path { stroke-width: 4; stroke-dasharray: 7 7; opacity: .5; }
+
+      #crisis-pressure .visual-fire { transform-box: fill-box; transform-origin: center bottom; filter: url(#m5-soft-shadow); }
+      #crisis-pressure.state-surface .visual-fire { fill: url(#m5-fire-surface); transform: scale(.78); }
+      #crisis-pressure.state-severe .visual-fire { fill: url(#m5-fire-severe); transform: scale(1.28); }
+      svg:has(#crisis-pressure.state-surface) .m5-art-smoke { opacity: .42; transform-box: fill-box; transform-origin: center bottom; transform: scale(.82); }
+      svg:has(#crisis-pressure.state-severe) .m5-art-smoke { opacity: .95; transform-box: fill-box; transform-origin: center bottom; transform: scale(1.18); }
+
+      #crisis-attack-window.state-viable .visual-attack-window { stroke-width: 12; stroke-dasharray: 18 8; opacity: 1; filter: url(#m5-soft-shadow); }
+      #crisis-attack-window.state-unavailable .visual-attack-window { stroke-width: 6; stroke-dasharray: 5 19; opacity: .35; }
+
+      #crisis-crown.state-noCrownFire .visual-canopy { r: 48px; stroke-width: 4; stroke-dasharray: 12 10; opacity: .55; }
+      #crisis-crown.state-crownRisk .visual-canopy { r: 63px; stroke-width: 7; stroke-dasharray: 6 6; opacity: .9; }
+      #crisis-crown.state-crownFire .visual-canopy { r: 72px; fill: #925238; stroke: #ef9340; stroke-width: 9; opacity: 1; filter: url(#m5-soft-shadow); }
+
+      #crisis-professional-line .visual-professional-line,
+      #crisis-house-access .visual-road { filter: url(#m5-soft-shadow); }
     </style>
   </defs>`;
 }
