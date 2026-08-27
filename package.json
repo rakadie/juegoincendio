@@ -19,9 +19,12 @@
     "test:m1-acceptance": "vitest run tests/game-session-contract.test.ts tests/game-session-transition-contract.test.ts tests/game-session-inherited-state-order.test.ts tests/game-session-key-order-contract.test.ts tests/vertical-beta-graph-integrity.test.ts tests/reference-game-sessions.test.ts tests/m1-final-acceptance.test.ts",
     "test:m2-acceptance": "vitest run tests/m2-integral-acceptance.test.ts",
     "test:m4-acceptance": "vitest run tests/m4-integral-acceptance.test.ts",
+    "test:m5-acceptance": "vitest run tests/m5-integral-acceptance.test.ts",
     "accept:m2": "npm audit && npm run typecheck && npm run build && npm test",
     "accept:m4": "npm run accept:m2 && npm run test:m4-acceptance",
+    "accept:m5": "npm run accept:m4 && npm run test:m5-acceptance",
     "smoke:m4": "node scripts/m4-browser-smoke.mjs",
+    "smoke:m5": "node scripts/m4-browser-smoke.mjs",
     "test:watch": "vitest"
   },
   "dependencies": {
