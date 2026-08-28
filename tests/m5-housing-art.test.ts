@@ -24,7 +24,7 @@ describe('M5.3 housing and interface art direction', () => {
     reachHousing(service, id);
 
     const html = markup(service, id);
-    expect(html).toContain('id="housing-home" class="state-conditioned"');
+    expect(html).toContain('id="housing-home" class="visual-hotspot state-conditioned"');
     expect(html).toContain('id="housing-vertical-fuel" class="visual-hotspot state-continuous"');
     expect(html).toContain('id="housing-canopy" class="visual-hotspot state-continuous"');
     expect(html).toContain('id="housing-local-access" class="visual-hotspot state-blocked"');
@@ -42,7 +42,7 @@ describe('M5.3 housing and interface art direction', () => {
     service.applyAction(id, 'despejar-accesos');
 
     const html = markup(service, id);
-    expect(html).toContain('id="housing-home" class="state-conditioned"');
+    expect(html).toContain('id="housing-home" class="visual-hotspot state-conditioned"');
     expect(html).toContain('id="housing-canopy" class="visual-hotspot state-broken"');
     expect(html).toContain('id="housing-local-access" class="visual-hotspot state-clear"');
   });

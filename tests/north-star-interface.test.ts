@@ -39,6 +39,15 @@ describe('M3.8 north-star interface', () => {
     expect(html).toContain('Acciones seleccionadas');
     expect(html).toContain('function visualMarkup()');
     expect(html).toContain('function actionCards(scene)');
+    expect(html).toContain('function hydrateVisualActionCards(scene)');
+    expect(html).toContain('function openVisualCard(element)');
+    expect(html).toContain('mouseenter');
+    expect(html).toContain('data-visual-action-card-id');
+    const inspectionRenderer = html.slice(
+      html.indexOf('function renderInspection(scene)'),
+      html.indexOf('function renderSummary(scene)')
+    );
+    expect(inspectionRenderer).not.toContain('actionCards(scene)');
     expect(html).toContain('data-action-id');
   });
 

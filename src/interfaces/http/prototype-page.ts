@@ -37,7 +37,7 @@ export function renderPrototypePage(): string {
 
       button { font: inherit; }
       button:focus-visible,
-      [data-focus-action-id]:focus-visible,
+      [data-visual-element-id]:focus-visible,
       .action-card:focus-visible,
       summary:focus-visible {
         outline: 3px solid var(--focus);
@@ -239,6 +239,7 @@ export function renderPrototypePage(): string {
         color: #344851;
         background: #edf3ea;
       }
+      .visual-hint { margin: 10px 0 0; color: #53666f; font-size: .8rem; font-weight: 700; }
 
       .scene.briefing {
         display: grid;
@@ -256,10 +257,10 @@ export function renderPrototypePage(): string {
       .visual-scene[data-visual-template="territory"],
       .visual-scene[data-visual-template="housing"],
       .visual-scene[data-visual-template="crisis"] {
-        grid-template-columns: minmax(0, 2.15fr) minmax(270px, .85fr);
-        align-items: stretch;
+        grid-template-columns: minmax(0, 1fr);
       }
       .visual-canvas {
+        position: relative;
         min-width: 0;
         min-height: 390px;
         display: grid;
@@ -302,6 +303,9 @@ export function renderPrototypePage(): string {
       .visual-label-group text { fill: #f7faf7; font-size: 17px; font-weight: 800; paint-order: stroke; stroke: #1b2b22; stroke-width: 5; }
       .visual-hotspot { cursor: pointer; }
       .visual-hotspot:hover { filter: brightness(1.12); }
+      .visual-hotspot:focus-visible { outline: none; filter: brightness(1.16) drop-shadow(0 0 8px #f4b942); }
+      .visual-capacity circle { fill: rgba(7, 23, 38, .82); stroke: #f0b44b; stroke-width: 4; }
+      .visual-capacity text { fill: #fff; font-size: 15px; font-weight: 900; letter-spacing: .05em; }
 
       .state-treated .visual-residues { opacity: .18; stroke-dasharray: 8 18; }
       .state-broken .visual-vegetation-band, .state-broken .visual-canopy { stroke-dasharray: 20 28; opacity: .6; }
@@ -315,34 +319,43 @@ export function renderPrototypePage(): string {
       .state-crownRisk .visual-canopy { stroke: #e39a45; stroke-width: 8; }
       .state-crownFire .visual-canopy { fill: #844b3b; stroke: #ffad42; stroke-width: 10; }
 
-      .visual-status-list {
-        display: grid;
-        grid-template-columns: 1fr;
-        align-content: start;
-        gap: 7px;
-        padding: 10px;
-        border: 1px solid #c8d0cd;
-        border-radius: 11px;
-        background: #f2f4f2;
+      .visual-card-layer {
+        position: absolute;
+        inset: 0;
+        z-index: 8;
+        pointer-events: none;
       }
-      .visual-status {
-        min-height: 60px;
+      .visual-hover-card {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: min(360px, calc(100% - 32px));
+        max-height: calc(100% - 32px);
+        overflow: auto;
+        padding: 14px;
+        border: 1px solid rgba(212, 222, 218, .96);
+        border-radius: 11px;
+        color: var(--ink);
+        background: rgba(255, 255, 255, .97);
+        box-shadow: 0 16px 38px rgba(5, 20, 29, .28);
+        pointer-events: auto;
+      }
+      .visual-hover-card[hidden] { display: none; }
+      .visual-hover-card.selected { border-color: #79a867; box-shadow: 0 16px 38px rgba(5, 20, 29, .24), inset 0 0 0 1px #79a867; }
+      .visual-card-state {
         display: grid;
         grid-template-columns: 18px minmax(0, 1fr);
         align-items: start;
         gap: 10px;
-        border: 1px solid #d1d8d5;
-        border-radius: 9px;
-        padding: 9px 10px;
-        text-align: left;
-        color: var(--ink);
-        background: #fff;
       }
-      .visual-status:not(:disabled) { cursor: pointer; }
-      .visual-status:disabled { opacity: 1; cursor: default; }
-      .visual-status span:last-child { display: grid; gap: 2px; }
-      .visual-status small, .visual-dimension small, .visual-explanation { color: var(--muted); }
-      .visual-explanation { font-size: .74rem; line-height: 1.3; }
+      .visual-card-state > span:last-child { display: grid; gap: 2px; }
+      .visual-card-state small, .visual-dimension small, .visual-explanation { color: var(--muted); }
+      .visual-explanation { margin: 9px 0 0; font-size: .8rem; line-height: 1.4; }
+      .visual-card-action { display: grid; gap: 7px; margin-top: 12px; padding-top: 11px; border-top: 1px solid #d7dedb; }
+      .visual-card-action > strong { font-size: .92rem; }
+      .visual-card-action p { margin: 0; color: var(--muted); font-size: .79rem; line-height: 1.35; }
+      .visual-card-action small { color: var(--red); }
+      .visual-card-action button { justify-self: start; min-width: 120px; }
       .visual-status-symbol {
         width: 17px;
         height: 17px;
@@ -465,7 +478,6 @@ export function renderPrototypePage(): string {
         .visual-scene[data-visual-template="housing"],
         .visual-scene[data-visual-template="crisis"],
         .result-layout { grid-template-columns: 1fr; }
-        .visual-status-list { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
         .session-footer { grid-template-columns: 1fr 1fr; }
         .footer-cell:last-child { grid-column: 1 / -1; }
       }
@@ -505,7 +517,8 @@ export function renderPrototypePage(): string {
         .selection-counter, .scene-state-badge { width: 100%; min-width: 0; display: flex; justify-content: space-between; align-items: center; text-align: left; }
         .selection-counter strong, .scene-state-badge strong { font-size: 1.05rem; }
         .visual-canvas, .territory-svg { min-height: 300px; }
-        .visual-status-list, .visual-dimension-summary, .actions { grid-template-columns: 1fr; }
+        .visual-dimension-summary, .actions { grid-template-columns: 1fr; }
+        .visual-hover-card { width: min(320px, calc(100% - 20px)); max-height: calc(100% - 20px); }
         .session-footer { width: calc(100% - 16px); grid-template-columns: 1fr; }
         .footer-cell:last-child { grid-column: auto; }
       }
@@ -649,6 +662,29 @@ export function renderPrototypePage(): string {
         return currentView && currentView.visualMarkup ? currentView.visualMarkup : '';
       }
 
+      function hydrateVisualActionCards(scene) {
+        const actions = Array.isArray(scene.actions) ? scene.actions : [];
+        document.querySelectorAll('[data-visual-action-card-id]').forEach(function (card) {
+          const action = actions.find(function (candidate) { return candidate.id === card.dataset.visualActionCardId; });
+          if (!action) return;
+          const label = card.querySelector('[data-visual-action-label]');
+          const description = card.querySelector('[data-visual-action-description]');
+          const reason = card.querySelector('[data-visual-action-reason]');
+          const button = card.querySelector('.action-button');
+          if (label) label.textContent = action.label;
+          if (description) description.textContent = action.description;
+          if (reason) {
+            reason.textContent = action.unavailableReason || '';
+            reason.hidden = !action.unavailableReason;
+          }
+          card.classList.toggle('selected', Boolean(action.selected));
+          if (button) {
+            button.disabled = !action.available;
+            button.textContent = action.selected ? 'Seleccionada' : 'Elegir esta actuación';
+          }
+        });
+      }
+
       function actionCards(scene) {
         return '<div class="actions">' + scene.actions.map(function (action) {
           const selected = action.selected ? ' selected' : '';
@@ -680,7 +716,8 @@ export function renderPrototypePage(): string {
         const badge = '<div class="selection-counter"><small>Acciones seleccionadas</small><strong>' + scene.selectedCount + ' / ' + scene.actionQuota + '</strong></div>';
         return '<section class="scene"><div class="scene-content">' + heading(scene, 'Inspección preventiva', badge) +
           '<div class="objective"><strong>Tu objetivo:</strong> ' + escapeHtml(scene.objective) + '</div>' +
-          visualMarkup() + actionCards(scene) + advanceButton(scene) + '</div></section>';
+          '<p class="visual-hint">Pasa sobre un punto de la escena, enfócalo con el teclado o tócalo para ver y elegir la actuación.</p>' +
+          visualMarkup() + advanceButton(scene) + '</div></section>';
       }
 
       function renderSummary(scene) {
@@ -748,14 +785,69 @@ export function renderPrototypePage(): string {
         result: 4
       };
 
-      function focusAction(actionId) {
+      let visualCardCloseTimer = null;
+
+      function closeVisualCards() {
+        document.querySelectorAll('.visual-hover-card').forEach(function (card) { card.hidden = true; });
+        document.querySelectorAll('[data-visual-element-id]').forEach(function (element) { element.setAttribute('aria-expanded', 'false'); });
+      }
+
+      function cancelVisualCardClose() {
+        if (visualCardCloseTimer !== null) window.clearTimeout(visualCardCloseTimer);
+        visualCardCloseTimer = null;
+      }
+
+      function scheduleVisualCardClose() {
+        cancelVisualCardClose();
+        visualCardCloseTimer = window.setTimeout(function () {
+          const focusedCard = document.activeElement && document.activeElement.closest ? document.activeElement.closest('.visual-hover-card') : null;
+          const focusedHotspot = document.activeElement && document.activeElement.closest ? document.activeElement.closest('[data-visual-element-id]') : null;
+          if (!focusedCard && !focusedHotspot) closeVisualCards();
+        }, 140);
+      }
+
+      function positionVisualCard(element, card) {
+        const canvas = element.closest('.visual-canvas');
+        if (!canvas) return;
+        window.requestAnimationFrame(function () {
+          const canvasRect = canvas.getBoundingClientRect();
+          const elementRect = element.getBoundingClientRect();
+          const cardRect = card.getBoundingClientRect();
+          const gap = 14;
+          let left = elementRect.right - canvasRect.left + gap;
+          if (left + cardRect.width > canvasRect.width - gap) left = elementRect.left - canvasRect.left - cardRect.width - gap;
+          left = Math.max(gap, Math.min(left, canvasRect.width - cardRect.width - gap));
+          let top = elementRect.top - canvasRect.top + (elementRect.height - cardRect.height) / 2;
+          top = Math.max(gap, Math.min(top, canvasRect.height - cardRect.height - gap));
+          card.style.right = 'auto';
+          card.style.left = Math.round(left) + 'px';
+          card.style.top = Math.round(top) + 'px';
+        });
+      }
+
+      function openVisualCard(element) {
+        cancelVisualCardClose();
+        const cardId = element.getAttribute('aria-controls');
+        const card = cardId ? document.getElementById(cardId) : null;
+        if (!card) return null;
+        closeVisualCards();
+        card.hidden = false;
+        element.setAttribute('aria-expanded', 'true');
+        positionVisualCard(element, card);
+        return card;
+      }
+
+      function focusAction(actionId, sourceElement) {
+        if (sourceElement) openVisualCard(sourceElement);
         const button = Array.from(document.querySelectorAll('.action-button')).find(function (candidate) { return candidate.dataset.actionId === actionId; });
         if (!button) return;
-        const card = button.closest('.action-card');
+        const card = button.closest('.action-card, .visual-hover-card');
         if (!card) return;
         if (button.disabled) { card.setAttribute('tabindex', '-1'); card.focus(); } else { button.focus(); }
-        const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        card.scrollIntoView({ block: 'nearest', behavior: reducedMotion ? 'auto' : 'smooth' });
+        if (card.classList.contains('action-card')) {
+          const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          card.scrollIntoView({ block: 'nearest', behavior: reducedMotion ? 'auto' : 'smooth' });
+        }
       }
 
       function wireCommands() {
@@ -765,8 +857,28 @@ export function renderPrototypePage(): string {
             request('/api/game-sessions/' + encodeURIComponent(sessionId) + '/actions', { method: 'POST', body: JSON.stringify({ actionId: button.dataset.actionId }) });
           });
         });
-        document.querySelectorAll('[data-focus-action-id]').forEach(function (element) {
-          element.addEventListener('click', function (event) { event.preventDefault(); focusAction(element.dataset.focusActionId); });
+        document.querySelectorAll('[data-visual-element-id]').forEach(function (element) {
+          element.addEventListener('mouseenter', function () { openVisualCard(element); });
+          element.addEventListener('mouseleave', scheduleVisualCardClose);
+          element.addEventListener('focus', function () { openVisualCard(element); });
+          element.addEventListener('blur', scheduleVisualCardClose);
+          element.addEventListener('click', function (event) {
+            event.preventDefault();
+            const card = openVisualCard(element);
+            if (element.dataset.focusActionId) focusAction(element.dataset.focusActionId, element);
+            else if (card) { card.setAttribute('tabindex', '-1'); card.focus(); }
+          });
+          element.addEventListener('keydown', function (event) {
+            if (event.key !== 'Enter' && event.key !== ' ') return;
+            event.preventDefault();
+            element.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+          });
+        });
+        document.querySelectorAll('.visual-hover-card').forEach(function (card) {
+          card.addEventListener('mouseenter', cancelVisualCardClose);
+          card.addEventListener('mouseleave', scheduleVisualCardClose);
+          card.addEventListener('focusin', cancelVisualCardClose);
+          card.addEventListener('focusout', scheduleVisualCardClose);
         });
         const advance = document.getElementById('advance-button');
         if (advance) {
@@ -821,6 +933,7 @@ export function renderPrototypePage(): string {
         game.innerHTML = renderer(currentView.scene);
         renderJourney();
         renderFooter();
+        hydrateVisualActionCards(currentView.scene);
         wireCommands();
       }
 
