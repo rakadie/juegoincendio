@@ -1,5 +1,18 @@
 export const M5_RESULT_VISUAL_STYLE = String.raw`
-/* M5.5: visual hierarchy only. The M4 result/comparison DOM and data remain authoritative. */
+/* M5: visual hierarchy only. M4 result/comparison data and scene semantics remain authoritative. */
+@media (min-width: 901px) {
+  .visual-scene[data-visual-template="crisis"] .visual-canvas {
+    align-self: start;
+    min-height: 0;
+    aspect-ratio: 9 / 5;
+  }
+  .visual-scene[data-visual-template="crisis"] .crisis-svg {
+    height: 100%;
+    min-height: 0;
+    max-height: none;
+  }
+}
+
 .scene[class*="result-"] .scene-heading {
   position: relative;
   overflow: hidden;

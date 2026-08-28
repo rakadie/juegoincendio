@@ -17,6 +17,16 @@ describe('M5.5 result and comparison visual hierarchy', () => {
     expect(M5_RESULT_VISUAL_STYLE).toContain('.m4-comparison-replay');
   });
 
+  it('keeps the desktop crisis canvas aligned to the shared 900 by 500 ravine composition', () => {
+    expect(M5_RESULT_VISUAL_STYLE).toContain(
+      '.visual-scene[data-visual-template="crisis"] .visual-canvas'
+    );
+    expect(M5_RESULT_VISUAL_STYLE).toContain('aspect-ratio: 9 / 5');
+    expect(M5_RESULT_VISUAL_STYLE).toContain(
+      '.visual-scene[data-visual-template="crisis"] .crisis-svg'
+    );
+  });
+
   it('keeps the five inherited dimensions before visual detail for both canonical results', () => {
     for (const branch of ['prepared', 'vulnerable'] as const) {
       const view = runCanonicalReference(branch);
