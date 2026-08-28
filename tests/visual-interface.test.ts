@@ -227,7 +227,11 @@ describe('M3 visual HTTP and renderer boundaries', () => {
     expect(markup).toContain('territory-road');
     expect(markup).toContain('territory-continuity');
     expect(markup).toContain('territory-residues');
-    expect(markup).toContain('<button class="visual-status');
+    expect(markup).toContain('class="visual-card-layer"');
+    expect(markup).toContain('class="visual-hover-card');
+    expect(markup).toContain('data-visual-action-card-id="limpiar-margenes-caminos"');
+    expect(markup).toContain('aria-controls="visual-card-territory-road"');
+    expect(markup).not.toContain('visual-status-list');
     expect(renderPrototypePage()).toContain('action-button');
   });
 });

@@ -295,9 +295,16 @@ try {
   async function choose(actionId) {
     const selector = `[data-action-id=${JSON.stringify(actionId)}]`;
     await waitForSelector(selector);
+    const hotspotSelector = `[data-focus-action-id=${JSON.stringify(actionId)}]`;
+    const hasContextualHotspot = await evaluate(
+      `Boolean(document.querySelector(${JSON.stringify(hotspotSelector)}))`
+    );
+    if (hasContextualHotspot) await pressEnter(hotspotSelector);
     await pressEnter(selector);
     await waitFor(
-      `document.querySelector(${JSON.stringify(`[data-action-card-id="${actionId}"]`)})?.classList.contains('selected')`,
+      `Boolean(document.querySelector(${JSON.stringify(
+        `[data-action-card-id="${actionId}"].selected, [data-visual-action-card-id="${actionId}"].selected`
+      )}))`,
       `${actionId} selected`
     );
   }
