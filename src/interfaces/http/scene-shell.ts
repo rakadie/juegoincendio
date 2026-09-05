@@ -7,10 +7,11 @@ export interface SceneShellLayers {
   readonly cards: string;
 }
 
-const INTERACTIVE_MARKER = /\b(?:tabindex|data-action-id|data-focus-action-id|aria-controls|aria-expanded)\s*=|\brole\s*=\s*["']button["']/i;
+const INTERACTIVE_ATTRIBUTE = /\b(?:tabindex|data-action-id|data-focus-action-id|aria-controls|aria-expanded|contenteditable)\s*=|\brole\s*=\s*["']button["']/i;
+const NATIVE_INTERACTIVE_ELEMENT = /<(?:a\b|area\b|button\b|input\b|select\b|textarea\b|summary\b|iframe\b|object\b|embed\b)|<(?:audio|video)\b[^>]*\bcontrols\b/i;
 
 function assertNonInteractiveLayer(name: 'base-art' | 'state-overlays', markup: string): void {
-  if (INTERACTIVE_MARKER.test(markup)) {
+  if (INTERACTIVE_ATTRIBUTE.test(markup) || NATIVE_INTERACTIVE_ELEMENT.test(markup)) {
     throw new Error(`${name} must remain non-interactive.`);
   }
 }
