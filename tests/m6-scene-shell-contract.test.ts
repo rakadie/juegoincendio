@@ -47,7 +47,7 @@ describe('M6.1a hybrid scene shell', () => {
     expect(second).toContain('data-focus-action-id="limpiar-margenes-caminos"');
   });
 
-  it('rejects interaction leaking into decorative or state layers', () => {
+  it('rejects interactive attributes leaking into decorative or state layers', () => {
     expect(() =>
       renderSceneShell({
         baseArt: '<g role="button"></g>',
@@ -65,5 +65,24 @@ describe('M6.1a hybrid scene shell', () => {
         cards: card
       })
     ).toThrow('state-overlays must remain non-interactive');
+  });
+
+  it('rejects native focusable controls inside hidden layers', () => {
+    for (const markup of [
+      '<button>Acción</button>',
+      '<a href="/detalle">Detalle</a>',
+      '<input value="x" />',
+      '<summary>Más</summary>',
+      '<div contenteditable="true">Editar</div>'
+    ]) {
+      expect(() =>
+        renderSceneShell({
+          baseArt: markup,
+          stateOverlays: '',
+          hotspots: hotspot,
+          cards: card
+        })
+      ).toThrow('base-art must remain non-interactive');
+    }
   });
 });
