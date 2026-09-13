@@ -65,7 +65,7 @@ export function renderSceneArtDefs(): string {
       <stop offset="0" stop-color="#59636a" stop-opacity=".7" />
       <stop offset="1" stop-color="#c5c9c7" stop-opacity=".16" />
     </linearGradient>
-    <marker id="m5-hotspot-marker" viewBox="0 0 20 20" refX="10" refY="10" markerWidth="9" markerHeight="9" orient="0">
+    <marker id="m5-hotspot-marker" viewBox="0 0 20 20" refX="10" refY="10" markerWidth="20" markerHeight="20" markerUnits="userSpaceOnUse" orient="0">
       <circle cx="10" cy="10" r="8" fill="#f7f0dc" stroke="#263941" stroke-width="2" />
       <circle cx="10" cy="10" r="3" fill="#a95000" />
     </marker>

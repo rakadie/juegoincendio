@@ -7,7 +7,7 @@ export const VERTICAL_BETA_VISUAL_COPY_ES = {
     fuelBreak: 'Discontinuidad vegetal',
     road: 'Camino rural',
     grazing: 'Franja de pastoreo',
-    professionalLine: 'Posición profesional evaluada',
+    professionalLine: 'Posición estratégica',
     house: 'Vivienda en interfaz',
     canopy: 'Continuidad de copas',
     localAccess: 'Acceso local',
