@@ -1,8 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { renderSceneShell } from '../src/interfaces/http/scene-shell.js';
 
-const hotspot =
-  '<button data-visual-element-id="territory-road" data-focus-action-id="limpiar-margenes-caminos" aria-controls="visual-card-territory-road">Camino</button>';
+const hotspot = [
+  '<g role="button" tabindex="0" aria-label="Camino rural"',
+  ' data-visual-element-id="territory-road"',
+  ' data-focus-action-id="limpiar-margenes-caminos"',
+  ' aria-controls="visual-card-territory-road">',
+  '<rect width="60" height="60" fill="transparent" pointer-events="all" />',
+  '</g>'
+].join('');
 const card = '<article id="visual-card-territory-road">Detalle del camino</article>';
 
 describe('M6.1a hybrid scene shell', () => {
