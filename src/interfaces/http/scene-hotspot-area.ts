@@ -94,4 +94,3 @@ export const SCENE_HOTSPOT_AREA_CSS = String.raw`
     pointer-events: auto;
   }
 `;
-

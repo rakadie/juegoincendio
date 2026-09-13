@@ -56,4 +56,3 @@ export function renderM6HotspotFixturePage(): string {
     ${SCENE_HOTSPOT_AREA_CSS}
   </style><body>${shell}<script>${SCENE_HOTSPOT_CLIENT}</script></body></html>`;
 }
-

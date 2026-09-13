@@ -50,4 +50,3 @@ export const SCENE_HOTSPOT_CLIENT = String.raw`
     wireSceneHotspots(document);
   })();
 `;
-
