@@ -11,6 +11,16 @@ import {
   renderSceneSmoke,
   renderSceneTree
 } from './scene-art-kit.js';
+import {
+  renderTerritoryBrush,
+  renderTerritoryMapBase,
+  renderTerritoryMapDefs,
+  renderTerritoryMapPin,
+  renderTerritoryPine,
+  TERRITORY_FUEL_PATH,
+  TERRITORY_GRAZING_PATH,
+  TERRITORY_ROAD_PATH
+} from './territory-map-art.js';
 
 const REQUIRED_ELEMENT_IDS: Readonly<Partial<Record<VisualTemplateId, readonly string[]>>> = {
   territory: [
@@ -122,40 +132,66 @@ function territorySvg(model: PresentedSceneVisualModel): string {
   const grazing = byId(model, 'territory-grazing');
   const line = byId(model, 'territory-professional-line');
 
-  return `<svg class="territory-svg" viewBox="0 0 900 500" role="img" aria-label="${escapeHtml(
+  return `<svg class="territory-svg territory-map" viewBox="0 0 900 500" role="group" aria-label="${escapeHtml(
     model.ariaLabel
-  )}">
+  )}" data-visual-base="territory-plan-v2">
     ${renderSceneArtDefs()}
-    <rect class="visual-sky" x="0" y="0" width="900" height="500" rx="24" />
-    ${renderSceneHaze()}
-    <path class="visual-hill-back" d="M0 250 Q160 110 320 230 T650 180 T900 235 V500 H0 Z" />
-    <path class="visual-hill-front" d="M0 330 Q170 190 350 320 T680 275 T900 335 V500 H0 Z" />
-    <path class="visual-ravine" d="M390 220 Q440 285 455 500 L585 500 Q548 325 520 235 Z" />
-    ${renderSceneTree(105, 345, 0.82)}
-    ${renderSceneShrubs(770, 335, 0.9)}
-    ${renderSceneRocks(505, 455, 0.75)}
-    <g id="territory-road" class="visual-hotspot ${stateClass(road)}"${hotspotAttributes(road)}><path class="visual-road" d="M40 410 C210 360 335 390 455 330 C585 265 720 290 865 245" /></g>
+    ${renderTerritoryMapDefs()}
+    ${renderTerritoryMapBase()}
+    ${renderSceneRocks(586, 387, .18)}${renderSceneRocks(547, 137, .16)}
+    <g id="territory-road" class="visual-hotspot ${stateClass(road)}"${hotspotAttributes(road)}>
+      <g aria-hidden="true">
+        <path class="map-road-margin" d="${TERRITORY_ROAD_PATH}" />
+        <path class="visual-road" d="${TERRITORY_ROAD_PATH}" />
+        <path class="map-road-centre" d="${TERRITORY_ROAD_PATH}" />
+        <g class="map-road-obstruction">${renderTerritoryBrush(278, 308, .7)}${renderTerritoryBrush(321, 329, .7)}${renderTerritoryBrush(394, 291, .65)}${renderTerritoryBrush(465, 333, .65)}${renderTerritoryBrush(761, 232, .65)}</g>
+        <path d="M593 291 l27 20 M585 304 l26 20" stroke="#8b7c62" stroke-width="4" />
+      </g>
+      ${renderTerritoryMapPin(3, 340, 350, 'Camino rural', 127, road?.selected === true)}
+    </g>
     <g id="territory-continuity" class="visual-hotspot ${stateClass(
       continuity
     )}"${hotspotAttributes(continuity)}>
-      <path class="visual-vegetation-band" d="M70 275 Q190 205 315 275 T560 250 T815 285" />
-      <path class="visual-vegetation-band secondary" d="M110 310 Q240 245 360 305 T620 290 T835 315" />
+      <g aria-hidden="true">
+        <path class="visual-vegetation-band" d="${TERRITORY_FUEL_PATH}" />
+        ${renderTerritoryPine(178, 164, .8)}${renderTerritoryPine(204, 153, .9)}${renderTerritoryPine(303, 163, .8)}${renderTerritoryPine(331, 175, .75)}${renderTerritoryPine(429, 180, .8)}${renderTerritoryPine(454, 166, .75)}${renderTerritoryPine(549, 183, .8)}${renderTerritoryPine(575, 203, .75)}${renderTerritoryPine(617, 224, .7)}
+        <g class="map-fuel-gap">${renderTerritoryPine(248, 143, .9)}${renderTerritoryPine(275, 151, .85)}${renderTerritoryPine(380, 185, .8)}${renderTerritoryPine(402, 185, .75)}${renderTerritoryPine(500, 161, .8)}${renderTerritoryPine(525, 168, .75)}</g>
+      </g>
+      ${renderTerritoryMapPin(2, 359, 127, 'Continuidad vegetal', 174, continuity?.selected === true)}
     </g>
     <g id="territory-residues" class="visual-hotspot ${stateClass(residues)}"${hotspotAttributes(
       residues
     )}>
-      <path class="visual-residues" d="M175 382 l36 -25 m-21 39 l48 -30 m-14 45 l35 -28 m-67 3 l-31 -18" />
+      <g aria-hidden="true">
+        <ellipse class="map-treated-ground" cx="208" cy="264" rx="32" ry="23" />
+        <g class="map-residue-pile">
+          <ellipse cx="208" cy="263" rx="36" ry="23" fill="#b09568" opacity=".25" />
+          <path class="visual-residues" d="M181 261 l41 -18 m-30 31 l38 -21 m-40 -3 l27 29 m-42 -8 l42 -15 m-14 -11 l26 20 m-20 15 l29 -15" />
+          <path d="M190 258 l-8 -10 m13 8 l-2 -10 m32 17 l12 0 m-16 6 l10 5" fill="none" stroke="#aa895c" stroke-width="2" />
+        </g>
+      </g>
+      ${renderTerritoryMapPin(1, 212, 222, 'Restos de poda', 143, residues?.selected === true)}
     </g>
     <g id="territory-grazing" class="visual-hotspot ${stateClass(grazing)}"${hotspotAttributes(
       grazing
-    )}><path class="visual-grazing" d="M610 360 q80 -58 166 -18 l-15 77 q-88 -20 -167 18 z" /></g>
+    )}>
+      <path class="visual-grazing" d="${TERRITORY_GRAZING_PATH}" aria-hidden="true" />
+      <g class="map-grazing-flock" aria-hidden="true">${[[716, 337], [777, 320], [798, 386]].map(([x, y]) => `<g transform="translate(${x} ${y}) rotate(-15)"><ellipse rx="9" ry="5" fill="#f4efda" stroke="#958b70" /><circle cx="10" cy="-2" r="3" fill="#786c55" /><path d="M-4 4 v4 m8 -4 v4 M10 -4 l2 -4" stroke="#786c55" stroke-width="1.5" /></g>`).join('')}</g>
+      ${renderTerritoryMapPin(4, 692, 406, 'Franja de pastoreo', 161, grazing?.selected === true)}
+    </g>
     <g id="territory-professional-line" class="visual-hotspot ${stateClass(line)}"${hotspotAttributes(
       line
-    )}><path class="visual-professional-line" d="M615 245 C690 205 770 205 835 220" /><circle class="visual-line-marker" cx="742" cy="213" r="12" /></g>
-    <g class="visual-label-group" aria-hidden="true">
-      <text x="82" y="455">camino rural</text><text x="605" y="458">franja prioritaria</text><text x="612" y="192">posición evaluable</text>
+    )}>
+      <path class="visual-professional-line" d="M655 178 Q707 109 786 130" aria-hidden="true" />
+      ${renderTerritoryMapPin(5, 693, 171, 'Evaluación técnica', 166, line?.selected === true)}
     </g>
   </svg>`;
+}
+
+function territoryMapLegend(model: PresentedSceneVisualModel): string {
+  return `<div class="territory-map-key" role="group" aria-label="Puntos del mapa">${model.elements.map((element, index) =>
+    `<button class="territory-map-key-item ${stateClass(element)}" type="button"${hotspotAttributes(element)}><span class="territory-key-number" aria-hidden="true">${index + 1}</span><span><strong>${escapeHtml(element.label)}</strong><small>${escapeHtml(element.stateLabel)}</small></span></button>`
+  ).join('')}</div>`;
 }
 
 function housingSvg(model: PresentedSceneVisualModel): string {
@@ -278,7 +314,7 @@ export function renderSceneVisual(model: PresentedSceneVisualModel): string {
           : '';
   const dimensions = dimensionSummary(model);
   if (visual === '' && dimensions === '') return '';
-  const canvas = visual === '' ? '' : `<div class="visual-canvas">${visual}${visualCards(model)}</div>`;
+  const canvas = visual === '' ? '' : `<div class="visual-canvas">${visual}${model.templateId === 'territory' ? territoryMapLegend(model) : ''}${visualCards(model)}</div>`;
   return `<section class="visual-scene" data-visual-template="${model.templateId}" data-visual-scene-id="${escapeHtml(
     model.sceneId
   )}">${canvas}${dimensions}</section>`;

@@ -194,7 +194,7 @@ describe('M3 visual HTTP and renderer boundaries', () => {
       templateId: 'territory'
     });
     expect(payload.visualMarkup).toContain('<svg');
-    expect(payload.visualMarkup).toContain('role="img"');
+    expect(payload.visualMarkup).toContain('role="group"');
     expect(payload.visualMarkup).toContain('data-focus-action-id="limpiar-margenes-caminos"');
     expect(payload.visualMarkup).toContain('visual-explanation');
     expect(payload.visualMarkup).not.toContain('aria-pressed');

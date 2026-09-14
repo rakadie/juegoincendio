@@ -1,5 +1,6 @@
 import { spawn } from 'node:child_process';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { setTimeout as sleep } from 'node:timers/promises';
 
@@ -46,7 +47,7 @@ async function waitForChromeTargets(chrome, port, stderrState, timeoutMs = CHROM
 }
 
 async function removeChromeProfile(profileDirectory) {
-  for (let attempt = 1; attempt <= 6; attempt += 1) {
+  for (let attempt = 1; attempt <= 12; attempt += 1) {
     try {
       await rm(profileDirectory, { recursive: true, force: true });
       return;
@@ -54,8 +55,8 @@ async function removeChromeProfile(profileDirectory) {
       const retryable =
         error && typeof error === 'object' &&
         ['ENOTEMPTY', 'EBUSY', 'EPERM'].includes(error.code);
-      if (!retryable || attempt === 6) throw error;
-      await sleep(attempt * 120);
+      if (!retryable || attempt === 12) throw error;
+      await sleep(Math.min(attempt * 250, 1_000));
     }
   }
 }
@@ -84,7 +85,7 @@ async function launchChrome() {
   const failures = [];
   for (let attempt = 1; attempt <= CHROME_LAUNCH_ATTEMPTS; attempt += 1) {
     const port = BASE_CDP_PORT + attempt - 1;
-    const profileDirectory = `/tmp/m4-chrome-${process.pid}-${attempt}`;
+    const profileDirectory = join(tmpdir(), `m4-chrome-${process.pid}-${attempt}`);
     await removeChromeProfile(profileDirectory);
     const stderrState = { value: '' };
     const chrome = spawn(
@@ -292,6 +293,176 @@ try {
     await send('Input.dispatchKeyEvent', { type: 'keyUp', ...key });
   }
 
+  async function interactionPoint(selector) {
+    await waitFor(
+      `(() => {
+        const element = document.querySelector(${JSON.stringify(selector)});
+        if (!element || element.disabled) return false;
+        const rect = element.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0;
+      })()`,
+      `${selector} visible and enabled`
+    );
+    return evaluate(`(() => {
+      const rect = document.querySelector(${JSON.stringify(selector)}).getBoundingClientRect();
+      return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+    })()`);
+  }
+
+  async function clickWithMouse(selector) {
+    const point = await interactionPoint(selector);
+    await send('Input.dispatchMouseEvent', { type: 'mouseMoved', ...point });
+    await send('Input.dispatchMouseEvent', {
+      type: 'mousePressed',
+      ...point,
+      button: 'left',
+      buttons: 1,
+      clickCount: 1
+    });
+    await send('Input.dispatchMouseEvent', {
+      type: 'mouseReleased',
+      ...point,
+      button: 'left',
+      buttons: 0,
+      clickCount: 1
+    });
+  }
+
+  async function tapWithTouch(selector) {
+    const point = await interactionPoint(selector);
+    const touchPoint = { ...point, radiusX: 2, radiusY: 2, force: 1, id: 1 };
+    await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [touchPoint] });
+    await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  }
+
+  async function activateWithPointer(selector, pointer) {
+    if (pointer === 'touch') await tapWithTouch(selector);
+    else await clickWithMouse(selector);
+  }
+
+  async function openVisualActionCard(actionId, pointer) {
+    const hotspotSelector = `[data-focus-action-id=${JSON.stringify(actionId)}].visual-hotspot .map-pin-disc`;
+    await activateWithPointer(hotspotSelector, pointer);
+    await waitFor(
+      `(() => {
+        const card = document.querySelector(${JSON.stringify(
+          `[data-visual-action-card-id="${actionId}"]`
+        )});
+        return card && !card.hidden;
+      })()`,
+      `${actionId} visual card opened with ${pointer}`
+    );
+  }
+
+  async function chooseWithPointer(actionId, pointer, expectedMobile, evidenceName) {
+    await openVisualActionCard(actionId, pointer);
+    await assertOpenTerritoryCard(actionId, expectedMobile);
+    if (evidenceName) {
+      const cardSelector = `[data-visual-action-card-id=${JSON.stringify(actionId)}]:not([hidden])`;
+      if (pointer === 'mouse') {
+        await captureViewportEvidence(evidenceName, cardSelector, { minWidth: 220, minHeight: 120 });
+      } else {
+        await captureEvidence(evidenceName, cardSelector, { minWidth: 280, minHeight: 120 });
+      }
+    }
+    const selector = `[data-visual-action-card-id=${JSON.stringify(actionId)}]:not([hidden]) [data-action-id=${JSON.stringify(actionId)}]`;
+    await activateWithPointer(selector, pointer);
+    await waitFor(
+      `Boolean(document.querySelector(${JSON.stringify(
+        `[data-action-card-id="${actionId}"].selected, [data-visual-action-card-id="${actionId}"].selected`
+      )}))`,
+      `${actionId} selected with ${pointer}`
+    );
+  }
+
+  async function assertTerritoryLayout(expectedMobile) {
+    const layout = await evaluate(`(() => {
+      const canvas = document.querySelector('.visual-scene[data-visual-template="territory"] .visual-canvas');
+      const map = canvas?.querySelector('.territory-map');
+      const key = canvas?.querySelector('.territory-map-key');
+      if (!canvas || !map || !key) return null;
+      const canvasRect = canvas.getBoundingClientRect();
+      const mapRect = map.getBoundingClientRect();
+      const keyRect = key.getBoundingClientRect();
+      const items = Array.from(key.querySelectorAll('.territory-map-key-item')).map((element) => {
+        const rect = element.getBoundingClientRect();
+        return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, height: rect.height };
+      });
+      const visiblePinParts = Array.from(map.querySelectorAll('.map-pin'))
+        .map((element) => {
+          const rect = element.getBoundingClientRect();
+          return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom };
+        });
+      const overlaps = [];
+      for (let i = 0; i < visiblePinParts.length; i += 1) {
+        for (let j = i + 1; j < visiblePinParts.length; j += 1) {
+          const a = visiblePinParts[i];
+          const b = visiblePinParts[j];
+          if (a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top) {
+            overlaps.push([i, j]);
+          }
+        }
+      }
+      return {
+        viewportWidth: window.innerWidth,
+        pageWidth: document.documentElement.scrollWidth,
+        canvas: { left: canvasRect.left, right: canvasRect.right },
+        map: { left: mapRect.left, right: mapRect.right, top: mapRect.top, bottom: mapRect.bottom },
+        key: { left: keyRect.left, right: keyRect.right },
+        itemCount: items.length,
+        items,
+        overlaps
+      };
+    })()`);
+    assert(layout, 'Territory layout was not available.');
+    assert(layout.itemCount === 5, 'Territory legend must expose five controls.');
+    assert(layout.pageWidth <= layout.viewportWidth + 3, 'Territory layout has horizontal overflow.');
+    assert(layout.map.left >= layout.canvas.left - 1 && layout.map.right <= layout.canvas.right + 1, 'Territory map is clipped by its canvas.');
+    assert(layout.key.left >= layout.canvas.left - 1 && layout.key.right <= layout.canvas.right + 1, 'Territory legend is clipped by its canvas.');
+    assert(
+      layout.items.every((item) => item.left >= layout.key.left - 1 && item.right <= layout.key.right + 1),
+      'A territory legend item escapes its container.'
+    );
+    assert(
+      layout.items.every((item) => item.height >= (expectedMobile ? 52 : 48)),
+      'Territory legend controls are smaller than their expected target size.'
+    );
+    assert(layout.overlaps.length === 0, 'Territory pins or visible labels overlap.');
+  }
+
+  async function assertOpenTerritoryCard(actionId, expectedMobile) {
+    const geometry = await evaluate(`(() => {
+      const canvas = document.querySelector('.visual-scene[data-visual-template="territory"] .visual-canvas');
+      const key = canvas?.querySelector('.territory-map-key');
+      const card = canvas?.querySelector(${JSON.stringify(`[data-visual-action-card-id="${actionId}"]`)});
+      const button = card?.querySelector('.action-button');
+      if (!canvas || !key || !card || card.hidden || !button) return null;
+      const canvasRect = canvas.getBoundingClientRect();
+      const keyRect = key.getBoundingClientRect();
+      const cardRect = card.getBoundingClientRect();
+      const buttonRect = button.getBoundingClientRect();
+      return {
+        canvas: { left: canvasRect.left, right: canvasRect.right, top: canvasRect.top, bottom: canvasRect.bottom },
+        keyBottom: keyRect.bottom,
+        card: { left: cardRect.left, right: cardRect.right, top: cardRect.top, bottom: cardRect.bottom },
+        button: { width: buttonRect.width, height: buttonRect.height }
+      };
+    })()`);
+    assert(geometry, `${actionId} card is not visible.`);
+    assert(
+      geometry.card.left >= geometry.canvas.left - 1 && geometry.card.right <= geometry.canvas.right + 1,
+      `${actionId} card escapes the territory canvas horizontally.`
+    );
+    assert(
+      geometry.card.top >= geometry.canvas.top - 1 && geometry.card.bottom <= geometry.canvas.bottom + 1,
+      `${actionId} card escapes the territory canvas vertically.`
+    );
+    if (expectedMobile) {
+      assert(geometry.card.top >= geometry.keyBottom - 1, `${actionId} mobile card overlaps the territory legend.`);
+    }
+    assert(geometry.button.width > 0 && geometry.button.height > 0, `${actionId} card action is not visible.`);
+  }
+
   async function choose(actionId) {
     const selector = `[data-action-id=${JSON.stringify(actionId)}]`;
     await waitForSelector(selector);
@@ -366,6 +537,34 @@ try {
     });
   }
 
+  async function captureViewportEvidence(name, selector, expected = {}) {
+    if (!VISUAL_MODE) return;
+    await waitFor(
+      `(() => {
+        const element = document.querySelector(${JSON.stringify(selector)});
+        if (!element) return false;
+        const rect = element.getBoundingClientRect();
+        return rect.width >= ${expected.minWidth ?? 180} && rect.height >= ${expected.minHeight ?? 100};
+      })()`,
+      `${selector} ready for viewport evidence`
+    );
+    const screenshot = await send('Page.captureScreenshot', {
+      format: 'png',
+      fromSurface: true,
+      captureBeyondViewport: false
+    });
+    assert(typeof screenshot.data === 'string' && screenshot.data.length > 100, `${name} screenshot is empty.`);
+    await writeFile(join(VISUAL_CAPTURE_DIR, name), screenshot.data, 'base64');
+    const viewport = await evaluate(`({ width: window.innerWidth, height: window.innerHeight })`);
+    evidence.push({
+      name,
+      selector,
+      width: viewport.width,
+      height: viewport.height,
+      mobile: viewport.width < 700
+    });
+  }
+
   await send('Page.enable');
   await send('Runtime.enable');
   await setViewport(390, 844, true);
@@ -411,12 +610,29 @@ try {
     '.visual-scene[data-visual-template="territory"] .visual-canvas',
     { minWidth: 300, minHeight: 240 }
   );
-  await choose('gestionar-restos-poda');
+  await assertTerritoryLayout(true);
+  await chooseWithPointer(
+    'gestionar-restos-poda',
+    'touch',
+    true,
+    'territory-card-touch-mobile.png'
+  );
   await choose('crear-discontinuidades-vegetales');
   await choose('limpiar-margenes-caminos');
+  assert(
+    await evaluate(`(() => {
+      const counter = document.querySelector('.selection-counter strong')?.textContent.trim();
+      const cards = Array.from(document.querySelectorAll('[data-visual-action-card-id]'));
+      return counter === '3 / 3' && cards.filter((card) => card.classList.contains('selected')).length === 3 &&
+        cards.every((card) => card.querySelector('.action-button')?.disabled === true) &&
+        Boolean(document.getElementById('advance-button'));
+    })()`),
+    'Territory inspection did not enforce the three-action limit before advancing.'
+  );
 
   if (VISUAL_MODE) {
     await setViewport(1280, 900, false);
+    await assertTerritoryLayout(false);
     await captureEvidence(
       'territory-treated-desktop.png',
       '.visual-scene[data-visual-template="territory"] .visual-canvas',
@@ -520,9 +736,34 @@ try {
 
   if (VISUAL_MODE) {
     await advanceAndWait('[data-action-id="gestionar-restos-poda"]');
-    await choose('gestionar-restos-poda');
+    await assertTerritoryLayout(false);
+    await chooseWithPointer(
+      'gestionar-restos-poda',
+      'mouse',
+      false,
+      'territory-card-mouse-desktop.png'
+    );
     await choose('activar-pastoreo-preventivo');
     await choose('evaluar-quema-tecnica');
+    assert(
+      await evaluate(`(() => {
+        const grazing = document.getElementById('territory-grazing');
+        const line = document.getElementById('territory-professional-line');
+        const explanation = document.querySelector('[data-visual-action-card-id="evaluar-quema-tecnica"] .visual-explanation');
+        const flock = grazing?.querySelector('.map-grazing-flock');
+        return grazing?.classList.contains('state-treated') &&
+          line?.classList.contains('state-evaluated') &&
+          flock && getComputedStyle(flock).display !== 'none' &&
+          explanation?.textContent.includes('no significa que la maniobra se haya ejecutado');
+      })()`),
+      'Pastoreo and technical evaluation did not keep their expected visual and pedagogical states.'
+    );
+    await assertTerritoryLayout(false);
+    await captureEvidence(
+      'territory-grazing-evaluation-desktop.png',
+      '.visual-scene[data-visual-template="territory"] .visual-canvas',
+      { minWidth: 700, minHeight: 300 }
+    );
     await advanceAndWait('[data-action-id="podar-ramas-y-retirar-seco"]');
     await choose('podar-ramas-y-retirar-seco');
     await choose('separar-copas');
@@ -552,7 +793,10 @@ try {
   if (VISUAL_MODE) {
     const required = [
       'territory-initial-mobile.png',
+      'territory-card-touch-mobile.png',
       'territory-treated-desktop.png',
+      'territory-card-mouse-desktop.png',
+      'territory-grazing-evaluation-desktop.png',
       'housing-initial-mobile.png',
       'housing-treated-desktop.png',
       'crisis-prepared-desktop.png',

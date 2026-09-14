@@ -273,6 +273,76 @@ export function renderPrototypePage(): string {
       }
       .territory-svg { display: block; width: 100%; height: 100%; min-height: 390px; max-height: 620px; object-fit: cover; }
 
+      .visual-scene[data-visual-template="territory"] .visual-canvas {
+        min-height: 0;
+        background: #e5e3cb;
+        border-color: #c0c6b0;
+        grid-template-rows: auto auto;
+      }
+      .visual-scene[data-visual-template="territory"] .territory-map {
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        max-height: none;
+        aspect-ratio: 9 / 5;
+      }
+      .territory-map-key {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 6px;
+        padding: 12px;
+        border-top: 1px solid #cbd0b8;
+        background: #faf8ef;
+      }
+      .territory-map-key-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+        min-height: 48px;
+        padding: 8px;
+        text-align: left;
+        color: #34463b;
+        border: 1px solid transparent;
+        border-radius: 7px;
+        background: transparent;
+        cursor: pointer;
+      }
+      .territory-map-key-item:hover { background: #edeedd; border-color: #cbd0b8; }
+      .territory-map-key-item:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
+      .territory-key-number {
+        display: grid;
+        place-items: center;
+        flex: 0 0 27px;
+        height: 27px;
+        border: 1px solid #b9a484;
+        border-radius: 50%;
+        color: #765837;
+        background: #fffaf0;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .territory-map-key-item strong { display: block; font-size: .78rem; line-height: 1.25; }
+      .territory-map-key-item small { display: block; margin-top: 3px; color: #727961; font-size: .7rem; }
+      .territory-map-key-item:is(.state-treated, .state-broken, .state-clear, .state-evaluated) .territory-key-number {
+        color: #fffaf0;
+        border-color: #346755;
+        background: #346755;
+      }
+      @media (max-width: 700px) {
+        .territory-map-key { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 8px; }
+        .territory-map-key-item:last-child { grid-column: 1 / -1; }
+        .territory-map-key-item { min-height: 52px; }
+        .visual-scene[data-visual-template="territory"] .visual-card-layer { position: static; padding: 0 10px; }
+        .visual-scene[data-visual-template="territory"] .visual-hover-card {
+          position: static;
+          width: 100%;
+          max-height: none;
+          margin: 10px 0;
+          box-shadow: 0 3px 12px rgba(5, 20, 29, .12);
+        }
+      }
+
       .visual-sky { fill: #6f8b76; }
       .visual-sky.crisis { fill: #49535a; }
       .visual-hill-back { fill: #708b5c; }
@@ -809,9 +879,16 @@ export function renderPrototypePage(): string {
       function positionVisualCard(element, card) {
         const canvas = element.closest('.visual-canvas');
         if (!canvas) return;
+        if (canvas.querySelector('.territory-map') && window.matchMedia('(max-width: 700px)').matches) {
+          card.style.right = '';
+          card.style.left = '';
+          card.style.top = '';
+          return;
+        }
         window.requestAnimationFrame(function () {
           const canvasRect = canvas.getBoundingClientRect();
-          const elementRect = element.getBoundingClientRect();
+          const anchor = element.querySelector('.map-pin') || element;
+          const elementRect = anchor.getBoundingClientRect();
           const cardRect = card.getBoundingClientRect();
           const gap = 14;
           let left = elementRect.right - canvasRect.left + gap;
@@ -844,6 +921,9 @@ export function renderPrototypePage(): string {
         const card = button.closest('.action-card, .visual-hover-card');
         if (!card) return;
         if (button.disabled) { card.setAttribute('tabindex', '-1'); card.focus(); } else { button.focus(); }
+        if (sourceElement && sourceElement.closest('.territory-map-key')) {
+          card.scrollIntoView({ block: 'nearest', behavior: 'auto' });
+        }
         if (card.classList.contains('action-card')) {
           const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
           card.scrollIntoView({ block: 'nearest', behavior: reducedMotion ? 'auto' : 'smooth' });

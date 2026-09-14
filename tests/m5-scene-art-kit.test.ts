@@ -53,6 +53,8 @@ describe('M5.1 shared SVG scene art kit', () => {
   it('provides one versioned set of decorative SVG primitives', () => {
     expect(SCENE_ART_KIT_VERSION).toBe('m5-v1');
     expect(renderSceneArtDefs()).toContain('data-scene-art-kit="m5-v1"');
+    // A thick path must never turn its marker into a circle covering the scene.
+    expect(renderSceneArtDefs()).toContain('markerUnits="userSpaceOnUse"');
     expect(renderSceneTree(10, 20)).toContain('data-art-primitive="tree"');
     expect(renderSceneShrubs(10, 20)).toContain('data-art-primitive="shrubs"');
     expect(renderSceneRocks(10, 20)).toContain('data-art-primitive="rocks"');
