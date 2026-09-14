@@ -12,6 +12,15 @@ import {
   renderSceneTree
 } from './scene-art-kit.js';
 import {
+  HOUSING_ACCESS_PATH,
+  renderHousingHome,
+  renderHousingPin,
+  renderHousingPlanBase,
+  renderHousingPlanDefs,
+  renderHousingShrub,
+  renderHousingTree
+} from './housing-plan-art.js';
+import {
   renderTerritoryBrush,
   renderTerritoryMapBase,
   renderTerritoryMapDefs,
@@ -200,37 +209,73 @@ function housingSvg(model: PresentedSceneVisualModel): string {
   const access = byId(model, 'housing-local-access');
   const house = byId(model, 'housing-home');
 
-  return `<svg class="territory-svg" viewBox="0 0 900 500" role="img" aria-label="${escapeHtml(
+  return `<svg class="territory-svg housing-plan" viewBox="0 0 900 500" role="group" aria-label="${escapeHtml(
     model.ariaLabel
-  )}">
+  )}" data-visual-base="housing-plan-v2">
     ${renderSceneArtDefs()}
-    <rect class="visual-sky" x="0" y="0" width="900" height="500" rx="24" />
-    ${renderSceneHaze()}
-    <path class="visual-hill-front" d="M0 350 Q200 285 410 340 T900 315 V500 H0 Z" />
-    ${renderSceneTree(112, 365, 0.76)}
-    ${renderSceneShrubs(790, 355, 0.82)}
-    ${renderSceneRocks(655, 438, 0.68)}
-    <g id="housing-home" class="visual-hotspot ${stateClass(house)}"${hotspotAttributes(house)}>
-      <path class="visual-house" d="M345 225 l120 -85 125 85 v180 H345 Z" />
-      <rect class="visual-door" x="447" y="317" width="48" height="88" />
-      <rect class="visual-window" x="380" y="270" width="48" height="45" /><rect class="visual-window" x="515" y="270" width="48" height="45" />
-    </g>
-    <g id="housing-vertical-fuel" class="visual-hotspot ${stateClass(
-      vertical
-    )}"${hotspotAttributes(vertical)}>
-      <path class="visual-trunk" d="M263 390 V198 M300 390 V175" />
-      <path class="visual-branches" d="M263 320 l-75 -45 m75 0 l-65 -62 m102 95 l72 -66 m-72 16 l62 -82" />
+    ${renderHousingPlanDefs()}
+    ${renderHousingPlanBase()}
+    <g id="housing-local-access" class="visual-hotspot ${stateClass(access)}"${hotspotAttributes(
+      access
+    )}>
+      <g aria-hidden="true">
+        <path class="housing-access-margin" d="${HOUSING_ACCESS_PATH}" />
+        <path class="housing-driveway" d="${HOUSING_ACCESS_PATH}" />
+        <path class="housing-access-centre" d="${HOUSING_ACCESS_PATH}" />
+        <path class="housing-clear-route" d="M862 443 C782 433 742 412 702 390" />
+        <g class="housing-access-obstructions">
+          ${renderHousingShrub(794, 418, .78)}${renderHousingShrub(756, 397, .7)}${renderHousingShrub(708, 372, .65)}
+          <path d="M734 408 l24 -17 m-21 23 l27 -18" stroke="#8b704d" stroke-width="5" stroke-linecap="round" />
+        </g>
+        <g transform="translate(816 420) rotate(8)">
+          <rect class="housing-engine-body" x="-37" y="-18" width="55" height="34" rx="5" />
+          <path class="housing-engine-cab" d="M18 -15 h22 l13 12 v19 H18Z" />
+          <rect class="housing-engine-window" x="24" y="-10" width="13" height="10" rx="2" />
+          <circle class="housing-engine-wheel" cx="-21" cy="19" r="8" /><circle class="housing-engine-wheel" cx="36" cy="19" r="8" />
+        </g>
+      </g>
+      ${renderHousingPin(3, 675, 435, 'Acceso local', 116, access?.selected === true)}
     </g>
     <g id="housing-canopy" class="visual-hotspot ${stateClass(canopy)}"${hotspotAttributes(
       canopy
     )}>
-      <circle class="visual-canopy" cx="236" cy="165" r="72" /><circle class="visual-canopy" cx="331" cy="145" r="76" /><circle class="visual-canopy" cx="651" cy="170" r="75" /><circle class="visual-canopy" cx="742" cy="158" r="70" />
+      <g class="housing-canopy-connected">
+        <path class="housing-canopy-link" d="M144 145 Q229 120 320 153" aria-hidden="true" />
+        ${renderHousingTree(146, 145, 1.06)}${renderHousingTree(231, 132, 1.08)}${renderHousingTree(318, 153, 1.04)}
+      </g>
+      <g class="housing-canopy-separated">
+        ${renderHousingTree(137, 145, .91)}${renderHousingTree(257, 126, .91)}${renderHousingTree(357, 158, .87)}
+        <ellipse class="housing-canopy-gap" cx="198" cy="137" rx="26" ry="39" />
+        <ellipse class="housing-canopy-gap" cx="308" cy="143" rx="22" ry="36" />
+      </g>
+      ${renderHousingPin(2, 194, 71, 'Continuidad de copas', 177, canopy?.selected === true)}
     </g>
-    <g id="housing-local-access" class="visual-hotspot ${stateClass(access)}"${hotspotAttributes(
-      access
-    )}><path class="visual-road local" d="M60 455 C210 410 300 430 385 405 C520 365 700 405 860 355" /><rect class="visual-engine" x="140" y="382" width="88" height="44" rx="8" /><circle cx="162" cy="431" r="13" /><circle cx="208" cy="431" r="13" /></g>
-    <g class="visual-label-group" aria-hidden="true"><text x="356" y="450">vivienda e interfaz</text><text x="105" y="478">acceso local</text></g>
+    <g id="housing-vertical-fuel" class="visual-hotspot ${stateClass(
+      vertical
+    )}"${hotspotAttributes(vertical)}>
+      <ellipse class="housing-clearance" cx="246" cy="323" rx="108" ry="74" aria-hidden="true" />
+      <ellipse class="housing-fuel-patch" cx="246" cy="323" rx="104" ry="70" aria-hidden="true" />
+      <g class="housing-dry-fuel" aria-hidden="true">
+        <path d="M171 337 l15 -22 m-4 28 l22 -15 m57 35 l11 -25 m8 22 l18 -18 m-74 9 l12 -26 m-8 27 l24 -17 m-47 -31 l-9 -21 m14 18 l6 -24" />
+      </g>
+      <g class="housing-fuel-shrubs" aria-hidden="true">
+        ${renderHousingShrub(182, 339, .75)}${renderHousingShrub(215, 365, .72)}${renderHousingShrub(287, 361, .78)}${renderHousingShrub(314, 323, .65)}
+      </g>
+      ${renderHousingTree(248, 309, .78)}
+      <path class="housing-low-branches" d="M248 309 l-57 -43 m57 43 l-45 4 m45 -4 l51 -48 m-51 48 l56 7" aria-hidden="true" />
+      ${renderHousingPin(1, 142, 286, 'Vegetación baja y ramas', 190, vertical?.selected === true)}
+    </g>
+    <g id="housing-home" class="visual-hotspot ${stateClass(house)}"${hotspotAttributes(house)}>
+      ${renderHousingHome()}
+      ${renderHousingPin('i', 612, 233, 'Vivienda condicionada', 177, false)}
+    </g>
   </svg>`;
+}
+
+function housingMapLegend(model: PresentedSceneVisualModel): string {
+  return `<div class="housing-map-key" role="group" aria-label="Puntos del entorno de la vivienda">${model.elements.map((element, index) =>
+    `<button class="housing-map-key-item ${stateClass(element)}" type="button"${hotspotAttributes(element)}><span class="housing-key-number" aria-hidden="true">${element.actionId === undefined ? 'i' : index + 1}</span><span><strong>${escapeHtml(element.label)}</strong><small>${escapeHtml(element.stateLabel)}</small></span></button>`
+  ).join('')}</div>`;
 }
 
 function crisisSvg(model: PresentedSceneVisualModel): string {
@@ -314,7 +359,12 @@ export function renderSceneVisual(model: PresentedSceneVisualModel): string {
           : '';
   const dimensions = dimensionSummary(model);
   if (visual === '' && dimensions === '') return '';
-  const canvas = visual === '' ? '' : `<div class="visual-canvas">${visual}${model.templateId === 'territory' ? territoryMapLegend(model) : ''}${visualCards(model)}</div>`;
+  const legend = model.templateId === 'territory'
+    ? territoryMapLegend(model)
+    : model.templateId === 'housing'
+      ? housingMapLegend(model)
+      : '';
+  const canvas = visual === '' ? '' : `<div class="visual-canvas">${visual}${legend}${visualCards(model)}</div>`;
   return `<section class="visual-scene" data-visual-template="${model.templateId}" data-visual-scene-id="${escapeHtml(
     model.sceneId
   )}">${canvas}${dimensions}</section>`;

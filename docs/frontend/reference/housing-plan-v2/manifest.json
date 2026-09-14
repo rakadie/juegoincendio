@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "evidence": [
+    {
+      "name": "territory-initial-mobile.png",
+      "selector": ".visual-scene[data-visual-template=\"territory\"] .visual-canvas",
+      "width": 390,
+      "height": 844,
+      "mobile": true
+    },
+    {
+      "name": "territory-card-touch-mobile.png",
+      "selector": "[data-visual-action-card-id=\"gestionar-restos-poda\"]:not([hidden])",
+      "width": 390,
+      "height": 844,
+      "mobile": true
+    },
+    {
+      "name": "territory-treated-desktop.png",
+      "selector": ".visual-scene[data-visual-template=\"territory\"] .visual-canvas",
+      "width": 1280,
+      "height": 900,
+      "mobile": false
+    },
+    {
+      "name": "housing-initial-mobile.png",
+      "selector": ".visual-scene[data-visual-template=\"housing\"] .visual-canvas",
+      "width": 390,
+      "height": 844,
+      "mobile": true
+    },
+    {
+      "name": "housing-initial-desktop.png",
+      "selector": ".visual-scene[data-visual-template=\"housing\"] .visual-canvas",
+      "width": 1280,
+      "height": 900,
+      "mobile": false
+    },
+    {
+      "name": "housing-card-touch-mobile.png",
+      "selector": "[data-visual-action-card-id=\"podar-ramas-y-retirar-seco\"]:not([hidden])",
+      "width": 390,
+      "height": 844,
+      "mobile": true
+    },
+    {
+      "name": "housing-pruned-mobile.png",
+      "selector": ".visual-scene[data-visual-template=\"housing\"] .visual-canvas",
+      "width": 390,
+      "height": 844,
+      "mobile": true
+    },
+    {
+      "name": "housing-feedback-mobile.png",
+      "selector": ".inspection-response",
+      "width": 390,
+      "height": 844,
+      "mobile": true
+    },
+    {
+      "name": "housing-treated-desktop.png",
+      "selector": ".visual-scene[data-visual-template=\"housing\"] .visual-canvas",
+      "width": 1280,
+      "height": 900,
+      "mobile": false
+    },
+    {
+      "name": "prevention-balance-desktop.png",
+      "selector": ".scene-content",
+      "width": 1280,
+      "height": 900,
+      "mobile": false
+    },
+    {
+      "name": "crisis-prepared-desktop.png",
+      "selector": ".visual-scene[data-visual-template=\"crisis\"] .visual-canvas",
+      "width": 1280,
+      "height": 900,
+      "mobile": false
+    },
+    {
+      "name": "result-desktop.png",
+      "selector": ".result-contained .scene-content",
+      "width": 1280,
+      "height": 900,
+      "mobile": false
+    },
+    {
+      "name": "comparison-desktop.png",
+      "selector": "#m4-reference-comparison",
+      "width": 1280,
+      "height": 900,
+      "mobile": false
+    },
+    {
+      "name": "territory-card-mouse-desktop.png",
+      "selector": "[data-visual-action-card-id=\"gestionar-restos-poda\"]:not([hidden])",
+      "width": 1280,
+      "height": 900,
+      "mobile": false
+    },
+    {
+      "name": "territory-grazing-evaluation-desktop.png",
+      "selector": ".visual-scene[data-visual-template=\"territory\"] .visual-canvas",
+      "width": 1280,
+      "height": 900,
+      "mobile": false
+    },
+    {
+      "name": "housing-card-mouse-desktop.png",
+      "selector": "[data-visual-action-card-id=\"separar-copas\"]:not([hidden])",
+      "width": 1280,
+      "height": 900,
+      "mobile": false
+    },
+    {
+      "name": "housing-canopy-separated-desktop.png",
+      "selector": ".visual-scene[data-visual-template=\"housing\"] .visual-canvas",
+      "width": 1280,
+      "height": 900,
+      "mobile": false
+    },
+    {
+      "name": "crisis-vulnerable-desktop.png",
+      "selector": ".visual-scene[data-visual-template=\"crisis\"] .visual-canvas",
+      "width": 1280,
+      "height": 900,
+      "mobile": false
+    }
+  ]
+}
