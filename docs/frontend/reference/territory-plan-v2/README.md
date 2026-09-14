@@ -34,8 +34,9 @@ Las actuaciones producen cambios concretos:
 - Suite Vitest del proyecto: 193 pruebas.
 - Regresión para el tamaño del marcador compartido.
 - Comprobación del DOM con el cliente real y respuestas de `buildApp().inject()`: cinco controles de leyenda, apertura con Enter, selección de tres acciones, conservación de estados sin tratar y avance a vivienda. Se omiten los estilos internos del SVG por una limitación del parser de Happy DOM; no simula distribución visual.
+- Prueba visual en Chrome real a 390 × 844 y 1280 × 900: verifica ausencia de desbordamiento y recortes, cinco controles de tamaño suficiente, marcadores y rótulos sin solapamiento, tarjetas dentro del lienzo y de la leyenda móvil, apertura y selección con toque, teclado y ratón, límite de tres actuaciones y avance a vivienda y crisis. El smoke usa el directorio temporal del sistema para poder ejecutarse también en Windows.
 - Las imágenes nuevas son renders SVG con Sharp/libvips, no capturas de navegador. Se inspeccionaron los tres estados.
-- La prueba visual completa en navegador local no se pudo ejecutar en esta sesión: el navegador remoto bloquea direcciones locales. El workflow existente ejecuta la prueba de navegador y conserva las capturas como artefactos de CI.
+- El workflow conserva además capturas reales del navegador como artefactos de CI, incluidas las dos variantes de territorio, vivienda y crisis.
 
 El SVG se identifica como grupo accesible para conservar la semántica de sus botones. El rótulo de posición estratégica es neutro; su estado especifica si está evaluada.
 
