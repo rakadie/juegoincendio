@@ -8,8 +8,9 @@ const BASE_URL = process.env.M4_BASE_URL ?? 'http://127.0.0.1:3001';
 const CHROME_BIN = process.env.CHROME_BIN;
 const BASE_CDP_PORT = Number(process.env.M4_CDP_PORT ?? 9222);
 const STORAGE_KEY = 'vertical-beta.resume.v1';
-const CDP_COMMAND_TIMEOUT_MS = 5_000;
-const CHROME_START_TIMEOUT_MS = 10_000;
+const CDP_COMMAND_TIMEOUT_MS = Number(process.env.M4_CDP_COMMAND_TIMEOUT_MS ?? 5_000);
+const BROWSER_WAIT_TIMEOUT_MS = Number(process.env.M4_BROWSER_WAIT_TIMEOUT_MS ?? 8_000);
+const CHROME_START_TIMEOUT_MS = Number(process.env.M4_CHROME_START_TIMEOUT_MS ?? 10_000);
 const CHROME_LAUNCH_ATTEMPTS = 3;
 const VISUAL_CAPTURE_DIR = process.env.M5_CAPTURE_DIR?.trim() || null;
 const VISUAL_MODE = VISUAL_CAPTURE_DIR !== null;
@@ -78,7 +79,11 @@ async function stopChrome(chrome, profileDirectory) {
       await waitForChromeExit(chrome, 1_000);
     }
   }
-  await removeChromeProfile(profileDirectory);
+  try {
+    await removeChromeProfile(profileDirectory);
+  } catch (error) {
+    console.warn(`Chrome profile cleanup skipped: ${String(error)}`);
+  }
 }
 
 async function launchChrome() {
@@ -236,7 +241,7 @@ try {
     return result.result?.value;
   }
 
-  async function waitFor(expression, label, timeoutMs = 8_000) {
+  async function waitFor(expression, label, timeoutMs = BROWSER_WAIT_TIMEOUT_MS) {
     const deadline = Date.now() + timeoutMs;
     let lastError;
     while (Date.now() < deadline) {

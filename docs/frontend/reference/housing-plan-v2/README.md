@@ -8,13 +8,13 @@ La escena anterior presentaba la vivienda, las copas, las ramas y el acceso como
 
 ## Comportamiento resultante
 
-La vivienda se representa en una vista de parcela desde arriba, compatible con el mapa de fincas y monte. Tres puntos numerados corresponden a vegetación baja y ramas, continuidad de copas y acceso local. Un cuarto punto informativo mantiene visible que la vivienda sigue condicionada: las medidas reducen riesgo y mejoran condiciones operativas, pero no garantizan seguridad completa.
+La vivienda se representa mediante una imagen fotorrealista original en perspectiva aérea, con una capa SVG independiente para ubicaciones, controles y estados. La base permite reconocer la casa, las copas, la vegetación baja y el acceso sin convertirlos en símbolos abstractos; la capa superior mantiene la jerarquía y el lenguaje del mapa de fincas y monte. Tres puntos numerados corresponden a vegetación baja y ramas, continuidad de copas y acceso local. Un cuarto punto informativo mantiene visible que la vivienda sigue condicionada: las medidas reducen riesgo y mejoran condiciones operativas, pero no garantizan seguridad completa.
 
 Los cambios proceden de las decisiones registradas por el motor:
 
-- Podar ramas y gestionar la biomasa retira la vegetación seca y las ramas bajas y muestra el suelo gestionado.
-- Separar copas sustituye la masa conectada por copas con discontinuidades visibles.
-- Despejar accesos elimina obstáculos, ensancha el corredor y muestra la ruta operativa.
+- Podar ramas y gestionar la biomasa retira la lectura de vegetación seca y ramas bajas y revela una zona de suelo gestionado sin ocultar por completo el terreno.
+- Separar copas elimina el vínculo continuo y abre dos discontinuidades reconocibles entre las copas fotografiadas.
+- Despejar accesos elimina los obstáculos superpuestos y muestra sobre el camino la ruta operativa disponible.
 
 Tras cada elección se muestra el `feedback` oficial de la actuación, las actuaciones elegidas y las que quedan disponibles. El presupuesto sigue siendo de dos actuaciones entre tres opciones en vivienda; no se altera el límite de tres actuaciones de territorio ni los impactos, estados, rutas o consecuencias del juego.
 
@@ -51,7 +51,7 @@ El balance distingue lo aplicado y lo pendiente en ambas zonas:
 ## Validación realizada
 
 - `npm run accept:m5`: auditoría de dependencias sin vulnerabilidades, tipos y compilación correctos, 195 pruebas Vitest, 4 pruebas de aceptación M4 y 4 pruebas de aceptación M5.
-- `npm run smoke:m5` en Chrome a 390 × 844 y 1280 × 900: sin desbordamiento horizontal, recortes del mapa ni solapamiento entre puntos y rótulos; cuatro controles de leyenda con altura mínima de 52 px en móvil y 48 px en escritorio.
+- `npm run smoke:m5` en Chrome a 390 × 844 y 1280 × 900: `M5_VISUAL_SMOKE_OK`, sin desbordamiento horizontal, recortes de controles ni solapamiento entre puntos y rótulos; cuatro controles de leyenda con altura mínima de 52 px en móvil y 48 px en escritorio.
 - Apertura y selección de tarjetas con toque, teclado y ratón. Las tarjetas permanecen dentro del lienzo en escritorio y debajo de la leyenda en móvil.
 - Comprobación antes/después de vegetación baja, copas y acceso mediante estilos calculados del navegador.
 - Confirmación causal, historial visible, una actuación restante tras la primera elección y bloqueo de la tercera opción al alcanzar 2/2.
@@ -72,4 +72,4 @@ El navegador integrado no ofreció una instancia en este entorno. Se utilizó el
 
 ## Limitaciones y reversión
 
-La escena es ilustrativa y no está a escala. El presupuesto obliga a dejar una condición de vivienda pendiente; el balance la hace explícita. Revertir el commit de esta propuesta recupera la escena y la presentación anteriores sin migraciones de datos, porque el esquema de sesión y el motor no cambian.
+La imagen de fondo fue generada para este escenario y no documenta una finca ni una vivienda reales; la escena es educativa y no está a escala. El presupuesto obliga a dejar una condición de vivienda pendiente y el balance la hace explícita. Revertir el commit de esta propuesta recupera la escena y la presentación anteriores sin migraciones de datos, porque el esquema de sesión y el motor no cambian.
