@@ -200,7 +200,7 @@ function housingElements(selected: Set<string>): PresentedVisualElement[] {
       'vegetation',
       preventionState(selected, 'podar-ramas-y-retirar-seco', 'reduced', 'continuous'),
       selected.has('podar-ramas-y-retirar-seco')
-        ? 'La escalera vertical se reduce y la biomasa se gestiona.'
+        ? 'La vegetación baja y las ramas podadas reducen la continuidad vertical.'
         : 'Las ramas bajas mantienen continuidad vertical junto a la vivienda.',
       'podar-ramas-y-retirar-seco',
       selected.has('podar-ramas-y-retirar-seco')
@@ -210,7 +210,7 @@ function housingElements(selected: Set<string>): PresentedVisualElement[] {
       'canopy',
       preventionState(selected, 'separar-copas', 'broken', 'continuous'),
       selected.has('separar-copas')
-        ? 'Las copas quedan separadas y pierden continuidad horizontal.'
+        ? 'Las discontinuidades entre copas reducen la continuidad horizontal.'
         : 'Las copas siguen conectadas junto a la vivienda.',
       'separar-copas',
       selected.has('separar-copas')
@@ -220,7 +220,7 @@ function housingElements(selected: Set<string>): PresentedVisualElement[] {
       'localAccess',
       preventionState(selected, 'despejar-accesos', 'clear', 'blocked'),
       selected.has('despejar-accesos')
-        ? 'Entrada, maniobra y salida local quedan disponibles.'
+        ? 'El corredor despejado mejora la entrada, la maniobra y el repliegue.'
         : 'El acceso local sigue comprometido para una autobomba.',
       'despejar-accesos',
       selected.has('despejar-accesos')

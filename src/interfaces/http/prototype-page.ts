@@ -212,6 +212,8 @@ export function renderPrototypePage(): string {
       .scene-heading-copy { max-width: 900px; }
       .eyebrow { margin: 0 0 5px; color: #315a4b; font-size: .72rem; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; }
       h1, h2, h3, p { margin-top: 0; }
+      h1, h2, .scene-content, .visual-canvas { scroll-margin-top: 88px; }
+      .scene h1:focus, .scene h2:focus { outline: none; }
       h1 { margin-bottom: 12px; font-size: clamp(2.25rem, 6vw, 4.8rem); line-height: .96; letter-spacing: -.045em; }
       h2 { margin-bottom: 8px; font-size: clamp(1.65rem, 3vw, 2.55rem); line-height: 1.02; letter-spacing: -.025em; }
       h3 { margin-bottom: 7px; }
@@ -273,28 +275,31 @@ export function renderPrototypePage(): string {
       }
       .territory-svg { display: block; width: 100%; height: 100%; min-height: 390px; max-height: 620px; object-fit: cover; }
 
-      .visual-scene[data-visual-template="territory"] .visual-canvas {
+      .visual-scene[data-visual-template="territory"] .visual-canvas,
+      .visual-scene[data-visual-template="housing"] .visual-canvas {
         min-height: 0;
         background: #e5e3cb;
         border-color: #c0c6b0;
         grid-template-rows: auto auto;
       }
-      .visual-scene[data-visual-template="territory"] .territory-map {
+      .visual-scene[data-visual-template="territory"] .territory-map,
+      .visual-scene[data-visual-template="housing"] .housing-plan {
         width: 100%;
         height: auto;
         min-height: 0;
         max-height: none;
         aspect-ratio: 9 / 5;
       }
-      .territory-map-key {
+      .territory-map-key, .housing-map-key {
         display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
         gap: 6px;
         padding: 12px;
         border-top: 1px solid #cbd0b8;
         background: #faf8ef;
       }
-      .territory-map-key-item {
+      .territory-map-key { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+      .housing-map-key { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .territory-map-key-item, .housing-map-key-item {
         display: flex;
         align-items: center;
         gap: 8px;
@@ -308,9 +313,9 @@ export function renderPrototypePage(): string {
         background: transparent;
         cursor: pointer;
       }
-      .territory-map-key-item:hover { background: #edeedd; border-color: #cbd0b8; }
-      .territory-map-key-item:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
-      .territory-key-number {
+      .territory-map-key-item:hover, .housing-map-key-item:hover { background: #edeedd; border-color: #cbd0b8; }
+      .territory-map-key-item:focus-visible, .housing-map-key-item:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
+      .territory-key-number, .housing-key-number {
         display: grid;
         place-items: center;
         flex: 0 0 27px;
@@ -322,19 +327,27 @@ export function renderPrototypePage(): string {
         font-size: 13px;
         font-weight: 700;
       }
-      .territory-map-key-item strong { display: block; font-size: .78rem; line-height: 1.25; }
-      .territory-map-key-item small { display: block; margin-top: 3px; color: #727961; font-size: .7rem; }
-      .territory-map-key-item:is(.state-treated, .state-broken, .state-clear, .state-evaluated) .territory-key-number {
+      .territory-map-key-item strong, .housing-map-key-item strong { display: block; font-size: .78rem; line-height: 1.25; }
+      .territory-map-key-item small, .housing-map-key-item small { display: block; margin-top: 3px; color: #727961; font-size: .7rem; }
+      .territory-map-key-item:is(.state-treated, .state-broken, .state-clear, .state-evaluated) .territory-key-number,
+      .housing-map-key-item:is(.state-reduced, .state-broken, .state-clear) .housing-key-number {
         color: #fffaf0;
         border-color: #346755;
         background: #346755;
       }
+      .housing-map-key-item.state-conditioned .housing-key-number {
+        color: #765837;
+        border-color: #b17638;
+        background: #fff5df;
+      }
       @media (max-width: 700px) {
-        .territory-map-key { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 8px; }
+        .territory-map-key, .housing-map-key { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 8px; }
         .territory-map-key-item:last-child { grid-column: 1 / -1; }
-        .territory-map-key-item { min-height: 52px; }
-        .visual-scene[data-visual-template="territory"] .visual-card-layer { position: static; padding: 0 10px; }
-        .visual-scene[data-visual-template="territory"] .visual-hover-card {
+        .territory-map-key-item, .housing-map-key-item { min-height: 52px; }
+        .visual-scene[data-visual-template="territory"] .visual-card-layer,
+        .visual-scene[data-visual-template="housing"] .visual-card-layer { position: static; padding: 0 10px; }
+        .visual-scene[data-visual-template="territory"] .visual-hover-card,
+        .visual-scene[data-visual-template="housing"] .visual-hover-card {
           position: static;
           width: 100%;
           max-height: none;
@@ -494,6 +507,42 @@ export function renderPrototypePage(): string {
       button:disabled { cursor: not-allowed; opacity: .52; }
       .footer-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
       .feedback { margin-top: 14px; padding: 12px 14px; border: 1px solid #a9c9b6; border-radius: 8px; color: #234336; background: #edf7f0; }
+      .selection-counter .selection-remaining { display: block; margin-top: 3px; color: var(--muted); font-size: .72rem; }
+      .inspection-response {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(260px, .8fr);
+        gap: 10px;
+        margin-top: 14px;
+      }
+      .inspection-confirmation, .inspection-selection {
+        min-width: 0;
+        padding: 13px 14px;
+        border: 1px solid #c6d0cb;
+        border-radius: 9px;
+        background: #f5f7f4;
+      }
+      .inspection-confirmation { color: #29483a; border-color: #9fc4ad; background: #edf7f0; }
+      .inspection-confirmation p { margin: 4px 0 0; font-size: .86rem; }
+      .inspection-confirmation.is-empty { color: #5b6b64; border-color: #cbd3d0; background: #f5f7f4; }
+      .inspection-selection { display: grid; align-content: start; gap: 7px; }
+      .inspection-selection > strong, .prevention-area h3 { font-size: .88rem; }
+      .selected-action-list { display: flex; flex-wrap: wrap; gap: 6px; }
+      .selected-action-chip { padding: 5px 8px; border: 1px solid #9cc0aa; border-radius: 999px; color: #24543e; background: #e8f2ea; font-size: .72rem; font-weight: 750; }
+      .selection-empty, .inspection-selection small { color: var(--muted); font-size: .76rem; }
+      .prevention-review { margin: 18px 0; }
+      .prevention-review-intro { margin-bottom: 10px; color: #53666f; font-size: .84rem; }
+      .prevention-area-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .prevention-area { padding: 14px; border: 1px solid #c8d0cd; border-radius: 9px; background: #fff; }
+      .prevention-area h3 { margin-bottom: 12px; color: #29483a; }
+      .prevention-area-section + .prevention-area-section { margin-top: 13px; padding-top: 12px; border-top: 1px solid #dde3df; }
+      .prevention-area-section > strong { display: block; margin-bottom: 6px; color: #52636b; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; }
+      .prevention-area ul { display: grid; gap: 6px; margin: 0; padding-left: 18px; }
+      .prevention-area li { color: #344851; font-size: .82rem; line-height: 1.35; }
+      .prevention-area li small { display: block; margin-top: 2px; color: var(--muted); }
+      .prevention-area .applied-list li::marker { color: var(--green); }
+      .prevention-area .pending-list li::marker { color: var(--orange); }
+      .balance-caution { margin: 12px 0 16px; padding: 11px 13px; border-left: 4px solid var(--orange); color: #55483a; background: #fff7e8; font-size: .83rem; }
+      .balance-heading { margin: 20px 0 8px; font-size: 1rem; }
       .router-mark { width: 62px; height: 62px; display: grid; place-items: center; margin-bottom: 14px; border-radius: 50%; color: #fff; background: #2f7c5d; font-size: 1.7rem; }
 
       .result-layout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 14px; align-items: start; }
@@ -588,6 +637,7 @@ export function renderPrototypePage(): string {
         .selection-counter strong, .scene-state-badge strong { font-size: 1.05rem; }
         .visual-canvas, .territory-svg { min-height: 300px; }
         .visual-dimension-summary, .actions { grid-template-columns: 1fr; }
+        .inspection-response, .prevention-area-grid { grid-template-columns: 1fr; }
         .visual-hover-card { width: min(320px, calc(100% - 20px)); max-height: calc(100% - 20px); }
         .session-footer { width: calc(100% - 16px); grid-template-columns: 1fr; }
         .footer-cell:last-child { grid-column: auto; }
@@ -647,6 +697,8 @@ export function renderPrototypePage(): string {
       let currentView = null;
       let sessionId = null;
       let busy = false;
+      let visualHoverReady = true;
+      let visualHoverTimer = null;
 
       const game = document.getElementById('game');
       const notice = document.getElementById('notice');
@@ -778,22 +830,57 @@ export function renderPrototypePage(): string {
         return '<div class="scene-heading"><div class="scene-heading-copy"><p class="eyebrow">' + escapeHtml(eyebrow) + '</p><h2>' + escapeHtml(scene.title) + '</h2><p class="lead">' + escapeHtml(scene.body || '') + '</p></div>' + (badge || '') + '</div>';
       }
 
+      function inspectionResponse(scene) {
+        const selected = scene.actions.filter(function (action) { return action.selected; });
+        const remaining = Math.max(0, scene.actionQuota - scene.selectedCount);
+        const selectedMarkup = selected.length === 0
+          ? '<span class="selection-empty">Aún no has elegido ninguna.</span>'
+          : '<div class="selected-action-list">' + selected.map(function (action) {
+              return '<span class="selected-action-chip">' + escapeHtml(action.label) + '</span>';
+            }).join('') + '</div>';
+        const remainingLabel = remaining === 0
+          ? 'No quedan actuaciones disponibles en esta zona.'
+          : 'Queda' + (remaining === 1 ? '' : 'n') + ' ' + remaining + ' actuaci' + (remaining === 1 ? 'ón' : 'ones') + ' disponible' + (remaining === 1 ? '' : 's') + '.';
+        const confirmation = scene.feedback
+          ? '<div class="inspection-confirmation"><strong>Actuación aplicada</strong><p>' + escapeHtml(scene.feedback) + '</p></div>'
+          : '<div class="inspection-confirmation is-empty"><strong>Observa antes de actuar</strong><p>Elige un punto para relacionar el riesgo visible con una medida preventiva.</p></div>';
+        return '<section class="inspection-response" role="status" aria-live="polite" aria-atomic="true">' + confirmation +
+          '<div class="inspection-selection"><strong>Actuaciones elegidas</strong>' + selectedMarkup + '<small>' + remainingLabel + '</small></div></section>';
+      }
+
+      function preventionAreaReview(scene) {
+        return '<section class="prevention-review" aria-label="Decisiones y condiciones pendientes por zona">' +
+          '<p class="prevention-review-intro">Compara lo aplicado con lo que sigue presente en cada zona.</p>' +
+          '<div class="prevention-area-grid">' + scene.preventionAreas.map(function (area) {
+            const applied = '<div class="prevention-area-section"><strong>Actuaciones aplicadas</strong><ul class="applied-list">' + area.selectedActions.map(function (action) {
+              return '<li>' + escapeHtml(action.label) + '</li>';
+            }).join('') + '</ul></div>';
+            const pending = '<div class="prevention-area-section"><strong>Condiciones pendientes</strong><ul class="pending-list">' + area.pendingConditions.map(function (condition) {
+              return '<li><b>' + escapeHtml(condition.label) + '</b><small>' + escapeHtml(condition.consequence) + '</small></li>';
+            }).join('') + '</ul></div>';
+            return '<article class="prevention-area" data-prevention-area="' + escapeHtml(area.sceneId) + '"><h3>' + escapeHtml(area.label) + '</h3>' + applied + pending + '</article>';
+          }).join('') + '</div></section>';
+      }
+
       function renderBriefing(scene) {
         return '<section class="scene briefing"><div class="scene-heading-copy"><p class="eyebrow">Misión municipal</p><h1>' + escapeHtml(scene.title) + '</h1><p class="lead">' + escapeHtml(scene.mission) + '</p>' + advanceButton(scene) + '</div></section>';
       }
 
       function renderInspection(scene) {
-        const badge = '<div class="selection-counter"><small>Acciones seleccionadas</small><strong>' + scene.selectedCount + ' / ' + scene.actionQuota + '</strong></div>';
+        const remaining = Math.max(0, scene.actionQuota - scene.selectedCount);
+        const badge = '<div class="selection-counter"><small>Acciones seleccionadas</small><strong>' + scene.selectedCount + ' / ' + scene.actionQuota + '</strong><span class="selection-remaining">' + (remaining === 0 ? 'Presupuesto agotado' : 'Quedan ' + remaining) + '</span></div>';
         return '<section class="scene"><div class="scene-content">' + heading(scene, 'Inspección preventiva', badge) +
           '<div class="objective"><strong>Tu objetivo:</strong> ' + escapeHtml(scene.objective) + '</div>' +
           '<p class="visual-hint">Pasa sobre un punto de la escena, enfócalo con el teclado o tócalo para ver y elegir la actuación.</p>' +
-          visualMarkup() + advanceButton(scene) + '</div></section>';
+          visualMarkup() + inspectionResponse(scene) + advanceButton(scene) + '</div></section>';
       }
 
       function renderSummary(scene) {
         return '<section class="scene"><div class="scene-content">' + heading(scene, 'Balance preventivo', '') +
           '<div class="objective"><strong>Puente causal:</strong> lo que trataste en prevención define las condiciones que hereda la emergencia.</div>' +
-          visualMarkup() + advanceButton(scene) + '</div></section>';
+          preventionAreaReview(scene) +
+          '<div class="balance-caution"><strong>Reducción, no garantía:</strong> estas medidas reducen el riesgo y mejoran las condiciones operativas; no convierten una vivienda en completamente segura.</div>' +
+          '<h3 class="balance-heading">Condiciones que hereda la emergencia</h3>' + visualMarkup() + advanceButton(scene) + '</div></section>';
       }
 
       function renderDecision(scene) {
@@ -879,7 +966,7 @@ export function renderPrototypePage(): string {
       function positionVisualCard(element, card) {
         const canvas = element.closest('.visual-canvas');
         if (!canvas) return;
-        if (canvas.querySelector('.territory-map') && window.matchMedia('(max-width: 700px)').matches) {
+        if (canvas.querySelector('.territory-map, .housing-plan') && window.matchMedia('(max-width: 700px)').matches) {
           card.style.right = '';
           card.style.left = '';
           card.style.top = '';
@@ -921,7 +1008,7 @@ export function renderPrototypePage(): string {
         const card = button.closest('.action-card, .visual-hover-card');
         if (!card) return;
         if (button.disabled) { card.setAttribute('tabindex', '-1'); card.focus(); } else { button.focus(); }
-        if (sourceElement && sourceElement.closest('.territory-map-key')) {
+        if (sourceElement && sourceElement.closest('.territory-map-key, .housing-map-key')) {
           card.scrollIntoView({ block: 'nearest', behavior: 'auto' });
         }
         if (card.classList.contains('action-card')) {
@@ -938,7 +1025,9 @@ export function renderPrototypePage(): string {
           });
         });
         document.querySelectorAll('[data-visual-element-id]').forEach(function (element) {
-          element.addEventListener('mouseenter', function () { openVisualCard(element); });
+          element.addEventListener('mouseenter', function () {
+            if (visualHoverReady) openVisualCard(element);
+          });
           element.addEventListener('mouseleave', scheduleVisualCardClose);
           element.addEventListener('focus', function () { openVisualCard(element); });
           element.addEventListener('blur', scheduleVisualCardClose);
@@ -962,9 +1051,10 @@ export function renderPrototypePage(): string {
         });
         const advance = document.getElementById('advance-button');
         if (advance) {
-          advance.addEventListener('click', function () {
+          advance.addEventListener('click', async function () {
             advance.disabled = true;
-            request('/api/game-sessions/' + encodeURIComponent(sessionId) + '/advance', { method: 'POST', body: '{}' });
+            const advanced = await request('/api/game-sessions/' + encodeURIComponent(sessionId) + '/advance', { method: 'POST', body: '{}' });
+            if (advanced) focusCurrentSceneHeading();
           });
         }
       }
@@ -1010,11 +1100,14 @@ export function renderPrototypePage(): string {
         if (!currentView) return;
         const renderer = RENDERERS[currentView.scene.type];
         if (!renderer) throw new Error('Tipo de escena no soportado: ' + currentView.scene.type);
+        visualHoverReady = false;
+        if (visualHoverTimer !== null) window.clearTimeout(visualHoverTimer);
         game.innerHTML = renderer(currentView.scene);
         renderJourney();
         renderFooter();
         hydrateVisualActionCards(currentView.scene);
         wireCommands();
+        visualHoverTimer = window.setTimeout(function () { visualHoverReady = true; }, 220);
       }
 
       restartButton.addEventListener('click', function () {

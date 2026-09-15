@@ -99,6 +99,7 @@ export interface PresentedInspectionScene extends PresentedSceneBase<'inspection
   readonly actionQuota: number;
   readonly selectedCount: number;
   readonly actions: readonly PresentedAction[];
+  readonly feedback?: string;
 }
 
 export interface PresentedSummaryScene extends PresentedSceneBase<'summary'> {
@@ -106,6 +107,19 @@ export interface PresentedSummaryScene extends PresentedSceneBase<'summary'> {
     id: keyof InheritedState;
     label: string;
     value: number;
+  }[];
+  readonly preventionAreas: readonly {
+    sceneId: PreventionInspectionSceneId;
+    label: string;
+    selectedActions: readonly {
+      actionId: string;
+      label: string;
+    }[];
+    pendingConditions: readonly {
+      actionId: string;
+      label: string;
+      consequence: string;
+    }[];
   }[];
 }
 
@@ -248,6 +262,12 @@ function presentInspection(
   const inspection = getOfficialPreventionInspection(sceneId);
   const copy = requireVerticalBetaSceneMessages(VERTICAL_BETA_I18N_ES, sceneId);
   const selected = selectedIds(session, sceneId);
+  const latestDecision = [...session.decisions]
+    .reverse()
+    .find((decision) => decision.sceneId === sceneId);
+  const latestAction = inspection.hotspots.find(
+    ({ action }) => action.id === latestDecision?.actionId
+  )?.action;
   return {
     id: sceneId,
     type: 'inspection',
@@ -263,6 +283,7 @@ function presentInspection(
       selected: selected.has(action.id),
       available: !selected.has(action.id) && selected.size < inspection.maxActions
     })),
+    ...(latestAction === undefined ? {} : { feedback: latestAction.feedback }),
     canAdvance: selected.size === inspection.maxActions,
     advanceLabel: copy.advanceLabel!
   };
@@ -382,6 +403,25 @@ function presentScene(session: GameSession): PresentedVerticalBetaScene {
         label: VERTICAL_BETA_DIMENSION_LABELS[id],
         value: session.inheritedState![id]
       })),
+      preventionAreas: OFFICIAL_PREVENTION_INSPECTIONS.map((inspection) => {
+        const selected = selectedIds(session, inspection.id);
+        return {
+          sceneId: inspection.id,
+          label: inspection.shortTitle ?? inspection.title,
+          selectedActions: inspection.hotspots.flatMap(({ action }) =>
+            selected.has(action.id) ? [{ actionId: action.id, label: action.label }] : []
+          ),
+          pendingConditions: inspection.hotspots.flatMap((hotspot) =>
+            selected.has(hotspot.action.id)
+              ? []
+              : [{
+                  actionId: hotspot.action.id,
+                  label: hotspot.title,
+                  consequence: hotspot.futureConsequence
+                }]
+          )
+        };
+      }),
       canAdvance: true,
       advanceLabel: VERTICAL_BETA_PREVENTION_SUMMARY.continueLabel
     };
