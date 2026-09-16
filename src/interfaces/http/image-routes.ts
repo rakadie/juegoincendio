@@ -7,6 +7,7 @@ const IMAGE_FILES = [
   'operational-command-hero.png',
   'gameplay-wildfire-scene.png',
   'housing-prevention-aerial-v2.jpg',
+  'crisis-ravine-aerial-v1.jpg',
   'avatar-forestal-hombre.png',
   'avatar-forestal-mujer.png',
   'avatar-forestal-neutro.png'

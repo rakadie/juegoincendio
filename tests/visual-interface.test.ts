@@ -169,8 +169,8 @@ describe('M3 visual presenter', () => {
 
     const preparedMarkup = renderSceneVisual(preparedVisual);
     const vulnerableMarkup = renderSceneVisual(vulnerableVisual);
-    expect(preparedMarkup).toContain('data-visual-base="shared-ravine-v1"');
-    expect(vulnerableMarkup).toContain('data-visual-base="shared-ravine-v1"');
+    expect(preparedMarkup).toContain('data-visual-base="shared-ravine-photo-v2"');
+    expect(vulnerableMarkup).toContain('data-visual-base="shared-ravine-photo-v2"');
     expect(preparedMarkup).toContain('state-sustainable');
     expect(vulnerableMarkup).toContain('state-unsustainable');
   });

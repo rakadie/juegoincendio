@@ -5,12 +5,14 @@ import type {
 } from '../../application/vertical-beta/vertical-beta-visual-presenter.js';
 import {
   renderSceneArtDefs,
-  renderSceneHaze,
   renderSceneRocks,
-  renderSceneShrubs,
-  renderSceneSmoke,
-  renderSceneTree
+  renderSceneSmoke
 } from './scene-art-kit.js';
+import {
+  CRISIS_ROAD_PATH,
+  renderCrisisRavineBase,
+  renderCrisisRavineDefs
+} from './crisis-ravine-art.js';
 import {
   HOUSING_ACCESS_PATH,
   renderHousingHome,
@@ -287,41 +289,35 @@ function crisisSvg(model: PresentedSceneVisualModel): string {
   const professionalLine = byId(model, 'crisis-professional-line');
   const houseAccess = byId(model, 'crisis-house-access');
 
-  return `<svg class="territory-svg crisis-svg" viewBox="0 0 900 500" role="img" aria-label="${escapeHtml(
+  return `<svg class="territory-svg crisis-svg crisis-photo" viewBox="0 0 900 500" role="img" aria-label="${escapeHtml(
     model.ariaLabel
-  )}" data-visual-base="shared-ravine-v1">
+  )}" data-visual-base="shared-ravine-photo-v2">
     ${renderSceneArtDefs()}
-    <rect class="visual-sky crisis" x="0" y="0" width="900" height="500" rx="24" />
-    ${renderSceneHaze()}
-    <path class="visual-hill-back" d="M0 230 Q160 110 330 240 T650 185 T900 240 V500 H0 Z" />
-    <path class="visual-hill-front" d="M0 345 Q170 195 350 340 T680 285 T900 345 V500 H0 Z" />
-    <path class="visual-ravine crisis" d="M350 208 Q425 290 455 500 L605 500 Q555 300 520 215 Z" />
-    ${renderSceneTree(112, 348, 0.78, 'dry')}
-    ${renderSceneShrubs(800, 340, 0.82, 'dry')}
-    ${renderSceneRocks(395, 452, 0.72)}
-    ${renderSceneSmoke(590, 195, 0.9)}
-    <g id="crisis-road" class="visual-hotspot ${stateClass(road)}"${hotspotAttributes(road)}><path class="visual-road" d="M30 430 C175 365 315 412 438 345 C565 275 715 318 865 250" /></g>
-    <g id="crisis-retreat" class="visual-hotspot ${stateClass(retreat)}"${hotspotAttributes(retreat)}><path class="visual-retreat" d="M455 364 C350 315 240 322 128 360" /><path class="visual-arrow" d="M128 360 l35 -24 m-35 24 l38 18" /></g>
-    <g id="crisis-position" class="visual-hotspot ${stateClass(position)}"${hotspotAttributes(position)}><circle class="visual-position" cx="470" cy="330" r="30" /><path d="M445 330 H495 M470 305 V355" /></g>
-    <g id="crisis-pressure" class="visual-hotspot ${stateClass(pressure)}"${hotspotAttributes(pressure)}><path class="visual-fire" d="M560 365 C525 315 574 286 553 244 C620 268 636 320 616 369 C599 405 568 402 560 365 Z" /></g>
-    <g id="crisis-attack-window" class="visual-hotspot ${stateClass(attack)}"${hotspotAttributes(attack)}><path class="visual-attack-window" d="M395 264 Q465 218 545 252" /></g>
-    <g id="crisis-crown" class="visual-hotspot ${stateClass(crown)}"${hotspotAttributes(crown)}><circle class="visual-canopy" cx="630" cy="205" r="62" /><circle class="visual-canopy" cx="710" cy="194" r="62" /><circle class="visual-canopy" cx="782" cy="214" r="58" /></g>
-    <g id="crisis-capacity" class="visual-hotspot visual-capacity ${stateClass(capacity)}"${hotspotAttributes(capacity)}><circle cx="78" cy="78" r="35" /><text x="78" y="84" text-anchor="middle">CAP</text></g>
+    ${renderCrisisRavineDefs()}
+    ${renderCrisisRavineBase()}
+    ${renderSceneSmoke(570, 265, 0.68)}
+    <g id="crisis-road" class="visual-hotspot ${stateClass(road)}"${hotspotAttributes(road)}><path class="visual-road" d="${CRISIS_ROAD_PATH}" /></g>
+    <g id="crisis-retreat" class="visual-hotspot ${stateClass(retreat)}"${hotspotAttributes(retreat)}><path class="visual-retreat" d="M452 289 C338 317 225 348 115 375" /><path class="visual-arrow" d="M115 375 l33 -25 m-33 25 l39 14" /></g>
+    <g id="crisis-position" class="visual-hotspot ${stateClass(position)}"${hotspotAttributes(position)}><circle class="visual-position" cx="452" cy="288" r="28" /><path d="M430 288 H474 M452 266 V310" /></g>
+    <g id="crisis-pressure" class="visual-hotspot ${stateClass(pressure)}"${hotspotAttributes(pressure)}><path class="visual-fire" d="M556 355 C539 330 561 315 552 294 C586 307 596 335 586 359 C578 376 560 375 556 355 Z" /></g>
+    <g id="crisis-attack-window" class="visual-hotspot ${stateClass(attack)}"${hotspotAttributes(attack)}><path class="visual-attack-window" d="M406 244 Q472 216 543 246" /></g>
+    <g id="crisis-crown" class="visual-hotspot ${stateClass(crown)}"${hotspotAttributes(crown)}><circle class="visual-canopy" cx="642" cy="112" r="45" /><circle class="visual-canopy" cx="718" cy="106" r="45" /><circle class="visual-canopy" cx="783" cy="129" r="43" /></g>
+    <g id="crisis-capacity" class="visual-hotspot visual-capacity ${stateClass(capacity)}"${hotspotAttributes(capacity)}><circle class="crisis-capacity-hit-target" cx="72" cy="91" r="62" /><circle cx="72" cy="91" r="35" /><text x="72" y="97" text-anchor="middle">CAP</text></g>
     ${
       professionalLine === undefined
         ? ''
         : `<g id="crisis-professional-line" class="visual-hotspot ${stateClass(professionalLine)}"${hotspotAttributes(
             professionalLine
-          )}><path class="visual-professional-line" d="M300 250 Q410 195 520 230" /><circle class="visual-line-marker" cx="410" cy="215" r="12" /></g>`
+          )}><path class="visual-professional-line" d="M330 271 Q430 213 532 241" /><circle class="visual-line-marker" cx="432" cy="229" r="12" /></g>`
     }
     ${
       houseAccess === undefined
         ? ''
         : `<g id="crisis-house-access" class="visual-hotspot ${stateClass(houseAccess)}"${hotspotAttributes(
             houseAccess
-          )}><path class="visual-house" d="M690 305 l55 -42 58 42 v92 h-113 z" /><path class="visual-road local" d="M615 420 Q710 390 850 405" /></g>`
+          )}><path class="visual-house" d="M735 297 l45 -34 48 34 v73 h-93 z" /><path class="visual-road local" d="M585 352 Q702 324 842 349" /></g>`
     }
-    <g class="visual-label-group" aria-hidden="true"><text x="385" y="475">mismo barranco · estado heredado distinto</text></g>
+    <g class="visual-label-group" aria-hidden="true"><text x="388" y="475">mismo barranco · estado heredado distinto</text></g>
   </svg>`;
 }
 

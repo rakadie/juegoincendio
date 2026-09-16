@@ -282,6 +282,12 @@ export function renderPrototypePage(): string {
         border-color: #c0c6b0;
         grid-template-rows: auto auto;
       }
+      .visual-scene[data-visual-template="crisis"] .visual-canvas { min-height: 0; }
+      .visual-scene[data-visual-template="crisis"] .crisis-svg {
+        height: auto;
+        min-height: 0;
+        max-height: none;
+      }
       .visual-scene[data-visual-template="territory"] .territory-map,
       .visual-scene[data-visual-template="housing"] .housing-plan {
         width: 100%;

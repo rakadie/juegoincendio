@@ -86,7 +86,9 @@ describe('M5.1 shared SVG scene art kit', () => {
     const markup = crisisMarkup();
     expect(markup).toContain('data-scene-art-kit="m5-v1"');
     expect(markup).toContain('data-art-primitive="smoke"');
-    expect(markup).toContain('data-visual-base="shared-ravine-v1"');
+    expect(markup).toContain('data-visual-base="shared-ravine-photo-v2"');
+    expect(markup).toContain('data-background-layer="photo"');
+    expect(markup).toContain('/images/crisis-ravine-aerial-v1.jpg');
     expect(markup).toContain('id="crisis-road"');
     expect(markup).toContain('id="crisis-position"');
   });

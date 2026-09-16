@@ -497,6 +497,40 @@ try {
     assert(layout.overlaps.length === 0, 'Housing pins or visible labels overlap.');
   }
 
+  async function assertCrisisLayout() {
+    const layout = await evaluate(`(async () => {
+      const canvas = document.querySelector('.visual-scene[data-visual-template="crisis"] .visual-canvas');
+      const map = canvas?.querySelector('.crisis-photo');
+      const photo = map?.querySelector('[data-background-layer="photo"]');
+      const fire = map?.querySelector('#crisis-pressure .visual-fire');
+      const capacity = map?.querySelector('#crisis-capacity');
+      if (!canvas || !map || !photo || !fire || !capacity) return null;
+      const canvasRect = canvas.getBoundingClientRect();
+      const mapRect = map.getBoundingClientRect();
+      const fireRect = fire.getBoundingClientRect();
+      const capacityRect = capacity.getBoundingClientRect();
+      const response = await fetch(photo.getAttribute('href'));
+      return {
+        viewportWidth: window.innerWidth,
+        pageWidth: document.documentElement.scrollWidth,
+        canvas: { left: canvasRect.left, right: canvasRect.right },
+        map: { left: mapRect.left, right: mapRect.right, width: mapRect.width, height: mapRect.height },
+        fire: { width: fireRect.width, height: fireRect.height },
+        capacity: { width: capacityRect.width, height: capacityRect.height },
+        href: photo.getAttribute('href'),
+        responseOk: response.ok,
+        contentType: response.headers.get('content-type')
+      };
+    })()`);
+    assert(layout, 'Crisis ravine layout was not available.');
+    assert(layout.pageWidth <= layout.viewportWidth + 3, 'Crisis layout has horizontal overflow.');
+    assert(layout.map.left >= layout.canvas.left - 1 && layout.map.right <= layout.canvas.right + 1, 'Crisis photograph is clipped by its canvas.');
+    assert(layout.href === '/images/crisis-ravine-aerial-v1.jpg', 'Crisis scene does not use the expected photographic base.');
+    assert(layout.responseOk && layout.contentType?.startsWith('image/jpeg'), 'Crisis photograph did not load as JPEG.');
+    assert(layout.fire.height < layout.map.height * .32, 'Crisis flame is again dominating the ravine scene.');
+    assert(layout.capacity.width >= 44 && layout.capacity.height >= 44, 'Crisis capacity control is too small.');
+  }
+
   async function assertOpenSceneCard(actionId, expectedMobile, template) {
     const geometry = await evaluate(`(() => {
       const canvas = document.querySelector(${JSON.stringify(`.visual-scene[data-visual-template="${template}"] .visual-canvas`)});
@@ -811,11 +845,23 @@ try {
   await pressEnter('#advance-button');
   await waitForSelector('[data-action-id="autorizar-maniobra-condicionada"]');
 
+  await assertCrisisLayout();
+
   await captureEvidence(
     'crisis-prepared-desktop.png',
     '.visual-scene[data-visual-template="crisis"] .visual-canvas',
     { minWidth: 700, minHeight: 300 }
   );
+  if (VISUAL_MODE) {
+    await setViewport(390, 844, true);
+    await assertCrisisLayout();
+    await captureEvidence(
+      'crisis-prepared-mobile.png',
+      '.visual-scene[data-visual-template="crisis"] .visual-canvas',
+      { minWidth: 300, minHeight: 180 }
+    );
+    await setViewport(1280, 900, false);
+  }
 
   await choose('autorizar-maniobra-condicionada');
   await advanceAndWait('[data-action-id="asegurar-flancos-y-repliegue"]');
@@ -950,11 +996,20 @@ try {
       ),
       'Vulnerable route did not reach the canonical access blockage scene.'
     );
+    await assertCrisisLayout();
     await captureEvidence(
       'crisis-vulnerable-desktop.png',
       '.visual-scene[data-visual-template="crisis"] .visual-canvas',
       { minWidth: 700, minHeight: 300 }
     );
+    await setViewport(390, 844, true);
+    await assertCrisisLayout();
+    await captureEvidence(
+      'crisis-vulnerable-mobile.png',
+      '.visual-scene[data-visual-template="crisis"] .visual-canvas',
+      { minWidth: 300, minHeight: 180 }
+    );
+    await setViewport(1280, 900, false);
   }
 
   assert(runtimeErrors.length === 0, `Browser console/runtime errors: ${runtimeErrors.join(' | ')}`);
@@ -969,7 +1024,9 @@ try {
       'housing-initial-mobile.png',
       'housing-treated-desktop.png',
       'crisis-prepared-desktop.png',
+      'crisis-prepared-mobile.png',
       'crisis-vulnerable-desktop.png',
+      'crisis-vulnerable-mobile.png',
       'result-desktop.png',
       'comparison-desktop.png'
     ];
