@@ -131,7 +131,7 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
             label: 'Podar ramas y gestionar la biomasa',
             description: 'Eliminar la escalera vegetal y retirar la biomasa generada.',
             feedback:
-              'La poda se completa con la retirada o gestión de toda la biomasa generada.'
+              'Vegetación baja gestionada. Reduce la continuidad desde el suelo hacia las copas.'
           }
         },
         'copas-tocandose': {
@@ -145,7 +145,7 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
             label: 'Separar copas y gestionar la biomasa',
             description: 'Romper la continuidad horizontal y gestionar el material cortado.',
             feedback:
-              'Las copas quedan separadas estratégicamente y la biomasa generada se gestiona.'
+              'Copas separadas. Reduce la continuidad horizontal junto a la vivienda.'
           }
         },
         'acceso-estrecho': {
@@ -159,7 +159,7 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
             label: 'Despejar accesos para autobombas',
             description: 'Recuperar entrada, maniobra y salida junto a las viviendas.',
             feedback:
-              'La entrada, la maniobra y el repliegue local quedan disponibles para los equipos.'
+              'Acceso despejado. Mejora la entrada, la maniobra y el repliegue de los equipos.'
           }
         }
       },

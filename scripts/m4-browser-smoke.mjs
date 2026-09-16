@@ -8,8 +8,9 @@ const BASE_URL = process.env.M4_BASE_URL ?? 'http://127.0.0.1:3001';
 const CHROME_BIN = process.env.CHROME_BIN;
 const BASE_CDP_PORT = Number(process.env.M4_CDP_PORT ?? 9222);
 const STORAGE_KEY = 'vertical-beta.resume.v1';
-const CDP_COMMAND_TIMEOUT_MS = 5_000;
-const CHROME_START_TIMEOUT_MS = 10_000;
+const CDP_COMMAND_TIMEOUT_MS = Number(process.env.M4_CDP_COMMAND_TIMEOUT_MS ?? 5_000);
+const BROWSER_WAIT_TIMEOUT_MS = Number(process.env.M4_BROWSER_WAIT_TIMEOUT_MS ?? 8_000);
+const CHROME_START_TIMEOUT_MS = Number(process.env.M4_CHROME_START_TIMEOUT_MS ?? 10_000);
 const CHROME_LAUNCH_ATTEMPTS = 3;
 const VISUAL_CAPTURE_DIR = process.env.M5_CAPTURE_DIR?.trim() || null;
 const VISUAL_MODE = VISUAL_CAPTURE_DIR !== null;
@@ -78,7 +79,11 @@ async function stopChrome(chrome, profileDirectory) {
       await waitForChromeExit(chrome, 1_000);
     }
   }
-  await removeChromeProfile(profileDirectory);
+  try {
+    await removeChromeProfile(profileDirectory);
+  } catch (error) {
+    console.warn(`Chrome profile cleanup skipped: ${String(error)}`);
+  }
 }
 
 async function launchChrome() {
@@ -236,7 +241,7 @@ try {
     return result.result?.value;
   }
 
-  async function waitFor(expression, label, timeoutMs = 8_000) {
+  async function waitFor(expression, label, timeoutMs = BROWSER_WAIT_TIMEOUT_MS) {
     const deadline = Date.now() + timeoutMs;
     let lastError;
     while (Date.now() < deadline) {
@@ -303,6 +308,8 @@ try {
       })()`,
       `${selector} visible and enabled`
     );
+    await evaluate(`document.querySelector(${JSON.stringify(selector)}).scrollIntoView({ block: 'center', inline: 'center', behavior: 'auto' })`);
+    await sleep(80);
     return evaluate(`(() => {
       const rect = document.querySelector(${JSON.stringify(selector)}).getBoundingClientRect();
       return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
@@ -340,6 +347,11 @@ try {
     else await clickWithMouse(selector);
   }
 
+  async function movePointerAway() {
+    await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 4, y: 4 });
+    await sleep(240);
+  }
+
   async function openVisualActionCard(actionId, pointer) {
     const hotspotSelector = `[data-focus-action-id=${JSON.stringify(actionId)}].visual-hotspot .map-pin-disc`;
     await activateWithPointer(hotspotSelector, pointer);
@@ -354,9 +366,9 @@ try {
     );
   }
 
-  async function chooseWithPointer(actionId, pointer, expectedMobile, evidenceName) {
+  async function chooseWithPointer(actionId, pointer, expectedMobile, evidenceName, template = 'territory') {
     await openVisualActionCard(actionId, pointer);
-    await assertOpenTerritoryCard(actionId, expectedMobile);
+    await assertOpenSceneCard(actionId, expectedMobile, template);
     if (evidenceName) {
       const cardSelector = `[data-visual-action-card-id=${JSON.stringify(actionId)}]:not([hidden])`;
       if (pointer === 'mouse') {
@@ -430,10 +442,99 @@ try {
     assert(layout.overlaps.length === 0, 'Territory pins or visible labels overlap.');
   }
 
-  async function assertOpenTerritoryCard(actionId, expectedMobile) {
+  async function assertHousingLayout(expectedMobile) {
+    const layout = await evaluate(`(() => {
+      const canvas = document.querySelector('.visual-scene[data-visual-template="housing"] .visual-canvas');
+      const map = canvas?.querySelector('.housing-plan');
+      const key = canvas?.querySelector('.housing-map-key');
+      if (!canvas || !map || !key) return null;
+      const canvasRect = canvas.getBoundingClientRect();
+      const mapRect = map.getBoundingClientRect();
+      const keyRect = key.getBoundingClientRect();
+      const items = Array.from(key.querySelectorAll('.housing-map-key-item')).map((element) => {
+        const rect = element.getBoundingClientRect();
+        return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, height: rect.height };
+      });
+      const visiblePinParts = Array.from(map.querySelectorAll('.map-pin'))
+        .map((element) => {
+          const rect = element.getBoundingClientRect();
+          return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom };
+        });
+      const overlaps = [];
+      for (let i = 0; i < visiblePinParts.length; i += 1) {
+        for (let j = i + 1; j < visiblePinParts.length; j += 1) {
+          const a = visiblePinParts[i];
+          const b = visiblePinParts[j];
+          if (a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top) {
+            overlaps.push([i, j]);
+          }
+        }
+      }
+      return {
+        viewportWidth: window.innerWidth,
+        pageWidth: document.documentElement.scrollWidth,
+        canvas: { left: canvasRect.left, right: canvasRect.right },
+        map: { left: mapRect.left, right: mapRect.right, top: mapRect.top, bottom: mapRect.bottom },
+        key: { left: keyRect.left, right: keyRect.right },
+        itemCount: items.length,
+        items,
+        overlaps
+      };
+    })()`);
+    assert(layout, 'Housing layout was not available.');
+    assert(layout.itemCount === 4, 'Housing legend must expose three actions and the house condition.');
+    assert(layout.pageWidth <= layout.viewportWidth + 3, 'Housing layout has horizontal overflow.');
+    assert(layout.map.left >= layout.canvas.left - 1 && layout.map.right <= layout.canvas.right + 1, 'Housing map is clipped by its canvas.');
+    assert(layout.key.left >= layout.canvas.left - 1 && layout.key.right <= layout.canvas.right + 1, 'Housing legend is clipped by its canvas.');
+    assert(
+      layout.items.every((item) => item.left >= layout.key.left - 1 && item.right <= layout.key.right + 1),
+      'A housing legend item escapes its container.'
+    );
+    assert(
+      layout.items.every((item) => item.height >= (expectedMobile ? 52 : 48)),
+      'Housing legend controls are smaller than their expected target size.'
+    );
+    assert(layout.overlaps.length === 0, 'Housing pins or visible labels overlap.');
+  }
+
+  async function assertCrisisLayout() {
+    const layout = await evaluate(`(async () => {
+      const canvas = document.querySelector('.visual-scene[data-visual-template="crisis"] .visual-canvas');
+      const map = canvas?.querySelector('.crisis-photo');
+      const photo = map?.querySelector('[data-background-layer="photo"]');
+      const fire = map?.querySelector('#crisis-pressure .visual-fire');
+      const capacity = map?.querySelector('#crisis-capacity');
+      if (!canvas || !map || !photo || !fire || !capacity) return null;
+      const canvasRect = canvas.getBoundingClientRect();
+      const mapRect = map.getBoundingClientRect();
+      const fireRect = fire.getBoundingClientRect();
+      const capacityRect = capacity.getBoundingClientRect();
+      const response = await fetch(photo.getAttribute('href'));
+      return {
+        viewportWidth: window.innerWidth,
+        pageWidth: document.documentElement.scrollWidth,
+        canvas: { left: canvasRect.left, right: canvasRect.right },
+        map: { left: mapRect.left, right: mapRect.right, width: mapRect.width, height: mapRect.height },
+        fire: { width: fireRect.width, height: fireRect.height },
+        capacity: { width: capacityRect.width, height: capacityRect.height },
+        href: photo.getAttribute('href'),
+        responseOk: response.ok,
+        contentType: response.headers.get('content-type')
+      };
+    })()`);
+    assert(layout, 'Crisis ravine layout was not available.');
+    assert(layout.pageWidth <= layout.viewportWidth + 3, 'Crisis layout has horizontal overflow.');
+    assert(layout.map.left >= layout.canvas.left - 1 && layout.map.right <= layout.canvas.right + 1, 'Crisis photograph is clipped by its canvas.');
+    assert(layout.href === '/images/crisis-ravine-aerial-v1.jpg', 'Crisis scene does not use the expected photographic base.');
+    assert(layout.responseOk && layout.contentType?.startsWith('image/jpeg'), 'Crisis photograph did not load as JPEG.');
+    assert(layout.fire.height < layout.map.height * .32, 'Crisis flame is again dominating the ravine scene.');
+    assert(layout.capacity.width >= 44 && layout.capacity.height >= 44, 'Crisis capacity control is too small.');
+  }
+
+  async function assertOpenSceneCard(actionId, expectedMobile, template) {
     const geometry = await evaluate(`(() => {
-      const canvas = document.querySelector('.visual-scene[data-visual-template="territory"] .visual-canvas');
-      const key = canvas?.querySelector('.territory-map-key');
+      const canvas = document.querySelector(${JSON.stringify(`.visual-scene[data-visual-template="${template}"] .visual-canvas`)});
+      const key = canvas?.querySelector(${JSON.stringify(template === 'territory' ? '.territory-map-key' : '.housing-map-key')});
       const card = canvas?.querySelector(${JSON.stringify(`[data-visual-action-card-id="${actionId}"]`)});
       const button = card?.querySelector('.action-button');
       if (!canvas || !key || !card || card.hidden || !button) return null;
@@ -451,14 +552,14 @@ try {
     assert(geometry, `${actionId} card is not visible.`);
     assert(
       geometry.card.left >= geometry.canvas.left - 1 && geometry.card.right <= geometry.canvas.right + 1,
-      `${actionId} card escapes the territory canvas horizontally.`
+      `${actionId} card escapes the ${template} canvas horizontally.`
     );
     assert(
       geometry.card.top >= geometry.canvas.top - 1 && geometry.card.bottom <= geometry.canvas.bottom + 1,
-      `${actionId} card escapes the territory canvas vertically.`
+      `${actionId} card escapes the ${template} canvas vertically.`
     );
     if (expectedMobile) {
-      assert(geometry.card.top >= geometry.keyBottom - 1, `${actionId} mobile card overlaps the territory legend.`);
+      assert(geometry.card.top >= geometry.keyBottom - 1, `${actionId} mobile card overlaps the ${template} legend.`);
     }
     assert(geometry.button.width > 0 && geometry.button.height > 0, `${actionId} card action is not visible.`);
   }
@@ -642,16 +743,76 @@ try {
   }
 
   await advanceAndWait('[data-action-id="podar-ramas-y-retirar-seco"]');
+  await assertHousingLayout(true);
   await captureEvidence(
     'housing-initial-mobile.png',
     '.visual-scene[data-visual-template="housing"] .visual-canvas',
     { minWidth: 300, minHeight: 240 }
   );
-  await choose('podar-ramas-y-retirar-seco');
+  if (VISUAL_MODE) {
+    await setViewport(1280, 900, false);
+    await assertHousingLayout(false);
+    await captureEvidence(
+      'housing-initial-desktop.png',
+      '.visual-scene[data-visual-template="housing"] .visual-canvas',
+      { minWidth: 700, minHeight: 300 }
+    );
+    await setViewport(390, 844, true);
+    await assertHousingLayout(true);
+  }
+  await chooseWithPointer(
+    'podar-ramas-y-retirar-seco',
+    'touch',
+    true,
+    'housing-card-touch-mobile.png',
+    'housing'
+  );
+  assert(
+    await evaluate(`(() => {
+      const zone = document.getElementById('housing-vertical-fuel');
+      const clearance = zone?.querySelector('.housing-clearance');
+      const dryFuel = zone?.querySelector('.housing-dry-fuel');
+      const feedback = document.querySelector('.inspection-confirmation p')?.textContent;
+      const remaining = document.querySelector('.selection-remaining')?.textContent;
+      const selected = document.querySelectorAll('.selected-action-chip').length;
+      return zone?.classList.contains('state-reduced') && clearance && dryFuel &&
+        getComputedStyle(clearance).display !== 'none' && getComputedStyle(dryFuel).display === 'none' &&
+        feedback?.includes('Reduce la continuidad desde el suelo hacia las copas') &&
+        remaining === 'Quedan 1' && selected === 1;
+    })()`),
+    'Housing pruning did not update the visible fuel, feedback and remaining budget.'
+  );
+  await captureEvidence(
+    'housing-pruned-mobile.png',
+    '.visual-scene[data-visual-template="housing"] .visual-canvas',
+    { minWidth: 300, minHeight: 240 }
+  );
+  await captureEvidence(
+    'housing-feedback-mobile.png',
+    '.inspection-response',
+    { minWidth: 300, minHeight: 100 }
+  );
   await choose('despejar-accesos');
+
+  assert(
+    await evaluate(`(() => {
+      const access = document.getElementById('housing-local-access');
+      const obstructions = access?.querySelector('.housing-access-obstructions');
+      const route = access?.querySelector('.housing-clear-route');
+      const counter = document.querySelector('.selection-counter strong')?.textContent.trim();
+      const cards = Array.from(document.querySelectorAll('[data-visual-action-card-id]'));
+      return access?.classList.contains('state-clear') && obstructions && route &&
+        getComputedStyle(obstructions).display === 'none' && getComputedStyle(route).display !== 'none' &&
+        counter === '2 / 2' && cards.filter((card) => card.classList.contains('selected')).length === 2 &&
+        cards.every((card) => card.querySelector('.action-button')?.disabled === true) &&
+        Boolean(document.getElementById('advance-button'));
+    })()`),
+    'Housing inspection did not show the clear corridor or enforce its two-action limit.'
+  );
 
   if (VISUAL_MODE) {
     await setViewport(1280, 900, false);
+    await assertHousingLayout(false);
     await captureEvidence(
       'housing-treated-desktop.png',
       '.visual-scene[data-visual-template="housing"] .visual-canvas',
@@ -661,18 +822,46 @@ try {
 
   await waitForSelector('#advance-button');
   await pressEnter('#advance-button');
-  await waitFor(`document.body.textContent.includes('Balance preventivo')`, 'prevention summary');
+  await waitForSelector('.prevention-area');
+  const balanceState = await evaluate(`(() => {
+      const areas = document.querySelectorAll('.prevention-area');
+      const applied = document.querySelectorAll('.prevention-area .applied-list li');
+      const pending = document.querySelectorAll('.prevention-area .pending-list li');
+      const caution = document.querySelector('.balance-caution')?.textContent;
+      return { areas: areas.length, applied: applied.length, pending: pending.length, caution };
+    })()`);
+  assert(
+    balanceState?.areas === 2 && balanceState?.applied === 5 && balanceState?.pending === 3 &&
+      balanceState?.caution?.includes('no convierten una vivienda en completamente segura'),
+    `Prevention balance did not distinguish applied decisions and pending conditions by area: ${JSON.stringify(balanceState)}`
+  );
+  await captureEvidence('prevention-balance-desktop.png', '.scene-content', {
+    minWidth: 700,
+    minHeight: 400
+  });
   await pressEnter('#advance-button');
   await waitForSelector('[data-action-id="movilizar-y-verificar"]');
   await chooseAndWait('movilizar-y-verificar', '#advance-button');
   await pressEnter('#advance-button');
   await waitForSelector('[data-action-id="autorizar-maniobra-condicionada"]');
 
+  await assertCrisisLayout();
+
   await captureEvidence(
     'crisis-prepared-desktop.png',
     '.visual-scene[data-visual-template="crisis"] .visual-canvas',
     { minWidth: 700, minHeight: 300 }
   );
+  if (VISUAL_MODE) {
+    await setViewport(390, 844, true);
+    await assertCrisisLayout();
+    await captureEvidence(
+      'crisis-prepared-mobile.png',
+      '.visual-scene[data-visual-template="crisis"] .visual-canvas',
+      { minWidth: 300, minHeight: 180 }
+    );
+    await setViewport(1280, 900, false);
+  }
 
   await choose('autorizar-maniobra-condicionada');
   await advanceAndWait('[data-action-id="asegurar-flancos-y-repliegue"]');
@@ -765,11 +954,37 @@ try {
       { minWidth: 700, minHeight: 300 }
     );
     await advanceAndWait('[data-action-id="podar-ramas-y-retirar-seco"]');
+    await assertHousingLayout(false);
     await choose('podar-ramas-y-retirar-seco');
-    await choose('separar-copas');
+    await chooseWithPointer(
+      'separar-copas',
+      'mouse',
+      false,
+      'housing-card-mouse-desktop.png',
+      'housing'
+    );
+    assert(
+      await evaluate(`(() => {
+        const canopy = document.getElementById('housing-canopy');
+        const connected = canopy?.querySelector('.housing-canopy-connected');
+        const separated = canopy?.querySelector('.housing-canopy-separated');
+        const feedback = document.querySelector('.inspection-confirmation p')?.textContent;
+        return canopy?.classList.contains('state-broken') && connected && separated &&
+          getComputedStyle(connected).display === 'none' && getComputedStyle(separated).display !== 'none' &&
+          feedback?.includes('Reduce la continuidad horizontal junto a la vivienda');
+      })()`),
+      'Housing canopy treatment did not create visible discontinuities and causal feedback.'
+    );
+    await movePointerAway();
+    await assertHousingLayout(false);
+    await captureEvidence(
+      'housing-canopy-separated-desktop.png',
+      '.visual-scene[data-visual-template="housing"] .visual-canvas',
+      { minWidth: 700, minHeight: 300 }
+    );
     await waitForSelector('#advance-button');
     await pressEnter('#advance-button');
-    await waitFor(`document.body.textContent.includes('Balance preventivo')`, 'vulnerable prevention summary');
+    await waitForSelector('.prevention-area');
     await pressEnter('#advance-button');
     await waitForSelector('[data-action-id="movilizar-y-verificar"]');
     await chooseAndWait('movilizar-y-verificar', '#advance-button');
@@ -781,11 +996,20 @@ try {
       ),
       'Vulnerable route did not reach the canonical access blockage scene.'
     );
+    await assertCrisisLayout();
     await captureEvidence(
       'crisis-vulnerable-desktop.png',
       '.visual-scene[data-visual-template="crisis"] .visual-canvas',
       { minWidth: 700, minHeight: 300 }
     );
+    await setViewport(390, 844, true);
+    await assertCrisisLayout();
+    await captureEvidence(
+      'crisis-vulnerable-mobile.png',
+      '.visual-scene[data-visual-template="crisis"] .visual-canvas',
+      { minWidth: 300, minHeight: 180 }
+    );
+    await setViewport(1280, 900, false);
   }
 
   assert(runtimeErrors.length === 0, `Browser console/runtime errors: ${runtimeErrors.join(' | ')}`);
@@ -800,7 +1024,9 @@ try {
       'housing-initial-mobile.png',
       'housing-treated-desktop.png',
       'crisis-prepared-desktop.png',
+      'crisis-prepared-mobile.png',
       'crisis-vulnerable-desktop.png',
+      'crisis-vulnerable-mobile.png',
       'result-desktop.png',
       'comparison-desktop.png'
     ];

@@ -71,11 +71,13 @@ describe('M5.1 shared SVG scene art kit', () => {
     expect(markup).toContain('id="territory-professional-line"');
   });
 
-  it('reuses the same kit in housing without changing the existing visual contract', () => {
+  it('keeps the housing interaction contract on a photo-backed treatment overlay', () => {
     const markup = housingMarkup();
     expect(markup).toContain('data-scene-art-kit="m5-v1"');
-    expect(markup).toContain('data-art-primitive="tree"');
-    expect(markup).toContain('data-art-primitive="shrubs"');
+    expect(markup).toContain('data-background-layer="photo"');
+    expect(markup).toContain('class="housing-risk-zone"');
+    expect(markup).toContain('class="housing-canopy-crown"');
+    expect(markup).toContain('class="housing-access-risk"');
     expect(markup).toContain('id="housing-home"');
     expect(markup).toContain('id="housing-local-access"');
   });
@@ -84,7 +86,9 @@ describe('M5.1 shared SVG scene art kit', () => {
     const markup = crisisMarkup();
     expect(markup).toContain('data-scene-art-kit="m5-v1"');
     expect(markup).toContain('data-art-primitive="smoke"');
-    expect(markup).toContain('data-visual-base="shared-ravine-v1"');
+    expect(markup).toContain('data-visual-base="shared-ravine-photo-v2"');
+    expect(markup).toContain('data-background-layer="photo"');
+    expect(markup).toContain('/images/crisis-ravine-aerial-v1.jpg');
     expect(markup).toContain('id="crisis-road"');
     expect(markup).toContain('id="crisis-position"');
   });

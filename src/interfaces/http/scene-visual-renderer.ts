@@ -5,12 +5,21 @@ import type {
 } from '../../application/vertical-beta/vertical-beta-visual-presenter.js';
 import {
   renderSceneArtDefs,
-  renderSceneHaze,
   renderSceneRocks,
-  renderSceneShrubs,
-  renderSceneSmoke,
-  renderSceneTree
+  renderSceneSmoke
 } from './scene-art-kit.js';
+import {
+  CRISIS_ROAD_PATH,
+  renderCrisisRavineBase,
+  renderCrisisRavineDefs
+} from './crisis-ravine-art.js';
+import {
+  HOUSING_ACCESS_PATH,
+  renderHousingHome,
+  renderHousingPin,
+  renderHousingPlanBase,
+  renderHousingPlanDefs
+} from './housing-plan-art.js';
 import {
   renderTerritoryBrush,
   renderTerritoryMapBase,
@@ -200,37 +209,73 @@ function housingSvg(model: PresentedSceneVisualModel): string {
   const access = byId(model, 'housing-local-access');
   const house = byId(model, 'housing-home');
 
-  return `<svg class="territory-svg" viewBox="0 0 900 500" role="img" aria-label="${escapeHtml(
+  return `<svg class="territory-svg housing-plan" viewBox="0 0 900 500" role="group" aria-label="${escapeHtml(
     model.ariaLabel
-  )}">
+  )}" data-visual-base="housing-photo-v3">
     ${renderSceneArtDefs()}
-    <rect class="visual-sky" x="0" y="0" width="900" height="500" rx="24" />
-    ${renderSceneHaze()}
-    <path class="visual-hill-front" d="M0 350 Q200 285 410 340 T900 315 V500 H0 Z" />
-    ${renderSceneTree(112, 365, 0.76)}
-    ${renderSceneShrubs(790, 355, 0.82)}
-    ${renderSceneRocks(655, 438, 0.68)}
-    <g id="housing-home" class="visual-hotspot ${stateClass(house)}"${hotspotAttributes(house)}>
-      <path class="visual-house" d="M345 225 l120 -85 125 85 v180 H345 Z" />
-      <rect class="visual-door" x="447" y="317" width="48" height="88" />
-      <rect class="visual-window" x="380" y="270" width="48" height="45" /><rect class="visual-window" x="515" y="270" width="48" height="45" />
-    </g>
-    <g id="housing-vertical-fuel" class="visual-hotspot ${stateClass(
-      vertical
-    )}"${hotspotAttributes(vertical)}>
-      <path class="visual-trunk" d="M263 390 V198 M300 390 V175" />
-      <path class="visual-branches" d="M263 320 l-75 -45 m75 0 l-65 -62 m102 95 l72 -66 m-72 16 l62 -82" />
+    ${renderHousingPlanDefs()}
+    ${renderHousingPlanBase()}
+    <g id="housing-local-access" class="visual-hotspot ${stateClass(access)}"${hotspotAttributes(
+      access
+    )}>
+      <g aria-hidden="true">
+        <path class="housing-clear-route" d="${HOUSING_ACCESS_PATH}" />
+        <path class="housing-access-risk" d="${HOUSING_ACCESS_PATH}" />
+        <path class="housing-access-centre" d="${HOUSING_ACCESS_PATH}" />
+        <path class="housing-clear-route-line" d="${HOUSING_ACCESS_PATH}" />
+        <g class="housing-access-obstructions">
+          <path d="M848 444 l25 -18 m-22 25 l28 -20 M814 385 l21 -16 m-18 22 l24 -18 M786 323 l17 -13 m-14 19 l21 -15" />
+          <circle cx="850" cy="440" r="5" fill="#8c572d" /><circle cx="815" cy="383" r="5" fill="#8c572d" /><circle cx="787" cy="321" r="5" fill="#8c572d" />
+        </g>
+      </g>
+      ${renderHousingPin(3, 718, 443, 'Acceso local', 116, access?.selected === true)}
     </g>
     <g id="housing-canopy" class="visual-hotspot ${stateClass(canopy)}"${hotspotAttributes(
       canopy
     )}>
-      <circle class="visual-canopy" cx="236" cy="165" r="72" /><circle class="visual-canopy" cx="331" cy="145" r="76" /><circle class="visual-canopy" cx="651" cy="170" r="75" /><circle class="visual-canopy" cx="742" cy="158" r="70" />
+      <g class="housing-canopy-connected" aria-hidden="true">
+        <path class="housing-canopy-link" d="M93 139 Q209 127 329 145" />
+        <path class="housing-canopy-link-detail" d="M93 139 Q209 127 329 145" />
+        <ellipse class="housing-canopy-crown" cx="93" cy="135" rx="70" ry="75" />
+        <ellipse class="housing-canopy-crown" cx="209" cy="136" rx="76" ry="80" />
+        <ellipse class="housing-canopy-crown" cx="329" cy="145" rx="72" ry="73" />
+      </g>
+      <g class="housing-canopy-separated" aria-hidden="true">
+        <ellipse class="housing-canopy-crown" cx="88" cy="136" rx="64" ry="70" />
+        <ellipse class="housing-canopy-crown" cx="213" cy="136" rx="65" ry="70" />
+        <ellipse class="housing-canopy-crown" cx="340" cy="146" rx="62" ry="65" />
+        <path class="housing-canopy-gap" d="M145 72 Q162 126 150 204 Q169 213 183 195 Q178 125 167 74Z" />
+        <path class="housing-canopy-gap" d="M276 79 Q293 134 281 207 Q300 214 313 198 Q309 133 299 81Z" />
+        <path class="housing-gap-mark" d="M154 127 l9 9 16 -20 M286 136 l9 9 16 -20" />
+      </g>
+      ${renderHousingPin(2, 195, 77, 'Continuidad de copas', 177, canopy?.selected === true)}
     </g>
-    <g id="housing-local-access" class="visual-hotspot ${stateClass(access)}"${hotspotAttributes(
-      access
-    )}><path class="visual-road local" d="M60 455 C210 410 300 430 385 405 C520 365 700 405 860 355" /><rect class="visual-engine" x="140" y="382" width="88" height="44" rx="8" /><circle cx="162" cy="431" r="13" /><circle cx="208" cy="431" r="13" /></g>
-    <g class="visual-label-group" aria-hidden="true"><text x="356" y="450">vivienda e interfaz</text><text x="105" y="478">acceso local</text></g>
+    <g id="housing-vertical-fuel" class="visual-hotspot ${stateClass(
+      vertical
+    )}"${hotspotAttributes(vertical)}>
+      <ellipse class="housing-clearance" cx="210" cy="350" rx="125" ry="104" aria-hidden="true" />
+      <ellipse class="housing-risk-zone" cx="210" cy="350" rx="125" ry="104" aria-hidden="true" />
+      <g class="housing-dry-fuel" aria-hidden="true">
+        <path class="housing-risk-detail" d="M111 383 l14 -25 m-2 29 l23 -20 m78 67 l8 -28 m2 28 l18 -24 m-61 21 l10 -29 m-6 31 l23 -19 m46 -6 l13 -27 m-5 31 l20 -19" />
+      </g>
+      <g class="housing-cut-marks" aria-hidden="true">
+        <path d="M121 387 h24 m42 44 h24 m43 -15 h24 m22 -64 h24" />
+        <path d="M130 377 v10 m66 34 v10 m67 -25 v10 m46 -74 v10" />
+      </g>
+      <path class="housing-low-branches housing-risk-detail" d="M203 329 l-63 -54 m63 54 l-57 -7 m57 7 l57 -58 m-57 58 l69 2" aria-hidden="true" />
+      ${renderHousingPin(1, 119, 288, 'Vegetación baja y ramas', 190, vertical?.selected === true)}
+    </g>
+    <g id="housing-home" class="visual-hotspot ${stateClass(house)}"${hotspotAttributes(house)}>
+      ${renderHousingHome()}
+      ${renderHousingPin('i', 609, 241, 'Vivienda condicionada', 177, false)}
+    </g>
   </svg>`;
+}
+
+function housingMapLegend(model: PresentedSceneVisualModel): string {
+  return `<div class="housing-map-key" role="group" aria-label="Puntos del entorno de la vivienda">${model.elements.map((element, index) =>
+    `<button class="housing-map-key-item ${stateClass(element)}" type="button"${hotspotAttributes(element)}><span class="housing-key-number" aria-hidden="true">${element.actionId === undefined ? 'i' : index + 1}</span><span><strong>${escapeHtml(element.label)}</strong><small>${escapeHtml(element.stateLabel)}</small></span></button>`
+  ).join('')}</div>`;
 }
 
 function crisisSvg(model: PresentedSceneVisualModel): string {
@@ -244,41 +289,35 @@ function crisisSvg(model: PresentedSceneVisualModel): string {
   const professionalLine = byId(model, 'crisis-professional-line');
   const houseAccess = byId(model, 'crisis-house-access');
 
-  return `<svg class="territory-svg crisis-svg" viewBox="0 0 900 500" role="img" aria-label="${escapeHtml(
+  return `<svg class="territory-svg crisis-svg crisis-photo" viewBox="0 0 900 500" role="img" aria-label="${escapeHtml(
     model.ariaLabel
-  )}" data-visual-base="shared-ravine-v1">
+  )}" data-visual-base="shared-ravine-photo-v2">
     ${renderSceneArtDefs()}
-    <rect class="visual-sky crisis" x="0" y="0" width="900" height="500" rx="24" />
-    ${renderSceneHaze()}
-    <path class="visual-hill-back" d="M0 230 Q160 110 330 240 T650 185 T900 240 V500 H0 Z" />
-    <path class="visual-hill-front" d="M0 345 Q170 195 350 340 T680 285 T900 345 V500 H0 Z" />
-    <path class="visual-ravine crisis" d="M350 208 Q425 290 455 500 L605 500 Q555 300 520 215 Z" />
-    ${renderSceneTree(112, 348, 0.78, 'dry')}
-    ${renderSceneShrubs(800, 340, 0.82, 'dry')}
-    ${renderSceneRocks(395, 452, 0.72)}
-    ${renderSceneSmoke(590, 195, 0.9)}
-    <g id="crisis-road" class="visual-hotspot ${stateClass(road)}"${hotspotAttributes(road)}><path class="visual-road" d="M30 430 C175 365 315 412 438 345 C565 275 715 318 865 250" /></g>
-    <g id="crisis-retreat" class="visual-hotspot ${stateClass(retreat)}"${hotspotAttributes(retreat)}><path class="visual-retreat" d="M455 364 C350 315 240 322 128 360" /><path class="visual-arrow" d="M128 360 l35 -24 m-35 24 l38 18" /></g>
-    <g id="crisis-position" class="visual-hotspot ${stateClass(position)}"${hotspotAttributes(position)}><circle class="visual-position" cx="470" cy="330" r="30" /><path d="M445 330 H495 M470 305 V355" /></g>
-    <g id="crisis-pressure" class="visual-hotspot ${stateClass(pressure)}"${hotspotAttributes(pressure)}><path class="visual-fire" d="M560 365 C525 315 574 286 553 244 C620 268 636 320 616 369 C599 405 568 402 560 365 Z" /></g>
-    <g id="crisis-attack-window" class="visual-hotspot ${stateClass(attack)}"${hotspotAttributes(attack)}><path class="visual-attack-window" d="M395 264 Q465 218 545 252" /></g>
-    <g id="crisis-crown" class="visual-hotspot ${stateClass(crown)}"${hotspotAttributes(crown)}><circle class="visual-canopy" cx="630" cy="205" r="62" /><circle class="visual-canopy" cx="710" cy="194" r="62" /><circle class="visual-canopy" cx="782" cy="214" r="58" /></g>
-    <g id="crisis-capacity" class="visual-hotspot visual-capacity ${stateClass(capacity)}"${hotspotAttributes(capacity)}><circle cx="78" cy="78" r="35" /><text x="78" y="84" text-anchor="middle">CAP</text></g>
+    ${renderCrisisRavineDefs()}
+    ${renderCrisisRavineBase()}
+    ${renderSceneSmoke(570, 265, 0.68)}
+    <g id="crisis-road" class="visual-hotspot ${stateClass(road)}"${hotspotAttributes(road)}><path class="visual-road" d="${CRISIS_ROAD_PATH}" /></g>
+    <g id="crisis-retreat" class="visual-hotspot ${stateClass(retreat)}"${hotspotAttributes(retreat)}><path class="visual-retreat" d="M452 289 C338 317 225 348 115 375" /><path class="visual-arrow" d="M115 375 l33 -25 m-33 25 l39 14" /></g>
+    <g id="crisis-position" class="visual-hotspot ${stateClass(position)}"${hotspotAttributes(position)}><circle class="visual-position" cx="452" cy="288" r="28" /><path d="M430 288 H474 M452 266 V310" /></g>
+    <g id="crisis-pressure" class="visual-hotspot ${stateClass(pressure)}"${hotspotAttributes(pressure)}><path class="visual-fire" d="M556 355 C539 330 561 315 552 294 C586 307 596 335 586 359 C578 376 560 375 556 355 Z" /></g>
+    <g id="crisis-attack-window" class="visual-hotspot ${stateClass(attack)}"${hotspotAttributes(attack)}><path class="visual-attack-window" d="M406 244 Q472 216 543 246" /></g>
+    <g id="crisis-crown" class="visual-hotspot ${stateClass(crown)}"${hotspotAttributes(crown)}><circle class="visual-canopy" cx="642" cy="112" r="45" /><circle class="visual-canopy" cx="718" cy="106" r="45" /><circle class="visual-canopy" cx="783" cy="129" r="43" /></g>
+    <g id="crisis-capacity" class="visual-hotspot visual-capacity ${stateClass(capacity)}"${hotspotAttributes(capacity)}><circle class="crisis-capacity-hit-target" cx="72" cy="91" r="62" /><circle cx="72" cy="91" r="35" /><text x="72" y="97" text-anchor="middle">CAP</text></g>
     ${
       professionalLine === undefined
         ? ''
         : `<g id="crisis-professional-line" class="visual-hotspot ${stateClass(professionalLine)}"${hotspotAttributes(
             professionalLine
-          )}><path class="visual-professional-line" d="M300 250 Q410 195 520 230" /><circle class="visual-line-marker" cx="410" cy="215" r="12" /></g>`
+          )}><path class="visual-professional-line" d="M330 271 Q430 213 532 241" /><circle class="visual-line-marker" cx="432" cy="229" r="12" /></g>`
     }
     ${
       houseAccess === undefined
         ? ''
         : `<g id="crisis-house-access" class="visual-hotspot ${stateClass(houseAccess)}"${hotspotAttributes(
             houseAccess
-          )}><path class="visual-house" d="M690 305 l55 -42 58 42 v92 h-113 z" /><path class="visual-road local" d="M615 420 Q710 390 850 405" /></g>`
+          )}><path class="visual-house" d="M735 297 l45 -34 48 34 v73 h-93 z" /><path class="visual-road local" d="M585 352 Q702 324 842 349" /></g>`
     }
-    <g class="visual-label-group" aria-hidden="true"><text x="385" y="475">mismo barranco · estado heredado distinto</text></g>
+    <g class="visual-label-group" aria-hidden="true"><text x="388" y="475">mismo barranco · estado heredado distinto</text></g>
   </svg>`;
 }
 
@@ -314,7 +353,12 @@ export function renderSceneVisual(model: PresentedSceneVisualModel): string {
           : '';
   const dimensions = dimensionSummary(model);
   if (visual === '' && dimensions === '') return '';
-  const canvas = visual === '' ? '' : `<div class="visual-canvas">${visual}${model.templateId === 'territory' ? territoryMapLegend(model) : ''}${visualCards(model)}</div>`;
+  const legend = model.templateId === 'territory'
+    ? territoryMapLegend(model)
+    : model.templateId === 'housing'
+      ? housingMapLegend(model)
+      : '';
+  const canvas = visual === '' ? '' : `<div class="visual-canvas">${visual}${legend}${visualCards(model)}</div>`;
   return `<section class="visual-scene" data-visual-template="${model.templateId}" data-visual-scene-id="${escapeHtml(
     model.sceneId
   )}">${canvas}${dimensions}</section>`;
