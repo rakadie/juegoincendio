@@ -559,6 +559,27 @@ try {
     assert(layout.capacity.width >= 44 && layout.capacity.height >= 44, 'Crisis capacity control is too small.');
   }
 
+  async function assertJourneyLabels() {
+    const labels = await evaluate(`Array.from(document.querySelectorAll('.stage-label')).map((label) => {
+      const style = getComputedStyle(label);
+      return {
+        text: label.textContent.trim(),
+        position: style.position,
+        zIndex: Number(style.zIndex),
+        backgroundColor: style.backgroundColor,
+        textDecorationLine: style.textDecorationLine
+      };
+    })`);
+    assert(labels?.length === 4, 'The four journey labels are not available.');
+    assert(
+      labels.every((label) =>
+        label.position === 'relative' && label.zIndex >= 2 &&
+        label.backgroundColor !== 'rgba(0, 0, 0, 0)' && label.textDecorationLine === 'none'
+      ),
+      `A journey connector can cross its label: ${JSON.stringify(labels)}`
+    );
+  }
+
   async function assertOpenSceneCard(actionId, expectedMobile, template) {
     const geometry = await evaluate(`(() => {
       const canvas = document.querySelector(${JSON.stringify(`.visual-scene[data-visual-template="${template}"] .visual-canvas`)});
@@ -718,6 +739,7 @@ try {
     await evaluate(`window.innerWidth <= 390`),
     'Mobile viewport override was not applied.'
   );
+  await assertJourneyLabels();
 
   await pressEnter('#start-session-button');
   await waitForSelector('.scene.briefing');
@@ -856,6 +878,7 @@ try {
 
   if (VISUAL_MODE) {
     await setViewport(1280, 900, false);
+    await assertJourneyLabels();
     await assertHousingLayout(false);
     await captureEvidence(
       'housing-treated-desktop.png',
@@ -1026,6 +1049,10 @@ try {
       '.visual-scene[data-visual-template="housing"] .visual-canvas',
       { minWidth: 700, minHeight: 300 }
     );
+    await captureViewportEvidence('journey-housing-desktop.png', '.topbar', {
+      minWidth: 700,
+      minHeight: 70
+    });
     await waitForSelector('#advance-button');
     await pressEnter('#advance-button');
     await waitForSelector('.prevention-area');
@@ -1056,6 +1083,45 @@ try {
     await setViewport(1280, 900, false);
   }
 
+  await pressEnter('#restart-button');
+  await waitForSelector('.scene.briefing');
+  await advanceAndWait('[data-action-id="crear-discontinuidades-vegetales"]');
+  await choose('crear-discontinuidades-vegetales');
+  await choose('limpiar-margenes-caminos');
+  await choose('activar-pastoreo-preventivo');
+  await advanceAndWait('[data-action-id="podar-ramas-y-retirar-seco"]');
+  await choose('podar-ramas-y-retirar-seco');
+  await choose('separar-copas');
+  await waitForSelector('#advance-button');
+  await pressEnter('#advance-button');
+  await waitForSelector('.prevention-area');
+  const boundedBalance = await evaluate(`(async () => {
+    const envelope = JSON.parse(window.localStorage.getItem(${JSON.stringify(STORAGE_KEY)}));
+    const response = await fetch('/api/game-sessions/' + encodeURIComponent(envelope.sessionId));
+    const payload = await response.json();
+    return {
+      ok: response.ok,
+      state: payload.session?.inheritedState,
+      notice: document.getElementById('notice')?.textContent.trim()
+    };
+  })()`);
+  assert(
+    boundedBalance?.ok && boundedBalance?.notice === '' &&
+      JSON.stringify(boundedBalance.state) === JSON.stringify({
+        fuelLoad: 45,
+        fuelContinuity: 0,
+        operationalAccess: 50,
+        defensibility: 40,
+        attackOpportunity: 64
+      }),
+    `The maximum fuel-continuity reduction did not produce a valid bounded balance: ${JSON.stringify(boundedBalance)}`
+  );
+  await assertJourneyLabels();
+  await captureEvidence('prevention-extreme-balance-desktop.png', '.scene-content', {
+    minWidth: 700,
+    minHeight: 400
+  });
+
   assert(runtimeErrors.length === 0, `Browser console/runtime errors: ${runtimeErrors.join(' | ')}`);
 
   if (VISUAL_MODE) {
@@ -1069,12 +1135,14 @@ try {
       'territory-grazing-evaluation-desktop.png',
       'housing-initial-mobile.png',
       'housing-treated-desktop.png',
+      'journey-housing-desktop.png',
       'crisis-prepared-desktop.png',
       'crisis-prepared-mobile.png',
       'crisis-vulnerable-desktop.png',
       'crisis-vulnerable-mobile.png',
       'result-desktop.png',
-      'comparison-desktop.png'
+      'comparison-desktop.png',
+      'prevention-extreme-balance-desktop.png'
     ];
     assert(
       required.every((name) => evidence.some((item) => item.name === name)),

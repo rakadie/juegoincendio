@@ -33,6 +33,12 @@ describe('M3.8 north-star interface', () => {
     expect(html).not.toContain('<aside>');
   });
 
+  it('keeps the journey connector behind an opaque stage label', () => {
+    const html = renderPrototypePage();
+    expect(html).toContain('position: relative;\n        z-index: 2;\n        justify-self: start;');
+    expect(html).toContain('background: var(--navy);\n        font-size: .8rem;');
+  });
+
   it('keeps inspections visual-first and exposes the official selection quota', () => {
     const html = renderPrototypePage();
     expect(html).toContain('class="selection-counter"');

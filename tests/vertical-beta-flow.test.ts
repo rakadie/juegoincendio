@@ -16,6 +16,7 @@ import {
 } from '../src/domain/prevention/prevention-inspection-engine.js';
 import {
   advanceAfterOperationalScene,
+  calculatePreventionDirectState,
   completeBriefing,
   completePreventionSummary,
   completeVerticalBetaResult,
@@ -37,6 +38,27 @@ const VULNERABLE_PREVENTION = [
   ['gestionar-restos-poda', 'activar-pastoreo-preventivo', 'evaluar-quema-tecnica'],
   ['podar-ramas-y-retirar-seco', 'separar-copas']
 ] as const;
+
+const ALL_TERRITORY_ACTIONS = [
+  'gestionar-restos-poda',
+  'crear-discontinuidades-vegetales',
+  'limpiar-margenes-caminos',
+  'activar-pastoreo-preventivo',
+  'evaluar-quema-tecnica'
+] as const;
+
+const ALL_HOUSING_ACTIONS = [
+  'podar-ramas-y-retirar-seco',
+  'separar-copas',
+  'despejar-accesos'
+] as const;
+
+function combinations<T>(values: readonly T[], size: number): T[][] {
+  if (size === 0) return [[]];
+  return values.flatMap((value, index) =>
+    combinations(values.slice(index + 1), size - 1).map((tail) => [value, ...tail])
+  );
+}
 
 const OPERATIONAL_ACTIONS = {
   prepared: [
@@ -91,6 +113,60 @@ function playReference(
 }
 
 describe('Vertical Beta 1 complete domain flow', () => {
+  it('bounds all 30 legal prevention combinations and records the limiting one', () => {
+    let sequence = 0;
+    for (const territoryActions of combinations(ALL_TERRITORY_ACTIONS, 3)) {
+      for (const housingActions of combinations(ALL_HOUSING_ACTIONS, 2)) {
+        sequence += 1;
+        const direct = calculatePreventionDirectState([...territoryActions, ...housingActions]);
+        expect(Object.values(direct).every((value) =>
+          Number.isInteger(value) && value >= 0 && value <= 100
+        )).toBe(true);
+
+        if (
+          territoryActions.includes('crear-discontinuidades-vegetales') &&
+          territoryActions.includes('limpiar-margenes-caminos') &&
+          territoryActions.includes('activar-pastoreo-preventivo') &&
+          housingActions.includes('podar-ramas-y-retirar-seco') &&
+          housingActions.includes('separar-copas')
+        ) {
+          expect(direct).toEqual({
+            fuelLoad: 45,
+            fuelContinuity: 0,
+            operationalAccess: 50,
+            defensibility: 40
+          });
+        }
+      }
+    }
+    expect(sequence).toBe(30);
+
+    let session = completeBriefing(createGameSession('bounded-prevention-limit'));
+    for (const actionId of [
+      'crear-discontinuidades-vegetales',
+      'limpiar-margenes-caminos',
+      'activar-pastoreo-preventivo'
+    ]) {
+      session = applyPreventionInspectionAction(session, actionId);
+    }
+    session = completePreventionInspection(session).session;
+    session = executeGameSessionCommand(session, {
+      type: 'transition-scene',
+      toSceneId: 'prevention-inspection-housing-interface'
+    });
+    for (const actionId of ['podar-ramas-y-retirar-seco', 'separar-copas']) {
+      session = applyPreventionInspectionAction(session, actionId);
+    }
+    session = completePreventionInspection(session).session;
+    expect(recordPreventionBalance(session).balance.state).toEqual({
+      fuelLoad: 45,
+      fuelContinuity: 0,
+      operationalAccess: 50,
+      defensibility: 40,
+      attackOpportunity: 64
+    });
+  });
+
   it('reproduces the prepared route and explains contained from real history', () => {
     const { session, balance, report } = playReference(
       'flow-contained',

@@ -44,6 +44,16 @@ Las imágenes se capturaron con Chrome mediante `Page.captureScreenshot`; no son
 
 ![Tarjeta de actuación abierta con control táctil](menu-tactil-movil.png)
 
+### Recorrido y combinación límite
+
+La línea de progreso queda detrás de un fondo opaco y ya no atraviesa los rótulos de las etapas.
+
+![Cabecera del recorrido sin rótulos atravesados](cabecera-sin-tachado-escritorio.png)
+
+La combinación de mayor reducción de continuidad —discontinuidades, márgenes, pastoreo, poda y separación de copas— satura el indicador en `0` y permite abrir el balance sin error.
+
+![Balance obtenido con la combinación límite](balance-combinacion-limite-escritorio.png)
+
 ## Validación
 
 - Chrome real a 1280 × 900 y 390 × 844: `M5_VISUAL_SMOKE_OK`.
@@ -53,7 +63,8 @@ Las imágenes se capturaron con Chrome mediante `Page.captureScreenshot`; no son
 - La pila de restos ocupa menos del 14 % del ancho y del 16 % del alto del mapa.
 - Ratón, teclado y toque abren las tarjetas y permiten elegir acciones.
 - Se conserva el límite de tres actuaciones y el avance a vivienda, crisis y resultado.
-- `npm run accept:m5`: 195 pruebas Vitest, aceptación M4 y M5, tipos, compilación y auditoría de dependencias en verde.
+- Las 30 combinaciones legales de tres actuaciones territoriales y dos de vivienda producen dimensiones enteras entre 0 y 100.
+- `npm run accept:m5`: 198 pruebas Vitest, aceptación M4 y M5, tipos, compilación y auditoría de dependencias en verde.
 
 ## Alcance y reversión
 

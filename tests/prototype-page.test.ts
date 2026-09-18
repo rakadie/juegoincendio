@@ -44,4 +44,12 @@ describe('motor-backed product experience shell', () => {
     expect(html).toContain('let currentView = null');
     expect(html).not.toContain('let state =');
   });
+
+  it('recovers controls after failed requests without exposing domain messages', () => {
+    const html = renderPrototypePage();
+    expect(html).toContain('function requestErrorMessage(payload, status)');
+    expect(html).toContain('if (!applied) button.disabled = false;');
+    expect(html).toContain('else advance.disabled = false;');
+    expect(html).not.toContain("throw new Error(payload.message");
+  });
 });

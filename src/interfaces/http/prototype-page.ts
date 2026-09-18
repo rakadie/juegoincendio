@@ -112,7 +112,17 @@ export function renderPrototypePage(): string {
         font-size: .78rem;
         font-weight: 850;
       }
-      .stage-label { min-width: 0; font-size: .8rem; font-weight: 780; line-height: 1.15; }
+      .stage-label {
+        position: relative;
+        z-index: 2;
+        justify-self: start;
+        min-width: 0;
+        padding: 2px 8px 2px 0;
+        background: var(--navy);
+        font-size: .8rem;
+        font-weight: 780;
+        line-height: 1.15;
+      }
       .stage.complete, .stage.active { color: #fff; }
       .stage.complete .stage-dot { border-color: #6dab4a; background: #5b9d3f; }
       .stage.active .stage-dot {
@@ -682,6 +692,8 @@ export function renderPrototypePage(): string {
           right: calc(-50% + 18px);
         }
         .stage-label {
+          justify-self: center;
+          padding: 2px 4px;
           overflow: visible;
           text-overflow: clip;
           white-space: normal;
@@ -791,7 +803,7 @@ export function renderPrototypePage(): string {
         try {
           const response = await fetch(path, { headers: { 'content-type': 'application/json' }, ...options });
           const payload = await response.json();
-          if (!response.ok) throw new Error(payload.message || 'No se pudo completar la acción.');
+          if (!response.ok) throw new Error(requestErrorMessage(payload, response.status));
           currentView = payload;
           sessionId = payload.session.id;
           setSessionChrome(true);
@@ -891,6 +903,16 @@ export function renderPrototypePage(): string {
 
       function heading(scene, eyebrow, badge) {
         return '<div class="scene-heading"><div class="scene-heading-copy"><p class="eyebrow">' + escapeHtml(eyebrow) + '</p><h2>' + escapeHtml(scene.title) + '</h2><p class="lead">' + escapeHtml(scene.body || '') + '</p></div>' + (badge || '') + '</div>';
+      }
+
+      function requestErrorMessage(payload, status) {
+        const code = payload && typeof payload.code === 'string' ? payload.code : '';
+        if (code === 'inspection-quota-incomplete') return 'Completa las actuaciones disponibles antes de continuar.';
+        if (code === 'inspection-quota-reached') return 'Ya has utilizado todas las actuaciones disponibles en esta zona.';
+        if (code === 'session-not-found') return 'La partida ya no está disponible. Reiníciala para continuar.';
+        return status >= 500
+          ? 'No se pudo completar la operación. Inténtalo de nuevo en unos instantes.'
+          : 'No se pudo completar esta operación. Revisa la selección e inténtalo de nuevo.';
       }
 
       function inspectionResponse(scene) {
@@ -1082,9 +1104,10 @@ export function renderPrototypePage(): string {
 
       function wireCommands() {
         document.querySelectorAll('.action-button').forEach(function (button) {
-          button.addEventListener('click', function () {
+          button.addEventListener('click', async function () {
             button.disabled = true;
-            request('/api/game-sessions/' + encodeURIComponent(sessionId) + '/actions', { method: 'POST', body: JSON.stringify({ actionId: button.dataset.actionId }) });
+            const applied = await request('/api/game-sessions/' + encodeURIComponent(sessionId) + '/actions', { method: 'POST', body: JSON.stringify({ actionId: button.dataset.actionId }) });
+            if (!applied) button.disabled = false;
           });
         });
         document.querySelectorAll('[data-visual-element-id]').forEach(function (element) {
@@ -1118,6 +1141,7 @@ export function renderPrototypePage(): string {
             advance.disabled = true;
             const advanced = await request('/api/game-sessions/' + encodeURIComponent(sessionId) + '/advance', { method: 'POST', body: '{}' });
             if (advanced) focusCurrentSceneHeading();
+            else advance.disabled = false;
           });
         }
       }
