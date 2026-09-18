@@ -59,6 +59,10 @@ describe('M5.4 shared ravine crisis art direction', () => {
     expect(vulnerable.markup).toContain('href="/images/crisis-ravine-aerial-v1.jpg"');
     expect(prepared.markup).toContain('href="/images/crisis-scrub-fire-v1.png"');
     expect(prepared.markup).toContain('class="visual-fire visual-fire-photo"');
+    expect(prepared.markup).toContain('class="crisis-road-bed"');
+    expect(prepared.markup).toContain('class="crisis-crown-zone"');
+    expect(prepared.markup).toContain('class="crisis-crown-boundary"');
+    expect(prepared.markup).not.toContain('<circle class="visual-canopy"');
     for (const id of [
       'crisis-road',
       'crisis-retreat',
@@ -108,8 +112,8 @@ describe('M5.4 shared ravine crisis art direction', () => {
     expect(defs).toContain('#crisis-pressure.state-severe .crisis-flame');
     expect(defs).toContain('#crisis-attack-window.state-viable .visual-attack-window');
     expect(defs).toContain('#crisis-attack-window.state-unavailable .visual-attack-window');
-    expect(defs).toContain('#crisis-crown.state-noCrownFire .visual-canopy');
-    expect(defs).toContain('#crisis-crown.state-crownRisk .visual-canopy');
-    expect(defs).toContain('#crisis-crown.state-crownFire .visual-canopy');
+    expect(defs).toContain('#crisis-crown.state-noCrownFire .crisis-crown-boundary');
+    expect(defs).toContain('#crisis-crown.state-crownRisk .crisis-crown-boundary');
+    expect(defs).toContain('#crisis-crown.state-crownFire .crisis-crown-boundary');
   });
 });

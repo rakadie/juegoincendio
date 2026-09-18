@@ -526,11 +526,15 @@ try {
       const photo = map?.querySelector('[data-background-layer="photo"]');
       const fire = map?.querySelector('#crisis-pressure .visual-fire');
       const capacity = map?.querySelector('#crisis-capacity');
-      if (!canvas || !map || !photo || !fire || !capacity) return null;
+      const road = map?.querySelector('#crisis-road .visual-road');
+      const roadBed = map?.querySelector('#crisis-road .crisis-road-bed');
+      const crownZone = map?.querySelector('#crisis-crown .crisis-crown-zone');
+      if (!canvas || !map || !photo || !fire || !capacity || !road || !roadBed || !crownZone) return null;
       const canvasRect = canvas.getBoundingClientRect();
       const mapRect = map.getBoundingClientRect();
       const fireRect = fire.getBoundingClientRect();
       const capacityRect = capacity.getBoundingClientRect();
+      const crownRect = crownZone.getBoundingClientRect();
       const response = await fetch(photo.getAttribute('href'));
       const fireResponse = await fetch(fire.getAttribute('href'));
       return {
@@ -539,6 +543,10 @@ try {
         canvas: { left: canvasRect.left, right: canvasRect.right },
         map: { left: mapRect.left, right: mapRect.right, width: mapRect.width, height: mapRect.height },
         fire: { width: fireRect.width, height: fireRect.height },
+        roadStrokeWidth: Number.parseFloat(getComputedStyle(road).strokeWidth),
+        roadBedStrokeWidth: Number.parseFloat(getComputedStyle(roadBed).strokeWidth),
+        crown: { width: crownRect.width, height: crownRect.height },
+        legacyCanopies: map.querySelectorAll('#crisis-crown circle.visual-canopy').length,
         capacity: { width: capacityRect.width, height: capacityRect.height },
         href: photo.getAttribute('href'),
         responseOk: response.ok,
@@ -556,6 +564,12 @@ try {
     assert(layout.fireHref === '/images/crisis-scrub-fire-v1.png', 'Crisis scene does not use the expected photographic fire overlay.');
     assert(layout.fireResponseOk && layout.fireContentType?.startsWith('image/png'), 'Crisis fire overlay did not load as PNG.');
     assert(layout.fire.height < layout.map.height * .32, 'Crisis flame is again dominating the ravine scene.');
+    assert(layout.roadStrokeWidth <= 4 && layout.roadBedStrokeWidth <= 10, 'Crisis road overlay is visually too heavy.');
+    assert(
+      layout.crown.width < layout.map.width * .34 && layout.crown.height < layout.map.height * .26,
+      'Crisis crown-risk overlay is out of proportion with the photographed tree belt.'
+    );
+    assert(layout.legacyCanopies === 0, 'Crisis scene still draws synthetic circular tree crowns.');
     assert(layout.capacity.width >= 44 && layout.capacity.height >= 44, 'Crisis capacity control is too small.');
   }
 

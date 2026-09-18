@@ -5,6 +5,8 @@ import type {
 } from '../../application/vertical-beta/vertical-beta-visual-presenter.js';
 import { renderSceneArtDefs, renderSceneSmoke } from './scene-art-kit.js';
 import {
+  CRISIS_CROWN_ZONE_PATH,
+  CRISIS_RETREAT_PATH,
   CRISIS_ROAD_PATH,
   renderCrisisFlame,
   renderCrisisRavineBase,
@@ -293,12 +295,12 @@ function crisisSvg(model: PresentedSceneVisualModel): string {
     ${renderCrisisRavineDefs()}
     ${renderCrisisRavineBase()}
     ${renderSceneSmoke(570, 265, 0.68)}
-    <g id="crisis-road" class="visual-hotspot ${stateClass(road)}"${hotspotAttributes(road)}><path class="visual-road" d="${CRISIS_ROAD_PATH}" /></g>
-    <g id="crisis-retreat" class="visual-hotspot ${stateClass(retreat)}"${hotspotAttributes(retreat)}><path class="visual-retreat" d="M452 289 C338 317 225 348 115 375" /><path class="visual-arrow" d="M115 375 l33 -25 m-33 25 l39 14" /></g>
-    <g id="crisis-position" class="visual-hotspot ${stateClass(position)}"${hotspotAttributes(position)}><circle class="visual-position" cx="452" cy="288" r="28" /><path d="M430 288 H474 M452 266 V310" /></g>
+    <g id="crisis-road" class="visual-hotspot ${stateClass(road)}"${hotspotAttributes(road)}><path class="crisis-road-bed" d="${CRISIS_ROAD_PATH}" /><path class="visual-road" d="${CRISIS_ROAD_PATH}" /></g>
+    <g id="crisis-retreat" class="visual-hotspot ${stateClass(retreat)}"${hotspotAttributes(retreat)}><path class="visual-retreat" d="${CRISIS_RETREAT_PATH}" /><path class="visual-arrow" d="M115 354 l27 -19 m-27 19 l31 11" /></g>
+    <g id="crisis-position" class="visual-hotspot ${stateClass(position)}"${hotspotAttributes(position)}><circle class="visual-position" cx="452" cy="257" r="19" /><path d="M439 257 H465 M452 244 V270" /></g>
     <g id="crisis-pressure" class="visual-hotspot ${stateClass(pressure)}"${hotspotAttributes(pressure)}>${renderCrisisFlame()}</g>
-    <g id="crisis-attack-window" class="visual-hotspot ${stateClass(attack)}"${hotspotAttributes(attack)}><path class="visual-attack-window" d="M406 244 Q472 216 543 246" /></g>
-    <g id="crisis-crown" class="visual-hotspot ${stateClass(crown)}"${hotspotAttributes(crown)}><circle class="visual-canopy" cx="642" cy="112" r="45" /><circle class="visual-canopy" cx="718" cy="106" r="45" /><circle class="visual-canopy" cx="783" cy="129" r="43" /></g>
+    <g id="crisis-attack-window" class="visual-hotspot ${stateClass(attack)}"${hotspotAttributes(attack)}><path class="visual-attack-window" d="M410 220 Q470 196 535 218" /></g>
+    <g id="crisis-crown" class="visual-hotspot ${stateClass(crown)}"${hotspotAttributes(crown)}><path class="crisis-crown-zone" d="${CRISIS_CROWN_ZONE_PATH}" /><path class="crisis-crown-boundary" d="${CRISIS_CROWN_ZONE_PATH}" /></g>
     <g id="crisis-capacity" class="visual-hotspot visual-capacity ${stateClass(capacity)}"${hotspotAttributes(capacity)}><circle class="crisis-capacity-hit-target" cx="72" cy="91" r="62" /><circle cx="72" cy="91" r="35" /><text x="72" y="97" text-anchor="middle">CAP</text></g>
     ${
       professionalLine === undefined

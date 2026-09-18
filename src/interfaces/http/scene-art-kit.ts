@@ -133,19 +133,19 @@ export function renderSceneArtDefs(): string {
       svg:has(#crisis-road) .visual-hill-front { fill: #4e5d4b; }
       svg:has(#crisis-road) .visual-ravine.crisis { fill: url(#m5-ravine-depth); stroke: #9ba49c; filter: url(#m5-soft-shadow); }
 
-      #crisis-road.state-clear .visual-road { stroke-width: 31; stroke-dasharray: none; filter: url(#m5-soft-shadow); }
-      #crisis-road.state-constrained .visual-road { stroke-width: 22; stroke-dasharray: 24 16; opacity: .78; }
-      #crisis-road.state-blocked .visual-road { stroke-width: 17; stroke-dasharray: 12 18; opacity: .52; }
+      #crisis-road.state-clear .visual-road { stroke-width: 3; stroke-dasharray: none; }
+      #crisis-road.state-constrained .visual-road { stroke-width: 3; stroke-dasharray: 14 10; opacity: .9; }
+      #crisis-road.state-blocked .visual-road { stroke-width: 3.5; stroke-dasharray: 5 9; opacity: .94; }
 
-      #crisis-retreat.state-viable .visual-retreat { stroke-width: 13; stroke-dasharray: none; opacity: 1; }
-      #crisis-retreat.state-limited .visual-retreat { stroke-width: 8; stroke-dasharray: 18 18; opacity: .6; }
+      #crisis-retreat.state-viable .visual-retreat { stroke-width: 5; stroke-dasharray: none; opacity: 1; }
+      #crisis-retreat.state-limited .visual-retreat { stroke-width: 3.5; stroke-dasharray: 10 9; opacity: .7; }
       #crisis-retreat.state-limited .visual-arrow { opacity: .45; }
 
       #crisis-position .visual-position { filter: url(#m5-soft-shadow); }
-      #crisis-position.state-sustainable .visual-position { r: 35px; stroke-width: 7; opacity: 1; }
-      #crisis-position.state-sustainable path { stroke-width: 6; }
-      #crisis-position.state-unsustainable .visual-position { r: 23px; stroke-width: 5; stroke-dasharray: 8 8; opacity: .48; }
-      #crisis-position.state-unsustainable path { stroke-width: 4; stroke-dasharray: 7 7; opacity: .5; }
+      #crisis-position.state-sustainable .visual-position { r: 19px; stroke-width: 4; opacity: 1; }
+      #crisis-position.state-sustainable path { stroke-width: 3; }
+      #crisis-position.state-unsustainable .visual-position { r: 15px; stroke-width: 3; stroke-dasharray: 5 5; opacity: .62; }
+      #crisis-position.state-unsustainable path { stroke-width: 3; stroke-dasharray: 5 5; opacity: .62; }
 
       #crisis-pressure .crisis-flame { transform-box: fill-box; transform-origin: center bottom; filter: url(#m5-soft-shadow); }
       #crisis-pressure.state-surface .crisis-flame { transform: scale(.78); }
@@ -156,9 +156,9 @@ export function renderSceneArtDefs(): string {
       #crisis-attack-window.state-viable .visual-attack-window { stroke-width: 12; stroke-dasharray: 18 8; opacity: 1; filter: url(#m5-soft-shadow); }
       #crisis-attack-window.state-unavailable .visual-attack-window { stroke-width: 6; stroke-dasharray: 5 19; opacity: .35; }
 
-      #crisis-crown.state-noCrownFire .visual-canopy { r: 48px; stroke-width: 4; stroke-dasharray: 12 10; opacity: .55; }
-      #crisis-crown.state-crownRisk .visual-canopy { r: 63px; stroke-width: 7; stroke-dasharray: 6 6; opacity: .9; }
-      #crisis-crown.state-crownFire .visual-canopy { r: 72px; fill: #925238; stroke: #ef9340; stroke-width: 9; opacity: 1; filter: url(#m5-soft-shadow); }
+      #crisis-crown.state-noCrownFire .crisis-crown-boundary { stroke-width: 2; stroke-dasharray: none; opacity: .75; }
+      #crisis-crown.state-crownRisk .crisis-crown-boundary { stroke-width: 2.5; stroke-dasharray: 9 7; opacity: .95; }
+      #crisis-crown.state-crownFire .crisis-crown-boundary { stroke-width: 3; stroke-dasharray: 5 5; opacity: 1; }
 
       #crisis-professional-line .visual-professional-line,
       #crisis-house-access .visual-road { filter: url(#m5-soft-shadow); }
