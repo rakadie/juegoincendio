@@ -2,6 +2,8 @@
 
 Referencia aprobada: [`m3-north-star-ui.jpg`](m3-north-star-ui.jpg).
 
+Evidencia de la representación híbrida: [`territory-photo-v3`](territory-photo-v3/README.md), [`housing-plan-v2`](housing-plan-v2/README.md) y [`crisis-ravine-photo`](crisis-ravine-photo/README.md).
+
 ## Qué es vinculante
 
 La referencia fija dirección de producto para:

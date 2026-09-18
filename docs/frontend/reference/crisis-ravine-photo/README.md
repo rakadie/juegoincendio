@@ -13,7 +13,7 @@ Una fotografía aérea original y neutral muestra el barranco volcánico, la ví
 - la presión del incendio y su humo;
 - la oportunidad de ataque, el riesgo de copas y la capacidad operativa.
 
-La foto no contiene fuego, equipos, símbolos ni una intervención ya ejecutada. Por tanto, no anticipa consecuencias ni confunde una evaluación con una actuación. La llama se ha reducido y los trazados se han alineado con la vía y el paso visibles.
+La foto base no contiene fuego, equipos, símbolos ni una intervención ya ejecutada. Por tanto, no anticipa consecuencias ni confunde una evaluación con una actuación. El fuego se añade como recorte fotográfico con transparencia, humo y matorral a escala; su tamaño depende del estado de presión. Los trazados se alinean con la vía y el paso visibles.
 
 ## Capturas reales de navegador
 
@@ -39,7 +39,7 @@ Las capturas proceden del recorrido automatizado en Chrome mediante `Page.captur
 - Foto completa, sin recortes, barras vacías ni desbordamiento horizontal.
 - Recurso JPEG servido correctamente y base idéntica en las rutas preparada y vulnerable.
 - Indicador de capacidad con zona táctil mínima de 44 px en móvil.
-- Llama limitada para que no domine la escena; vía, repliegue, posición, copas y oportunidad permanecen dentro del lienzo.
+- Fuego y humo limitados a menos de un tercio de la altura del mapa para que no dominen la escena; vía, repliegue, posición, copas y oportunidad permanecen dentro del lienzo.
 - Recorrido completo desde territorio y vivienda hasta ambas variantes de emergencia y el resultado final.
 
 La comprobación de navegador finaliza con `M5_VISUAL_SMOKE_OK`.

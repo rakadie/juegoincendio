@@ -16,6 +16,10 @@ describe('M5.2 territory north-star art direction', () => {
     service.advance(id);
 
     const markup = territory(service, id);
+    expect(markup).toContain('data-visual-base="territory-photo-v3"');
+    expect(markup).toContain('href="/images/territory-prevention-aerial-v1.jpg"');
+    expect(markup.match(/class="map-pin"/g)).toHaveLength(5);
+    expect(markup.match(/class="map-pin-hit-target"/g)).toHaveLength(5);
     for (const semanticId of [
       'territory-residues',
       'territory-continuity',
@@ -31,6 +35,7 @@ describe('M5.2 territory north-star art direction', () => {
     expect(markup).toContain('state-constrained');
     expect(markup).toContain('state-continuous');
     expect(markup).toContain('state-unevaluated');
+    expect(markup).toContain('class="territory-key-state-dot"');
   });
 
   it('changes treated objects through the same presenter-driven state classes', () => {

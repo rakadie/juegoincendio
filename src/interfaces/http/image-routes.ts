@@ -6,8 +6,10 @@ const IMAGE_FILES = [
   'primer-aviso-humo.png',
   'operational-command-hero.png',
   'gameplay-wildfire-scene.png',
+  'territory-prevention-aerial-v1.jpg',
   'housing-prevention-aerial-v2.jpg',
   'crisis-ravine-aerial-v1.jpg',
+  'crisis-scrub-fire-v1.png',
   'avatar-forestal-hombre.png',
   'avatar-forestal-mujer.png',
   'avatar-forestal-neutro.png'

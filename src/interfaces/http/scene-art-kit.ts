@@ -147,9 +147,9 @@ export function renderSceneArtDefs(): string {
       #crisis-position.state-unsustainable .visual-position { r: 23px; stroke-width: 5; stroke-dasharray: 8 8; opacity: .48; }
       #crisis-position.state-unsustainable path { stroke-width: 4; stroke-dasharray: 7 7; opacity: .5; }
 
-      #crisis-pressure .visual-fire { transform-box: fill-box; transform-origin: center bottom; filter: url(#m5-soft-shadow); }
-      #crisis-pressure.state-surface .visual-fire { fill: url(#m5-fire-surface); transform: scale(.78); }
-      #crisis-pressure.state-severe .visual-fire { fill: url(#m5-fire-severe); transform: scale(1.28); }
+      #crisis-pressure .crisis-flame { transform-box: fill-box; transform-origin: center bottom; filter: url(#m5-soft-shadow); }
+      #crisis-pressure.state-surface .crisis-flame { transform: scale(.78); }
+      #crisis-pressure.state-severe .crisis-flame { transform: scale(1.08); }
       svg:has(#crisis-pressure.state-surface) .m5-art-smoke { opacity: .42; transform-box: fill-box; transform-origin: center bottom; transform: scale(.82); }
       svg:has(#crisis-pressure.state-severe) .m5-art-smoke { opacity: .95; transform-box: fill-box; transform-origin: center bottom; transform: scale(1.18); }
 

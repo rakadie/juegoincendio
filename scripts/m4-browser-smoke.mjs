@@ -388,11 +388,13 @@ try {
   }
 
   async function assertTerritoryLayout(expectedMobile) {
-    const layout = await evaluate(`(() => {
+    const layout = await evaluate(`(async () => {
       const canvas = document.querySelector('.visual-scene[data-visual-template="territory"] .visual-canvas');
       const map = canvas?.querySelector('.territory-map');
       const key = canvas?.querySelector('.territory-map-key');
-      if (!canvas || !map || !key) return null;
+      const photo = map?.querySelector('[data-background-layer="photo"]');
+      const residuePile = map?.querySelector('.map-residue-pile');
+      if (!canvas || !map || !key || !photo || !residuePile) return null;
       const canvasRect = canvas.getBoundingClientRect();
       const mapRect = map.getBoundingClientRect();
       const keyRect = key.getBoundingClientRect();
@@ -400,16 +402,26 @@ try {
         const rect = element.getBoundingClientRect();
         return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, height: rect.height };
       });
-      const visiblePinParts = Array.from(map.querySelectorAll('.map-pin'))
-        .map((element) => {
+      const visiblePinParts = Array.from(map.querySelectorAll('.map-pin')).flatMap((pin, pinIndex) =>
+        Array.from(pin.querySelectorAll('.map-pin-disc, .map-pin-label-bg')).flatMap((element) => {
           const rect = element.getBoundingClientRect();
-          return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom };
-        });
+          return rect.width === 0 || rect.height === 0
+            ? []
+            : [{ pinIndex, left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom }];
+        })
+      );
+      const hitTargets = Array.from(map.querySelectorAll('.map-pin-hit-target')).map((element) => {
+        const rect = element.getBoundingClientRect();
+        return { width: rect.width, height: rect.height };
+      });
+      const residueRect = residuePile.getBoundingClientRect();
+      const photoResponse = await fetch(photo.getAttribute('href'));
       const overlaps = [];
       for (let i = 0; i < visiblePinParts.length; i += 1) {
         for (let j = i + 1; j < visiblePinParts.length; j += 1) {
           const a = visiblePinParts[i];
           const b = visiblePinParts[j];
+          if (a.pinIndex === b.pinIndex) continue;
           if (a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top) {
             overlaps.push([i, j]);
           }
@@ -419,11 +431,16 @@ try {
         viewportWidth: window.innerWidth,
         pageWidth: document.documentElement.scrollWidth,
         canvas: { left: canvasRect.left, right: canvasRect.right },
-        map: { left: mapRect.left, right: mapRect.right, top: mapRect.top, bottom: mapRect.bottom },
+        map: { left: mapRect.left, right: mapRect.right, top: mapRect.top, bottom: mapRect.bottom, width: mapRect.width, height: mapRect.height },
         key: { left: keyRect.left, right: keyRect.right },
         itemCount: items.length,
         items,
-        overlaps
+        overlaps,
+        hitTargets,
+        residue: { width: residueRect.width, height: residueRect.height },
+        photoHref: photo.getAttribute('href'),
+        photoOk: photoResponse.ok,
+        photoType: photoResponse.headers.get('content-type')
       };
     })()`);
     assert(layout, 'Territory layout was not available.');
@@ -436,9 +453,14 @@ try {
       'A territory legend item escapes its container.'
     );
     assert(
-      layout.items.every((item) => item.height >= (expectedMobile ? 52 : 48)),
+      layout.items.every((item) => item.height >= (expectedMobile ? 66 : 64)),
       'Territory legend controls are smaller than their expected target size.'
     );
+    assert(layout.photoHref === '/images/territory-prevention-aerial-v1.jpg', 'Territory does not use the expected photographic base.');
+    assert(layout.photoOk && layout.photoType?.startsWith('image/jpeg'), 'Territory photograph did not load as JPEG.');
+    assert(layout.hitTargets.length === 5, 'Territory must expose five stable marker hit targets.');
+    assert(layout.hitTargets.every((target) => target.width >= 44 && target.height >= 44), 'A territory marker hit target is smaller than 44px.');
+    assert(layout.residue.width < layout.map.width * .14 && layout.residue.height < layout.map.height * .16, 'The pruning-residue overlay is disproportionate to the landscape.');
     assert(layout.overlaps.length === 0, 'Territory pins or visible labels overlap.');
   }
 
@@ -510,6 +532,7 @@ try {
       const fireRect = fire.getBoundingClientRect();
       const capacityRect = capacity.getBoundingClientRect();
       const response = await fetch(photo.getAttribute('href'));
+      const fireResponse = await fetch(fire.getAttribute('href'));
       return {
         viewportWidth: window.innerWidth,
         pageWidth: document.documentElement.scrollWidth,
@@ -519,7 +542,10 @@ try {
         capacity: { width: capacityRect.width, height: capacityRect.height },
         href: photo.getAttribute('href'),
         responseOk: response.ok,
-        contentType: response.headers.get('content-type')
+        contentType: response.headers.get('content-type'),
+        fireHref: fire.getAttribute('href'),
+        fireResponseOk: fireResponse.ok,
+        fireContentType: fireResponse.headers.get('content-type')
       };
     })()`);
     assert(layout, 'Crisis ravine layout was not available.');
@@ -527,6 +553,8 @@ try {
     assert(layout.map.left >= layout.canvas.left - 1 && layout.map.right <= layout.canvas.right + 1, 'Crisis photograph is clipped by its canvas.');
     assert(layout.href === '/images/crisis-ravine-aerial-v1.jpg', 'Crisis scene does not use the expected photographic base.');
     assert(layout.responseOk && layout.contentType?.startsWith('image/jpeg'), 'Crisis photograph did not load as JPEG.');
+    assert(layout.fireHref === '/images/crisis-scrub-fire-v1.png', 'Crisis scene does not use the expected photographic fire overlay.');
+    assert(layout.fireResponseOk && layout.fireContentType?.startsWith('image/png'), 'Crisis fire overlay did not load as PNG.');
     assert(layout.fire.height < layout.map.height * .32, 'Crisis flame is again dominating the ravine scene.');
     assert(layout.capacity.width >= 44 && layout.capacity.height >= 44, 'Crisis capacity control is too small.');
   }
@@ -712,6 +740,16 @@ try {
     { minWidth: 300, minHeight: 240 }
   );
   await assertTerritoryLayout(true);
+  if (VISUAL_MODE) {
+    await setViewport(1280, 900, false);
+    await assertTerritoryLayout(false);
+    await captureEvidence(
+      'territory-initial-desktop.png',
+      '.visual-scene[data-visual-template="territory"] .visual-canvas',
+      { minWidth: 700, minHeight: 300 }
+    );
+    await setViewport(390, 844, true);
+  }
   await chooseWithPointer(
     'gestionar-restos-poda',
     'touch',
@@ -732,6 +770,12 @@ try {
   );
 
   if (VISUAL_MODE) {
+    await assertTerritoryLayout(true);
+    await captureEvidence(
+      'territory-treated-mobile.png',
+      '.visual-scene[data-visual-template="territory"] .visual-canvas',
+      { minWidth: 300, minHeight: 240 }
+    );
     await setViewport(1280, 900, false);
     await assertTerritoryLayout(false);
     await captureEvidence(
@@ -1017,7 +1061,9 @@ try {
   if (VISUAL_MODE) {
     const required = [
       'territory-initial-mobile.png',
+      'territory-initial-desktop.png',
       'territory-card-touch-mobile.png',
+      'territory-treated-mobile.png',
       'territory-treated-desktop.png',
       'territory-card-mouse-desktop.png',
       'territory-grazing-evaluation-desktop.png',

@@ -3,6 +3,7 @@
  * operational consequence is drawn as an SVG overlay from the current game state.
  */
 export const CRISIS_RAVINE_BACKGROUND_IMAGE = '/images/crisis-ravine-aerial-v1.jpg';
+export const CRISIS_FIRE_IMAGE = '/images/crisis-scrub-fire-v1.png';
 
 export const CRISIS_ROAD_PATH =
   'M-10 404 C145 368 306 326 450 286 C585 255 701 217 796 172 C855 144 887 108 914 68';
@@ -13,6 +14,19 @@ export function renderCrisisRavineDefs(): string {
       <stop offset="0" stop-color="#13251f" stop-opacity=".12" />
       <stop offset=".55" stop-color="#13251f" stop-opacity=".02" />
       <stop offset="1" stop-color="#13251f" stop-opacity=".2" />
+    </linearGradient>
+    <linearGradient id="crisis-fire-outer" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#8f2319" />
+      <stop offset=".55" stop-color="#e04a20" />
+      <stop offset="1" stop-color="#f5a338" />
+    </linearGradient>
+    <linearGradient id="crisis-fire-middle" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#ef681f" />
+      <stop offset="1" stop-color="#ffd15b" />
+    </linearGradient>
+    <linearGradient id="crisis-fire-core" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#ffc845" />
+      <stop offset="1" stop-color="#fff2b0" />
     </linearGradient>
     <filter id="crisis-overlay-shadow" x="-35%" y="-35%" width="180%" height="190%">
       <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#091712" flood-opacity=".72" />
@@ -46,6 +60,11 @@ export function renderCrisisRavineDefs(): string {
       .crisis-photo #crisis-crown.state-crownRisk .visual-canopy { r: 54px; opacity: .9; }
       .crisis-photo #crisis-crown.state-crownFire .visual-canopy { r: 62px; }
       .crisis-photo .visual-capacity { filter: url(#crisis-overlay-shadow); }
+      .crisis-photo #crisis-pressure .crisis-flame { transform-box: fill-box; transform-origin: center bottom; filter: url(#crisis-overlay-shadow); }
+      .crisis-photo #crisis-pressure.state-surface .crisis-flame { transform: scale(.76); }
+      .crisis-photo #crisis-pressure.state-severe .crisis-flame { transform: scale(1.08); }
+      .crisis-photo #crisis-pressure .visual-fire-photo { opacity: .96; transform: none; filter: none; }
+      .crisis-photo #crisis-pressure.state-surface .visual-fire-photo { opacity: .78; }
       .crisis-photo .crisis-capacity-hit-target { fill: #fff; fill-opacity: .001; stroke: none; pointer-events: all; }
       .crisis-photo .visual-label-group text { font-size: 15px; }
 
@@ -66,5 +85,11 @@ export function renderCrisisRavineBase(): string {
       <rect class="crisis-scene-caption" width="250" height="42" rx="10" />
       <text class="crisis-place-label" x="18" y="27">BARRANCO Y ACCESO</text>
     </g>
+  </g>`;
+}
+
+export function renderCrisisFlame(): string {
+  return `<g class="crisis-flame" aria-hidden="true">
+    <image class="visual-fire visual-fire-photo" href="${CRISIS_FIRE_IMAGE}" x="535" y="239" width="84" height="126" preserveAspectRatio="xMidYMid meet" />
   </g>`;
 }

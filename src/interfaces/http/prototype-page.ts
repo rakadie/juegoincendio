@@ -346,10 +346,67 @@ export function renderPrototypePage(): string {
         border-color: #b17638;
         background: #fff5df;
       }
+      .territory-map-key {
+        gap: 8px;
+        padding: 10px;
+        border-top-color: #c8d0c3;
+        background: linear-gradient(180deg, #f4f5ef 0%, #e9ede5 100%);
+      }
+      .territory-map-key-item {
+        min-height: 66px;
+        padding: 10px;
+        border-color: #d3d9cf;
+        border-radius: 10px;
+        background: rgba(255,255,255,.88);
+        box-shadow: 0 2px 7px rgba(21, 50, 40, .08);
+      }
+      .territory-map-key-item:hover {
+        border-color: #9dac9f;
+        background: #fff;
+        box-shadow: 0 4px 11px rgba(21, 50, 40, .12);
+      }
+      .territory-map-key-item.selected {
+        border-color: #4f8069;
+        background: #edf5ed;
+        box-shadow: inset 0 0 0 1px #4f8069, 0 3px 9px rgba(21, 50, 40, .1);
+      }
+      .territory-map-key-item .territory-key-number {
+        flex-basis: 32px;
+        height: 32px;
+        border-width: 2px;
+        border-color: #315b49;
+        color: #244c3d;
+        background: #fffdf5;
+        font-size: 14px;
+        font-weight: 800;
+      }
+      .territory-key-copy { min-width: 0; }
+      .territory-map-key-item strong { color: #1b3c31; font-size: .8rem; letter-spacing: -.01em; }
+      .territory-map-key-item small {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        width: fit-content;
+        margin-top: 5px;
+        padding: 2px 7px;
+        border-radius: 999px;
+        color: #6c5333;
+        background: #f6ead5;
+        font-size: .66rem;
+        font-weight: 700;
+      }
+      .territory-key-state-dot { width: 6px; height: 6px; border-radius: 50%; background: #bd7935; }
+      .territory-map-key-item:is(.state-treated, .state-broken, .state-clear, .state-evaluated) small {
+        color: #285946;
+        background: #e0ede0;
+      }
+      .territory-map-key-item:is(.state-treated, .state-broken, .state-clear, .state-evaluated) .territory-key-state-dot { background: #3e7b5d; }
       @media (max-width: 700px) {
         .territory-map-key, .housing-map-key { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 8px; }
         .territory-map-key-item:last-child { grid-column: 1 / -1; }
         .territory-map-key-item, .housing-map-key-item { min-height: 52px; }
+        .territory-map-key { gap: 7px; }
+        .territory-map-key-item { min-height: 68px; padding: 9px; }
         .visual-scene[data-visual-template="territory"] .visual-card-layer,
         .visual-scene[data-visual-template="housing"] .visual-card-layer { position: static; padding: 0 10px; }
         .visual-scene[data-visual-template="territory"] .visual-hover-card,

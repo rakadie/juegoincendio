@@ -3,13 +3,10 @@ import type {
   PresentedVisualElement,
   VisualTemplateId
 } from '../../application/vertical-beta/vertical-beta-visual-presenter.js';
-import {
-  renderSceneArtDefs,
-  renderSceneRocks,
-  renderSceneSmoke
-} from './scene-art-kit.js';
+import { renderSceneArtDefs, renderSceneSmoke } from './scene-art-kit.js';
 import {
   CRISIS_ROAD_PATH,
+  renderCrisisFlame,
   renderCrisisRavineBase,
   renderCrisisRavineDefs
 } from './crisis-ravine-art.js';
@@ -21,11 +18,12 @@ import {
   renderHousingPlanDefs
 } from './housing-plan-art.js';
 import {
-  renderTerritoryBrush,
+  renderTerritoryBranchPile,
   renderTerritoryMapBase,
   renderTerritoryMapDefs,
   renderTerritoryMapPin,
-  renderTerritoryPine,
+  renderTerritoryRoadDebris,
+  TERRITORY_EVALUATION_PATH,
   TERRITORY_FUEL_PATH,
   TERRITORY_GRAZING_PATH,
   TERRITORY_ROAD_PATH
@@ -143,63 +141,62 @@ function territorySvg(model: PresentedSceneVisualModel): string {
 
   return `<svg class="territory-svg territory-map" viewBox="0 0 900 500" role="group" aria-label="${escapeHtml(
     model.ariaLabel
-  )}" data-visual-base="territory-plan-v2">
+  )}" data-visual-base="territory-photo-v3">
     ${renderSceneArtDefs()}
     ${renderTerritoryMapDefs()}
     ${renderTerritoryMapBase()}
-    ${renderSceneRocks(586, 387, .18)}${renderSceneRocks(547, 137, .16)}
     <g id="territory-road" class="visual-hotspot ${stateClass(road)}"${hotspotAttributes(road)}>
       <g aria-hidden="true">
-        <path class="map-road-margin" d="${TERRITORY_ROAD_PATH}" />
+        <path class="map-road-context" d="${TERRITORY_ROAD_PATH}" />
+        <path class="map-road-risk" d="${TERRITORY_ROAD_PATH}" />
         <path class="visual-road" d="${TERRITORY_ROAD_PATH}" />
-        <path class="map-road-centre" d="${TERRITORY_ROAD_PATH}" />
-        <g class="map-road-obstruction">${renderTerritoryBrush(278, 308, .7)}${renderTerritoryBrush(321, 329, .7)}${renderTerritoryBrush(394, 291, .65)}${renderTerritoryBrush(465, 333, .65)}${renderTerritoryBrush(761, 232, .65)}</g>
-        <path d="M593 291 l27 20 M585 304 l26 20" stroke="#8b7c62" stroke-width="4" />
+        <g class="map-road-obstruction">${renderTerritoryRoadDebris(292, 300, -12)}${renderTerritoryRoadDebris(530, 242, -17)}${renderTerritoryRoadDebris(711, 187, -24)}</g>
       </g>
-      ${renderTerritoryMapPin(3, 340, 350, 'Camino rural', 127, road?.selected === true)}
+      ${renderTerritoryMapPin(3, 462, 292, 'Camino rural', 137, road?.selected === true)}
     </g>
     <g id="territory-continuity" class="visual-hotspot ${stateClass(
       continuity
     )}"${hotspotAttributes(continuity)}>
       <g aria-hidden="true">
         <path class="visual-vegetation-band" d="${TERRITORY_FUEL_PATH}" />
-        ${renderTerritoryPine(178, 164, .8)}${renderTerritoryPine(204, 153, .9)}${renderTerritoryPine(303, 163, .8)}${renderTerritoryPine(331, 175, .75)}${renderTerritoryPine(429, 180, .8)}${renderTerritoryPine(454, 166, .75)}${renderTerritoryPine(549, 183, .8)}${renderTerritoryPine(575, 203, .75)}${renderTerritoryPine(617, 224, .7)}
-        <g class="map-fuel-gap">${renderTerritoryPine(248, 143, .9)}${renderTerritoryPine(275, 151, .85)}${renderTerritoryPine(380, 185, .8)}${renderTerritoryPine(402, 185, .75)}${renderTerritoryPine(500, 161, .8)}${renderTerritoryPine(525, 168, .75)}</g>
+        <g class="map-fuel-gap">
+          <ellipse class="map-fuel-gap-zone" cx="225" cy="106" rx="31" ry="22" />
+          <path class="map-fuel-gap-mark" d="M205 106 h40 M215 96 l-10 10 10 10 M235 96 l10 10 -10 10" />
+          <ellipse class="map-fuel-gap-zone" cx="376" cy="103" rx="30" ry="21" />
+          <path class="map-fuel-gap-mark" d="M357 103 h38 M366 93 l-9 10 9 10 M386 93 l9 10 -9 10" />
+        </g>
       </g>
-      ${renderTerritoryMapPin(2, 359, 127, 'Continuidad vegetal', 174, continuity?.selected === true)}
+      ${renderTerritoryMapPin(2, 316, 86, 'Continuidad vegetal', 183, continuity?.selected === true)}
     </g>
     <g id="territory-residues" class="visual-hotspot ${stateClass(residues)}"${hotspotAttributes(
       residues
     )}>
       <g aria-hidden="true">
-        <ellipse class="map-treated-ground" cx="208" cy="264" rx="32" ry="23" />
-        <g class="map-residue-pile">
-          <ellipse cx="208" cy="263" rx="36" ry="23" fill="#b09568" opacity=".25" />
-          <path class="visual-residues" d="M181 261 l41 -18 m-30 31 l38 -21 m-40 -3 l27 29 m-42 -8 l42 -15 m-14 -11 l26 20 m-20 15 l29 -15" />
-          <path d="M190 258 l-8 -10 m13 8 l-2 -10 m32 17 l12 0 m-16 6 l10 5" fill="none" stroke="#aa895c" stroke-width="2" />
-        </g>
+        <ellipse class="map-treated-ground" cx="209" cy="211" rx="43" ry="27" />
+        <path class="map-treated-rake" d="M182 207 q27 -12 54 0 M183 216 q26 -11 52 0" />
+        ${renderTerritoryBranchPile(209, 211, .9)}
       </g>
-      ${renderTerritoryMapPin(1, 212, 222, 'Restos de poda', 143, residues?.selected === true)}
+      ${renderTerritoryMapPin(1, 205, 171, 'Restos de poda', 151, residues?.selected === true)}
     </g>
     <g id="territory-grazing" class="visual-hotspot ${stateClass(grazing)}"${hotspotAttributes(
       grazing
     )}>
       <path class="visual-grazing" d="${TERRITORY_GRAZING_PATH}" aria-hidden="true" />
-      <g class="map-grazing-flock" aria-hidden="true">${[[716, 337], [777, 320], [798, 386]].map(([x, y]) => `<g transform="translate(${x} ${y}) rotate(-15)"><ellipse rx="9" ry="5" fill="#f4efda" stroke="#958b70" /><circle cx="10" cy="-2" r="3" fill="#786c55" /><path d="M-4 4 v4 m8 -4 v4 M10 -4 l2 -4" stroke="#786c55" stroke-width="1.5" /></g>`).join('')}</g>
-      ${renderTerritoryMapPin(4, 692, 406, 'Franja de pastoreo', 161, grazing?.selected === true)}
+      <g class="map-grazing-flock" aria-hidden="true">${[[690, 346], [774, 318], [815, 404]].map(([x, y]) => `<g transform="translate(${x} ${y}) rotate(-12)" filter="url(#territory-overlay-shadow)"><ellipse cx="2" cy="3" rx="10" ry="4" fill="#182119" opacity=".25" /><ellipse rx="8" ry="5" fill="#ede7d2" stroke="#6f6756" stroke-width="1.2" /><circle cx="8" cy="-2" r="2.8" fill="#665c4e" /><path d="M-4 4 v5 m8 -5 v5 M9 -4 l2 -4" stroke="#665c4e" stroke-width="1.3" /></g>`).join('')}</g>
+      ${renderTerritoryMapPin(4, 746, 382, 'Franja de pastoreo', 174, grazing?.selected === true, 'left')}
     </g>
     <g id="territory-professional-line" class="visual-hotspot ${stateClass(line)}"${hotspotAttributes(
       line
     )}>
-      <path class="visual-professional-line" d="M655 178 Q707 109 786 130" aria-hidden="true" />
-      ${renderTerritoryMapPin(5, 693, 171, 'Evaluación técnica', 166, line?.selected === true)}
+      <g aria-hidden="true"><path class="visual-professional-line" d="${TERRITORY_EVALUATION_PATH}" /><circle class="map-survey-point" cx="650" cy="206" r="5" /><circle class="map-survey-point" cx="826" cy="142" r="5" /></g>
+      ${renderTerritoryMapPin(5, 748, 157, 'Evaluación técnica', 178, line?.selected === true, 'left')}
     </g>
   </svg>`;
 }
 
 function territoryMapLegend(model: PresentedSceneVisualModel): string {
   return `<div class="territory-map-key" role="group" aria-label="Puntos del mapa">${model.elements.map((element, index) =>
-    `<button class="territory-map-key-item ${stateClass(element)}" type="button"${hotspotAttributes(element)}><span class="territory-key-number" aria-hidden="true">${index + 1}</span><span><strong>${escapeHtml(element.label)}</strong><small>${escapeHtml(element.stateLabel)}</small></span></button>`
+    `<button class="territory-map-key-item ${stateClass(element)}${element.selected === true ? ' selected' : ''}" type="button"${hotspotAttributes(element)}><span class="territory-key-number" aria-hidden="true">${index + 1}</span><span class="territory-key-copy"><strong>${escapeHtml(element.label)}</strong><small><span class="territory-key-state-dot" aria-hidden="true"></span>${escapeHtml(element.stateLabel)}</small></span></button>`
   ).join('')}</div>`;
 }
 
@@ -299,7 +296,7 @@ function crisisSvg(model: PresentedSceneVisualModel): string {
     <g id="crisis-road" class="visual-hotspot ${stateClass(road)}"${hotspotAttributes(road)}><path class="visual-road" d="${CRISIS_ROAD_PATH}" /></g>
     <g id="crisis-retreat" class="visual-hotspot ${stateClass(retreat)}"${hotspotAttributes(retreat)}><path class="visual-retreat" d="M452 289 C338 317 225 348 115 375" /><path class="visual-arrow" d="M115 375 l33 -25 m-33 25 l39 14" /></g>
     <g id="crisis-position" class="visual-hotspot ${stateClass(position)}"${hotspotAttributes(position)}><circle class="visual-position" cx="452" cy="288" r="28" /><path d="M430 288 H474 M452 266 V310" /></g>
-    <g id="crisis-pressure" class="visual-hotspot ${stateClass(pressure)}"${hotspotAttributes(pressure)}><path class="visual-fire" d="M556 355 C539 330 561 315 552 294 C586 307 596 335 586 359 C578 376 560 375 556 355 Z" /></g>
+    <g id="crisis-pressure" class="visual-hotspot ${stateClass(pressure)}"${hotspotAttributes(pressure)}>${renderCrisisFlame()}</g>
     <g id="crisis-attack-window" class="visual-hotspot ${stateClass(attack)}"${hotspotAttributes(attack)}><path class="visual-attack-window" d="M406 244 Q472 216 543 246" /></g>
     <g id="crisis-crown" class="visual-hotspot ${stateClass(crown)}"${hotspotAttributes(crown)}><circle class="visual-canopy" cx="642" cy="112" r="45" /><circle class="visual-canopy" cx="718" cy="106" r="45" /><circle class="visual-canopy" cx="783" cy="129" r="43" /></g>
     <g id="crisis-capacity" class="visual-hotspot visual-capacity ${stateClass(capacity)}"${hotspotAttributes(capacity)}><circle class="crisis-capacity-hit-target" cx="72" cy="91" r="62" /><circle cx="72" cy="91" r="35" /><text x="72" y="97" text-anchor="middle">CAP</text></g>
