@@ -67,7 +67,7 @@ La combinación de mayor reducción de continuidad —discontinuidades, márgene
 - Ratón, teclado y toque abren las tarjetas y permiten elegir acciones.
 - Se conserva el límite de tres actuaciones y el avance a vivienda, crisis y resultado.
 - Las 30 combinaciones legales de tres actuaciones territoriales y dos de vivienda producen dimensiones enteras entre 0 y 100.
-- `npm run accept:m5`: 198 pruebas Vitest, aceptación M4 y M5, tipos, compilación y auditoría de dependencias en verde.
+- `npm run accept:m5`: 200 pruebas Vitest, aceptación M4 y M5, tipos, compilación y auditoría de dependencias en verde.
 
 ## Alcance y reversión
 

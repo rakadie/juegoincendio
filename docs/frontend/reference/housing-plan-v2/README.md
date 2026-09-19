@@ -52,7 +52,7 @@ El balance distingue lo aplicado y lo pendiente en ambas zonas:
 
 ## Validación realizada
 
-- `npm run accept:m5`: auditoría de dependencias sin vulnerabilidades, tipos y compilación correctos, 195 pruebas Vitest, 4 pruebas de aceptación M4 y 4 pruebas de aceptación M5.
+- `npm run accept:m5`: auditoría de dependencias sin vulnerabilidades, tipos y compilación correctos, 200 pruebas Vitest, 4 pruebas de aceptación M4 y 4 pruebas de aceptación M5.
 - `npm run smoke:m5` en Chrome a 390 × 844 y 1280 × 900: `M5_VISUAL_SMOKE_OK`, sin desbordamiento horizontal, recortes de controles ni solapamiento entre puntos y rótulos; cuatro controles de leyenda con altura mínima de 52 px en móvil y 48 px en escritorio.
 - Apertura y selección de tarjetas con toque, teclado y ratón. Las tarjetas permanecen dentro del lienzo en escritorio y debajo de la leyenda en móvil.
 - Comprobación antes/después de vegetación baja, copas y acceso mediante estilos calculados del navegador.
