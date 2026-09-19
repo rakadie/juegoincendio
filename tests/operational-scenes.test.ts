@@ -190,7 +190,7 @@ describe('operational scene GameSession service', () => {
     ).toEqual(
       expect.objectContaining({
         available: false,
-        unavailableReason: expect.stringContaining('ruta segura')
+        unavailableReason: expect.stringContaining('camino seguro')
       })
     );
     expect(() =>
