@@ -10,6 +10,8 @@ La escena anterior presentaba la vivienda, las copas, las ramas y el acceso como
 
 La vivienda se representa mediante una imagen fotorrealista original en perspectiva aérea, con una capa SVG independiente para ubicaciones, controles y estados. La base permite reconocer la casa, las copas, la vegetación baja y el acceso sin convertirlos en símbolos abstractos; la capa superior mantiene la jerarquía y el lenguaje del mapa de fincas y monte. Tres puntos numerados corresponden a vegetación baja y ramas, continuidad de copas y acceso local. Un cuarto punto informativo mantiene visible que la vivienda sigue condicionada: las medidas reducen riesgo y mejoran condiciones operativas, pero no garantizan seguridad completa.
 
+Los contornos siguen formas orgánicas de la vegetación fotografiada y miden entre 1,5 y 2 px. La entrada se marca con un halo estrecho de 8 px, no con una franja que sustituya al camino real. La interfaz usa nombres cotidianos como «ramas y hierba seca», «copas de los árboles» y «entrada a las casas», además de estados que explican directamente qué queda y qué pueden hacer los bomberos.
+
 Los cambios proceden de las decisiones registradas por el motor:
 
 - Podar ramas y gestionar la biomasa retira la lectura de vegetación seca y ramas bajas y revela una zona de suelo gestionado sin ocultar por completo el terreno.
@@ -18,7 +20,7 @@ Los cambios proceden de las decisiones registradas por el motor:
 
 Tras cada elección se muestra el `feedback` oficial de la actuación, las actuaciones elegidas y las que quedan disponibles. El presupuesto sigue siendo de dos actuaciones entre tres opciones en vivienda; no se altera el límite de tres actuaciones de territorio ni los impactos, estados, rutas o consecuencias del juego.
 
-El balance preventivo agrupa por zona las actuaciones aplicadas y las condiciones pendientes. Después mantiene las cinco dimensiones heredadas y sus causas, sin convertirlas en una puntuación global.
+El balance preventivo agrupa por zona las mejoras realizadas y las cosas pendientes. Después presenta las cinco condiciones con expresiones directas como «queda poca», «paso libre» o «casi ninguna opción». La puntuación interna de 0 a 100 no se muestra al jugador.
 
 ## Capturas reales de navegador
 

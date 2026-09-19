@@ -14,6 +14,8 @@ import {
 } from './crisis-ravine-art.js';
 import {
   HOUSING_ACCESS_PATH,
+  HOUSING_CANOPY_ZONE_PATH,
+  HOUSING_LOW_VEGETATION_PATH,
   renderHousingHome,
   renderHousingPin,
   renderHousingPlanBase,
@@ -104,7 +106,7 @@ function hotspotAttributes(element: PresentedVisualElement | undefined): string 
 
 function visualCards(model: PresentedSceneVisualModel): string {
   if (model.elements.length === 0) return '';
-  return `<div class="visual-card-layer" aria-label="Detalles interactivos de la escena">${model.elements
+  return `<div class="visual-card-layer" aria-label="Información de los puntos del mapa">${model.elements
     .map(
       (element) =>
         `<article class="visual-hover-card ${stateClass(element)}${
@@ -118,7 +120,7 @@ function visualCards(model: PresentedSceneVisualModel): string {
         } hidden><div class="visual-card-state"><span class="visual-status-symbol" aria-hidden="true"></span><span><strong>${escapeHtml(
           element.label
         )}</strong><small>${escapeHtml(element.stateLabel)}${
-          element.selected === true ? ' · seleccionada' : ''
+          element.selected === true ? ' · hecha' : ''
         }</small></span></div><p class="visual-explanation">${escapeHtml(
           element.explanation
         )}</p>${
@@ -128,7 +130,7 @@ function visualCards(model: PresentedSceneVisualModel): string {
                 element.label
               )}</strong><p data-visual-action-description></p><small data-visual-action-reason hidden></small><button class="secondary action-button" data-action-id="${escapeHtml(
                 element.actionId
-              )}" type="button">Elegir</button></div>`
+              )}" type="button">Hacer mejora</button></div>`
         }</article>`
     )
     .join('')}</div>`;
@@ -168,7 +170,7 @@ function territorySvg(model: PresentedSceneVisualModel): string {
           <path class="map-fuel-gap-mark" d="M357 103 h38 M366 93 l-9 10 9 10 M386 93 l9 10 -9 10" />
         </g>
       </g>
-      ${renderTerritoryMapPin(2, 316, 86, 'Continuidad vegetal', 183, continuity?.selected === true)}
+      ${renderTerritoryMapPin(2, 316, 86, 'Vegetación unida', 160, continuity?.selected === true)}
     </g>
     <g id="territory-residues" class="visual-hotspot ${stateClass(residues)}"${hotspotAttributes(
       residues
@@ -178,20 +180,20 @@ function territorySvg(model: PresentedSceneVisualModel): string {
         <path class="map-treated-rake" d="M182 207 q27 -12 54 0 M183 216 q26 -11 52 0" />
         ${renderTerritoryBranchPile(209, 211, .9)}
       </g>
-      ${renderTerritoryMapPin(1, 205, 171, 'Restos de poda', 151, residues?.selected === true)}
+      ${renderTerritoryMapPin(1, 205, 171, 'Ramas secas', 128, residues?.selected === true)}
     </g>
     <g id="territory-grazing" class="visual-hotspot ${stateClass(grazing)}"${hotspotAttributes(
       grazing
     )}>
       <path class="visual-grazing" d="${TERRITORY_GRAZING_PATH}" aria-hidden="true" />
       <g class="map-grazing-flock" aria-hidden="true">${[[690, 346], [774, 318], [815, 404]].map(([x, y]) => `<g transform="translate(${x} ${y}) rotate(-12)" filter="url(#territory-overlay-shadow)"><ellipse cx="2" cy="3" rx="10" ry="4" fill="#182119" opacity=".25" /><ellipse rx="8" ry="5" fill="#ede7d2" stroke="#6f6756" stroke-width="1.2" /><circle cx="8" cy="-2" r="2.8" fill="#665c4e" /><path d="M-4 4 v5 m8 -5 v5 M9 -4 l2 -4" stroke="#665c4e" stroke-width="1.3" /></g>`).join('')}</g>
-      ${renderTerritoryMapPin(4, 746, 382, 'Franja de pastoreo', 174, grazing?.selected === true, 'left')}
+      ${renderTerritoryMapPin(4, 746, 382, 'Zona de pastoreo', 158, grazing?.selected === true, 'left')}
     </g>
     <g id="territory-professional-line" class="visual-hotspot ${stateClass(line)}"${hotspotAttributes(
       line
     )}>
       <g aria-hidden="true"><path class="visual-professional-line" d="${TERRITORY_EVALUATION_PATH}" /><circle class="map-survey-point" cx="650" cy="206" r="5" /><circle class="map-survey-point" cx="826" cy="142" r="5" /></g>
-      ${renderTerritoryMapPin(5, 748, 157, 'Evaluación técnica', 178, line?.selected === true, 'left')}
+      ${renderTerritoryMapPin(5, 748, 157, 'Zona para revisar', 150, line?.selected === true, 'left')}
     </g>
   </svg>`;
 }
@@ -235,25 +237,21 @@ function housingSvg(model: PresentedSceneVisualModel): string {
       <g class="housing-canopy-connected" aria-hidden="true">
         <path class="housing-canopy-link" d="M93 139 Q209 127 329 145" />
         <path class="housing-canopy-link-detail" d="M93 139 Q209 127 329 145" />
-        <ellipse class="housing-canopy-crown" cx="93" cy="135" rx="70" ry="75" />
-        <ellipse class="housing-canopy-crown" cx="209" cy="136" rx="76" ry="80" />
-        <ellipse class="housing-canopy-crown" cx="329" cy="145" rx="72" ry="73" />
+        <path class="housing-canopy-crown" d="${HOUSING_CANOPY_ZONE_PATH}" />
       </g>
       <g class="housing-canopy-separated" aria-hidden="true">
-        <ellipse class="housing-canopy-crown" cx="88" cy="136" rx="64" ry="70" />
-        <ellipse class="housing-canopy-crown" cx="213" cy="136" rx="65" ry="70" />
-        <ellipse class="housing-canopy-crown" cx="340" cy="146" rx="62" ry="65" />
+        <path class="housing-canopy-crown" d="${HOUSING_CANOPY_ZONE_PATH}" />
         <path class="housing-canopy-gap" d="M145 72 Q162 126 150 204 Q169 213 183 195 Q178 125 167 74Z" />
         <path class="housing-canopy-gap" d="M276 79 Q293 134 281 207 Q300 214 313 198 Q309 133 299 81Z" />
         <path class="housing-gap-mark" d="M154 127 l9 9 16 -20 M286 136 l9 9 16 -20" />
       </g>
-      ${renderHousingPin(2, 195, 77, 'Continuidad de copas', 177, canopy?.selected === true)}
+      ${renderHousingPin(2, 195, 77, 'Copas unidas', 125, canopy?.selected === true)}
     </g>
     <g id="housing-vertical-fuel" class="visual-hotspot ${stateClass(
       vertical
     )}"${hotspotAttributes(vertical)}>
-      <ellipse class="housing-clearance" cx="210" cy="350" rx="125" ry="104" aria-hidden="true" />
-      <ellipse class="housing-risk-zone" cx="210" cy="350" rx="125" ry="104" aria-hidden="true" />
+      <path class="housing-clearance" d="${HOUSING_LOW_VEGETATION_PATH}" aria-hidden="true" />
+      <path class="housing-risk-zone" d="${HOUSING_LOW_VEGETATION_PATH}" aria-hidden="true" />
       <g class="housing-dry-fuel" aria-hidden="true">
         <path class="housing-risk-detail" d="M111 383 l14 -25 m-2 29 l23 -20 m78 67 l8 -28 m2 28 l18 -24 m-61 21 l10 -29 m-6 31 l23 -19 m46 -6 l13 -27 m-5 31 l20 -19" />
       </g>
@@ -262,11 +260,11 @@ function housingSvg(model: PresentedSceneVisualModel): string {
         <path d="M130 377 v10 m66 34 v10 m67 -25 v10 m46 -74 v10" />
       </g>
       <path class="housing-low-branches housing-risk-detail" d="M203 329 l-63 -54 m63 54 l-57 -7 m57 7 l57 -58 m-57 58 l69 2" aria-hidden="true" />
-      ${renderHousingPin(1, 119, 288, 'Vegetación baja y ramas', 190, vertical?.selected === true)}
+      ${renderHousingPin(1, 119, 288, 'Ramas y hierba seca', 165, vertical?.selected === true)}
     </g>
     <g id="housing-home" class="visual-hotspot ${stateClass(house)}"${hotspotAttributes(house)}>
       ${renderHousingHome()}
-      ${renderHousingPin('i', 609, 241, 'Vivienda condicionada', 177, false)}
+      ${renderHousingPin('i', 609, 241, 'Casa junto al monte', 158, false)}
     </g>
   </svg>`;
 }
@@ -301,7 +299,7 @@ function crisisSvg(model: PresentedSceneVisualModel): string {
     <g id="crisis-pressure" class="visual-hotspot ${stateClass(pressure)}"${hotspotAttributes(pressure)}>${renderCrisisFlame()}</g>
     <g id="crisis-attack-window" class="visual-hotspot ${stateClass(attack)}"${hotspotAttributes(attack)}><path class="visual-attack-window" d="M410 220 Q470 196 535 218" /></g>
     <g id="crisis-crown" class="visual-hotspot ${stateClass(crown)}"${hotspotAttributes(crown)}><path class="crisis-crown-zone" d="${CRISIS_CROWN_ZONE_PATH}" /><path class="crisis-crown-boundary" d="${CRISIS_CROWN_ZONE_PATH}" /></g>
-    <g id="crisis-capacity" class="visual-hotspot visual-capacity ${stateClass(capacity)}"${hotspotAttributes(capacity)}><circle class="crisis-capacity-hit-target" cx="72" cy="91" r="62" /><circle cx="72" cy="91" r="35" /><text x="72" y="97" text-anchor="middle">CAP</text></g>
+    <g id="crisis-capacity" class="visual-hotspot visual-capacity ${stateClass(capacity)}"${hotspotAttributes(capacity)}><circle class="crisis-capacity-hit-target" cx="72" cy="91" r="62" /><circle cx="72" cy="91" r="35" /><text x="72" y="95" text-anchor="middle">BOMBEROS</text></g>
     ${
       professionalLine === undefined
         ? ''
@@ -316,13 +314,13 @@ function crisisSvg(model: PresentedSceneVisualModel): string {
             houseAccess
           )}><path class="visual-house" d="M735 297 l45 -34 48 34 v73 h-93 z" /><path class="visual-road local" d="M585 352 Q702 324 842 349" /></g>`
     }
-    <g class="visual-label-group" aria-hidden="true"><text x="388" y="475">mismo barranco · estado heredado distinto</text></g>
+    <g class="visual-label-group" aria-hidden="true"><text x="388" y="475">el mismo barranco cambia según lo que preparaste</text></g>
   </svg>`;
 }
 
 function dimensionSummary(model: PresentedSceneVisualModel): string {
   if (model.dimensions.length === 0) return '';
-  return `<div class="visual-dimension-summary" aria-label="Condiciones heredadas">${model.dimensions
+  return `<div class="visual-dimension-summary" aria-label="Cómo empieza la emergencia">${model.dimensions
     .map(
       (dimension) =>
         `<article class="visual-dimension state-${dimension.state}"><span class="visual-status-symbol" aria-hidden="true"></span><div><strong>${escapeHtml(
@@ -333,9 +331,7 @@ function dimensionSummary(model: PresentedSceneVisualModel): string {
           dimension.causeActionLabels.length === 0
             ? ''
             : `<small>${escapeHtml(dimension.causeActionLabels.join(' · '))}</small>`
-        }<details><summary>${escapeHtml(
-          `Valor del modelo: ${dimension.label}`
-        )}</summary><span>${dimension.value}/100</span></details></div></article>`
+        }</div></article>`
     )
     .join('')}</div>`;
 }

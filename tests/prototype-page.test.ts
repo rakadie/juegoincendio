@@ -8,7 +8,7 @@ describe('motor-backed product experience shell', () => {
     expect(html).toContain("request('/api/game-sessions', { method: 'POST'");
     expect(html).toContain('data-action-id');
     expect(html).toContain('id="advance-button"');
-    expect(html).toContain('Misión municipal');
+    expect(html).toContain('Tu misión');
     expect(html).not.toContain('Panel de contenido técnico');
     expect(html).not.toContain('Bitácora operativa');
   });

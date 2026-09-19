@@ -241,7 +241,7 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
       dimensions.appendChild(item);
     });
     const manifestationTitle = document.createElement('h4');
-    manifestationTitle.textContent = 'Manifestaciones decisivas';
+    manifestationTitle.textContent = 'Cambios importantes';
     const manifestations = document.createElement('div');
     manifestations.className = 'm4-manifestations';
     side.manifestations.forEach(function (manifestation) {
@@ -278,12 +278,12 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
     grid.className = 'm4-comparison-grid';
     grid.append(
       renderComparisonSide('Tu partida', payload.current),
-      renderComparisonSide('Otro recorrido de referencia', payload.reference)
+      renderComparisonSide('Otra partida', payload.reference)
     );
     const replay = document.createElement('div');
     replay.className = 'm4-comparison-replay';
     const replayCopy = document.createElement('p');
-    replayCopy.textContent = 'Prueba una preparación diferente y observa qué cambia durante la emergencia.';
+    replayCopy.textContent = 'Elige otras mejoras y descubre qué cambia cuando llega el fuego.';
     replay.append(makeReplayButton('comparison-replay-button'), replayCopy);
     section.append(title, explanation, grid, replay);
     insertBeforeResultDetails(sceneContent, section);
@@ -308,7 +308,7 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
       compare.id = 'compare-reference-button';
       compare.className = 'secondary';
       compare.type = 'button';
-      compare.textContent = 'Comparar con otro recorrido';
+      compare.textContent = 'Comparar con otra partida';
       compare.addEventListener('click', async function () {
         if (compare.disabled) return;
         compare.disabled = true;
@@ -332,7 +332,7 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
       actions.appendChild(makeReplayButton('replay-button'));
       const copy = document.createElement('p');
       copy.className = 'm4-replay-copy';
-      copy.textContent = 'Prueba una preparación diferente y observa qué cambia durante la emergencia.';
+      copy.textContent = 'Elige otras mejoras y descubre qué cambia cuando llega el fuego.';
       actions.appendChild(copy);
     }
   }
@@ -355,19 +355,19 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
         if (oldEffect) oldEffect.remove();
         const steps = document.createElement('ol');
         steps.className = 'm4-causal-steps';
-        steps.setAttribute('aria-label', 'Cadena causal de ' + relation.dimensionLabel);
+        steps.setAttribute('aria-label', 'Pasos que explican ' + relation.dimensionLabel);
         appendResultStep(
           steps,
-          'Causa',
+          'Antes del incendio',
           relation.causeType + ': ' + relation.causeActionLabels.join(' · ')
         );
         appendResultStep(
           steps,
-          'Estado heredado',
+          'Así empezó',
           relation.dimensionLabel + ': ' + relation.stateLabel
         );
-        appendResultStep(steps, 'Durante la crisis', relation.manifestationLabel);
-        appendResultStep(steps, 'Consecuencia', relation.effect);
+        appendResultStep(steps, 'Cuando llegó el fuego', relation.manifestationLabel);
+        appendResultStep(steps, 'Qué ocurrió', relation.effect);
         if (title) title.insertAdjacentElement('afterend', steps); else card.appendChild(steps);
       });
       container.dataset.m4ClosureEnhanced = 'true';

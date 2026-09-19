@@ -40,42 +40,42 @@ export function renderTerritoryMapDefs(): string {
       .territory-map .territory-scene-caption { fill: #102821; fill-opacity: .9; stroke: #fffaf0; stroke-opacity: .72; stroke-width: 1; }
       .territory-map .territory-place-label { fill: #fffaf0; font-size: 13px; font-weight: 750; letter-spacing: 1.7px; }
 
-      .territory-map .map-road-context { fill: none; stroke: #fff8e8; stroke-width: 21; stroke-linecap: round; opacity: .42; }
-      .territory-map #territory-road .visual-road { marker-start: none; fill: none; stroke: #f7ead0; stroke-width: 3.5; stroke-linecap: round; stroke-dasharray: 10 8; opacity: .95; filter: url(#territory-overlay-shadow); }
-      .territory-map .map-road-risk { fill: none; stroke: #c8793a; stroke-width: 15; stroke-linecap: round; stroke-dasharray: 22 14; opacity: .72; }
-      .territory-map #territory-road.state-clear .map-road-risk { stroke: #8fc28d; stroke-width: 12; stroke-dasharray: none; opacity: .72; }
-      .territory-map #territory-road.state-clear .visual-road { stroke: #f3f8e9; stroke-width: 4; stroke-dasharray: none; }
+      .territory-map .map-road-context { fill: none; stroke: #fff8e8; stroke-width: 7; stroke-linecap: round; opacity: .16; }
+      .territory-map #territory-road .visual-road { marker-start: none; fill: none; stroke: #fff7e7; stroke-width: 1.2; stroke-linecap: round; stroke-dasharray: 5 8; opacity: .92; }
+      .territory-map .map-road-risk { fill: none; stroke: #c8793a; stroke-width: 2.6; stroke-linecap: round; stroke-dasharray: 7 8; opacity: .9; }
+      .territory-map #territory-road.state-clear .map-road-risk { stroke: #8fc28d; stroke-width: 2.4; stroke-dasharray: none; opacity: .82; }
+      .territory-map #territory-road.state-clear .visual-road { stroke: #f3f8e9; stroke-width: 1.2; stroke-dasharray: none; }
       .territory-map .map-road-obstruction { opacity: 1; filter: url(#territory-overlay-shadow); }
       .territory-map #territory-road.state-clear .map-road-obstruction { display: none; }
       .territory-map .map-road-debris-shadow { fill: #251b13; opacity: .28; }
       .territory-map .map-road-debris-branch { fill: none; stroke: #5f4430; stroke-width: 3.2; stroke-linecap: round; }
       .territory-map .map-road-debris-twig { fill: none; stroke: #9b7954; stroke-width: 1.6; stroke-linecap: round; }
 
-      .territory-map #territory-continuity .visual-vegetation-band { marker-start: none; fill: none; stroke: #f1c879; stroke-width: 4; stroke-dasharray: 13 9; opacity: .9; filter: url(#territory-overlay-shadow); }
-      .territory-map #territory-continuity.state-broken .visual-vegetation-band { stroke: #cfe8c6; stroke-width: 4; stroke-dasharray: 38 42; opacity: .96; }
+      .territory-map #territory-continuity .visual-vegetation-band { marker-start: none; fill: none; stroke: #f1c879; stroke-width: 2.2; stroke-dasharray: 8 9; opacity: .9; }
+      .territory-map #territory-continuity.state-broken .visual-vegetation-band { stroke: #cfe8c6; stroke-width: 2.2; stroke-dasharray: 22 34; opacity: .96; }
       .territory-map .map-fuel-gap { display: none; }
       .territory-map #territory-continuity.state-broken .map-fuel-gap { display: block; }
-      .territory-map .map-fuel-gap-zone { fill: url(#territory-treated-ground); stroke: #f5f5e8; stroke-width: 2.5; stroke-dasharray: 7 5; opacity: .78; filter: url(#territory-overlay-shadow); }
-      .territory-map .map-fuel-gap-mark { fill: none; stroke: #396c53; stroke-width: 3.5; stroke-linecap: round; }
+      .territory-map .map-fuel-gap-zone { fill: url(#territory-treated-ground); stroke: #f5f5e8; stroke-width: 1.4; stroke-dasharray: 5 5; opacity: .58; }
+      .territory-map .map-fuel-gap-mark { fill: none; stroke: #396c53; stroke-width: 2.2; stroke-linecap: round; }
 
       .territory-map .map-residue-shadow { fill: #241911; opacity: .26; }
       .territory-map #territory-residues .visual-residues { marker-start: none; fill: none; stroke: #704c31; stroke-width: 4.2; stroke-linecap: round; stroke-dasharray: none; opacity: 1; filter: url(#territory-overlay-shadow); }
       .territory-map .map-residue-twig { fill: none; stroke: #b18b5c; stroke-width: 2; stroke-linecap: round; }
       .territory-map .map-residue-cut { fill: #d0a66c; stroke: #5f422c; stroke-width: 1.5; }
       .territory-map #territory-residues.state-treated .map-residue-pile { display: none; }
-      .territory-map .map-treated-ground { display: none; fill: url(#territory-treated-ground); stroke: #eef4df; stroke-width: 2.5; stroke-dasharray: 7 5; opacity: .84; }
+      .territory-map .map-treated-ground { display: none; fill: url(#territory-treated-ground); stroke: #eef4df; stroke-width: 1.4; stroke-dasharray: 5 5; opacity: .66; }
       .territory-map #territory-residues.state-treated .map-treated-ground,
       .territory-map #territory-residues.state-treated .map-treated-rake { display: block; }
       .territory-map .map-treated-rake { display: none; fill: none; stroke: #426f57; stroke-width: 2.5; stroke-linecap: round; opacity: .9; }
 
-      .territory-map #territory-grazing .visual-grazing { marker-start: none; fill: url(#territory-pasture-natural); stroke: #f0c779; stroke-width: 3; stroke-dasharray: 10 7; opacity: .82; filter: url(#territory-overlay-shadow); }
-      .territory-map #territory-grazing.state-treated .visual-grazing { fill: url(#territory-pasture-managed); stroke: #cfe6c4; stroke-width: 3.5; stroke-dasharray: none; opacity: .86; }
+      .territory-map #territory-grazing .visual-grazing { marker-start: none; fill: url(#territory-pasture-natural); stroke: #f0c779; stroke-width: 1.5; stroke-dasharray: 7 7; opacity: .68; }
+      .territory-map #territory-grazing.state-treated .visual-grazing { fill: url(#territory-pasture-managed); stroke: #cfe6c4; stroke-width: 1.7; stroke-dasharray: none; opacity: .72; }
       .territory-map .map-grazing-flock { display: none; }
       .territory-map #territory-grazing.state-treated .map-grazing-flock { display: block; }
 
-      .territory-map #territory-professional-line .visual-professional-line { marker-start: none; fill: none; stroke: #f2c36d; stroke-width: 3.5; stroke-dasharray: 8 7; opacity: .9; filter: url(#territory-overlay-shadow); }
-      .territory-map #territory-professional-line.state-evaluated .visual-professional-line { stroke: #cfe9c8; stroke-width: 4; stroke-dasharray: 16 7; }
-      .territory-map .map-survey-point { fill: #173a30; stroke: #fff6e2; stroke-width: 2.5; filter: url(#territory-overlay-shadow); }
+      .territory-map #territory-professional-line .visual-professional-line { marker-start: none; fill: none; stroke: #f2c36d; stroke-width: 1.8; stroke-dasharray: 6 7; opacity: .9; }
+      .territory-map #territory-professional-line.state-evaluated .visual-professional-line { stroke: #cfe9c8; stroke-width: 2; stroke-dasharray: 12 7; }
+      .territory-map .map-survey-point { fill: #173a30; stroke: #fff6e2; stroke-width: 1.5; filter: url(#territory-overlay-shadow); }
 
       .territory-map .map-pin { filter: url(#territory-overlay-shadow); }
       .territory-map .map-pin-hit-target { fill: #fff; fill-opacity: .001; stroke: none; pointer-events: all; }

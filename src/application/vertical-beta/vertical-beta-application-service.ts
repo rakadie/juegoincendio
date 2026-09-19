@@ -141,7 +141,7 @@ export interface PresentedResultScene extends PresentedSceneBase<'result'> {
     id: string;
     title: string;
     effect: string;
-    causeType: 'Acción aplicada' | 'Omisión relevante';
+    causeType: 'Lo elegiste' | 'Quedó pendiente';
     causeActionLabels: readonly string[];
     dimensionLabel: string;
     stateLabel: string;
@@ -358,7 +358,7 @@ function presentResult(session: GameSession): PresentedResultScene {
         title: copy.title,
         effect: copy.effect,
         causeType:
-          relation.cause.execution === 'completed' ? 'Acción aplicada' : 'Omisión relevante',
+          relation.cause.execution === 'completed' ? 'Lo elegiste' : 'Quedó pendiente',
         causeActionLabels: relation.cause.actionIds.map(actionLabel),
         dimensionLabel: dimension.label,
         stateLabel: dimension.stateLabel,

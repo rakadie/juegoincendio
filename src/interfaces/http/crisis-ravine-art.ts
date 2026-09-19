@@ -40,14 +40,14 @@ export function renderCrisisRavineDefs(): string {
       .crisis-photo #crisis-position,
       .crisis-photo #crisis-attack-window .visual-attack-window { filter: url(#crisis-overlay-shadow); }
 
-      .crisis-photo #crisis-road .crisis-road-bed { fill: none; stroke: #fff8e7; stroke-width: 9; stroke-linecap: round; opacity: .16; }
+      .crisis-photo #crisis-road .crisis-road-bed { fill: none; stroke: #fff8e7; stroke-width: 6; stroke-linecap: round; opacity: .12; }
       .crisis-photo #crisis-road .visual-road { fill: none; stroke-linecap: round; filter: none; }
-      .crisis-photo #crisis-road.state-clear .crisis-road-bed { stroke: #e8f3dc; stroke-width: 10; opacity: .2; }
-      .crisis-photo #crisis-road.state-clear .visual-road { stroke: #e0f2d5; stroke-width: 2.8; stroke-dasharray: none; opacity: .94; }
+      .crisis-photo #crisis-road.state-clear .crisis-road-bed { stroke: #e8f3dc; stroke-width: 7; opacity: .15; }
+      .crisis-photo #crisis-road.state-clear .visual-road { stroke: #e0f2d5; stroke-width: 2; stroke-dasharray: none; opacity: .9; }
       .crisis-photo #crisis-road.state-constrained .crisis-road-bed { stroke: #f1d4a0; opacity: .17; }
-      .crisis-photo #crisis-road.state-constrained .visual-road { stroke: #f0c574; stroke-width: 3.1; stroke-dasharray: 14 10; opacity: .9; }
+      .crisis-photo #crisis-road.state-constrained .visual-road { stroke: #f0c574; stroke-width: 2.2; stroke-dasharray: 9 9; opacity: .88; }
       .crisis-photo #crisis-road.state-blocked .crisis-road-bed { stroke: #dda084; opacity: .2; }
-      .crisis-photo #crisis-road.state-blocked .visual-road { stroke: #e79779; stroke-width: 3.4; stroke-dasharray: 5 9; opacity: .94; }
+      .crisis-photo #crisis-road.state-blocked .visual-road { stroke: #e79779; stroke-width: 2.4; stroke-dasharray: 4 8; opacity: .92; }
 
       .crisis-photo #crisis-retreat.state-viable .visual-retreat { stroke-width: 5; }
       .crisis-photo #crisis-retreat.state-limited .visual-retreat { stroke-width: 3.5; opacity: .72; }
@@ -60,11 +60,11 @@ export function renderCrisisRavineDefs(): string {
       .crisis-photo #crisis-crown .crisis-crown-zone { fill: url(#crisis-crown-zone-fill); mix-blend-mode: multiply; }
       .crisis-photo #crisis-crown .crisis-crown-boundary { fill: none; stroke-linecap: round; stroke-linejoin: round; }
       .crisis-photo #crisis-crown.state-noCrownFire .crisis-crown-zone { opacity: .22; }
-      .crisis-photo #crisis-crown.state-noCrownFire .crisis-crown-boundary { stroke: #dbe8c6; stroke-width: 1.8; stroke-dasharray: none; opacity: .76; }
+      .crisis-photo #crisis-crown.state-noCrownFire .crisis-crown-boundary { stroke: #dbe8c6; stroke-width: 1.3; stroke-dasharray: none; opacity: .68; }
       .crisis-photo #crisis-crown.state-crownRisk .crisis-crown-zone { opacity: .52; }
-      .crisis-photo #crisis-crown.state-crownRisk .crisis-crown-boundary { stroke: #efb458; stroke-width: 2.6; stroke-dasharray: 9 7; opacity: .96; }
+      .crisis-photo #crisis-crown.state-crownRisk .crisis-crown-boundary { stroke: #efb458; stroke-width: 1.8; stroke-dasharray: 7 7; opacity: .9; }
       .crisis-photo #crisis-crown.state-crownFire .crisis-crown-zone { fill: #c9653d; opacity: .38; }
-      .crisis-photo #crisis-crown.state-crownFire .crisis-crown-boundary { stroke: #f09a55; stroke-width: 3.2; stroke-dasharray: 5 5; opacity: 1; }
+      .crisis-photo #crisis-crown.state-crownFire .crisis-crown-boundary { stroke: #f09a55; stroke-width: 2.2; stroke-dasharray: 5 6; opacity: .96; }
       .crisis-photo .visual-capacity { filter: url(#crisis-overlay-shadow); }
       .crisis-photo #crisis-pressure .crisis-flame { transform-box: fill-box; transform-origin: center bottom; filter: url(#crisis-overlay-shadow); }
       .crisis-photo #crisis-pressure.state-surface .crisis-flame { transform: scale(.76); }

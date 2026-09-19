@@ -18,6 +18,8 @@ La escena usa una fotografía aérea original y neutral del paisaje canario. La 
 
 Los pines usan discos numerados estables, etiquetas oscuras de alto contraste en escritorio y áreas de interacción transparentes mayores de 44 px. En móvil se ocultan las etiquetas sobre la foto y la leyenda pasa a ser el control principal. Cada tarjeta separa nombre, condición y estado tratado/no tratado.
 
+Las guías ya no tapan la fotografía: el eje del camino mide como máximo 1,2 px y las zonas de vegetación y pastoreo usan contornos de entre 1,5 y 2,2 px. Los textos visibles se han reescrito con frases cortas y palabras concretas para que un niño o una niña de 10 años pueda relacionar lo que ve, la mejora que elige y el cambio que produce.
+
 ## Capturas reales de navegador
 
 Las imágenes se capturaron con Chrome mediante `Page.captureScreenshot`; no son renders aislados del SVG.
@@ -60,6 +62,7 @@ La combinación de mayor reducción de continuidad —discontinuidades, márgene
 - Cinco pines y cinco controles; áreas interactivas de al menos 44 px.
 - Tarjetas de leyenda de al menos 64 px en escritorio y 66 px en móvil.
 - Pines, rótulos visibles y tarjetas sin solapamientos ni recortes.
+- Guías del camino, la vegetación, el pastoreo y la zona para revisar por debajo de 2,3 px; el halo del camino no supera 7 px.
 - La pila de restos ocupa menos del 14 % del ancho y del 16 % del alto del mapa.
 - Ratón, teclado y toque abren las tarjetas y permiten elegir acciones.
 - Se conserva el límite de tres actuaciones y el avance a vivienda, crisis y resultado.

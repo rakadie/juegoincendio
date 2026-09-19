@@ -51,7 +51,7 @@ describe('M5.5 result and comparison visual hierarchy', () => {
     expect(comparison.reference.dimensions).toHaveLength(5);
     expect(comparison.current.manifestations).toHaveLength(3);
     expect(comparison.reference.manifestations).toHaveLength(3);
-    expect(comparison.title).toBe('Tu partida y otro recorrido de referencia');
+    expect(comparison.title).toBe('Tu partida y otra forma de jugar');
   });
 
   it('injects the M5 visual hierarchy into the same player page and keeps the M4 client', async () => {

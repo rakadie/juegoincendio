@@ -394,7 +394,13 @@ try {
       const key = canvas?.querySelector('.territory-map-key');
       const photo = map?.querySelector('[data-background-layer="photo"]');
       const residuePile = map?.querySelector('.map-residue-pile');
-      if (!canvas || !map || !key || !photo || !residuePile) return null;
+      const roadContext = map?.querySelector('.map-road-context');
+      const roadRisk = map?.querySelector('.map-road-risk');
+      const roadLine = map?.querySelector('#territory-road .visual-road');
+      const vegetationLine = map?.querySelector('#territory-continuity .visual-vegetation-band');
+      const grazingLine = map?.querySelector('#territory-grazing .visual-grazing');
+      const reviewLine = map?.querySelector('#territory-professional-line .visual-professional-line');
+      if (!canvas || !map || !key || !photo || !residuePile || !roadContext || !roadRisk || !roadLine || !vegetationLine || !grazingLine || !reviewLine) return null;
       const canvasRect = canvas.getBoundingClientRect();
       const mapRect = map.getBoundingClientRect();
       const keyRect = key.getBoundingClientRect();
@@ -438,6 +444,14 @@ try {
         overlaps,
         hitTargets,
         residue: { width: residueRect.width, height: residueRect.height },
+        strokes: {
+          roadContext: Number.parseFloat(getComputedStyle(roadContext).strokeWidth),
+          roadRisk: Number.parseFloat(getComputedStyle(roadRisk).strokeWidth),
+          roadLine: Number.parseFloat(getComputedStyle(roadLine).strokeWidth),
+          vegetation: Number.parseFloat(getComputedStyle(vegetationLine).strokeWidth),
+          grazing: Number.parseFloat(getComputedStyle(grazingLine).strokeWidth),
+          review: Number.parseFloat(getComputedStyle(reviewLine).strokeWidth)
+        },
         photoHref: photo.getAttribute('href'),
         photoOk: photoResponse.ok,
         photoType: photoResponse.headers.get('content-type')
@@ -461,6 +475,8 @@ try {
     assert(layout.hitTargets.length === 5, 'Territory must expose five stable marker hit targets.');
     assert(layout.hitTargets.every((target) => target.width >= 44 && target.height >= 44), 'A territory marker hit target is smaller than 44px.');
     assert(layout.residue.width < layout.map.width * .14 && layout.residue.height < layout.map.height * .16, 'The pruning-residue overlay is disproportionate to the landscape.');
+    assert(layout.strokes.roadContext <= 7 && layout.strokes.roadRisk <= 2.7 && layout.strokes.roadLine <= 1.3, 'Territory road overlay is visually too heavy.');
+    assert(layout.strokes.vegetation <= 2.3 && layout.strokes.grazing <= 1.8 && layout.strokes.review <= 2.1, 'A territory guide line is visually too heavy.');
     assert(layout.overlaps.length === 0, 'Territory pins or visible labels overlap.');
   }
 
@@ -469,7 +485,11 @@ try {
       const canvas = document.querySelector('.visual-scene[data-visual-template="housing"] .visual-canvas');
       const map = canvas?.querySelector('.housing-plan');
       const key = canvas?.querySelector('.housing-map-key');
-      if (!canvas || !map || !key) return null;
+      const accessRisk = map?.querySelector('#housing-local-access .housing-access-risk');
+      const accessCentre = map?.querySelector('#housing-local-access .housing-access-centre');
+      const canopyLink = map?.querySelector('#housing-canopy .housing-canopy-link');
+      const canopyCrown = map?.querySelector('#housing-canopy .housing-canopy-crown');
+      if (!canvas || !map || !key || !accessRisk || !accessCentre || !canopyLink || !canopyCrown) return null;
       const canvasRect = canvas.getBoundingClientRect();
       const mapRect = map.getBoundingClientRect();
       const keyRect = key.getBoundingClientRect();
@@ -500,7 +520,13 @@ try {
         key: { left: keyRect.left, right: keyRect.right },
         itemCount: items.length,
         items,
-        overlaps
+        overlaps,
+        strokes: {
+          accessRisk: Number.parseFloat(getComputedStyle(accessRisk).strokeWidth),
+          accessCentre: Number.parseFloat(getComputedStyle(accessCentre).strokeWidth),
+          canopyLink: Number.parseFloat(getComputedStyle(canopyLink).strokeWidth),
+          canopyCrown: Number.parseFloat(getComputedStyle(canopyCrown).strokeWidth)
+        }
       };
     })()`);
     assert(layout, 'Housing layout was not available.');
@@ -517,6 +543,8 @@ try {
       'Housing legend controls are smaller than their expected target size.'
     );
     assert(layout.overlaps.length === 0, 'Housing pins or visible labels overlap.');
+    assert(layout.strokes.accessRisk <= 8 && layout.strokes.accessCentre <= 1.7, 'Housing access overlay is visually too heavy.');
+    assert(layout.strokes.canopyLink <= 5 && layout.strokes.canopyCrown <= 1.6, 'Housing canopy overlay is visually too heavy.');
   }
 
   async function assertCrisisLayout() {
@@ -564,7 +592,7 @@ try {
     assert(layout.fireHref === '/images/crisis-scrub-fire-v1.png', 'Crisis scene does not use the expected photographic fire overlay.');
     assert(layout.fireResponseOk && layout.fireContentType?.startsWith('image/png'), 'Crisis fire overlay did not load as PNG.');
     assert(layout.fire.height < layout.map.height * .32, 'Crisis flame is again dominating the ravine scene.');
-    assert(layout.roadStrokeWidth <= 4 && layout.roadBedStrokeWidth <= 10, 'Crisis road overlay is visually too heavy.');
+    assert(layout.roadStrokeWidth <= 2.5 && layout.roadBedStrokeWidth <= 7, 'Crisis road overlay is visually too heavy.');
     assert(
       layout.crown.width < layout.map.width * .34 && layout.crown.height < layout.map.height * .26,
       'Crisis crown-risk overlay is out of proportion with the photographed tree belt.'
@@ -857,8 +885,8 @@ try {
       const selected = document.querySelectorAll('.selected-action-chip').length;
       return zone?.classList.contains('state-reduced') && clearance && dryFuel &&
         getComputedStyle(clearance).display !== 'none' && getComputedStyle(dryFuel).display === 'none' &&
-        feedback?.includes('Reduce la continuidad desde el suelo hacia las copas') &&
-        remaining === 'Quedan 1' && selected === 1;
+        feedback?.includes('Al fuego le cuesta más subir a las copas') &&
+        remaining === 'Puedes elegir 1 más' && selected === 1;
     })()`),
     'Housing pruning did not update the visible fuel, feedback and remaining budget.'
   );
@@ -913,7 +941,7 @@ try {
     })()`);
   assert(
     balanceState?.areas === 2 && balanceState?.applied === 5 && balanceState?.pending === 3 &&
-      balanceState?.caution?.includes('no convierten una vivienda en completamente segura'),
+      balanceState?.caution?.includes('ninguna casa queda totalmente segura'),
     `Prevention balance did not distinguish applied decisions and pending conditions by area: ${JSON.stringify(balanceState)}`
   );
   await captureEvidence('prevention-balance-desktop.png', '.scene-content', {
@@ -1024,7 +1052,7 @@ try {
         return grazing?.classList.contains('state-treated') &&
           line?.classList.contains('state-evaluated') &&
           flock && getComputedStyle(flock).display !== 'none' &&
-          explanation?.textContent.includes('no significa que la maniobra se haya ejecutado');
+          explanation?.textContent.includes('No se ha quemado nada');
       })()`),
       'Pastoreo and technical evaluation did not keep their expected visual and pedagogical states.'
     );
@@ -1052,7 +1080,7 @@ try {
         const feedback = document.querySelector('.inspection-confirmation p')?.textContent;
         return canopy?.classList.contains('state-broken') && connected && separated &&
           getComputedStyle(connected).display === 'none' && getComputedStyle(separated).display !== 'none' &&
-          feedback?.includes('Reduce la continuidad horizontal junto a la vivienda');
+          feedback?.includes('Al fuego le cuesta más pasar de un árbol a otro');
       })()`),
       'Housing canopy treatment did not create visible discontinuities and causal feedback.'
     );

@@ -17,6 +17,8 @@ La foto base no contiene fuego, equipos, símbolos ni una intervención ya ejecu
 
 Las copas ya no se sustituyen por círculos sintéticos: una máscara orgánica y semitransparente sigue la masa arbórea que ya existe en la fotografía. El acceso tampoco se redibuja como una cadena de trazos gruesos; una línea de estado fina, acompañada por un halo discreto, sigue el eje de la carretera fotografiada. Así se conserva la lectura del lugar real y se comunica el estado sin competir con la imagen.
 
+El marcador dice «BOMBEROS» y las tarjetas explican las condiciones con frases como «paso libre», «sin paso seguro» o «muchos se tocan». No se muestra vocabulario interno del motor ni una puntuación numérica.
+
 ## Capturas reales de navegador
 
 Las capturas proceden del recorrido automatizado en Chrome mediante `Page.captureScreenshot`; no son renders aislados del SVG.
@@ -42,7 +44,7 @@ Las capturas proceden del recorrido automatizado en Chrome mediante `Page.captur
 - Recurso JPEG servido correctamente y base idéntica en las rutas preparada y vulnerable.
 - Indicador de capacidad con zona táctil mínima de 44 px en móvil.
 - Fuego y humo limitados a menos de un tercio de la altura del mapa para que no dominen la escena; vía, repliegue, posición, copas y oportunidad permanecen dentro del lienzo.
-- Línea de estado de la carretera limitada a 4 px y halo de integración limitado a 10 px.
+- Línea de estado de la carretera limitada a 2,4 px y halo de integración limitado a 7 px.
 - Zona orgánica de copas limitada al 34 % del ancho y al 26 % de la altura del mapa; no se renderizan copas circulares artificiales.
 - Recorrido completo desde territorio y vivienda hasta ambas variantes de emergencia y el resultado final.
 

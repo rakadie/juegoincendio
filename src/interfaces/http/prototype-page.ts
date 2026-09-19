@@ -461,7 +461,7 @@ export function renderPrototypePage(): string {
       .visual-hotspot:hover { filter: brightness(1.12); }
       .visual-hotspot:focus-visible { outline: none; filter: brightness(1.16) drop-shadow(0 0 8px #f4b942); }
       .visual-capacity circle { fill: rgba(7, 23, 38, .82); stroke: #f0b44b; stroke-width: 4; }
-      .visual-capacity text { fill: #fff; font-size: 15px; font-weight: 900; letter-spacing: .05em; }
+      .visual-capacity text { fill: #fff; font-size: 10px; font-weight: 900; letter-spacing: .03em; }
 
       .state-treated .visual-residues { opacity: .18; stroke-dasharray: 8 18; }
       .state-broken .visual-vegetation-band, .state-broken .visual-canopy { stroke-dasharray: 20 28; opacity: .6; }
@@ -543,9 +543,7 @@ export function renderPrototypePage(): string {
         background: #fff;
       }
       .visual-dimension > div { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-      .visual-dimension-state { font-size: 1.08rem; font-weight: 850; text-transform: capitalize; }
-      .visual-dimension details { margin-top: auto; font-size: .78rem; }
-      .visual-dimension summary { color: #596b74; }
+      .visual-dimension-state { font-size: 1.08rem; font-weight: 850; }
 
       .actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 9px; margin-top: 16px; }
       .action-card {
@@ -728,13 +726,13 @@ export function renderPrototypePage(): string {
       <header class="topbar">
         <div class="brand" aria-label="Apaga las llamas">
           <div class="brand-mark" aria-hidden="true">🔥</div>
-          <div class="brand-copy"><strong>Apaga las llamas</strong><small>Decide hoy, protege mañana</small></div>
+          <div class="brand-copy"><strong>Apaga las llamas</strong><small>Prepara hoy, protege mañana</small></div>
         </div>
         <nav class="journey" aria-label="Progreso de la partida">
-          <div class="stage" data-stage-id="territory"><span class="stage-dot">1</span><span class="stage-label">Territorio</span></div>
-          <div class="stage" data-stage-id="housing"><span class="stage-dot">2</span><span class="stage-label">Vivienda</span></div>
-          <div class="stage" data-stage-id="crisis"><span class="stage-dot">3</span><span class="stage-label">Crisis</span></div>
-          <div class="stage" data-stage-id="result"><span class="stage-dot">4</span><span class="stage-label">Resultado</span></div>
+          <div class="stage" data-stage-id="territory"><span class="stage-dot">1</span><span class="stage-label">Monte</span></div>
+          <div class="stage" data-stage-id="housing"><span class="stage-dot">2</span><span class="stage-label">Casa</span></div>
+          <div class="stage" data-stage-id="crisis"><span class="stage-dot">3</span><span class="stage-label">Incendio</span></div>
+          <div class="stage" data-stage-id="result"><span class="stage-dot">4</span><span class="stage-label">Final</span></div>
         </nav>
         <div class="topbar-actions"><button class="ghost-button" id="restart-button" type="button" disabled>↻ Reiniciar</button></div>
       </header>
@@ -743,18 +741,18 @@ export function renderPrototypePage(): string {
         <div id="game" aria-live="polite">
           <section class="entry" aria-labelledby="entry-title">
             <div class="entry-copy">
-              <p class="eyebrow">Simulación educativa municipal</p>
-              <h1 id="entry-title">Prepara hoy. Decide bajo presión después.</h1>
-              <p class="lead">Gestiona el territorio y la interfaz de vivienda antes del incendio. Cuando llegue la emergencia, las condiciones que hayas construido limitarán o ampliarán tus opciones.</p>
+              <p class="eyebrow">Juego educativo</p>
+              <h1 id="entry-title">Prepara el monte antes de que llegue el fuego</h1>
+              <p class="lead">Cuida las fincas, los caminos y una casa junto al monte. Después verás cómo tus decisiones ayudan —o dificultan— el trabajo de los bomberos.</p>
               <div class="entry-meta" aria-label="Información de la partida">
-                <span>Recorrido guiado</span>
+                <span>Historia guiada</span>
                 <span id="entry-duration">Duración orientativa</span>
               </div>
               <div class="entry-actions"><button class="primary" id="start-session-button" type="button">Comenzar partida</button></div>
-              <p class="entry-note">Cuando comiences, conocerás la misión antes de tomar tu primera decisión.</p>
+              <p class="entry-note">El juego te explicará cada paso antes de que elijas.</p>
             </div>
-            <div class="entry-visual" role="img" aria-label="Territorio de barranco e interfaz urbano-forestal del ejercicio">
-              <div class="entry-visual-card"><strong>Una preparación, una emergencia.</strong><p>Observa cómo las decisiones preventivas se vuelven condiciones operativas cuando comienza el incendio.</p></div>
+            <div class="entry-visual" role="img" aria-label="Monte, barranco y casas del juego">
+              <div class="entry-visual-card"><strong>Lo que haces antes importa.</strong><p>Prepara el lugar y descubre qué cambia cuando empieza el incendio.</p></div>
             </div>
           </section>
         </div>
@@ -762,9 +760,9 @@ export function renderPrototypePage(): string {
       </main>
 
       <footer class="session-footer" id="session-footer" hidden aria-label="Resumen de la partida">
-        <div class="footer-cell"><strong>¿Por qué importa?</strong><p>La prevención modifica el territorio. El territorio condiciona las opciones disponibles durante el incendio.</p></div>
-        <div class="footer-cell"><strong>Tu recorrido</strong><p id="progress-copy">0 pasos completados</p><div class="progress-line" role="progressbar" aria-label="Progreso del recorrido" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="progress-bar" style="width:0%"></span></div><div class="meta-row"><span class="chip accent" id="scene-type">Misión</span><span class="chip" id="branch-chip">Ruta pendiente</span><span class="chip" id="session-status">Partida activa</span></div></div>
-        <div class="footer-cell"><strong>Últimas decisiones</strong><ol class="decision-history" id="decision-history"><li>Aún no hay decisiones.</li></ol></div>
+        <div class="footer-cell"><strong>¿Por qué importa?</strong><p>Un monte cuidado y unos caminos libres dan más opciones a los bomberos.</p></div>
+        <div class="footer-cell"><strong>Tu partida</strong><p id="progress-copy">0 pasos completados</p><div class="progress-line" role="progressbar" aria-label="Progreso de la partida" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="progress-bar" style="width:0%"></span></div><div class="meta-row"><span class="chip accent" id="scene-type">Misión</span><span class="chip" id="branch-chip">Historia sin decidir</span><span class="chip" id="session-status">Partida activa</span></div></div>
+        <div class="footer-cell"><strong>Lo último que elegiste</strong><ol class="decision-history" id="decision-history"><li>Aún no has elegido nada.</li></ol></div>
       </footer>
     </div>
 
@@ -810,7 +808,7 @@ export function renderPrototypePage(): string {
           render();
           return true;
         } catch (error) {
-          notice.textContent = error instanceof Error ? error.message : 'Error inesperado.';
+          notice.textContent = error instanceof Error ? error.message : 'Ha ocurrido un problema. Inténtalo otra vez.';
           return false;
         } finally {
           busy = false;
@@ -877,7 +875,7 @@ export function renderPrototypePage(): string {
           card.classList.toggle('selected', Boolean(action.selected));
           if (button) {
             button.disabled = !action.available;
-            button.textContent = action.selected ? 'Seleccionada' : 'Elegir esta actuación';
+            button.textContent = action.selected ? 'Mejora hecha' : 'Hacer esta mejora';
           }
         });
       }
@@ -886,7 +884,7 @@ export function renderPrototypePage(): string {
         return '<div class="actions">' + scene.actions.map(function (action) {
           const selected = action.selected ? ' selected' : '';
           const disabled = !action.available ? ' disabled' : '';
-          const label = action.selected ? 'Seleccionada' : 'Elegir';
+          const label = action.selected ? 'Mejora hecha' : 'Elegir';
           return '<article class="action-card' + selected + '" data-action-card-id="' + escapeHtml(action.id) + '">' +
             '<h3>' + escapeHtml(action.label) + '</h3>' +
             '<p>' + escapeHtml(action.description) + '</p>' +
@@ -907,8 +905,8 @@ export function renderPrototypePage(): string {
 
       function requestErrorMessage(payload, status) {
         const code = payload && typeof payload.code === 'string' ? payload.code : '';
-        if (code === 'inspection-quota-incomplete') return 'Completa las actuaciones disponibles antes de continuar.';
-        if (code === 'inspection-quota-reached') return 'Ya has utilizado todas las actuaciones disponibles en esta zona.';
+        if (code === 'inspection-quota-incomplete') return 'Elige todas las mejoras disponibles antes de continuar.';
+        if (code === 'inspection-quota-reached') return 'Ya has elegido todas las mejoras permitidas en esta zona.';
         if (code === 'session-not-found') return 'La partida ya no está disponible. Reiníciala para continuar.';
         return status >= 500
           ? 'No se pudo completar la operación. Inténtalo de nuevo en unos instantes.'
@@ -919,28 +917,28 @@ export function renderPrototypePage(): string {
         const selected = scene.actions.filter(function (action) { return action.selected; });
         const remaining = Math.max(0, scene.actionQuota - scene.selectedCount);
         const selectedMarkup = selected.length === 0
-          ? '<span class="selection-empty">Aún no has elegido ninguna.</span>'
+          ? '<span class="selection-empty">Aún no has elegido ninguna mejora.</span>'
           : '<div class="selected-action-list">' + selected.map(function (action) {
               return '<span class="selected-action-chip">' + escapeHtml(action.label) + '</span>';
             }).join('') + '</div>';
         const remainingLabel = remaining === 0
-          ? 'No quedan actuaciones disponibles en esta zona.'
-          : 'Queda' + (remaining === 1 ? '' : 'n') + ' ' + remaining + ' actuaci' + (remaining === 1 ? 'ón' : 'ones') + ' disponible' + (remaining === 1 ? '' : 's') + '.';
+          ? 'Ya has elegido todas las mejoras de esta zona.'
+          : 'Puedes elegir ' + remaining + ' mejora' + (remaining === 1 ? '' : 's') + ' más.';
         const confirmation = scene.feedback
-          ? '<div class="inspection-confirmation"><strong>Actuación aplicada</strong><p>' + escapeHtml(scene.feedback) + '</p></div>'
-          : '<div class="inspection-confirmation is-empty"><strong>Observa antes de actuar</strong><p>Elige un punto para relacionar el riesgo visible con una medida preventiva.</p></div>';
+          ? '<div class="inspection-confirmation"><strong>Cambio realizado</strong><p>' + escapeHtml(scene.feedback) + '</p></div>'
+          : '<div class="inspection-confirmation is-empty"><strong>Mira y elige</strong><p>Toca un punto del mapa para saber qué ocurre allí y qué puedes mejorar.</p></div>';
         return '<section class="inspection-response" role="status" aria-live="polite" aria-atomic="true">' + confirmation +
-          '<div class="inspection-selection"><strong>Actuaciones elegidas</strong>' + selectedMarkup + '<small>' + remainingLabel + '</small></div></section>';
+          '<div class="inspection-selection"><strong>Mejoras elegidas</strong>' + selectedMarkup + '<small>' + remainingLabel + '</small></div></section>';
       }
 
       function preventionAreaReview(scene) {
-        return '<section class="prevention-review" aria-label="Decisiones y condiciones pendientes por zona">' +
-          '<p class="prevention-review-intro">Compara lo aplicado con lo que sigue presente en cada zona.</p>' +
+        return '<section class="prevention-review" aria-label="Mejoras hechas y tareas pendientes por zona">' +
+          '<p class="prevention-review-intro">Estas son tus mejoras y las cosas que quedaron sin hacer.</p>' +
           '<div class="prevention-area-grid">' + scene.preventionAreas.map(function (area) {
-            const applied = '<div class="prevention-area-section"><strong>Actuaciones aplicadas</strong><ul class="applied-list">' + area.selectedActions.map(function (action) {
+            const applied = '<div class="prevention-area-section"><strong>Mejoras hechas</strong><ul class="applied-list">' + area.selectedActions.map(function (action) {
               return '<li>' + escapeHtml(action.label) + '</li>';
             }).join('') + '</ul></div>';
-            const pending = '<div class="prevention-area-section"><strong>Condiciones pendientes</strong><ul class="pending-list">' + area.pendingConditions.map(function (condition) {
+            const pending = '<div class="prevention-area-section"><strong>Cosas pendientes</strong><ul class="pending-list">' + area.pendingConditions.map(function (condition) {
               return '<li><b>' + escapeHtml(condition.label) + '</b><small>' + escapeHtml(condition.consequence) + '</small></li>';
             }).join('') + '</ul></div>';
             return '<article class="prevention-area" data-prevention-area="' + escapeHtml(area.sceneId) + '"><h3>' + escapeHtml(area.label) + '</h3>' + applied + pending + '</article>';
@@ -948,50 +946,50 @@ export function renderPrototypePage(): string {
       }
 
       function renderBriefing(scene) {
-        return '<section class="scene briefing"><div class="scene-heading-copy"><p class="eyebrow">Misión municipal</p><h1>' + escapeHtml(scene.title) + '</h1><p class="lead">' + escapeHtml(scene.mission) + '</p>' + advanceButton(scene) + '</div></section>';
+        return '<section class="scene briefing"><div class="scene-heading-copy"><p class="eyebrow">Tu misión</p><h1>' + escapeHtml(scene.title) + '</h1><p class="lead">' + escapeHtml(scene.mission) + '</p>' + advanceButton(scene) + '</div></section>';
       }
 
       function renderInspection(scene) {
         const remaining = Math.max(0, scene.actionQuota - scene.selectedCount);
-        const badge = '<div class="selection-counter"><small>Acciones seleccionadas</small><strong>' + scene.selectedCount + ' / ' + scene.actionQuota + '</strong><span class="selection-remaining">' + (remaining === 0 ? 'Presupuesto agotado' : 'Quedan ' + remaining) + '</span></div>';
-        return '<section class="scene"><div class="scene-content">' + heading(scene, 'Inspección preventiva', badge) +
-          '<div class="objective"><strong>Tu objetivo:</strong> ' + escapeHtml(scene.objective) + '</div>' +
-          '<p class="visual-hint">Pasa sobre un punto de la escena, enfócalo con el teclado o tócalo para ver y elegir la actuación.</p>' +
+        const badge = '<div class="selection-counter"><small>Mejoras elegidas</small><strong>' + scene.selectedCount + ' / ' + scene.actionQuota + '</strong><span class="selection-remaining">' + (remaining === 0 ? 'Ya elegiste todas' : 'Puedes elegir ' + remaining + ' más') + '</span></div>';
+        return '<section class="scene"><div class="scene-content">' + heading(scene, 'Prepara la zona', badge) +
+          '<div class="objective"><strong>Tu tarea:</strong> ' + escapeHtml(scene.objective) + '</div>' +
+          '<p class="visual-hint">Elige un número del mapa. Puedes usar el ratón, la tecla Tab o tocar la pantalla.</p>' +
           visualMarkup() + inspectionResponse(scene) + advanceButton(scene) + '</div></section>';
       }
 
       function renderSummary(scene) {
-        return '<section class="scene"><div class="scene-content">' + heading(scene, 'Balance preventivo', '') +
-          '<div class="objective"><strong>Puente causal:</strong> lo que trataste en prevención define las condiciones que hereda la emergencia.</div>' +
+        return '<section class="scene"><div class="scene-content">' + heading(scene, 'Tus mejoras', '') +
+          '<div class="objective"><strong>Qué ocurre ahora:</strong> lo que hiciste antes cambia las opciones de los bomberos.</div>' +
           preventionAreaReview(scene) +
-          '<div class="balance-caution"><strong>Reducción, no garantía:</strong> estas medidas reducen el riesgo y mejoran las condiciones operativas; no convierten una vivienda en completamente segura.</div>' +
-          '<h3 class="balance-heading">Condiciones que hereda la emergencia</h3>' + visualMarkup() + advanceButton(scene) + '</div></section>';
+          '<div class="balance-caution"><strong>Importante:</strong> las mejoras reducen el peligro, pero ninguna casa queda totalmente segura.</div>' +
+          '<h3 class="balance-heading">Así empieza la emergencia</h3>' + visualMarkup() + advanceButton(scene) + '</div></section>';
       }
 
       function renderDecision(scene) {
         const branch = currentView.session.branch;
-        const badge = branch ? '<div class="scene-state-badge ' + escapeHtml(branch) + '"><small>Estado actual</small><strong>' + (branch === 'prepared' ? 'Preparado' : 'Vulnerable') + '</strong></div>' : '';
-        return '<section class="scene"><div class="scene-content">' + heading(scene, 'Decisión operativa' + (scene.difficulty ? ' · ' + scene.difficulty : ''), badge) +
+        const badge = branch ? '<div class="scene-state-badge ' + escapeHtml(branch) + '"><small>Situación</small><strong>' + (branch === 'prepared' ? 'Más opciones' : 'Pocas opciones') + '</strong></div>' : '';
+        return '<section class="scene"><div class="scene-content">' + heading(scene, 'Decide qué hacer' + (scene.difficulty ? ' · ' + scene.difficulty : ''), badge) +
           '<div class="objective">' + escapeHtml(scene.context) + '</div>' + visualMarkup() + actionCards(scene) +
-          (scene.feedback ? '<div class="feedback"><strong>Consecuencia</strong><br>' + escapeHtml(scene.feedback) + '</div>' : '') +
+          (scene.feedback ? '<div class="feedback"><strong>Esto ocurre</strong><br>' + escapeHtml(scene.feedback) + '</div>' : '') +
           advanceButton(scene) + '</div></section>';
       }
 
       function renderRouter(scene) {
-        return '<section class="scene"><div class="scene-content"><div class="router-mark" aria-hidden="true">↝</div>' + heading(scene, 'Transición causal automática', '') + visualMarkup() + advanceButton(scene) + '</div></section>';
+        return '<section class="scene"><div class="scene-content"><div class="router-mark" aria-hidden="true">↝</div>' + heading(scene, 'El juego comprueba tus decisiones', '') + visualMarkup() + advanceButton(scene) + '</div></section>';
       }
 
       function renderResult(scene) {
-        const badge = '<div class="scene-state-badge ' + (scene.variant === 'contained' ? 'prepared' : 'vulnerable') + '"><small>Resultado</small><strong>' + (scene.variant === 'contained' ? 'Contenido' : 'Fuera de capacidad') + '</strong></div>';
-        const relations = '<div><p class="eyebrow">Cadena causal principal</p><div class="relations" aria-label="Cadenas causales de la partida">' + scene.relations.map(function (relation) {
+        const badge = '<div class="scene-state-badge ' + (scene.variant === 'contained' ? 'prepared' : 'vulnerable') + '"><small>Resultado</small><strong>' + (scene.variant === 'contained' ? 'Controlado' : 'Demasiado fuerte') + '</strong></div>';
+        const relations = '<div><p class="eyebrow">Por qué ocurrió</p><div class="relations" aria-label="Cómo influyeron tus decisiones">' + scene.relations.map(function (relation) {
           return '<article class="relation' + (relation.branchDecisive ? ' decisive' : '') + '"><h3>' + escapeHtml(relation.title) + '</h3>' +
-            '<div class="cause-list">Prevención → ' + relation.causeActionLabels.map(escapeHtml).join(' · ') + '</div>' +
+            '<div class="cause-list">Antes del incendio → ' + relation.causeActionLabels.map(escapeHtml).join(' · ') + '</div>' +
             '<p>' + escapeHtml(relation.effect) + '</p></article>';
         }).join('') + '</div></div>';
-        return '<section class="scene result-' + escapeHtml(scene.variant) + '"><div class="scene-content">' + heading(scene, 'Resultado · balance causal', badge) +
-          '<div class="result-layout"><div><p class="eyebrow">Estado heredado</p>' + visualMarkup() + '</div>' + relations + '</div>' +
+        return '<section class="scene result-' + escapeHtml(scene.variant) + '"><div class="scene-content">' + heading(scene, 'Resultado de tus decisiones', badge) +
+          '<div class="result-layout"><div><p class="eyebrow">Así empezó la emergencia</p>' + visualMarkup() + '</div>' + relations + '</div>' +
           '<div class="feedback">' + escapeHtml(scene.closing) + '</div>' +
-          '<details><summary>Revisar mis decisiones preventivas</summary><ul>' + currentView.session.preventionReview.map(function (entry) { return '<li>' + escapeHtml(entry.label) + '</li>'; }).join('') + '</ul></details>' +
+          '<details><summary>Ver las mejoras que elegí</summary><ul>' + currentView.session.preventionReview.map(function (entry) { return '<li>' + escapeHtml(entry.label) + '</li>'; }).join('') + '</ul></details>' +
           advanceButton(scene) + '</div></section>';
       }
 
@@ -1006,16 +1004,16 @@ export function renderPrototypePage(): string {
 
       const SCENE_TYPE_LABELS = {
         briefing: 'Misión',
-        inspection: 'Inspección',
-        summary: 'Balance',
-        decision: 'Decisión',
-        router: 'Transición',
-        result: 'Resultado'
+        inspection: 'Preparación',
+        summary: 'Tus mejoras',
+        decision: 'Emergencia',
+        router: 'Comprobación',
+        result: 'Final'
       };
 
       const BRANCH_LABELS = {
-        prepared: 'preparada',
-        vulnerable: 'vulnerable'
+        prepared: 'con más opciones',
+        vulnerable: 'con pocas opciones'
       };
 
       const STAGE_BY_VISUAL_TEMPLATE = {
@@ -1177,8 +1175,8 @@ export function renderPrototypePage(): string {
         const progressLine = document.querySelector('.progress-line[role="progressbar"]');
         if (progressLine) progressLine.setAttribute('aria-valuenow', String(progress));
         document.getElementById('scene-type').textContent = SCENE_TYPE_LABELS[currentView.scene.type] || 'Escena';
-        document.getElementById('branch-chip').textContent = session.branch ? 'Ruta ' + (BRANCH_LABELS[session.branch] || session.branch) : 'Ruta pendiente';
-        document.getElementById('session-status').textContent = session.status === 'completed' ? 'Partida completada' : 'Partida activa';
+        document.getElementById('branch-chip').textContent = session.branch ? 'Historia ' + (BRANCH_LABELS[session.branch] || session.branch) : 'Historia sin decidir';
+        document.getElementById('session-status').textContent = session.status === 'completed' ? 'Partida terminada' : 'Partida en curso';
         const decisions = session.decisionReview.slice(-3);
         document.getElementById('decision-history').innerHTML = decisions.length === 0 ? '<li>Aún no hay decisiones.</li>' : decisions.map(function (decision) { return '<li>' + escapeHtml(decision.label) + '</li>'; }).join('');
       }

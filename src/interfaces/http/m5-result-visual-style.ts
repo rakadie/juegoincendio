@@ -72,7 +72,7 @@ export const M5_RESULT_VISUAL_STYLE = String.raw`
   background: linear-gradient(105deg, #fff6e9, #fffdfa 72%);
 }
 .scene[class*="result-"] .relation.decisive h3::after {
-  content: ' · relación decisiva';
+  content: ' · muy importante';
   color: #8a4a06;
   font-size: .72rem;
   font-weight: 800;
