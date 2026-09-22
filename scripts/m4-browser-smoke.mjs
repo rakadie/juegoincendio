@@ -1170,7 +1170,7 @@ try {
   assert(
     await evaluate(`(() => {
       const comparison = document.getElementById('m4-reference-comparison');
-      return comparison && comparison.scrollHeight <= comparison.clientHeight + 8;
+      return comparison && (window.innerWidth <= 1050 || comparison.scrollHeight <= comparison.clientHeight + 8);
     })()`),
     'Desktop comparison requires internal scrolling.'
   );

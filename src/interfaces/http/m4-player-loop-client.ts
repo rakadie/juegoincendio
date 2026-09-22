@@ -282,7 +282,10 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
     };
     close.addEventListener('click', closeComparison);
     section.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape') closeComparison();
+      if (event.key === 'Escape') {
+        event.stopPropagation();
+        closeComparison();
+      }
     });
     const title = document.createElement('h3');
     title.id = 'm4-reference-comparison-title';
