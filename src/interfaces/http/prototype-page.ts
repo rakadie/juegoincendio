@@ -257,23 +257,25 @@ export function renderPrototypePage(): string {
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(300px, 350px);
         align-items: start;
-        gap: clamp(14px, 2vw, 22px);
-        margin-top: 18px;
+        gap: clamp(12px, 1.6vw, 18px);
+        margin-top: 12px;
         scroll-margin-top: 96px;
       }
-      .scene.scene-with-side-panel { overflow: visible; }
+      .scene.scene-with-side-panel { min-height: 0; overflow: visible; }
+      .scene-with-side-panel .scene-content { padding: clamp(14px, 1.7vw, 22px); }
       .scene-main { min-width: 0; }
       .scene-main .visual-scene { margin: 0; }
+      .scene-main > .inspection-response { margin-top: 10px; }
       .scene-side-panel {
         position: sticky;
-        top: 96px;
+        top: 84px;
         z-index: 9;
-        max-height: calc(100vh - 116px);
+        max-height: calc(100dvh - 102px);
         display: grid;
         align-content: start;
-        gap: 12px;
+        gap: 9px;
         overflow: auto;
-        padding: 15px;
+        padding: 12px;
         border: 1px solid #bac6c1;
         border-radius: 12px;
         background: rgba(248, 250, 247, .98);
@@ -284,7 +286,7 @@ export function renderPrototypePage(): string {
         align-items: center;
         justify-content: space-between;
         gap: 12px;
-        padding-bottom: 10px;
+        padding-bottom: 8px;
         border-bottom: 1px solid #d6ded9;
       }
       .scene-side-header h3 { margin: 0; color: #1f4034; font-size: 1rem; }
@@ -325,20 +327,33 @@ export function renderPrototypePage(): string {
       .scene-side-panel .footer-actions { margin: 0; }
       .scene-side-panel .selection-counter,
       .scene-side-panel .scene-state-badge { width: 100%; }
+      .scene-side-panel .selection-counter,
+      .scene-side-panel .scene-state-badge {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 2px 10px;
+        padding: 8px 10px;
+        text-align: left;
+      }
+      .scene-side-panel .selection-counter strong,
+      .scene-side-panel .scene-state-badge strong { grid-column: 2; grid-row: 1; margin: 0; font-size: 1.15rem; }
+      .scene-side-panel .selection-counter .selection-remaining { grid-column: 1 / -1; margin: 0; }
+      .scene-side-panel .objective { padding: 9px 11px; font-size: .84rem; line-height: 1.35; }
+      .scene-side-panel .visual-hint { font-size: .74rem; line-height: 1.35; }
       .scene-side-panel [data-visual-menu-slot] { display: grid; gap: 10px; }
       .scene-side-panel [data-visual-menu-slot][hidden] { display: none; }
       .scene-side-panel .territory-map-key,
       .scene-side-panel .housing-map-key {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 7px;
         padding: 0;
         border: 0;
         background: transparent;
       }
       .scene-side-panel .territory-map-key-item,
-      .scene-side-panel .housing-map-key-item { min-height: 58px; }
+      .scene-side-panel .housing-map-key-item { min-height: 54px; padding: 8px; }
       .scene-side-panel .housing-map-key-item {
-        padding: 10px;
         border-color: #d3d9cf;
         border-radius: 10px;
         background: rgba(255,255,255,.9);
@@ -368,7 +383,7 @@ export function renderPrototypePage(): string {
         font-size: .66rem;
         font-weight: 700;
       }
-      .scene-side-panel .territory-map-key-item:last-child { grid-column: auto; }
+      .scene-side-panel .territory-map-key-item:last-child { grid-column: 1 / -1; }
       .scene-side-panel .visual-card-layer {
         position: static;
         display: grid;
@@ -378,15 +393,31 @@ export function renderPrototypePage(): string {
         position: static;
         width: 100%;
         max-height: none;
-        padding: 13px;
+        padding: 11px;
         border-color: #c5d0cb;
         box-shadow: 0 5px 15px rgba(7, 23, 38, .1);
       }
       .scene-side-panel .inspection-response { grid-template-columns: 1fr; }
       .scene-side-panel .actions { grid-template-columns: 1fr; }
-      .scene-side-panel .action-card { min-height: 0; }
+      .scene-side-panel .action-card { min-height: 0; gap: 4px; padding: 10px; }
+      .scene-side-panel .action-card h3 { margin-bottom: 2px; font-size: .94rem; }
+      .scene-side-panel .action-card p { margin-bottom: 5px; font-size: .76rem; line-height: 1.35; }
+      .scene-side-panel .action-card button { min-height: 38px; }
+      .scene-side-panel .footer-actions {
+        position: sticky;
+        bottom: -12px;
+        z-index: 2;
+        padding: 8px 0 12px;
+        background: linear-gradient(180deg, rgba(248,250,247,0), #f8faf7 24%);
+      }
       .scene-side-panel .footer-actions .primary { width: 100%; }
       .scene-side-panel details { margin-top: 0; }
+      .summary-dashboard { display: grid; grid-template-columns: minmax(280px, .8fr) minmax(0, 1.2fr); gap: 12px; align-items: start; }
+      .summary-dashboard .prevention-review { margin: 0; }
+      .summary-emergency { min-width: 0; }
+      .summary-emergency .balance-heading { margin-top: 0; }
+
+      body.gameplay-active .session-footer { display: none; }
 
       .scene.briefing {
         display: grid;
@@ -679,6 +710,14 @@ export function renderPrototypePage(): string {
       }
       .visual-dimension > div { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
       .visual-dimension-state { font-size: 1.08rem; font-weight: 850; }
+      .scene-main .visual-dimension-summary { gap: 7px; }
+      .scene-main .visual-dimension {
+        min-height: 78px;
+        gap: 8px;
+        padding: 9px;
+      }
+      .scene-main .visual-dimension-state { font-size: .95rem; }
+      .scene-main .visual-dimension small { font-size: .68rem; line-height: 1.25; }
 
       .actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 9px; margin-top: 16px; }
       .action-card {
@@ -793,6 +832,38 @@ export function renderPrototypePage(): string {
       details { margin-top: 14px; }
       summary { cursor: pointer; color: #3d606b; }
 
+      @media (min-width: 1051px) {
+        main { padding-top: 10px; padding-bottom: 8px; }
+        .scene-with-side-panel .scene-heading { margin-bottom: 0; }
+        .scene-with-side-panel .scene-heading-copy {
+          max-width: none;
+          display: grid;
+          grid-template-columns: minmax(300px, .8fr) minmax(360px, 1.2fr);
+          grid-template-rows: auto auto;
+          column-gap: 24px;
+          align-items: end;
+        }
+        .scene-with-side-panel .scene-heading-copy .eyebrow { grid-column: 1; grid-row: 1; margin-bottom: 2px; }
+        .scene-with-side-panel .scene-heading-copy h2 {
+          grid-column: 1;
+          grid-row: 2;
+          margin-bottom: 0;
+          font-size: clamp(1.55rem, 2.2vw, 2.15rem);
+        }
+        .scene-with-side-panel .scene-heading-copy .lead {
+          grid-column: 2;
+          grid-row: 1 / 3;
+          align-self: center;
+          font-size: .92rem;
+          line-height: 1.4;
+        }
+        .prevention-review-intro { margin-bottom: 7px; }
+        .prevention-area { padding: 10px; }
+        .prevention-area h3 { margin-bottom: 8px; }
+        .prevention-area-section + .prevention-area-section { margin-top: 9px; padding-top: 8px; }
+        .prevention-area ul { gap: 4px; }
+      }
+
       @media (max-width: 1050px) {
         .topbar { grid-template-columns: 1fr auto; }
         .journey { grid-column: 1 / -1; grid-row: 2; }
@@ -803,9 +874,9 @@ export function renderPrototypePage(): string {
         .visual-scene[data-visual-template="housing"],
         .visual-scene[data-visual-template="crisis"],
         .result-layout { grid-template-columns: 1fr; }
-        .session-footer { grid-template-columns: 1fr 1fr; }
-        .footer-cell:last-child { grid-column: 1 / -1; }
+        .session-footer { display: none; }
         .scene-workspace { grid-template-columns: 1fr; }
+        .summary-dashboard { grid-template-columns: 1fr; }
         .scene-side-trigger { display: flex; }
         .scene-side-panel {
           position: fixed;
@@ -868,19 +939,22 @@ export function renderPrototypePage(): string {
         .entry-copy h1 { font-size: clamp(2.25rem, 12vw, 3.5rem); }
         .entry-visual { min-height: 220px; padding: 16px; }
         .scene { min-height: auto; border-radius: 10px; }
-        .scene-content { padding: 15px; }
-        .scene-heading { grid-template-columns: 1fr; gap: 10px; }
+        .scene-content { padding: 12px; }
+        .scene-heading { grid-template-columns: 1fr; gap: 7px; margin-bottom: 8px; }
+        .scene-heading h2 { font-size: clamp(1.45rem, 7vw, 1.9rem); }
+        .scene-heading .lead { font-size: .88rem; line-height: 1.35; }
         .selection-counter, .scene-state-badge { width: 100%; min-width: 0; display: flex; justify-content: space-between; align-items: center; text-align: left; }
         .selection-counter strong, .scene-state-badge strong { font-size: 1.05rem; }
         .visual-canvas, .territory-svg { min-height: 300px; }
-        .visual-dimension-summary, .actions { grid-template-columns: 1fr; }
+        .visual-dimension-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .actions { grid-template-columns: 1fr; }
         .inspection-response, .prevention-area-grid { grid-template-columns: 1fr; }
         .visual-hover-card { width: min(320px, calc(100% - 20px)); max-height: calc(100% - 20px); }
         .scene-side-panel .visual-hover-card { width: 100%; max-height: none; }
         .scene-side-panel .territory-map-key,
-        .scene-side-panel .housing-map-key { grid-template-columns: 1fr; }
-        .session-footer { width: calc(100% - 16px); grid-template-columns: 1fr; }
-        .footer-cell:last-child { grid-column: auto; }
+        .scene-side-panel .housing-map-key { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .scene-side-panel .territory-map-key-item:last-child { grid-column: 1 / -1; }
+        .summary-dashboard { grid-template-columns: 1fr; }
       }
 
       @media (prefers-reduced-motion: reduce) {
@@ -1130,12 +1204,14 @@ export function renderPrototypePage(): string {
         const badge = '<div class="selection-counter"><small>Mejoras elegidas</small><strong>' + scene.selectedCount + ' / ' + scene.actionQuota + '</strong><span class="selection-remaining">' + (remaining === 0 ? 'Ya elegiste todas' : 'Puedes elegir ' + remaining + ' más') + '</span></div>';
         const intro = badge + '<div class="objective"><strong>Tu tarea:</strong> ' + escapeHtml(scene.objective) + '</div>' +
           '<p class="visual-hint">Elige un número del mapa. Puedes usar el ratón, la tecla Tab o tocar la pantalla.</p>';
+        const main = visualMarkup() + inspectionResponse(scene);
         return '<section class="scene scene-with-side-panel"><div class="scene-content">' + heading(scene, 'Prepara la zona', '') +
-          sceneWorkspace(visualMarkup(), 'Puntos y mejoras', intro, inspectionResponse(scene) + advanceButton(scene), 'Ver puntos y mejoras') + '</div></section>';
+          sceneWorkspace(main, 'Puntos y mejoras', intro, advanceButton(scene), 'Ver puntos y mejoras') + '</div></section>';
       }
 
       function renderSummary(scene) {
-        const main = preventionAreaReview(scene) + '<h3 class="balance-heading">Así empieza la emergencia</h3>' + visualMarkup();
+        const main = '<div class="summary-dashboard">' + preventionAreaReview(scene) +
+          '<div class="summary-emergency"><h3 class="balance-heading">Así empieza la emergencia</h3>' + visualMarkup() + '</div></div>';
         const intro = '<div class="objective"><strong>Qué ocurre ahora:</strong> lo que hiciste antes cambia las opciones de los bomberos.</div>' +
           '<div class="balance-caution"><strong>Importante:</strong> las mejoras reducen el peligro, pero ninguna casa queda totalmente segura.</div>';
         return '<section class="scene scene-with-side-panel"><div class="scene-content">' + heading(scene, 'Tus mejoras', '') +
@@ -1479,6 +1555,7 @@ export function renderPrototypePage(): string {
         if (!currentView) return;
         const renderer = RENDERERS[currentView.scene.type];
         if (!renderer) throw new Error('Tipo de escena no soportado: ' + currentView.scene.type);
+        document.body.classList.add('gameplay-active');
         visualHoverReady = false;
         if (visualHoverTimer !== null) window.clearTimeout(visualHoverTimer);
         game.innerHTML = renderer(currentView.scene);

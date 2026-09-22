@@ -543,6 +543,7 @@ try {
     assert(layout.strokes.roadContext <= 7 && layout.strokes.roadRisk <= 2.7 && layout.strokes.roadLine <= 1.3, 'Territory road overlay is visually too heavy.');
     assert(layout.strokes.vegetation <= 2.3 && layout.strokes.grazing <= 1.8 && layout.strokes.review <= 2.1, 'A territory guide line is visually too heavy.');
     assert(layout.overlaps.length === 0, 'Territory pins or visible labels overlap.');
+    if (!expectedMobile) await assertGameplayFitsViewport('Territory inspection');
     if (expectedMobile) {
       await send('Input.dispatchKeyEvent', {
         type: 'keyDown', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9, nativeVirtualKeyCode: 9, modifiers: 8
@@ -650,6 +651,7 @@ try {
     assert(layout.overlaps.length === 0, 'Housing pins or visible labels overlap.');
     assert(layout.strokes.accessRisk <= 8 && layout.strokes.accessCentre <= 1.7, 'Housing access overlay is visually too heavy.');
     assert(layout.strokes.canopyLink <= 5 && layout.strokes.canopyCrown <= 1.6, 'Housing canopy overlay is visually too heavy.');
+    if (!expectedMobile) await assertGameplayFitsViewport('Housing inspection');
     if (expectedMobile) {
       await pressEnter('.scene-side-close');
       await waitFor(`document.getElementById('scene-side-panel')?.classList.contains('is-open') === false`, 'housing side drawer closed');
@@ -728,6 +730,33 @@ try {
         label.backgroundColor !== 'rgba(0, 0, 0, 0)' && label.textDecorationLine === 'none'
       ),
       `A journey connector can cross its label: ${JSON.stringify(labels)}`
+    );
+  }
+
+  async function assertGameplayFitsViewport(label) {
+    const layout = await evaluate(`(() => {
+      const scene = document.querySelector('.scene');
+      const footer = document.getElementById('session-footer');
+      const sceneRect = scene?.getBoundingClientRect();
+      return sceneRect ? {
+        viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight,
+        pageHeight: document.documentElement.scrollHeight,
+        sceneTop: sceneRect.top,
+        sceneBottom: sceneRect.bottom,
+        footerDisplay: footer ? getComputedStyle(footer).display : null
+      } : null;
+    })()`);
+    assert(layout, `${label} has no visible scene.`);
+    if (layout.viewportWidth <= 1050) return;
+    assert(layout.footerDisplay === 'none', `${label} still shows the redundant lower session summary.`);
+    assert(
+      layout.pageHeight <= layout.viewportHeight + 8,
+      `${label} requires vertical page scrolling (${layout.pageHeight} > ${layout.viewportHeight}).`
+    );
+    assert(
+      layout.sceneTop >= 74 && layout.sceneBottom <= layout.viewportHeight + 1,
+      `${label} does not fit between the journey header and the viewport bottom.`
     );
   }
 
@@ -1077,6 +1106,7 @@ try {
     minWidth: 700,
     minHeight: 400
   });
+  await assertGameplayFitsViewport('Prevention balance');
   await pressEnter('#advance-button');
   await waitForSelector('[data-action-id="movilizar-y-verificar"]');
   await chooseAndWait('movilizar-y-verificar', '#advance-button');
@@ -1084,6 +1114,7 @@ try {
   await waitForSelector('[data-action-id="autorizar-maniobra-condicionada"]');
 
   await assertCrisisLayout();
+  await assertGameplayFitsViewport('Prepared crisis decision');
 
   await captureEvidence(
     'crisis-prepared-desktop.png',
@@ -1116,6 +1147,7 @@ try {
     minWidth: 700,
     minHeight: 400
   });
+  await assertGameplayFitsViewport('Prepared result');
 
   await pressEnter('#compare-reference-button');
   await waitForSelector('#m4-reference-comparison');
@@ -1135,6 +1167,26 @@ try {
     minWidth: 700,
     minHeight: 350
   });
+  assert(
+    await evaluate(`(() => {
+      const comparison = document.getElementById('m4-reference-comparison');
+      return comparison && comparison.scrollHeight <= comparison.clientHeight + 8;
+    })()`),
+    'Desktop comparison requires internal scrolling.'
+  );
+  await send('Input.dispatchKeyEvent', {
+    type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27
+  });
+  await send('Input.dispatchKeyEvent', {
+    type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27
+  });
+  await waitFor(`document.getElementById('m4-reference-comparison') === null`, 'comparison closed with Escape');
+  assert(
+    await evaluate(`document.activeElement === document.getElementById('compare-reference-button')`),
+    'Closing the comparison did not return focus to its trigger.'
+  );
+  await pressEnter('#compare-reference-button');
+  await waitForSelector('#m4-reference-comparison');
 
   await pressEnter('#comparison-replay-button');
   await waitForSelector('.scene.briefing');

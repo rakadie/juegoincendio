@@ -209,7 +209,7 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
   }
 
   function directResultDetails(sceneContent) {
-    return Array.from(sceneContent.children).find(function (child) {
+    return sceneContent.querySelector('.scene-side-panel details') || Array.from(sceneContent.children).find(function (child) {
       return child.tagName === 'DETAILS';
     }) || null;
   }
@@ -268,7 +268,22 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
     const section = document.createElement('section');
     section.id = 'm4-reference-comparison';
     section.className = 'm4-comparison';
+    section.setAttribute('role', 'dialog');
+    section.setAttribute('aria-modal', 'true');
     section.setAttribute('aria-labelledby', 'm4-reference-comparison-title');
+    const close = document.createElement('button');
+    close.className = 'secondary m4-comparison-close';
+    close.type = 'button';
+    close.textContent = 'Cerrar comparación';
+    const closeComparison = function () {
+      section.remove();
+      const trigger = document.getElementById('compare-reference-button');
+      if (trigger) trigger.focus();
+    };
+    close.addEventListener('click', closeComparison);
+    section.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') closeComparison();
+    });
     const title = document.createElement('h3');
     title.id = 'm4-reference-comparison-title';
     title.textContent = payload.title;
@@ -285,10 +300,10 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
     const replayCopy = document.createElement('p');
     replayCopy.textContent = 'Elige otras mejoras y descubre qué cambia cuando llega el fuego.';
     replay.append(makeReplayButton('comparison-replay-button'), replayCopy);
-    section.append(title, explanation, grid, replay);
+    section.append(close, title, explanation, grid, replay);
     insertBeforeResultDetails(sceneContent, section);
-    title.setAttribute('tabindex', '-1');
-    title.focus();
+    section.setAttribute('tabindex', '-1');
+    section.focus();
   }
 
   function ensureResultActions() {
@@ -368,7 +383,22 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
         );
         appendResultStep(steps, 'Cuando llegó el fuego', relation.manifestationLabel);
         appendResultStep(steps, 'Qué ocurrió', relation.effect);
-        if (title) title.insertAdjacentElement('afterend', steps); else card.appendChild(steps);
+        const outcome = document.createElement('p');
+        outcome.className = 'm4-causal-outcome';
+        outcome.textContent = relation.stateLabel + '. ' + relation.effect;
+        const details = document.createElement('details');
+        details.className = 'm4-causal-details';
+        const summary = document.createElement('summary');
+        summary.textContent = 'Ver la explicación paso a paso';
+        details.append(summary, steps);
+        details.addEventListener('toggle', function () {
+          if (!details.open) return;
+          container.querySelectorAll('.m4-causal-details[open]').forEach(function (other) {
+            if (other !== details) other.removeAttribute('open');
+          });
+        });
+        if (title) title.insertAdjacentElement('afterend', outcome); else card.appendChild(outcome);
+        outcome.insertAdjacentElement('afterend', details);
       });
       container.dataset.m4ClosureEnhanced = 'true';
     }
