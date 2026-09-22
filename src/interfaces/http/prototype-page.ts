@@ -352,7 +352,7 @@ export function renderPrototypePage(): string {
         background: transparent;
       }
       .scene-side-panel .territory-map-key-item,
-      .scene-side-panel .housing-map-key-item { min-height: 54px; padding: 8px; }
+      .scene-side-panel .housing-map-key-item { min-height: 56px; padding: 8px; }
       .scene-side-panel .housing-map-key-item {
         border-color: #d3d9cf;
         border-radius: 10px;
