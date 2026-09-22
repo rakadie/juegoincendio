@@ -13,6 +13,17 @@ export const M5_RESULT_VISUAL_STYLE = String.raw`
   }
 }
 
+@media (min-width: 1200px) {
+  .scene-main .visual-scene[data-visual-template="crisis"] .visual-dimension-summary {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .scene-main .visual-scene[data-visual-template="crisis"] .visual-dimension {
+    min-height: 76px;
+    align-items: start;
+  }
+  .scene-main .visual-scene[data-visual-template="crisis"] .visual-dimension small { display: none; }
+}
+
 .scene[class*="result-"] .scene-heading {
   position: relative;
   overflow: hidden;
