@@ -253,6 +253,141 @@ export function renderPrototypePage(): string {
       }
       .visual-hint { margin: 10px 0 0; color: #53666f; font-size: .8rem; font-weight: 700; }
 
+      .scene-workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(300px, 350px);
+        align-items: start;
+        gap: clamp(14px, 2vw, 22px);
+        margin-top: 18px;
+        scroll-margin-top: 96px;
+      }
+      .scene.scene-with-side-panel { overflow: visible; }
+      .scene-main { min-width: 0; }
+      .scene-main .visual-scene { margin: 0; }
+      .scene-side-panel {
+        position: sticky;
+        top: 96px;
+        z-index: 9;
+        max-height: calc(100vh - 116px);
+        display: grid;
+        align-content: start;
+        gap: 12px;
+        overflow: auto;
+        padding: 15px;
+        border: 1px solid #bac6c1;
+        border-radius: 12px;
+        background: rgba(248, 250, 247, .98);
+        box-shadow: 0 12px 30px rgba(7, 23, 38, .13);
+      }
+      .scene-side-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #d6ded9;
+      }
+      .scene-side-header h3 { margin: 0; color: #1f4034; font-size: 1rem; }
+      .scene-side-close {
+        display: none;
+        min-width: 44px;
+        min-height: 44px;
+        border: 1px solid #aebbb5;
+        border-radius: 9px;
+        color: #263941;
+        background: #fff;
+        cursor: pointer;
+        font-weight: 800;
+      }
+      .scene-side-trigger {
+        display: none;
+        width: 100%;
+        min-height: 48px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 11px 14px;
+        border: 1px solid #315f4e;
+        border-radius: 10px;
+        color: #fff;
+        background: #244c3d;
+        box-shadow: 0 8px 18px rgba(36, 76, 61, .18);
+        cursor: pointer;
+        font-weight: 820;
+      }
+      .scene-side-trigger::after { content: '\\2192'; font-size: 1.2rem; }
+      .scene-side-backdrop { display: none; }
+      .scene-side-panel .objective,
+      .scene-side-panel .visual-hint,
+      .scene-side-panel .inspection-response,
+      .scene-side-panel .actions,
+      .scene-side-panel .feedback,
+      .scene-side-panel .footer-actions { margin: 0; }
+      .scene-side-panel .selection-counter,
+      .scene-side-panel .scene-state-badge { width: 100%; }
+      .scene-side-panel [data-visual-menu-slot] { display: grid; gap: 10px; }
+      .scene-side-panel [data-visual-menu-slot][hidden] { display: none; }
+      .scene-side-panel .territory-map-key,
+      .scene-side-panel .housing-map-key {
+        grid-template-columns: 1fr;
+        gap: 7px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+      }
+      .scene-side-panel .territory-map-key-item,
+      .scene-side-panel .housing-map-key-item { min-height: 58px; }
+      .scene-side-panel .housing-map-key-item {
+        padding: 10px;
+        border-color: #d3d9cf;
+        border-radius: 10px;
+        background: rgba(255,255,255,.9);
+        box-shadow: 0 2px 7px rgba(21, 50, 40, .08);
+      }
+      .scene-side-panel .housing-map-key-item:hover {
+        border-color: #9dac9f;
+        background: #fff;
+        box-shadow: 0 4px 11px rgba(21, 50, 40, .12);
+      }
+      .scene-side-panel .housing-map-key-item .housing-key-number {
+        flex-basis: 32px;
+        height: 32px;
+        border-width: 2px;
+        border-color: #8f7049;
+        font-size: 14px;
+        font-weight: 800;
+      }
+      .scene-side-panel .housing-map-key-item strong { color: #1b3c31; font-size: .8rem; }
+      .scene-side-panel .housing-map-key-item small {
+        width: fit-content;
+        margin-top: 5px;
+        padding: 2px 7px;
+        border-radius: 999px;
+        color: #6c5333;
+        background: #f6ead5;
+        font-size: .66rem;
+        font-weight: 700;
+      }
+      .scene-side-panel .territory-map-key-item:last-child { grid-column: auto; }
+      .scene-side-panel .visual-card-layer {
+        position: static;
+        display: grid;
+        pointer-events: auto;
+      }
+      .scene-side-panel .visual-hover-card {
+        position: static;
+        width: 100%;
+        max-height: none;
+        padding: 13px;
+        border-color: #c5d0cb;
+        box-shadow: 0 5px 15px rgba(7, 23, 38, .1);
+      }
+      .scene-side-panel .inspection-response { grid-template-columns: 1fr; }
+      .scene-side-panel .actions { grid-template-columns: 1fr; }
+      .scene-side-panel .action-card { min-height: 0; }
+      .scene-side-panel .footer-actions .primary { width: 100%; }
+      .scene-side-panel details { margin-top: 0; }
+
       .scene.briefing {
         display: grid;
         align-items: end;
@@ -670,6 +805,35 @@ export function renderPrototypePage(): string {
         .result-layout { grid-template-columns: 1fr; }
         .session-footer { grid-template-columns: 1fr 1fr; }
         .footer-cell:last-child { grid-column: 1 / -1; }
+        .scene-workspace { grid-template-columns: 1fr; }
+        .scene-side-trigger { display: flex; }
+        .scene-side-panel {
+          position: fixed;
+          inset: 0 0 0 auto;
+          z-index: 60;
+          width: min(390px, calc(100vw - 24px));
+          height: 100dvh;
+          max-height: none;
+          border: 0;
+          border-left: 1px solid #aebbb5;
+          border-radius: 16px 0 0 16px;
+          visibility: hidden;
+          transform: translateX(104%);
+          transition: transform .22s ease, visibility .22s linear;
+        }
+        .scene-side-panel.is-open { visibility: visible; transform: translateX(0); }
+        .scene-side-close { display: inline-grid; place-items: center; }
+        .scene-side-backdrop {
+          position: fixed;
+          inset: 0;
+          z-index: 55;
+          display: block;
+          border: 0;
+          background: rgba(4, 16, 24, .56);
+          cursor: pointer;
+        }
+        .scene-side-backdrop[hidden] { display: none; }
+        body.scene-side-locked { overflow: hidden; }
       }
 
       @media (max-width: 700px) {
@@ -712,6 +876,9 @@ export function renderPrototypePage(): string {
         .visual-dimension-summary, .actions { grid-template-columns: 1fr; }
         .inspection-response, .prevention-area-grid { grid-template-columns: 1fr; }
         .visual-hover-card { width: min(320px, calc(100% - 20px)); max-height: calc(100% - 20px); }
+        .scene-side-panel .visual-hover-card { width: 100%; max-height: none; }
+        .scene-side-panel .territory-map-key,
+        .scene-side-panel .housing-map-key { grid-template-columns: 1fr; }
         .session-footer { width: calc(100% - 16px); grid-template-columns: 1fr; }
         .footer-cell:last-child { grid-column: auto; }
       }
@@ -903,6 +1070,15 @@ export function renderPrototypePage(): string {
         return '<div class="scene-heading"><div class="scene-heading-copy"><p class="eyebrow">' + escapeHtml(eyebrow) + '</p><h2>' + escapeHtml(scene.title) + '</h2><p class="lead">' + escapeHtml(scene.body || '') + '</p></div>' + (badge || '') + '</div>';
       }
 
+      function sceneWorkspace(mainMarkup, panelLabel, panelIntro, panelBody, triggerLabel) {
+        return '<button class="scene-side-trigger" type="button" aria-controls="scene-side-panel" aria-expanded="false">' + escapeHtml(triggerLabel) + '</button>' +
+          '<div class="scene-workspace"><div class="scene-main">' + mainMarkup + '</div>' +
+          '<aside class="scene-side-panel" id="scene-side-panel" aria-label="' + escapeHtml(panelLabel) + '" aria-hidden="false">' +
+            '<div class="scene-side-header"><h3>' + escapeHtml(panelLabel) + '</h3><button class="scene-side-close" type="button" aria-label="Cerrar panel">Cerrar</button></div>' +
+            panelIntro + '<div data-visual-menu-slot hidden></div>' + panelBody +
+          '</aside><button class="scene-side-backdrop" type="button" aria-label="Cerrar panel de opciones" hidden></button></div>';
+      }
+
       function requestErrorMessage(payload, status) {
         const code = payload && typeof payload.code === 'string' ? payload.code : '';
         if (code === 'inspection-quota-incomplete') return 'Elige todas las mejoras disponibles antes de continuar.';
@@ -952,31 +1128,33 @@ export function renderPrototypePage(): string {
       function renderInspection(scene) {
         const remaining = Math.max(0, scene.actionQuota - scene.selectedCount);
         const badge = '<div class="selection-counter"><small>Mejoras elegidas</small><strong>' + scene.selectedCount + ' / ' + scene.actionQuota + '</strong><span class="selection-remaining">' + (remaining === 0 ? 'Ya elegiste todas' : 'Puedes elegir ' + remaining + ' más') + '</span></div>';
-        return '<section class="scene"><div class="scene-content">' + heading(scene, 'Prepara la zona', badge) +
-          '<div class="objective"><strong>Tu tarea:</strong> ' + escapeHtml(scene.objective) + '</div>' +
-          '<p class="visual-hint">Elige un número del mapa. Puedes usar el ratón, la tecla Tab o tocar la pantalla.</p>' +
-          visualMarkup() + inspectionResponse(scene) + advanceButton(scene) + '</div></section>';
+        const intro = badge + '<div class="objective"><strong>Tu tarea:</strong> ' + escapeHtml(scene.objective) + '</div>' +
+          '<p class="visual-hint">Elige un número del mapa. Puedes usar el ratón, la tecla Tab o tocar la pantalla.</p>';
+        return '<section class="scene scene-with-side-panel"><div class="scene-content">' + heading(scene, 'Prepara la zona', '') +
+          sceneWorkspace(visualMarkup(), 'Puntos y mejoras', intro, inspectionResponse(scene) + advanceButton(scene), 'Ver puntos y mejoras') + '</div></section>';
       }
 
       function renderSummary(scene) {
-        return '<section class="scene"><div class="scene-content">' + heading(scene, 'Tus mejoras', '') +
-          '<div class="objective"><strong>Qué ocurre ahora:</strong> lo que hiciste antes cambia las opciones de los bomberos.</div>' +
-          preventionAreaReview(scene) +
-          '<div class="balance-caution"><strong>Importante:</strong> las mejoras reducen el peligro, pero ninguna casa queda totalmente segura.</div>' +
-          '<h3 class="balance-heading">Así empieza la emergencia</h3>' + visualMarkup() + advanceButton(scene) + '</div></section>';
+        const main = preventionAreaReview(scene) + '<h3 class="balance-heading">Así empieza la emergencia</h3>' + visualMarkup();
+        const intro = '<div class="objective"><strong>Qué ocurre ahora:</strong> lo que hiciste antes cambia las opciones de los bomberos.</div>' +
+          '<div class="balance-caution"><strong>Importante:</strong> las mejoras reducen el peligro, pero ninguna casa queda totalmente segura.</div>';
+        return '<section class="scene scene-with-side-panel"><div class="scene-content">' + heading(scene, 'Tus mejoras', '') +
+          sceneWorkspace(main, 'Balance preventivo', intro, advanceButton(scene), 'Ver balance y continuar') + '</div></section>';
       }
 
       function renderDecision(scene) {
         const branch = currentView.session.branch;
         const badge = branch ? '<div class="scene-state-badge ' + escapeHtml(branch) + '"><small>Situación</small><strong>' + (branch === 'prepared' ? 'Más opciones' : 'Pocas opciones') + '</strong></div>' : '';
-        return '<section class="scene"><div class="scene-content">' + heading(scene, 'Decide qué hacer' + (scene.difficulty ? ' · ' + scene.difficulty : ''), badge) +
-          '<div class="objective">' + escapeHtml(scene.context) + '</div>' + visualMarkup() + actionCards(scene) +
-          (scene.feedback ? '<div class="feedback"><strong>Esto ocurre</strong><br>' + escapeHtml(scene.feedback) + '</div>' : '') +
-          advanceButton(scene) + '</div></section>';
+        const intro = badge + '<div class="objective">' + escapeHtml(scene.context) + '</div>';
+        const response = actionCards(scene) +
+          (scene.feedback ? '<div class="feedback"><strong>Esto ocurre</strong><br>' + escapeHtml(scene.feedback) + '</div>' : '') + advanceButton(scene);
+        return '<section class="scene scene-with-side-panel"><div class="scene-content">' + heading(scene, 'Decide qué hacer' + (scene.difficulty ? ' · ' + scene.difficulty : ''), '') +
+          sceneWorkspace(visualMarkup(), 'Elige qué hacer', intro, response, 'Ver opciones de respuesta') + '</div></section>';
       }
 
       function renderRouter(scene) {
-        return '<section class="scene"><div class="scene-content"><div class="router-mark" aria-hidden="true">↝</div>' + heading(scene, 'El juego comprueba tus decisiones', '') + visualMarkup() + advanceButton(scene) + '</div></section>';
+        return '<section class="scene scene-with-side-panel"><div class="scene-content"><div class="router-mark" aria-hidden="true">↝</div>' + heading(scene, 'El juego comprueba tus decisiones', '') +
+          sceneWorkspace(visualMarkup(), 'Siguiente paso', '', advanceButton(scene), 'Ver siguiente paso') + '</div></section>';
       }
 
       function renderResult(scene) {
@@ -986,11 +1164,11 @@ export function renderPrototypePage(): string {
             '<div class="cause-list">Antes del incendio → ' + relation.causeActionLabels.map(escapeHtml).join(' · ') + '</div>' +
             '<p>' + escapeHtml(relation.effect) + '</p></article>';
         }).join('') + '</div></div>';
-        return '<section class="scene result-' + escapeHtml(scene.variant) + '"><div class="scene-content">' + heading(scene, 'Resultado de tus decisiones', badge) +
-          '<div class="result-layout"><div><p class="eyebrow">Así empezó la emergencia</p>' + visualMarkup() + '</div>' + relations + '</div>' +
-          '<div class="feedback">' + escapeHtml(scene.closing) + '</div>' +
-          '<details><summary>Ver las mejoras que elegí</summary><ul>' + currentView.session.preventionReview.map(function (entry) { return '<li>' + escapeHtml(entry.label) + '</li>'; }).join('') + '</ul></details>' +
-          advanceButton(scene) + '</div></section>';
+        const main = '<div class="result-layout"><div><p class="eyebrow">Así empezó la emergencia</p>' + visualMarkup() + '</div>' + relations + '</div>';
+        const intro = badge + '<div class="feedback">' + escapeHtml(scene.closing) + '</div>';
+        const review = '<details><summary>Ver las mejoras que elegí</summary><ul>' + currentView.session.preventionReview.map(function (entry) { return '<li>' + escapeHtml(entry.label) + '</li>'; }).join('') + '</ul></details>' + advanceButton(scene);
+        return '<section class="scene scene-with-side-panel result-' + escapeHtml(scene.variant) + '"><div class="scene-content">' + heading(scene, 'Resultado de tus decisiones', '') +
+          sceneWorkspace(main, 'Tu resultado', intro, review, 'Ver resultado y opciones') + '</div></section>';
       }
 
       const RENDERERS = {
@@ -1026,6 +1204,114 @@ export function renderPrototypePage(): string {
       };
 
       let visualCardCloseTimer = null;
+      let sidePanelReturnFocus = null;
+      let sidePanelCleanup = null;
+
+      function arrangeVisualSideMenu() {
+        const slot = game.querySelector('[data-visual-menu-slot]');
+        const visualScene = game.querySelector('.visual-scene');
+        if (!slot || !visualScene) return;
+        const menu = visualScene.querySelector('.territory-map-key, .housing-map-key');
+        const cards = visualScene.querySelector('.visual-card-layer');
+        if (menu) slot.appendChild(menu);
+        if (cards) slot.appendChild(cards);
+        slot.hidden = !menu && !cards;
+      }
+
+      function usesSideDrawer() {
+        return window.matchMedia && window.matchMedia('(max-width: 1050px)').matches;
+      }
+
+      function openSceneSidePanel(source, moveFocus) {
+        const panel = document.getElementById('scene-side-panel');
+        const trigger = game.querySelector('.scene-side-trigger');
+        const backdrop = game.querySelector('.scene-side-backdrop');
+        const main = game.querySelector('.scene-main');
+        if (!panel || !trigger || !backdrop || !usesSideDrawer()) return;
+        sidePanelReturnFocus = source || trigger;
+        panel.classList.add('is-open');
+        panel.setAttribute('aria-hidden', 'false');
+        trigger.setAttribute('aria-expanded', 'true');
+        backdrop.hidden = false;
+        panel.setAttribute('role', 'dialog');
+        panel.setAttribute('aria-modal', 'true');
+        if (main) main.setAttribute('inert', '');
+        document.body.classList.add('scene-side-locked');
+        if (moveFocus) window.requestAnimationFrame(function () { panel.querySelector('.scene-side-close')?.focus(); });
+      }
+
+      function closeSceneSidePanel(restoreFocus) {
+        const panel = document.getElementById('scene-side-panel');
+        const trigger = game.querySelector('.scene-side-trigger');
+        const backdrop = game.querySelector('.scene-side-backdrop');
+        const main = game.querySelector('.scene-main');
+        if (!panel || !trigger || !backdrop) return;
+        panel.classList.remove('is-open');
+        panel.setAttribute('aria-hidden', usesSideDrawer() ? 'true' : 'false');
+        trigger.setAttribute('aria-expanded', 'false');
+        backdrop.hidden = true;
+        panel.removeAttribute('role');
+        panel.removeAttribute('aria-modal');
+        if (main) main.removeAttribute('inert');
+        document.body.classList.remove('scene-side-locked');
+        if (restoreFocus && sidePanelReturnFocus && sidePanelReturnFocus.isConnected) sidePanelReturnFocus.focus();
+      }
+
+      function wireSceneSidePanel() {
+        if (sidePanelCleanup) sidePanelCleanup();
+        const panel = document.getElementById('scene-side-panel');
+        const trigger = game.querySelector('.scene-side-trigger');
+        const close = game.querySelector('.scene-side-close');
+        const backdrop = game.querySelector('.scene-side-backdrop');
+        if (!panel || !trigger || !close || !backdrop) return;
+        const media = window.matchMedia('(max-width: 1050px)');
+        const onTrigger = function () { openSceneSidePanel(trigger, true); };
+        const onClose = function () { closeSceneSidePanel(true); };
+        const onKeydown = function (event) {
+          if (event.key === 'Escape' && panel.classList.contains('is-open')) {
+            event.preventDefault();
+            closeSceneSidePanel(true);
+            return;
+          }
+          if (event.key === 'Tab' && panel.classList.contains('is-open')) {
+            const controls = Array.from(panel.querySelectorAll('button:not(:disabled), summary, [tabindex="0"]')).filter(function (element) {
+              const rect = element.getBoundingClientRect();
+              return !element.hidden && rect.width > 0 && rect.height > 0 && getComputedStyle(element).visibility !== 'hidden';
+            });
+            if (controls.length === 0) return;
+            const first = controls[0];
+            const last = controls[controls.length - 1];
+            if (!panel.contains(document.activeElement)) {
+              event.preventDefault();
+              first.focus();
+            } else if (event.shiftKey && document.activeElement === first) {
+              event.preventDefault();
+              last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+              event.preventDefault();
+              first.focus();
+            }
+          }
+        };
+        const onMediaChange = function () {
+          if (!media.matches) closeSceneSidePanel(false);
+          else if (!panel.classList.contains('is-open')) panel.setAttribute('aria-hidden', 'true');
+        };
+        trigger.addEventListener('click', onTrigger);
+        close.addEventListener('click', onClose);
+        backdrop.addEventListener('click', onClose);
+        document.addEventListener('keydown', onKeydown);
+        media.addEventListener('change', onMediaChange);
+        onMediaChange();
+        sidePanelCleanup = function () {
+          trigger.removeEventListener('click', onTrigger);
+          close.removeEventListener('click', onClose);
+          backdrop.removeEventListener('click', onClose);
+          document.removeEventListener('keydown', onKeydown);
+          media.removeEventListener('change', onMediaChange);
+          document.body.classList.remove('scene-side-locked');
+        };
+      }
 
       function closeVisualCards() {
         document.querySelectorAll('.visual-hover-card').forEach(function (card) { card.hidden = true; });
@@ -1038,6 +1324,7 @@ export function renderPrototypePage(): string {
       }
 
       function scheduleVisualCardClose() {
+        if (usesSideDrawer() && document.getElementById('scene-side-panel')?.classList.contains('is-open')) return;
         cancelVisualCardClose();
         visualCardCloseTimer = window.setTimeout(function () {
           const focusedCard = document.activeElement && document.activeElement.closest ? document.activeElement.closest('.visual-hover-card') : null;
@@ -1047,6 +1334,12 @@ export function renderPrototypePage(): string {
       }
 
       function positionVisualCard(element, card) {
+        if (card.closest('.scene-side-panel')) {
+          card.style.right = '';
+          card.style.left = '';
+          card.style.top = '';
+          return;
+        }
         const canvas = element.closest('.visual-canvas');
         if (!canvas) return;
         if (canvas.querySelector('.territory-map, .housing-plan') && window.matchMedia('(max-width: 700px)').matches) {
@@ -1080,6 +1373,7 @@ export function renderPrototypePage(): string {
         closeVisualCards();
         card.hidden = false;
         element.setAttribute('aria-expanded', 'true');
+        openSceneSidePanel(element, false);
         positionVisualCard(element, card);
         return card;
       }
@@ -1188,9 +1482,11 @@ export function renderPrototypePage(): string {
         visualHoverReady = false;
         if (visualHoverTimer !== null) window.clearTimeout(visualHoverTimer);
         game.innerHTML = renderer(currentView.scene);
+        arrangeVisualSideMenu();
         renderJourney();
         renderFooter();
         hydrateVisualActionCards(currentView.scene);
+        wireSceneSidePanel();
         wireCommands();
         visualHoverTimer = window.setTimeout(function () { visualHoverReady = true; }, 220);
       }

@@ -271,18 +271,51 @@ try {
     await sleep(80);
   }
 
-  async function pressEnter(selector) {
-    await waitFor(
-      `(() => { const element = document.querySelector(${JSON.stringify(selector)}); return element && !element.disabled; })()`,
-      `${selector} enabled`
-    );
-    const focused = await evaluate(`(() => {
+  async function ensureSideDrawerOpenFor(selector) {
+    const needsDrawer = await evaluate(`(() => {
       const element = document.querySelector(${JSON.stringify(selector)});
-      if (!element) return false;
-      element.focus();
-      return document.activeElement === element;
+      const panel = element?.closest('.scene-side-panel');
+      return Boolean(panel && window.matchMedia('(max-width: 1050px)').matches && !panel.classList.contains('is-open'));
     })()`);
-    assert(focused, `Could not focus ${selector}`);
+    if (!needsDrawer) return;
+    await pressEnter('.scene-side-trigger');
+    await waitFor(
+      `(() => {
+        const panel = document.getElementById('scene-side-panel');
+        return panel?.classList.contains('is-open') === true && getComputedStyle(panel).visibility === 'visible';
+      })()`,
+      'side drawer opened and visible'
+    );
+  }
+
+  async function pressEnter(selector) {
+    if (selector !== '.scene-side-trigger') await ensureSideDrawerOpenFor(selector);
+    await waitFor(
+      `(() => {
+        const element = document.querySelector(${JSON.stringify(selector)});
+        if (!element || element.disabled) return false;
+        const rect = element.getBoundingClientRect();
+        const style = getComputedStyle(element);
+        return rect.width > 0 && rect.height > 0 && style.visibility !== 'hidden' && style.display !== 'none';
+      })()`,
+      `${selector} visible and enabled`
+    );
+    const focusState = await evaluate(`(() => {
+      const element = document.querySelector(${JSON.stringify(selector)});
+      if (!element) return { focused: false, reason: 'missing' };
+      element.focus();
+      const panel = element.closest('.scene-side-panel');
+      const card = element.closest('.visual-hover-card');
+      return {
+        focused: document.activeElement === element,
+        activeTag: document.activeElement?.tagName,
+        panelOpen: panel?.classList.contains('is-open'),
+        panelHidden: panel?.getAttribute('aria-hidden'),
+        cardHidden: card?.hidden,
+        disabled: element.disabled
+      };
+    })()`);
+    assert(focusState?.focused, `Could not focus ${selector}: ${JSON.stringify(focusState)}`);
     const key = {
       key: 'Enter',
       code: 'Enter',
@@ -299,6 +332,7 @@ try {
   }
 
   async function interactionPoint(selector) {
+    await ensureSideDrawerOpenFor(selector);
     await waitFor(
       `(() => {
         const element = document.querySelector(${JSON.stringify(selector)});
@@ -354,6 +388,7 @@ try {
 
   async function openVisualActionCard(actionId, pointer) {
     const hotspotSelector = `[data-focus-action-id=${JSON.stringify(actionId)}].visual-hotspot .map-pin-disc`;
+    const cardSelector = `[data-visual-action-card-id=${JSON.stringify(actionId)}]:not([hidden])`;
     await activateWithPointer(hotspotSelector, pointer);
     await waitFor(
       `(() => {
@@ -364,6 +399,23 @@ try {
       })()`,
       `${actionId} visual card opened with ${pointer}`
     );
+    const drawerOpen = await evaluate(`window.matchMedia('(max-width: 1050px)').matches && document.getElementById('scene-side-panel')?.classList.contains('is-open') === true`);
+    if (drawerOpen) {
+      await sleep(260);
+      await waitFor(`(() => {
+        const rect = document.getElementById('scene-side-panel')?.getBoundingClientRect();
+        return rect && Math.abs(rect.right - window.innerWidth) <= 1;
+      })()`, 'side drawer transition completed');
+    }
+    if (pointer === 'mouse') {
+      const cardPoint = await evaluate(`(() => {
+        const rect = document.querySelector(${JSON.stringify(cardSelector)})?.getBoundingClientRect();
+        return rect ? { x: rect.left + rect.width / 2, y: rect.top + Math.min(rect.height / 2, 80) } : null;
+      })()`);
+      assert(cardPoint, `${actionId} visual card has no mouse target.`);
+      await send('Input.dispatchMouseEvent', { type: 'mouseMoved', ...cardPoint });
+      await sleep(40);
+    }
   }
 
   async function chooseWithPointer(actionId, pointer, expectedMobile, evidenceName, template = 'territory') {
@@ -371,11 +423,7 @@ try {
     await assertOpenSceneCard(actionId, expectedMobile, template);
     if (evidenceName) {
       const cardSelector = `[data-visual-action-card-id=${JSON.stringify(actionId)}]:not([hidden])`;
-      if (pointer === 'mouse') {
-        await captureViewportEvidence(evidenceName, cardSelector, { minWidth: 220, minHeight: 120 });
-      } else {
-        await captureEvidence(evidenceName, cardSelector, { minWidth: 280, minHeight: 120 });
-      }
+      await captureViewportEvidence(evidenceName, cardSelector, { minWidth: 220, minHeight: 120 });
     }
     const selector = `[data-visual-action-card-id=${JSON.stringify(actionId)}]:not([hidden]) [data-action-id=${JSON.stringify(actionId)}]`;
     await activateWithPointer(selector, pointer);
@@ -388,10 +436,18 @@ try {
   }
 
   async function assertTerritoryLayout(expectedMobile) {
+    if (expectedMobile) {
+      await pressEnter('.scene-side-trigger');
+      await waitFor(`document.getElementById('scene-side-panel')?.classList.contains('is-open') === true`, 'territory side drawer open');
+      await sleep(240);
+    }
     const layout = await evaluate(`(async () => {
-      const canvas = document.querySelector('.visual-scene[data-visual-template="territory"] .visual-canvas');
+      const scene = document.querySelector('.visual-scene[data-visual-template="territory"]');
+      const canvas = scene?.querySelector('.visual-canvas');
       const map = canvas?.querySelector('.territory-map');
-      const key = canvas?.querySelector('.territory-map-key');
+      const key = document.querySelector('.scene-side-panel .territory-map-key');
+      const panel = document.getElementById('scene-side-panel');
+      const trigger = document.querySelector('.scene-side-trigger');
       const photo = map?.querySelector('[data-background-layer="photo"]');
       const residuePile = map?.querySelector('.map-residue-pile');
       const roadContext = map?.querySelector('.map-road-context');
@@ -400,10 +456,12 @@ try {
       const vegetationLine = map?.querySelector('#territory-continuity .visual-vegetation-band');
       const grazingLine = map?.querySelector('#territory-grazing .visual-grazing');
       const reviewLine = map?.querySelector('#territory-professional-line .visual-professional-line');
-      if (!canvas || !map || !key || !photo || !residuePile || !roadContext || !roadRisk || !roadLine || !vegetationLine || !grazingLine || !reviewLine) return null;
+      if (!canvas || !map || !key || !panel || !trigger || !photo || !residuePile || !roadContext || !roadRisk || !roadLine || !vegetationLine || !grazingLine || !reviewLine) return null;
       const canvasRect = canvas.getBoundingClientRect();
       const mapRect = map.getBoundingClientRect();
       const keyRect = key.getBoundingClientRect();
+      const panelRect = panel.getBoundingClientRect();
+      const triggerRect = trigger.getBoundingClientRect();
       const items = Array.from(key.querySelectorAll('.territory-map-key-item')).map((element) => {
         const rect = element.getBoundingClientRect();
         return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, height: rect.height };
@@ -439,6 +497,9 @@ try {
         canvas: { left: canvasRect.left, right: canvasRect.right },
         map: { left: mapRect.left, right: mapRect.right, top: mapRect.top, bottom: mapRect.bottom, width: mapRect.width, height: mapRect.height },
         key: { left: keyRect.left, right: keyRect.right },
+        panel: { left: panelRect.left, right: panelRect.right, top: panelRect.top, bottom: panelRect.bottom },
+        panelOpen: panel.classList.contains('is-open'),
+        trigger: { width: triggerRect.width, height: triggerRect.height },
         itemCount: items.length,
         items,
         overlaps,
@@ -461,13 +522,17 @@ try {
     assert(layout.itemCount === 5, 'Territory legend must expose five controls.');
     assert(layout.pageWidth <= layout.viewportWidth + 3, 'Territory layout has horizontal overflow.');
     assert(layout.map.left >= layout.canvas.left - 1 && layout.map.right <= layout.canvas.right + 1, 'Territory map is clipped by its canvas.');
-    assert(layout.key.left >= layout.canvas.left - 1 && layout.key.right <= layout.canvas.right + 1, 'Territory legend is clipped by its canvas.');
+    assert(layout.key.left >= layout.panel.left - 1 && layout.key.right <= layout.panel.right + 1, 'Territory menu is clipped by its side panel.');
+    assert(
+      expectedMobile ? layout.panelOpen && layout.trigger.height >= 44 : layout.panel.left >= layout.canvas.right + 8,
+      expectedMobile ? 'Territory drawer did not open from its accessible trigger.' : 'Territory menu is not positioned beside the map.'
+    );
     assert(
       layout.items.every((item) => item.left >= layout.key.left - 1 && item.right <= layout.key.right + 1),
       'A territory legend item escapes its container.'
     );
     assert(
-      layout.items.every((item) => item.height >= (expectedMobile ? 66 : 64)),
+      layout.items.every((item) => item.height >= 56),
       'Territory legend controls are smaller than their expected target size.'
     );
     assert(layout.photoHref === '/images/territory-prevention-aerial-v1.jpg', 'Territory does not use the expected photographic base.');
@@ -478,21 +543,54 @@ try {
     assert(layout.strokes.roadContext <= 7 && layout.strokes.roadRisk <= 2.7 && layout.strokes.roadLine <= 1.3, 'Territory road overlay is visually too heavy.');
     assert(layout.strokes.vegetation <= 2.3 && layout.strokes.grazing <= 1.8 && layout.strokes.review <= 2.1, 'A territory guide line is visually too heavy.');
     assert(layout.overlaps.length === 0, 'Territory pins or visible labels overlap.');
+    if (expectedMobile) {
+      await send('Input.dispatchKeyEvent', {
+        type: 'keyDown', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9, nativeVirtualKeyCode: 9, modifiers: 8
+      });
+      await send('Input.dispatchKeyEvent', {
+        type: 'keyUp', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9, nativeVirtualKeyCode: 9, modifiers: 8
+      });
+      assert(
+        await evaluate(`document.getElementById('scene-side-panel')?.contains(document.activeElement) === true`),
+        'Keyboard focus escaped the territory drawer.'
+      );
+      await send('Input.dispatchKeyEvent', {
+        type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27
+      });
+      await send('Input.dispatchKeyEvent', {
+        type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27
+      });
+      await waitFor(`document.getElementById('scene-side-panel')?.classList.contains('is-open') === false`, 'territory side drawer closed');
+      assert(
+        await evaluate(`document.activeElement === document.querySelector('.scene-side-trigger')`),
+        'Closing the territory drawer did not return keyboard focus to its trigger.'
+      );
+    }
   }
 
   async function assertHousingLayout(expectedMobile) {
+    if (expectedMobile) {
+      await pressEnter('.scene-side-trigger');
+      await waitFor(`document.getElementById('scene-side-panel')?.classList.contains('is-open') === true`, 'housing side drawer open');
+      await sleep(240);
+    }
     const layout = await evaluate(`(() => {
-      const canvas = document.querySelector('.visual-scene[data-visual-template="housing"] .visual-canvas');
+      const scene = document.querySelector('.visual-scene[data-visual-template="housing"]');
+      const canvas = scene?.querySelector('.visual-canvas');
       const map = canvas?.querySelector('.housing-plan');
-      const key = canvas?.querySelector('.housing-map-key');
+      const key = document.querySelector('.scene-side-panel .housing-map-key');
+      const panel = document.getElementById('scene-side-panel');
+      const trigger = document.querySelector('.scene-side-trigger');
       const accessRisk = map?.querySelector('#housing-local-access .housing-access-risk');
       const accessCentre = map?.querySelector('#housing-local-access .housing-access-centre');
       const canopyLink = map?.querySelector('#housing-canopy .housing-canopy-link');
       const canopyCrown = map?.querySelector('#housing-canopy .housing-canopy-crown');
-      if (!canvas || !map || !key || !accessRisk || !accessCentre || !canopyLink || !canopyCrown) return null;
+      if (!canvas || !map || !key || !panel || !trigger || !accessRisk || !accessCentre || !canopyLink || !canopyCrown) return null;
       const canvasRect = canvas.getBoundingClientRect();
       const mapRect = map.getBoundingClientRect();
       const keyRect = key.getBoundingClientRect();
+      const panelRect = panel.getBoundingClientRect();
+      const triggerRect = trigger.getBoundingClientRect();
       const items = Array.from(key.querySelectorAll('.housing-map-key-item')).map((element) => {
         const rect = element.getBoundingClientRect();
         return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, height: rect.height };
@@ -518,6 +616,9 @@ try {
         canvas: { left: canvasRect.left, right: canvasRect.right },
         map: { left: mapRect.left, right: mapRect.right, top: mapRect.top, bottom: mapRect.bottom },
         key: { left: keyRect.left, right: keyRect.right },
+        panel: { left: panelRect.left, right: panelRect.right, top: panelRect.top, bottom: panelRect.bottom },
+        panelOpen: panel.classList.contains('is-open'),
+        trigger: { width: triggerRect.width, height: triggerRect.height },
         itemCount: items.length,
         items,
         overlaps,
@@ -533,7 +634,11 @@ try {
     assert(layout.itemCount === 4, 'Housing legend must expose three actions and the house condition.');
     assert(layout.pageWidth <= layout.viewportWidth + 3, 'Housing layout has horizontal overflow.');
     assert(layout.map.left >= layout.canvas.left - 1 && layout.map.right <= layout.canvas.right + 1, 'Housing map is clipped by its canvas.');
-    assert(layout.key.left >= layout.canvas.left - 1 && layout.key.right <= layout.canvas.right + 1, 'Housing legend is clipped by its canvas.');
+    assert(layout.key.left >= layout.panel.left - 1 && layout.key.right <= layout.panel.right + 1, 'Housing menu is clipped by its side panel.');
+    assert(
+      expectedMobile ? layout.panelOpen && layout.trigger.height >= 44 : layout.panel.left >= layout.canvas.right + 8,
+      expectedMobile ? 'Housing drawer did not open from its accessible trigger.' : 'Housing menu is not positioned beside the map.'
+    );
     assert(
       layout.items.every((item) => item.left >= layout.key.left - 1 && item.right <= layout.key.right + 1),
       'A housing legend item escapes its container.'
@@ -545,6 +650,10 @@ try {
     assert(layout.overlaps.length === 0, 'Housing pins or visible labels overlap.');
     assert(layout.strokes.accessRisk <= 8 && layout.strokes.accessCentre <= 1.7, 'Housing access overlay is visually too heavy.');
     assert(layout.strokes.canopyLink <= 5 && layout.strokes.canopyCrown <= 1.6, 'Housing canopy overlay is visually too heavy.');
+    if (expectedMobile) {
+      await pressEnter('.scene-side-close');
+      await waitFor(`document.getElementById('scene-side-panel')?.classList.contains('is-open') === false`, 'housing side drawer closed');
+    }
   }
 
   async function assertCrisisLayout() {
@@ -625,44 +734,62 @@ try {
   async function assertOpenSceneCard(actionId, expectedMobile, template) {
     const geometry = await evaluate(`(() => {
       const canvas = document.querySelector(${JSON.stringify(`.visual-scene[data-visual-template="${template}"] .visual-canvas`)});
-      const key = canvas?.querySelector(${JSON.stringify(template === 'territory' ? '.territory-map-key' : '.housing-map-key')});
-      const card = canvas?.querySelector(${JSON.stringify(`[data-visual-action-card-id="${actionId}"]`)});
+      const panel = document.getElementById('scene-side-panel');
+      const key = panel?.querySelector(${JSON.stringify(template === 'territory' ? '.territory-map-key' : '.housing-map-key')});
+      const card = panel?.querySelector(${JSON.stringify(`[data-visual-action-card-id="${actionId}"]`)});
       const button = card?.querySelector('.action-button');
-      if (!canvas || !key || !card || card.hidden || !button) return null;
+      if (!canvas || !panel || !key || !card || card.hidden || !button) return null;
       const canvasRect = canvas.getBoundingClientRect();
+      const panelRect = panel.getBoundingClientRect();
       const keyRect = key.getBoundingClientRect();
       const cardRect = card.getBoundingClientRect();
       const buttonRect = button.getBoundingClientRect();
       return {
         canvas: { left: canvasRect.left, right: canvasRect.right, top: canvasRect.top, bottom: canvasRect.bottom },
+        panel: { left: panelRect.left, right: panelRect.right, top: panelRect.top, bottom: panelRect.bottom },
+        panelOpen: panel.classList.contains('is-open'),
         keyBottom: keyRect.bottom,
         card: { left: cardRect.left, right: cardRect.right, top: cardRect.top, bottom: cardRect.bottom },
-        button: { width: buttonRect.width, height: buttonRect.height }
+        button: { left: buttonRect.left, right: buttonRect.right, top: buttonRect.top, bottom: buttonRect.bottom, width: buttonRect.width, height: buttonRect.height }
       };
     })()`);
     assert(geometry, `${actionId} card is not visible.`);
     assert(
-      geometry.card.left >= geometry.canvas.left - 1 && geometry.card.right <= geometry.canvas.right + 1,
-      `${actionId} card escapes the ${template} canvas horizontally.`
+      geometry.card.left >= geometry.panel.left - 1 && geometry.card.right <= geometry.panel.right + 1,
+      `${actionId} card escapes the ${template} side panel horizontally.`
     );
     assert(
-      geometry.card.top >= geometry.canvas.top - 1 && geometry.card.bottom <= geometry.canvas.bottom + 1,
-      `${actionId} card escapes the ${template} canvas vertically.`
+      geometry.card.bottom > geometry.panel.top && geometry.card.top < geometry.panel.bottom,
+      `${actionId} card is outside the visible ${template} side panel.`
     );
     if (expectedMobile) {
+      assert(geometry.panelOpen, `${actionId} did not open the mobile side drawer.`);
       assert(geometry.card.top >= geometry.keyBottom - 1, `${actionId} mobile card overlaps the ${template} legend.`);
+    } else {
+      assert(geometry.panel.left >= geometry.canvas.right + 8, `${actionId} card is not positioned beside the ${template} map.`);
     }
-    assert(geometry.button.width > 0 && geometry.button.height > 0, `${actionId} card action is not visible.`);
+    assert(
+      geometry.button.width > 0 && geometry.button.height > 0 &&
+        geometry.button.top >= geometry.panel.top - 1 && geometry.button.bottom <= geometry.panel.bottom + 1,
+      `${actionId} card action is not visible inside the side panel.`
+    );
   }
 
   async function choose(actionId) {
     const selector = `[data-action-id=${JSON.stringify(actionId)}]`;
     await waitForSelector(selector);
-    const hotspotSelector = `[data-focus-action-id=${JSON.stringify(actionId)}]`;
-    const hasContextualHotspot = await evaluate(
-      `Boolean(document.querySelector(${JSON.stringify(hotspotSelector)}))`
-    );
-    if (hasContextualHotspot) await pressEnter(hotspotSelector);
+    const mapHotspotSelector = `[data-focus-action-id=${JSON.stringify(actionId)}].visual-hotspot`;
+    const sideHotspotSelector = `.scene-side-panel [data-focus-action-id=${JSON.stringify(actionId)}]`;
+    const useOpenSidePanel = await evaluate(`document.getElementById('scene-side-panel')?.classList.contains('is-open') === true`);
+    const hotspotSelector = useOpenSidePanel ? sideHotspotSelector : mapHotspotSelector;
+    const hasContextualHotspot = await evaluate(`Boolean(document.querySelector(${JSON.stringify(hotspotSelector)}))`);
+    if (hasContextualHotspot) {
+      await pressEnter(hotspotSelector);
+      await waitFor(
+        `(() => { const button = document.querySelector(${JSON.stringify(selector)}); return button && !button.closest('.visual-hover-card')?.hidden; })()`,
+        `${actionId} contextual card visible`
+      );
+    }
     await pressEnter(selector);
     await waitFor(
       `Boolean(document.querySelector(${JSON.stringify(
@@ -688,6 +815,7 @@ try {
   async function captureEvidence(name, selector, expected = {}) {
     if (!VISUAL_MODE) return;
     await waitForSelector(selector);
+    await ensureSideDrawerOpenFor(selector);
     const geometry = await evaluate(`(() => {
       const element = document.querySelector(${JSON.stringify(selector)});
       if (!element) return null;
@@ -731,6 +859,7 @@ try {
 
   async function captureViewportEvidence(name, selector, expected = {}) {
     if (!VISUAL_MODE) return;
+    await ensureSideDrawerOpenFor(selector);
     await waitFor(
       `(() => {
         const element = document.querySelector(${JSON.stringify(selector)});
@@ -801,7 +930,7 @@ try {
   await captureEvidence(
     'territory-initial-mobile.png',
     '.visual-scene[data-visual-template="territory"] .visual-canvas',
-    { minWidth: 300, minHeight: 240 }
+    { minWidth: 300, minHeight: 180 }
   );
   await assertTerritoryLayout(true);
   if (VISUAL_MODE) {
@@ -809,8 +938,8 @@ try {
     await assertTerritoryLayout(false);
     await captureEvidence(
       'territory-initial-desktop.png',
-      '.visual-scene[data-visual-template="territory"] .visual-canvas',
-      { minWidth: 700, minHeight: 300 }
+      '.scene-workspace',
+      { minWidth: 900, minHeight: 300 }
     );
     await setViewport(390, 844, true);
   }
@@ -838,14 +967,14 @@ try {
     await captureEvidence(
       'territory-treated-mobile.png',
       '.visual-scene[data-visual-template="territory"] .visual-canvas',
-      { minWidth: 300, minHeight: 240 }
+      { minWidth: 300, minHeight: 180 }
     );
     await setViewport(1280, 900, false);
     await assertTerritoryLayout(false);
     await captureEvidence(
       'territory-treated-desktop.png',
-      '.visual-scene[data-visual-template="territory"] .visual-canvas',
-      { minWidth: 700, minHeight: 300 }
+      '.scene-workspace',
+      { minWidth: 900, minHeight: 300 }
     );
     await setViewport(390, 844, true);
   }
@@ -855,15 +984,15 @@ try {
   await captureEvidence(
     'housing-initial-mobile.png',
     '.visual-scene[data-visual-template="housing"] .visual-canvas',
-    { minWidth: 300, minHeight: 240 }
+    { minWidth: 300, minHeight: 180 }
   );
   if (VISUAL_MODE) {
     await setViewport(1280, 900, false);
     await assertHousingLayout(false);
     await captureEvidence(
       'housing-initial-desktop.png',
-      '.visual-scene[data-visual-template="housing"] .visual-canvas',
-      { minWidth: 700, minHeight: 300 }
+      '.scene-workspace',
+      { minWidth: 900, minHeight: 300 }
     );
     await setViewport(390, 844, true);
     await assertHousingLayout(true);
@@ -893,7 +1022,7 @@ try {
   await captureEvidence(
     'housing-pruned-mobile.png',
     '.visual-scene[data-visual-template="housing"] .visual-canvas',
-    { minWidth: 300, minHeight: 240 }
+    { minWidth: 300, minHeight: 180 }
   );
   await captureEvidence(
     'housing-feedback-mobile.png',

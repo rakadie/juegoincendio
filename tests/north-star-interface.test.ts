@@ -93,6 +93,19 @@ describe('M3.8 north-star interface', () => {
     for (const label of ['Monte', 'Casa', 'Incendio', 'Final']) expect(html).toContain(`>${label}</span>`);
   });
 
+  it('places scene controls in a side panel and turns it into an accessible drawer on narrow screens', () => {
+    const html = renderPrototypePage();
+    expect(html).toContain('function sceneWorkspace(');
+    expect(html).toContain('class="scene-side-panel"');
+    expect(html).toContain('data-visual-menu-slot');
+    expect(html).toContain('arrangeVisualSideMenu()');
+    expect(html).toContain("window.matchMedia('(max-width: 1050px)')");
+    expect(html).toContain("panel.setAttribute('aria-modal', 'true')");
+    expect(html).toContain("main.setAttribute('inert', '')");
+    expect(html).toContain("event.key === 'Escape'");
+    expect(html).toContain("event.key === 'Tab'");
+  });
+
   it('meets text contrast for the primary action color', () => {
     const html = renderPrototypePage();
     const primaryAction = html.match(/--primary-action:\s*(#[0-9a-fA-F]{6})/)?.[1];
