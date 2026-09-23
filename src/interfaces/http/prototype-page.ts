@@ -969,7 +969,7 @@ export function renderPrototypePage(): string {
         .inspection-scene .visual-scene[data-visual-template="territory"] .territory-map,
         .inspection-scene .visual-scene[data-visual-template="housing"] .housing-plan {
           width: 100%;
-          height: min(690px, calc((100vw - 64px) * .53));
+          height: min(690px, 50vw);
           max-height: none;
           aspect-ratio: auto;
         }
@@ -977,7 +977,7 @@ export function renderPrototypePage(): string {
         .inspection-scene .scene-main:has(.inspection-response:not(.is-initial)) .visual-scene[data-visual-template="housing"] .housing-plan,
         .inspection-scene .scene-main:has(.inspection-action-tray .visual-hover-card:not([hidden])) .visual-scene[data-visual-template="territory"] .territory-map,
         .inspection-scene .scene-main:has(.inspection-action-tray .visual-hover-card:not([hidden])) .visual-scene[data-visual-template="housing"] .housing-plan {
-          height: min(540px, calc((100vw - 64px) * .5556));
+          height: min(540px, 50vw);
         }
         .inspection-scene .scene-main:has(.inspection-response:not(.is-initial)) :is(.territory-scene-caption, .territory-place-label, .housing-scene-caption, .housing-place-label, .housing-scene-note),
         .inspection-scene .scene-main:has(.inspection-action-tray .visual-hover-card:not([hidden])) :is(.territory-scene-caption, .territory-place-label, .housing-scene-caption, .housing-place-label, .housing-scene-note) {
