@@ -49,12 +49,12 @@ export function renderPrototypePage(): string {
         position: sticky;
         top: 0;
         z-index: 20;
-        min-height: 76px;
+        min-height: 64px;
         display: grid;
         grid-template-columns: minmax(210px, .8fr) minmax(520px, 2fr) minmax(160px, .7fr);
         align-items: center;
         gap: 22px;
-        padding: 12px clamp(16px, 3vw, 38px);
+        padding: 8px clamp(16px, 3vw, 38px);
         color: #f7fbff;
         background: linear-gradient(90deg, #061522, var(--navy) 58%, #0c2130);
         border-bottom: 1px solid #294052;
@@ -63,8 +63,8 @@ export function renderPrototypePage(): string {
 
       .brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
       .brand-mark {
-        width: 42px;
-        height: 48px;
+        width: 38px;
+        height: 42px;
         display: grid;
         place-items: center;
         flex: 0 0 auto;
@@ -470,6 +470,42 @@ export function renderPrototypePage(): string {
       .inspection-action-tray .visual-card-action p,
       .inspection-action-tray .visual-card-action small { grid-column: 1; }
       .inspection-action-tray .visual-card-action button { grid-column: 2; grid-row: 1 / 4; min-width: 150px; }
+      .scene-learning-panel { min-width: 0; }
+      .inspection-change-visual { width: 112px; display: grid; gap: 5px; }
+      .inspection-change-vignette {
+        width: 100%;
+        margin: 0;
+        overflow: hidden;
+        border: 1px solid #a8bcae;
+        border-radius: 9px;
+        background: linear-gradient(180deg, #dfead9, #f7efd9);
+      }
+      .inspection-change-vignette svg { display: block; width: 100%; height: auto; }
+      .change-ground { fill: #d8c89f; }
+      .change-plant { fill: none; stroke: #527b50; stroke-width: 3; stroke-linecap: round; }
+      .change-ink { fill: none; stroke: #23473b; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+      .change-fill { fill: #356b55; }
+      .change-accent { fill: #d8892d; }
+      .change-light { fill: #fff8df; }
+      .change-tool { transform-box: fill-box; transform-origin: 12% 86%; animation: change-tool-cut 1.15s ease-in-out infinite alternate; }
+      .change-animal-one { animation: change-graze 1.8s ease-in-out infinite alternate; }
+      .change-animal-two { animation: change-graze 2.1s .25s ease-in-out infinite alternate-reverse; }
+      .change-route-marker { animation: change-route 1.8s ease-in-out infinite; }
+      .change-benefit {
+        display: inline-flex;
+        width: fit-content;
+        margin-top: 5px;
+        padding: 3px 7px;
+        border-radius: 999px;
+        color: #24543e;
+        background: #dcebdd;
+        font-size: .68rem;
+        font-weight: 800;
+      }
+      .inspection-change-placeholder { display: none; }
+      @keyframes change-tool-cut { from { transform: rotate(-8deg); } to { transform: rotate(17deg); } }
+      @keyframes change-graze { from { transform: translateX(-2px) rotate(-1deg); } to { transform: translateX(6px) rotate(2deg); } }
+      @keyframes change-route { 0% { transform: translateX(-18px); opacity: .25; } 45%, 70% { opacity: 1; } 100% { transform: translateX(32px); opacity: .2; } }
       .summary-dashboard { display: grid; grid-template-columns: minmax(280px, .8fr) minmax(0, 1.2fr); gap: 12px; align-items: start; }
       .summary-dashboard .prevention-review { margin: 0; }
       .summary-emergency { min-width: 0; }
@@ -836,6 +872,13 @@ export function renderPrototypePage(): string {
       }
       .inspection-confirmation { color: #29483a; border-color: #9fc4ad; background: #edf7f0; }
       .inspection-confirmation p { margin: 4px 0 0; font-size: .86rem; }
+      .inspection-confirmation.has-change {
+        display: grid;
+        grid-template-columns: 112px minmax(0, 1fr);
+        align-items: center;
+        gap: 10px;
+      }
+      .inspection-confirmation-copy { min-width: 0; }
       .inspection-confirmation.is-empty { color: #5b6b64; border-color: #cbd3d0; background: #f5f7f4; }
       .inspection-selection { display: grid; align-content: start; gap: 7px; }
       .inspection-selection > strong, .prevention-area h3 { font-size: .88rem; }
@@ -904,8 +947,14 @@ export function renderPrototypePage(): string {
         main { padding-top: 4px; padding-bottom: 0; }
         .inspection-scene .scene-workspace {
           grid-template-columns: minmax(0, 1fr) minmax(220px, 248px);
+          grid-template-areas:
+            "main controls"
+            "learning controls";
           align-items: stretch;
         }
+        .inspection-scene .scene-main { grid-area: main; }
+        .inspection-scene .scene-side-panel { grid-area: controls; }
+        .inspection-scene .scene-learning-panel { grid-area: learning; }
         .inspection-scene .scene-side-panel {
           top: 84px;
           max-height: none;
@@ -950,10 +999,10 @@ export function renderPrototypePage(): string {
         .inspection-scene .inspection-selection small { grid-column: 2; grid-row: 1; text-align: right; }
         .inspection-scene .inspection-selection .selected-action-list,
         .inspection-scene .inspection-selection .selection-empty { grid-column: 1 / -1; }
-        .inspection-scene .scene-main:has(.inspection-action-tray .visual-hover-card:not([hidden])) .inspection-response {
+        .inspection-scene .scene-workspace:has(.inspection-action-tray .visual-hover-card:not([hidden])) .inspection-response {
           grid-template-columns: 1fr;
         }
-        .inspection-scene .scene-main:has(.inspection-action-tray .visual-hover-card:not([hidden])) .inspection-confirmation {
+        .inspection-scene .scene-workspace:has(.inspection-action-tray .visual-hover-card:not([hidden])) .inspection-confirmation {
           display: none;
         }
         .scene-with-side-panel .scene-heading { margin-bottom: 0; }
@@ -984,6 +1033,50 @@ export function renderPrototypePage(): string {
         .prevention-area h3 { margin-bottom: 8px; }
         .prevention-area-section + .prevention-area-section { margin-top: 9px; padding-top: 8px; }
         .prevention-area ul { gap: 4px; }
+      }
+
+      @media (min-width: 1600px) {
+        main { width: min(1740px, 100%); }
+        .scene:not(.inspection-scene), .entry { width: 100%; max-width: 1480px; margin-inline: auto; }
+        .inspection-scene .scene-workspace {
+          grid-template-columns: minmax(0, 1fr) 248px 310px;
+          grid-template-areas: "main controls learning";
+        }
+        .inspection-scene .scene-learning-panel {
+          min-height: 100%;
+          padding: 10px;
+          border: 1px solid #bac6c1;
+          border-radius: 12px;
+          background: linear-gradient(180deg, #edf5ee, #f8f4e8);
+          box-shadow: 0 7px 20px rgba(7, 23, 38, .08);
+        }
+        .inspection-scene .scene-learning-panel .inspection-response {
+          height: 100%;
+          grid-template-columns: 1fr;
+          align-content: start;
+          gap: 8px;
+          margin: 0;
+        }
+        .inspection-scene .scene-learning-panel .inspection-confirmation,
+        .inspection-scene .scene-learning-panel .inspection-selection { padding: 10px; }
+        .inspection-scene .scene-learning-panel .inspection-confirmation {
+          grid-template-columns: 1fr;
+          align-content: start;
+        }
+        .inspection-scene .scene-learning-panel .inspection-change-visual { width: 100%; }
+        .inspection-scene .scene-learning-panel .inspection-change-placeholder {
+          display: grid;
+          gap: 8px;
+          margin-bottom: 4px;
+          padding: 12px;
+          border: 1px solid #c3d1c7;
+          border-radius: 9px;
+          color: #315a4b;
+          background: rgba(255, 255, 255, .7);
+          font-size: .76rem;
+          font-weight: 800;
+        }
+        .inspection-change-placeholder svg { display: block; width: 100%; height: auto; }
       }
 
       @media (max-width: 1050px) {
@@ -1085,6 +1178,8 @@ export function renderPrototypePage(): string {
           border-left: 0;
         }
         .inspection-action-tray .visual-card-action button { grid-column: 1; grid-row: auto; width: 100%; }
+        .inspection-confirmation.has-change { grid-template-columns: 96px minmax(0, 1fr); }
+        .inspection-change-visual { width: 96px; }
         .decision-feedback { grid-template-columns: 1fr; }
         .summary-dashboard { grid-template-columns: 1fr; }
       }
@@ -1276,13 +1371,14 @@ export function renderPrototypePage(): string {
         return '<div class="scene-heading"><div class="scene-heading-copy"><p class="eyebrow">' + escapeHtml(eyebrow) + '</p><h2>' + escapeHtml(scene.title) + '</h2><p class="lead">' + escapeHtml(scene.body || '') + '</p></div>' + (badge || '') + '</div>';
       }
 
-      function sceneWorkspace(mainMarkup, panelLabel, panelIntro, panelBody, triggerLabel) {
+      function sceneWorkspace(mainMarkup, panelLabel, panelIntro, panelBody, triggerLabel, learningMarkup) {
         return '<button class="scene-side-trigger" type="button" aria-controls="scene-side-panel" aria-expanded="false">' + escapeHtml(triggerLabel) + '</button>' +
           '<div class="scene-workspace"><div class="scene-main">' + mainMarkup + '</div>' +
           '<aside class="scene-side-panel" id="scene-side-panel" aria-label="' + escapeHtml(panelLabel) + '" aria-hidden="false">' +
             '<div class="scene-side-header"><h3>' + escapeHtml(panelLabel) + '</h3><button class="scene-side-close" type="button" aria-label="Cerrar panel">Cerrar</button></div>' +
             panelIntro + '<div data-visual-menu-slot hidden></div>' + panelBody +
-          '</aside><button class="scene-side-backdrop" type="button" aria-label="Cerrar panel de opciones" hidden></button></div>';
+          '</aside>' + (learningMarkup ? '<aside class="scene-learning-panel" aria-label="Cambios y aprendizaje">' + learningMarkup + '</aside>' : '') +
+          '<button class="scene-side-backdrop" type="button" aria-label="Cerrar panel de opciones" hidden></button></div>';
       }
 
       function requestErrorMessage(payload, status) {
@@ -1293,6 +1389,46 @@ export function renderPrototypePage(): string {
         return status >= 500
           ? 'No se pudo completar la operación. Inténtalo de nuevo en unos instantes.'
           : 'No se pudo completar esta operación. Revisa la selección e inténtalo de nuevo.';
+      }
+
+      function inspectionChangeVisual(scene) {
+        const decisions = currentView.session.decisionReview.filter(function (decision) {
+          return scene.actions.some(function (action) { return action.id === decision.actionId; });
+        });
+        const lastDecision = decisions.length > 0 ? decisions[decisions.length - 1] : null;
+        if (!scene.feedback || !lastDecision) return '';
+        const actionId = lastDecision.actionId;
+        const kindByAction = {
+          'gestionar-restos-poda': 'pruning',
+          'podar-ramas-y-retirar-seco': 'pruning',
+          'crear-discontinuidades-vegetales': 'separation',
+          'separar-copas': 'separation',
+          'limpiar-margenes-caminos': 'access',
+          'despejar-accesos': 'access',
+          'activar-pastoreo-preventivo': 'grazing',
+          'evaluar-quema-tecnica': 'assessment'
+        };
+        const benefitByAction = {
+          'gestionar-restos-poda': 'Menos ramas secas que puedan arder',
+          'podar-ramas-y-retirar-seco': 'Al fuego le cuesta más subir',
+          'crear-discontinuidades-vegetales': 'El fuego encuentra un corte',
+          'separar-copas': 'El fuego salta peor entre árboles',
+          'limpiar-margenes-caminos': 'Entrada y salida más fáciles',
+          'despejar-accesos': 'Más espacio para los bomberos',
+          'activar-pastoreo-preventivo': 'Queda menos hierba seca',
+          'evaluar-quema-tecnica': 'Más información para decidir'
+        };
+        const artByKind = {
+          pruning: '<svg viewBox="0 0 180 96" aria-hidden="true" focusable="false"><path class="change-ground" d="M0 67H180V96H0z"/><path class="change-plant" d="M18 70V42m0 13-10-8m10 2 11-10M43 70V51m0 8-8-5"/><g class="change-worker"><circle class="change-accent" cx="91" cy="25" r="9"/><path class="change-fill" d="M81 37h20l7 30H75z"/><path class="change-ink" d="M84 47 65 60m16-6 19 13M82 67 75 86m22-19 9 19"/></g><g class="change-tool"><path class="change-ink" d="M64 56 45 74m5-23 14 5"/><circle class="change-light" cx="63" cy="56" r="4"/></g><path class="change-ink" d="M123 70h39m-34-9 13 9-12 10"/></svg>',
+          grazing: '<svg viewBox="0 0 180 96" aria-hidden="true" focusable="false"><path class="change-ground" d="M0 68H180V96H0z"/><path class="change-plant" d="M12 75v-18m0 8-7-8m7 4 7-9m20 23V59m0 7-6-7m6 3 7-8m113 21V56m0 8-7-8"/><g class="change-animal-one"><ellipse class="change-light" cx="75" cy="55" rx="23" ry="15"/><circle class="change-fill" cx="101" cy="57" r="10"/><path class="change-ink" d="M61 66v18m19-18v18m27-19 6 9m-17-24 7-7"/></g><g class="change-animal-two"><ellipse class="change-light" cx="129" cy="36" rx="18" ry="12"/><circle class="change-fill" cx="149" cy="39" r="8"/><path class="change-ink" d="M119 45v14m15-14v14m19-15 5 7"/></g></svg>',
+          separation: '<svg viewBox="0 0 180 96" aria-hidden="true" focusable="false"><path class="change-ground" d="M0 75H180V96H0z"/><path class="change-ink" d="M46 73V42m88 31V42"/><circle class="change-fill" cx="42" cy="32" r="25"/><circle class="change-fill" cx="138" cy="32" r="25"/><path class="change-ink change-route-marker" d="M76 36h28m-22-7-7 7 7 7m16-14 7 7-7 7"/></svg>',
+          access: '<svg viewBox="0 0 180 96" aria-hidden="true" focusable="false"><path class="change-ground" d="M0 0H180V96H0z"/><path d="M-5 82 185 22" fill="none" stroke="#fff8df" stroke-width="25"/><path d="M-5 82 185 22" fill="none" stroke="#567a65" stroke-width="3" stroke-dasharray="10 7"/><g class="change-route-marker"><rect class="change-accent" x="67" y="43" width="31" height="16" rx="4"/><path class="change-fill" d="M74 43h16l-4-9h-9z"/><circle class="change-ink" cx="75" cy="61" r="4"/><circle class="change-ink" cx="92" cy="61" r="4"/></g></svg>',
+          assessment: '<svg viewBox="0 0 180 96" aria-hidden="true" focusable="false"><path class="change-ground" d="M0 72H180V96H0z"/><circle class="change-accent" cx="62" cy="25" r="9"/><path class="change-fill" d="M52 37h20l7 34H45z"/><path class="change-ink" d="M54 69 49 87m20-18 8 18m-1-39 20 6"/><rect class="change-light" x="94" y="33" width="37" height="47" rx="4"/><path class="change-ink" d="M103 47h19m-19 10h19m-19 10h11"/><path d="m139 57 8 8 18-22" fill="none" stroke="#4f9139" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+        };
+        const kind = kindByAction[actionId] || 'assessment';
+        const benefit = benefitByAction[actionId] || 'Mejores condiciones para actuar';
+        return '<div class="inspection-change-visual"><figure class="inspection-change-vignette change-' + escapeHtml(kind) + '" role="img" aria-label="Ilustración del cambio: ' + escapeHtml(benefit) + '" data-change-action-id="' + escapeHtml(actionId) + '">' + artByKind[kind] + '</figure>' +
+          '<span class="change-benefit">' + escapeHtml(benefit) + '</span></div>';
       }
 
       function inspectionResponse(scene) {
@@ -1307,8 +1443,8 @@ export function renderPrototypePage(): string {
           ? 'Ya has elegido todas las mejoras de esta zona.'
           : 'Puedes elegir ' + remaining + ' mejora' + (remaining === 1 ? '' : 's') + ' más.';
         const confirmation = scene.feedback
-          ? '<div class="inspection-confirmation"><strong>Cambio realizado</strong><p>' + escapeHtml(scene.feedback) + '</p></div>'
-          : '<div class="inspection-confirmation is-empty"><strong>Mira y elige</strong><p>Toca un punto del mapa para saber qué ocurre allí y qué puedes mejorar.</p></div>';
+          ? '<div class="inspection-confirmation has-change">' + inspectionChangeVisual(scene) + '<div class="inspection-confirmation-copy"><strong>Cambio realizado</strong><p>' + escapeHtml(scene.feedback) + '</p></div></div>'
+          : '<div class="inspection-confirmation is-empty"><div class="inspection-change-placeholder" aria-hidden="true"><svg viewBox="0 0 240 72"><circle cx="28" cy="36" r="17" fill="#fffaf0" stroke="#315a4b" stroke-width="3"/><text x="28" y="42" text-anchor="middle" fill="#315a4b" font-size="18" font-weight="800">1</text><path d="M51 36h35" fill="none" stroke="#70947d" stroke-width="4" stroke-linecap="round"/><path d="m78 28 10 8-10 8" fill="none" stroke="#70947d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><rect x="99" y="18" width="58" height="36" rx="8" fill="#fff" stroke="#315a4b" stroke-width="3"/><path d="M114 31h28m-28 10h20" stroke="#70947d" stroke-width="3" stroke-linecap="round"/><path d="M169 36h31" fill="none" stroke="#70947d" stroke-width="4" stroke-linecap="round"/><path d="m193 28 10 8-10 8" fill="none" stroke="#70947d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="222" cy="36" r="17" fill="#e4f0df" stroke="#4f9139" stroke-width="3"/><path d="m213 36 6 6 12-14" fill="none" stroke="#4f9139" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>1. Elige · 2. Actúa · 3. Mira el cambio</span></div><div class="inspection-confirmation-copy"><strong>Mira y elige</strong><p>Toca un punto del mapa para saber qué ocurre allí y qué puedes mejorar.</p></div></div>';
         return '<section class="inspection-response" role="status" aria-live="polite" aria-atomic="true">' + confirmation +
           '<div class="inspection-selection"><strong>Mejoras elegidas</strong>' + selectedMarkup + '<small>' + remainingLabel + '</small></div></section>';
       }
@@ -1336,9 +1472,9 @@ export function renderPrototypePage(): string {
         const badge = '<div class="selection-counter"><small>Mejoras elegidas</small><strong>' + scene.selectedCount + ' / ' + scene.actionQuota + '</strong><span class="selection-remaining">' + (remaining === 0 ? 'Ya elegiste todas' : 'Puedes elegir ' + remaining + ' más') + '</span></div>';
         const intro = badge + '<p class="visual-hint">Elige un punto en el mapa o en esta lista.</p>';
         const main = '<div class="inspection-taskbar">' + escapeHtml(scene.objective) + '</div>' + visualMarkup() +
-          '<div class="inspection-action-tray" data-visual-card-slot hidden></div>' + inspectionResponse(scene);
+          '<div class="inspection-action-tray" data-visual-card-slot hidden></div>';
         return '<section class="scene scene-with-side-panel inspection-scene"><div class="scene-content">' + heading(scene, 'Prepara la zona', '') +
-          sceneWorkspace(main, 'Puntos y mejoras', intro, advanceButton(scene), 'Ver puntos y mejoras') + '</div></section>';
+          sceneWorkspace(main, 'Puntos y mejoras', intro, advanceButton(scene), 'Ver puntos y mejoras', inspectionResponse(scene)) + '</div></section>';
       }
 
       function renderSummary(scene) {

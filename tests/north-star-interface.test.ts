@@ -108,6 +108,16 @@ describe('M3.8 north-star interface', () => {
     expect(html).toContain("event.key === 'Tab'");
   });
 
+  it('shows state-driven change illustrations in a separate learning area', () => {
+    const html = renderPrototypePage();
+    expect(html).toContain('class="scene-learning-panel"');
+    expect(html).toContain('function inspectionChangeVisual(scene)');
+    expect(html).toContain('data-change-action-id');
+    expect(html).toContain("'activar-pastoreo-preventivo': 'grazing'");
+    expect(html).toContain("'evaluar-quema-tecnica': 'assessment'");
+    expect(html).toContain('@media (prefers-reduced-motion: reduce)');
+  });
+
   it('meets text contrast for the primary action color', () => {
     const html = renderPrototypePage();
     const primaryAction = html.match(/--primary-action:\s*(#[0-9a-fA-F]{6})/)?.[1];

@@ -68,6 +68,8 @@ El modelo visual es derivado, no se persiste y solo expresa estados ya interpret
 - El detalle y el botón de la actuación aparecen en una bandeja independiente bajo el mapa.
 - La confirmación de lo que cambió y el recuento de mejoras permanecen separados de las opciones.
 - Mapa, lista y teclado abren la misma actuación; solo su botón ejecuta el comando oficial.
+- A partir de 1600 px, mapa, puntos y aprendizaje ocupan tres zonas distintas para aprovechar el ancho sin aumentar la altura de la fotografía.
+- Cada actuación confirmada puede mostrar una viñeta animada y su beneficio; ambos se derivan de la última decisión real de la sesión y respetan `prefers-reduced-motion`.
 
 ## Vistas principales
 

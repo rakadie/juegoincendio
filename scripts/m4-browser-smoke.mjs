@@ -688,6 +688,37 @@ try {
     }
   }
 
+  async function assertWideInspectionLayout(template) {
+    const layout = await evaluate(`(() => {
+      const scene = document.querySelector('.inspection-scene');
+      const workspace = scene?.querySelector('.scene-workspace');
+      const canvas = scene?.querySelector(${JSON.stringify(`.visual-scene[data-visual-template="${template}"] .visual-canvas`)});
+      const controls = scene?.querySelector('.scene-side-panel');
+      const learning = scene?.querySelector('.scene-learning-panel');
+      if (!scene || !workspace || !canvas || !controls || !learning) return null;
+      const sceneRect = scene.getBoundingClientRect();
+      const canvasRect = canvas.getBoundingClientRect();
+      const controlsRect = controls.getBoundingClientRect();
+      const learningRect = learning.getBoundingClientRect();
+      return {
+        viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight,
+        pageHeight: document.documentElement.scrollHeight,
+        columns: getComputedStyle(workspace).gridTemplateColumns.split(' ').filter(Boolean).length,
+        scene: { left: sceneRect.left, right: sceneRect.right },
+        canvas: { left: canvasRect.left, right: canvasRect.right },
+        controls: { left: controlsRect.left, right: controlsRect.right },
+        learning: { left: learningRect.left, right: learningRect.right }
+      };
+    })()`);
+    assert(layout, `${template} wide inspection layout was not available.`);
+    assert(layout.viewportWidth >= 1600 && layout.columns === 3, `${template} does not use the three-zone wide layout.`);
+    assert(layout.scene.left <= 140 && layout.scene.right >= layout.viewportWidth - 140, `${template} does not use the available wide-screen space: ${JSON.stringify(layout.scene)}.`);
+    assert(layout.canvas.right + 8 <= layout.controls.left, `${template} controls overlap the map in wide layout.`);
+    assert(layout.controls.right + 8 <= layout.learning.left, `${template} learning feedback is not separated from the options.`);
+    assert(layout.pageHeight <= layout.viewportHeight, `${template} wide layout requires vertical scrolling (${layout.pageHeight} > ${layout.viewportHeight}).`);
+  }
+
   async function assertCrisisLayout() {
     const layout = await evaluate(`(async () => {
       const canvas = document.querySelector('.visual-scene[data-visual-template="crisis"] .visual-canvas');
@@ -785,7 +816,7 @@ try {
       `${label} requires vertical page scrolling (${layout.pageHeight} > ${layout.viewportHeight}).`
     );
     assert(
-      layout.sceneTop >= 74 && layout.sceneBottom <= layout.viewportHeight + 1,
+      layout.sceneTop >= 62 && layout.sceneBottom <= layout.viewportHeight + 1,
       `${label} does not fit between the journey header and the viewport bottom.`
     );
   }
@@ -1000,6 +1031,14 @@ try {
       '.scene-workspace',
       { minWidth: 900, minHeight: 300 }
     );
+    await setViewport(1920, 920, false);
+    await assertTerritoryLayout(false);
+    await assertWideInspectionLayout('territory');
+    await captureEvidence(
+      'territory-wide-desktop.png',
+      '.scene-workspace',
+      { minWidth: 1500, minHeight: 300 }
+    );
     await setViewport(390, 844, true);
   }
   await chooseWithPointer(
@@ -1071,10 +1110,14 @@ try {
       const feedback = document.querySelector('.inspection-confirmation p')?.textContent;
       const remaining = document.querySelector('.selection-remaining')?.textContent;
       const selected = document.querySelectorAll('.selected-action-chip').length;
+      const change = document.querySelector('[data-change-action-id="podar-ramas-y-retirar-seco"]');
+      const tool = change?.querySelector('.change-tool');
+      const benefit = change?.closest('.inspection-change-visual')?.querySelector('.change-benefit')?.textContent;
       return zone?.classList.contains('state-reduced') && clearance && dryFuel &&
         getComputedStyle(clearance).display !== 'none' && getComputedStyle(dryFuel).display === 'none' &&
         feedback?.includes('Al fuego le cuesta más subir a las copas') &&
-        remaining === 'Puedes elegir 1 más' && selected === 1;
+        remaining === 'Puedes elegir 1 más' && selected === 1 && change && tool &&
+        getComputedStyle(tool).animationName !== 'none' && benefit?.includes('cuesta más subir');
     })()`),
     'Housing pruning did not update the visible fuel, feedback and remaining budget.'
   );
@@ -1264,6 +1307,19 @@ try {
       'territory-card-mouse-desktop.png'
     );
     await chooseFromPointMenu('activar-pastoreo-preventivo', 'mouse', false);
+    assert(
+      await evaluate(`(() => {
+        const change = document.querySelector('[data-change-action-id="activar-pastoreo-preventivo"]');
+        const animal = change?.querySelector('.change-animal-one');
+        const benefit = change?.closest('.inspection-change-visual')?.querySelector('.change-benefit')?.textContent;
+        return Boolean(change && animal && getComputedStyle(animal).animationName !== 'none' && benefit?.includes('menos hierba seca'));
+      })()`),
+      'Preventive grazing did not show its state-driven animated benefit.'
+    );
+    await captureViewportEvidence('territory-grazing-change-desktop.png', '.inspection-response', {
+      minWidth: 700,
+      minHeight: 60
+    });
     await choose('evaluar-quema-tecnica');
     assert(
       await evaluate(`(() => {
@@ -1287,6 +1343,15 @@ try {
     await advanceAndWait('[data-action-id="podar-ramas-y-retirar-seco"]');
     await assertHousingLayout(false);
     await chooseFromPointMenu('podar-ramas-y-retirar-seco', 'keyboard', false, 'housing');
+    await setViewport(1920, 920, false);
+    await assertHousingLayout(false);
+    await assertWideInspectionLayout('housing');
+    await captureEvidence(
+      'housing-pruning-change-wide-desktop.png',
+      '.scene-workspace',
+      { minWidth: 1500, minHeight: 300 }
+    );
+    await setViewport(1280, 900, false);
     await chooseWithPointer(
       'separar-copas',
       'mouse',
@@ -1315,7 +1380,7 @@ try {
     );
     await captureViewportEvidence('journey-housing-desktop.png', '.topbar', {
       minWidth: 700,
-      minHeight: 70
+      minHeight: 60
     });
     await waitForSelector('#advance-button');
     await pressEnter('#advance-button');
@@ -1392,13 +1457,16 @@ try {
     const required = [
       'territory-initial-mobile.png',
       'territory-initial-desktop.png',
+      'territory-wide-desktop.png',
       'territory-card-touch-mobile.png',
       'territory-treated-mobile.png',
       'territory-treated-desktop.png',
       'territory-card-mouse-desktop.png',
+      'territory-grazing-change-desktop.png',
       'territory-grazing-evaluation-desktop.png',
       'housing-initial-mobile.png',
       'housing-treated-desktop.png',
+      'housing-pruning-change-wide-desktop.png',
       'journey-housing-desktop.png',
       'crisis-prepared-desktop.png',
       'crisis-prepared-mobile.png',
