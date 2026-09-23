@@ -143,7 +143,7 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
             'El fuego puede acercarse a la casa por la parte alta de los árboles.',
           action: {
             label: 'Separar las copas',
-            description: 'Podar los árboles para que sus copas no se toquen y retirar lo cortado.',
+            description: 'Separa las copas y retira las ramas cortadas.',
             feedback:
               'Copas separadas. Al fuego le cuesta más pasar de un árbol a otro.'
           }

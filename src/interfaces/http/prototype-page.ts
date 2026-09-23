@@ -148,6 +148,7 @@ export function renderPrototypePage(): string {
       main { width: min(1480px, 100%); margin: 0 auto; padding: 18px clamp(12px, 2.5vw, 34px) 14px; }
       #game { min-height: 60vh; }
       #notice { min-height: 24px; margin-top: 10px; color: var(--red); font-weight: 700; }
+      #notice:empty { display: none; }
       .loading { min-height: 62vh; display: grid; place-items: center; color: var(--muted); }
 
       .entry {
@@ -412,6 +413,63 @@ export function renderPrototypePage(): string {
       }
       .scene-side-panel .footer-actions .primary { width: 100%; }
       .scene-side-panel details { margin-top: 0; }
+      .inspection-taskbar {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 8px;
+        padding: 8px 11px;
+        border-left: 4px solid #6eaa55;
+        border-radius: 0 8px 8px 0;
+        color: #344851;
+        background: #edf3ea;
+        font-size: .82rem;
+        line-height: 1.35;
+      }
+      .inspection-taskbar::before {
+        content: 'Objetivo';
+        flex: 0 0 auto;
+        color: #315a4b;
+        font-size: .68rem;
+        font-weight: 900;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+      }
+      [data-visual-card-slot][hidden] { display: none; }
+      .inspection-action-tray { margin-top: 6px; }
+      .inspection-action-tray .visual-card-layer {
+        position: static;
+        display: grid;
+        pointer-events: auto;
+      }
+      .inspection-action-tray .visual-hover-card {
+        position: static;
+        width: 100%;
+        max-height: none;
+        display: grid;
+        grid-template-columns: minmax(170px, .55fr) minmax(190px, .8fr) minmax(280px, 1.1fr);
+        align-items: center;
+        gap: 14px;
+        overflow: visible;
+        padding: 8px 10px;
+        border-color: #9eb7aa;
+        border-left: 5px solid #3f775f;
+        box-shadow: 0 5px 15px rgba(7, 23, 38, .09);
+      }
+      .inspection-action-tray .visual-hover-card[hidden] { display: none; }
+      .inspection-action-tray .visual-explanation { margin: 0; }
+      .inspection-action-tray .visual-card-action {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 3px 10px;
+        margin: 0;
+        padding: 0 0 0 13px;
+        border-top: 0;
+        border-left: 1px solid #d7dedb;
+      }
+      .inspection-action-tray .visual-card-action p,
+      .inspection-action-tray .visual-card-action small { grid-column: 1; }
+      .inspection-action-tray .visual-card-action button { grid-column: 2; grid-row: 1 / 4; min-width: 150px; }
       .summary-dashboard { display: grid; grid-template-columns: minmax(280px, .8fr) minmax(0, 1.2fr); gap: 12px; align-items: start; }
       .summary-dashboard .prevention-review { margin: 0; }
       .summary-emergency { min-width: 0; }
@@ -752,6 +810,16 @@ export function renderPrototypePage(): string {
       button:disabled { cursor: not-allowed; opacity: .52; }
       .footer-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
       .feedback { margin-top: 14px; padding: 12px 14px; border: 1px solid #a9c9b6; border-radius: 8px; color: #234336; background: #edf7f0; }
+      .decision-feedback {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: center;
+        gap: 4px 12px;
+        margin-top: 10px;
+        border-left: 5px solid #3f775f;
+      }
+      .decision-feedback strong { white-space: nowrap; }
+      .decision-feedback p { margin: 0; font-size: .88rem; }
       .selection-counter .selection-remaining { display: block; margin-top: 3px; color: var(--muted); font-size: .72rem; }
       .inspection-response {
         display: grid;
@@ -833,7 +901,48 @@ export function renderPrototypePage(): string {
       summary { cursor: pointer; color: #3d606b; }
 
       @media (min-width: 1051px) {
-        main { padding-top: 10px; padding-bottom: 8px; }
+        main { padding-top: 4px; padding-bottom: 0; }
+        .inspection-scene .scene-workspace {
+          grid-template-columns: minmax(0, 1fr) minmax(220px, 248px);
+          align-items: stretch;
+        }
+        .inspection-scene .scene-side-panel {
+          top: 84px;
+          max-height: none;
+          overflow: visible;
+          height: 100%;
+          padding: 10px;
+          gap: 7px;
+          background: linear-gradient(180deg, #f8faf7, #edf3ee);
+          box-shadow: 0 7px 20px rgba(7, 23, 38, .09);
+        }
+        .inspection-scene .scene-side-header { padding-bottom: 6px; }
+        .inspection-scene .scene-side-panel .selection-counter { padding: 7px 9px; }
+        .inspection-scene .scene-side-panel .visual-hint { padding: 0 2px; }
+        .inspection-scene .scene-side-panel .territory-map-key,
+        .inspection-scene .scene-side-panel .housing-map-key { grid-template-columns: 1fr; gap: 5px; }
+        .inspection-scene .scene-side-panel .territory-map-key-item,
+        .inspection-scene .scene-side-panel .housing-map-key-item { min-height: 56px; padding: 6px 7px; }
+        .inspection-scene .scene-side-panel .territory-map-key-item:last-child { grid-column: auto; }
+        .inspection-scene .scene-side-panel .territory-map-key-item small,
+        .inspection-scene .scene-side-panel .housing-map-key-item small { margin-top: 2px; padding-block: 1px; }
+        .inspection-scene .inspection-response {
+          grid-template-columns: minmax(260px, .72fr) minmax(0, 1.28fr);
+          gap: 8px;
+          margin-top: 6px;
+        }
+        .inspection-scene .inspection-confirmation,
+        .inspection-scene .inspection-selection { padding: 8px 10px; }
+        .inspection-scene .inspection-confirmation p { margin-top: 2px; line-height: 1.3; }
+        .inspection-scene .inspection-selection {
+          grid-template-columns: auto minmax(0, 1fr);
+          align-items: center;
+          gap: 5px 8px;
+        }
+        .inspection-scene .inspection-selection > strong { white-space: nowrap; }
+        .inspection-scene .inspection-selection small { grid-column: 2; grid-row: 1; text-align: right; }
+        .inspection-scene .inspection-selection .selected-action-list,
+        .inspection-scene .inspection-selection .selection-empty { grid-column: 1 / -1; }
         .scene-with-side-panel .scene-heading { margin-bottom: 0; }
         .scene-with-side-panel .scene-heading-copy {
           max-width: none;
@@ -880,19 +989,19 @@ export function renderPrototypePage(): string {
         .scene-side-trigger { display: flex; }
         .scene-side-panel {
           position: fixed;
-          inset: 0 0 0 auto;
+          inset: auto 0 0 0;
           z-index: 60;
-          width: min(390px, calc(100vw - 24px));
-          height: 100dvh;
-          max-height: none;
+          width: 100%;
+          height: auto;
+          max-height: min(72dvh, 620px);
           border: 0;
-          border-left: 1px solid #aebbb5;
-          border-radius: 16px 0 0 16px;
+          border-top: 1px solid #aebbb5;
+          border-radius: 18px 18px 0 0;
           visibility: hidden;
-          transform: translateX(104%);
+          transform: translateY(104%);
           transition: transform .22s ease, visibility .22s linear;
         }
-        .scene-side-panel.is-open { visibility: visible; transform: translateX(0); }
+        .scene-side-panel.is-open { visibility: visible; transform: translateY(0); }
         .scene-side-close { display: inline-grid; place-items: center; }
         .scene-side-backdrop {
           position: fixed;
@@ -954,6 +1063,16 @@ export function renderPrototypePage(): string {
         .scene-side-panel .territory-map-key,
         .scene-side-panel .housing-map-key { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .scene-side-panel .territory-map-key-item:last-child { grid-column: 1 / -1; }
+        .inspection-taskbar { align-items: flex-start; flex-direction: column; gap: 2px; }
+        .inspection-action-tray .visual-hover-card { grid-template-columns: 1fr; gap: 7px; padding: 10px; }
+        .inspection-action-tray .visual-card-action {
+          grid-template-columns: 1fr;
+          padding: 8px 0 0;
+          border-top: 1px solid #d7dedb;
+          border-left: 0;
+        }
+        .inspection-action-tray .visual-card-action button { grid-column: 1; grid-row: auto; width: 100%; }
+        .decision-feedback { grid-template-columns: 1fr; }
         .summary-dashboard { grid-template-columns: 1fr; }
       }
 
@@ -1202,10 +1321,10 @@ export function renderPrototypePage(): string {
       function renderInspection(scene) {
         const remaining = Math.max(0, scene.actionQuota - scene.selectedCount);
         const badge = '<div class="selection-counter"><small>Mejoras elegidas</small><strong>' + scene.selectedCount + ' / ' + scene.actionQuota + '</strong><span class="selection-remaining">' + (remaining === 0 ? 'Ya elegiste todas' : 'Puedes elegir ' + remaining + ' más') + '</span></div>';
-        const intro = badge + '<div class="objective"><strong>Tu tarea:</strong> ' + escapeHtml(scene.objective) + '</div>' +
-          '<p class="visual-hint">Elige un número del mapa. Puedes usar el ratón, la tecla Tab o tocar la pantalla.</p>';
-        const main = visualMarkup() + inspectionResponse(scene);
-        return '<section class="scene scene-with-side-panel"><div class="scene-content">' + heading(scene, 'Prepara la zona', '') +
+        const intro = badge + '<p class="visual-hint">Elige un punto en el mapa o en esta lista.</p>';
+        const main = '<div class="inspection-taskbar">' + escapeHtml(scene.objective) + '</div>' + visualMarkup() +
+          '<div class="inspection-action-tray" data-visual-card-slot hidden></div>' + inspectionResponse(scene);
+        return '<section class="scene scene-with-side-panel inspection-scene"><div class="scene-content">' + heading(scene, 'Prepara la zona', '') +
           sceneWorkspace(main, 'Puntos y mejoras', intro, advanceButton(scene), 'Ver puntos y mejoras') + '</div></section>';
       }
 
@@ -1222,10 +1341,12 @@ export function renderPrototypePage(): string {
         const branch = currentView.session.branch;
         const badge = branch ? '<div class="scene-state-badge ' + escapeHtml(branch) + '"><small>Situación</small><strong>' + (branch === 'prepared' ? 'Más opciones' : 'Pocas opciones') + '</strong></div>' : '';
         const intro = badge + '<div class="objective">' + escapeHtml(scene.context) + '</div>';
-        const response = actionCards(scene) +
-          (scene.feedback ? '<div class="feedback"><strong>Esto ocurre</strong><br>' + escapeHtml(scene.feedback) + '</div>' : '') + advanceButton(scene);
+        const main = visualMarkup() + (scene.feedback
+          ? '<div class="feedback decision-feedback" role="status" aria-live="polite"><strong>Esto ocurre</strong><p>' + escapeHtml(scene.feedback) + '</p></div>'
+          : '');
+        const response = actionCards(scene) + advanceButton(scene);
         return '<section class="scene scene-with-side-panel"><div class="scene-content">' + heading(scene, 'Decide qué hacer' + (scene.difficulty ? ' · ' + scene.difficulty : ''), '') +
-          sceneWorkspace(visualMarkup(), 'Elige qué hacer', intro, response, 'Ver opciones de respuesta') + '</div></section>';
+          sceneWorkspace(main, 'Elige qué hacer', intro, response, 'Ver opciones de respuesta') + '</div></section>';
       }
 
       function renderRouter(scene) {
@@ -1285,13 +1406,16 @@ export function renderPrototypePage(): string {
 
       function arrangeVisualSideMenu() {
         const slot = game.querySelector('[data-visual-menu-slot]');
+        const cardSlot = game.querySelector('[data-visual-card-slot]');
         const visualScene = game.querySelector('.visual-scene');
         if (!slot || !visualScene) return;
         const menu = visualScene.querySelector('.territory-map-key, .housing-map-key');
         const cards = visualScene.querySelector('.visual-card-layer');
         if (menu) slot.appendChild(menu);
-        if (cards) slot.appendChild(cards);
-        slot.hidden = !menu && !cards;
+        if (cards && cardSlot) cardSlot.appendChild(cards);
+        else if (cards) slot.appendChild(cards);
+        slot.hidden = !menu;
+        if (cardSlot) cardSlot.hidden = !cards;
       }
 
       function usesSideDrawer() {
@@ -1449,7 +1573,7 @@ export function renderPrototypePage(): string {
         closeVisualCards();
         card.hidden = false;
         element.setAttribute('aria-expanded', 'true');
-        openSceneSidePanel(element, false);
+        if (card.closest('.scene-side-panel')) openSceneSidePanel(element, false);
         positionVisualCard(element, card);
         return card;
       }
@@ -1460,8 +1584,11 @@ export function renderPrototypePage(): string {
         if (!button) return;
         const card = button.closest('.action-card, .visual-hover-card');
         if (!card) return;
+        if (sourceElement && sourceElement.closest('.territory-map-key, .housing-map-key') && usesSideDrawer()) {
+          closeSceneSidePanel(false);
+        }
         if (button.disabled) { card.setAttribute('tabindex', '-1'); card.focus(); } else { button.focus(); }
-        if (sourceElement && sourceElement.closest('.territory-map-key, .housing-map-key')) {
+        if (sourceElement && sourceElement.closest('.inspection-scene')) {
           card.scrollIntoView({ block: 'nearest', behavior: 'auto' });
         }
         if (card.classList.contains('action-card')) {
@@ -1480,7 +1607,7 @@ export function renderPrototypePage(): string {
         });
         document.querySelectorAll('[data-visual-element-id]').forEach(function (element) {
           element.addEventListener('mouseenter', function () {
-            if (visualHoverReady) openVisualCard(element);
+            if (visualHoverReady && !element.closest('.inspection-scene')) openVisualCard(element);
           });
           element.addEventListener('mouseleave', scheduleVisualCardClose);
           element.addEventListener('focus', function () { openVisualCard(element); });

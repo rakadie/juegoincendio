@@ -51,7 +51,7 @@ describe('child-friendly player copy', () => {
 
   it('explains the controls with words a child can act on', () => {
     const html = renderPrototypePage();
-    expect(html).toContain('Elige un número del mapa');
+    expect(html).toContain('Elige un punto en el mapa o en esta lista');
     expect(html).toContain('Mejoras elegidas');
     expect(html).toContain('Por qué ocurrió');
     expect(html).not.toContain('Pasa sobre un punto de la escena');

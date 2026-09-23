@@ -423,7 +423,7 @@ try {
     await assertOpenSceneCard(actionId, expectedMobile, template);
     if (evidenceName) {
       const cardSelector = `[data-visual-action-card-id=${JSON.stringify(actionId)}]:not([hidden])`;
-      await captureViewportEvidence(evidenceName, cardSelector, { minWidth: 220, minHeight: 120 });
+      await captureViewportEvidence(evidenceName, cardSelector, { minWidth: 220, minHeight: 76 });
     }
     const selector = `[data-visual-action-card-id=${JSON.stringify(actionId)}]:not([hidden]) [data-action-id=${JSON.stringify(actionId)}]`;
     await activateWithPointer(selector, pointer);
@@ -432,6 +432,29 @@ try {
         `[data-action-card-id="${actionId}"].selected, [data-visual-action-card-id="${actionId}"].selected`
       )}))`,
       `${actionId} selected with ${pointer}`
+    );
+  }
+
+  async function chooseFromPointMenu(actionId, activation, expectedMobile, template = 'territory') {
+    const itemSelector = `.scene-side-panel [data-focus-action-id=${JSON.stringify(actionId)}]`;
+    if (activation === 'keyboard') await pressEnter(itemSelector);
+    else await activateWithPointer(itemSelector, activation);
+    await waitFor(
+      `(() => {
+        const card = document.querySelector(${JSON.stringify(`[data-visual-action-card-id="${actionId}"]`)});
+        return card && !card.hidden;
+      })()`,
+      `${actionId} action tray opened from the point menu with ${activation}`
+    );
+    await assertOpenSceneCard(actionId, expectedMobile, template);
+    const actionSelector = `[data-visual-action-card-id=${JSON.stringify(actionId)}]:not([hidden]) [data-action-id=${JSON.stringify(actionId)}]`;
+    if (activation === 'keyboard') await pressEnter(actionSelector);
+    else await activateWithPointer(actionSelector, activation);
+    await waitFor(
+      `Boolean(document.querySelector(${JSON.stringify(
+        `[data-action-card-id="${actionId}"].selected, [data-visual-action-card-id="${actionId}"].selected`
+      )}))`,
+      `${actionId} selected from the point menu with ${activation}`
     );
   }
 
@@ -601,6 +624,10 @@ try {
           const rect = element.getBoundingClientRect();
           return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom };
         });
+      const hitTargets = Array.from(map.querySelectorAll('.map-pin-hit-target')).map((element) => {
+        const rect = element.getBoundingClientRect();
+        return { width: rect.width, height: rect.height };
+      });
       const overlaps = [];
       for (let i = 0; i < visiblePinParts.length; i += 1) {
         for (let j = i + 1; j < visiblePinParts.length; j += 1) {
@@ -623,6 +650,7 @@ try {
         itemCount: items.length,
         items,
         overlaps,
+        hitTargets,
         strokes: {
           accessRisk: Number.parseFloat(getComputedStyle(accessRisk).strokeWidth),
           accessCentre: Number.parseFloat(getComputedStyle(accessCentre).strokeWidth),
@@ -649,6 +677,8 @@ try {
       'Housing legend controls are smaller than their expected target size.'
     );
     assert(layout.overlaps.length === 0, 'Housing pins or visible labels overlap.');
+    assert(layout.hitTargets.length === 4, 'Housing must expose four stable marker hit targets.');
+    assert(layout.hitTargets.every((target) => target.width >= 44 && target.height >= 44), 'A housing marker hit target is smaller than 44px.');
     assert(layout.strokes.accessRisk <= 8 && layout.strokes.accessCentre <= 1.7, 'Housing access overlay is visually too heavy.');
     assert(layout.strokes.canopyLink <= 5 && layout.strokes.canopyCrown <= 1.6, 'Housing canopy overlay is visually too heavy.');
     if (!expectedMobile) await assertGameplayFitsViewport('Housing inspection');
@@ -751,7 +781,7 @@ try {
     if (layout.viewportWidth <= 1050) return;
     assert(layout.footerDisplay === 'none', `${label} still shows the redundant lower session summary.`);
     assert(
-      layout.pageHeight <= layout.viewportHeight + 8,
+      layout.pageHeight <= layout.viewportHeight,
       `${label} requires vertical page scrolling (${layout.pageHeight} > ${layout.viewportHeight}).`
     );
     assert(
@@ -764,44 +794,44 @@ try {
     const geometry = await evaluate(`(() => {
       const canvas = document.querySelector(${JSON.stringify(`.visual-scene[data-visual-template="${template}"] .visual-canvas`)});
       const panel = document.getElementById('scene-side-panel');
-      const key = panel?.querySelector(${JSON.stringify(template === 'territory' ? '.territory-map-key' : '.housing-map-key')});
-      const card = panel?.querySelector(${JSON.stringify(`[data-visual-action-card-id="${actionId}"]`)});
+      const tray = document.querySelector('[data-visual-card-slot]');
+      const card = tray?.querySelector(${JSON.stringify(`[data-visual-action-card-id="${actionId}"]`)});
       const button = card?.querySelector('.action-button');
-      if (!canvas || !panel || !key || !card || card.hidden || !button) return null;
+      if (!canvas || !panel || !tray || !card || card.hidden || !button) return null;
       const canvasRect = canvas.getBoundingClientRect();
       const panelRect = panel.getBoundingClientRect();
-      const keyRect = key.getBoundingClientRect();
+      const trayRect = tray.getBoundingClientRect();
       const cardRect = card.getBoundingClientRect();
       const buttonRect = button.getBoundingClientRect();
       return {
         canvas: { left: canvasRect.left, right: canvasRect.right, top: canvasRect.top, bottom: canvasRect.bottom },
         panel: { left: panelRect.left, right: panelRect.right, top: panelRect.top, bottom: panelRect.bottom },
         panelOpen: panel.classList.contains('is-open'),
-        keyBottom: keyRect.bottom,
+        tray: { left: trayRect.left, right: trayRect.right, top: trayRect.top, bottom: trayRect.bottom },
         card: { left: cardRect.left, right: cardRect.right, top: cardRect.top, bottom: cardRect.bottom },
-        button: { left: buttonRect.left, right: buttonRect.right, top: buttonRect.top, bottom: buttonRect.bottom, width: buttonRect.width, height: buttonRect.height }
+        button: { left: buttonRect.left, right: buttonRect.right, top: buttonRect.top, bottom: buttonRect.bottom, width: buttonRect.width, height: buttonRect.height },
+        viewportHeight: window.innerHeight
       };
     })()`);
     assert(geometry, `${actionId} card is not visible.`);
     assert(
-      geometry.card.left >= geometry.panel.left - 1 && geometry.card.right <= geometry.panel.right + 1,
-      `${actionId} card escapes the ${template} side panel horizontally.`
+      geometry.card.left >= geometry.tray.left - 1 && geometry.card.right <= geometry.tray.right + 1,
+      `${actionId} card escapes the ${template} action tray horizontally.`
     );
     assert(
-      geometry.card.bottom > geometry.panel.top && geometry.card.top < geometry.panel.bottom,
-      `${actionId} card is outside the visible ${template} side panel.`
+      geometry.card.top >= geometry.canvas.bottom - 1,
+      `${actionId} card overlaps the ${template} map.`
     );
     if (expectedMobile) {
-      assert(geometry.panelOpen, `${actionId} did not open the mobile side drawer.`);
-      assert(geometry.card.top >= geometry.keyBottom - 1, `${actionId} mobile card overlaps the ${template} legend.`);
+      assert(!geometry.panelOpen, `${actionId} unnecessarily opened the mobile options sheet.`);
     } else {
-      assert(geometry.panel.left >= geometry.canvas.right + 8, `${actionId} card is not positioned beside the ${template} map.`);
+      assert(geometry.tray.left >= geometry.canvas.left - 1 && geometry.tray.right <= geometry.canvas.right + 1, `${actionId} tray is not aligned with the ${template} map.`);
     }
     assert(
-      geometry.button.width > 0 && geometry.button.height > 0 &&
-        geometry.button.top >= geometry.panel.top - 1 && geometry.button.bottom <= geometry.panel.bottom + 1,
-      `${actionId} card action is not visible inside the side panel.`
+      geometry.button.width > 0 && geometry.button.height >= 38 && geometry.button.bottom <= geometry.viewportHeight + 1,
+      `${actionId} card action is not visible in the action tray.`
     );
+    if (!expectedMobile) await assertGameplayFitsViewport(`${template} action tray`);
   }
 
   async function choose(actionId) {
@@ -978,7 +1008,7 @@ try {
     true,
     'territory-card-touch-mobile.png'
   );
-  await choose('crear-discontinuidades-vegetales');
+  await chooseFromPointMenu('crear-discontinuidades-vegetales', 'keyboard', true);
   await choose('limpiar-margenes-caminos');
   assert(
     await evaluate(`(() => {
@@ -1058,7 +1088,7 @@ try {
     '.inspection-response',
     { minWidth: 300, minHeight: 100 }
   );
-  await choose('despejar-accesos');
+  await chooseFromPointMenu('despejar-accesos', 'touch', true, 'housing');
 
   assert(
     await evaluate(`(() => {
@@ -1133,6 +1163,17 @@ try {
   }
 
   await choose('autorizar-maniobra-condicionada');
+  assert(
+    await evaluate(`(() => {
+      const feedback = document.querySelector('.decision-feedback');
+      return Boolean(feedback && feedback.closest('.scene-main') && !feedback.closest('.scene-side-panel'));
+    })()`),
+    'The decision result is mixed into the options panel instead of appearing beside the scene.'
+  );
+  await captureViewportEvidence('crisis-feedback-desktop.png', '.decision-feedback', {
+    minWidth: 300,
+    minHeight: 40
+  });
   await advanceAndWait('[data-action-id="asegurar-flancos-y-repliegue"]');
   await choose('asegurar-flancos-y-repliegue');
   await advanceAndWait('[data-action-id="defender-desde-posicion-segura"]');
@@ -1222,7 +1263,7 @@ try {
       false,
       'territory-card-mouse-desktop.png'
     );
-    await choose('activar-pastoreo-preventivo');
+    await chooseFromPointMenu('activar-pastoreo-preventivo', 'mouse', false);
     await choose('evaluar-quema-tecnica');
     assert(
       await evaluate(`(() => {
@@ -1245,7 +1286,7 @@ try {
     );
     await advanceAndWait('[data-action-id="podar-ramas-y-retirar-seco"]');
     await assertHousingLayout(false);
-    await choose('podar-ramas-y-retirar-seco');
+    await chooseFromPointMenu('podar-ramas-y-retirar-seco', 'keyboard', false, 'housing');
     await chooseWithPointer(
       'separar-copas',
       'mouse',
@@ -1361,6 +1402,7 @@ try {
       'journey-housing-desktop.png',
       'crisis-prepared-desktop.png',
       'crisis-prepared-mobile.png',
+      'crisis-feedback-desktop.png',
       'crisis-vulnerable-desktop.png',
       'crisis-vulnerable-mobile.png',
       'result-desktop.png',

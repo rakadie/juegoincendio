@@ -60,6 +60,7 @@ export function renderHousingPlanDefs(): string {
       .housing-plan #housing-local-access.state-clear .housing-clear-route-line { display: block; }
       .housing-plan .housing-access-obstructions { fill: none; stroke: #fff0cf; stroke-width: 5; stroke-linecap: round; filter: drop-shadow(0 1px 1px #513219); }
       .housing-plan .housing-condition-ring { fill: #c07832; fill-opacity: .05; stroke: #ffe1ac; stroke-width: 1.5; stroke-dasharray: 7 8; }
+      .housing-plan .map-pin-hit-target { fill: #fff; fill-opacity: .001; stroke: none; pointer-events: all; }
       .housing-plan .map-pin-halo { fill: none; stroke: #ffe2a7; stroke-width: 3; opacity: 0; }
       .housing-plan .map-pin-disc { fill: #fffaf0; stroke: #765837; stroke-width: 2.5; filter: url(#housing-pin-shadow); }
       .housing-plan .map-pin-number { fill: #67492c; font-size: 16px; font-weight: 700; text-anchor: middle; dominant-baseline: central; }
@@ -117,6 +118,7 @@ export function renderHousingPin(
 ): string {
   const infoClass = number === 'i' ? ' map-pin-info' : '';
   return `<g class="map-pin${infoClass}" data-applied="${applied}" transform="translate(${x} ${y})" aria-hidden="true">
+    <circle class="map-pin-hit-target" r="58" />
     <rect class="map-pin-label-bg" x="10" y="-16" width="${width}" height="32" rx="8" />
     <text class="map-pin-label" x="29" y="0">${label}</text>
     <circle class="map-pin-halo" r="23" />

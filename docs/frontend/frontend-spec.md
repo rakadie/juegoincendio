@@ -14,16 +14,16 @@ Fastify
 
 `GameSession` sigue siendo la única autoridad de estado. El navegador recibe vistas presentadas y envía comandos; no calcula balance, rama, resultado ni reglas causales.
 
-## Decisión visual M3
+## Decisión visual M3–M5
 
-Se adopta **SVG declarativo + HTML/CSS/JS existente** para la interfaz visual causal.
+Se adopta **fotografía de contexto + capa SVG declarativa + controles HTML/CSS/JS** para la interfaz visual causal. La fotografía aporta un territorio reconocible; la capa SVG muestra puntos, cambios y estados sin convertir la imagen en autoridad de las reglas.
 
 ### Contraste de alternativas
 
 | Alternativa | Claridad/estado | Accesibilidad | Responsive | Dependencias | Coste/riesgo | Decisión |
 |---|---|---|---|---|---|---|
-| Imagen estática + overlays | Buena para una captura, mala para muchas variantes | Media | Media | 0 | Se multiplican assets/estados | No base |
-| SVG declarativo + HTML | Alta | Alta si HTML conserva los controles | Alta | 0 | Bajo | **Elegida** |
+| Imagen estática + overlays | Alta si el estado vive en una capa declarativa | Alta con controles HTML equivalentes | Alta | 0 | Hay que validar encuadre y proporción | **Elegida para territorio y vivienda** |
+| SVG declarativo + HTML | Alta | Alta si HTML conserva los controles | Alta | 0 | Bajo | **Elegida para overlays y escenas sin foto** |
 | Canvas/Konva/Pixi | Alta | Requiere capa accesible adicional | Alta | Nuevas | Excesivo para 2D esquemático | No |
 | MapLibre/GIS | Alta para geografía real | Media | Alta | Nuevas | No existe requisito GIS | No |
 | React/Next | No mejora por sí solo la semántica | Alta | Alta | Framework completo | Segundo frontend/migración sin necesidad | No |
@@ -55,10 +55,19 @@ El modelo visual es derivado, no se persiste y solo expresa estados ya interpret
 ## Interacción
 
 - Las acciones ejecutables siguen siendo botones HTML con `actionId` oficial.
-- El SVG puede señalar una zona o mover el foco hacia la tarjeta correspondiente.
+- La escena fotográfica y su capa SVG pueden señalar una zona o mover el foco hacia la tarjeta correspondiente.
 - Clicar el dibujo no crea estado local ni ejecuta reglas ocultas.
 - Tras cada comando, la UI vuelve a renderizar la respuesta completa del servidor.
 - El mismo `visualSceneId`/base puede mostrar estados distintos; el barranco preparado y vulnerable reutilizan la misma geometría.
+
+### Composición de las escenas de prevención
+
+- La escena es el elemento dominante; sus puntos mantienen objetivos táctiles de al menos 44 × 44 px.
+- En escritorio, una lista lateral compacta ofrece una segunda vía para abrir cada punto sin reducir el mapa a una miniatura.
+- En móvil, esa lista se presenta como una hoja inferior temporal y no ocupa altura mientras se observa la escena.
+- El detalle y el botón de la actuación aparecen en una bandeja independiente bajo el mapa.
+- La confirmación de lo que cambió y el recuento de mejoras permanecen separados de las opciones.
+- Mapa, lista y teclado abren la misma actuación; solo su botón ejecuta el comando oficial.
 
 ## Vistas principales
 

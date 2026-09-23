@@ -36,6 +36,7 @@ describe('M5.3 housing and interface art direction', () => {
     expect(html).toContain('href="/images/housing-prevention-aerial-v2.jpg"');
     expect(html).toContain('class="housing-map-key"');
     expect(html.match(/class="map-pin(?: map-pin-info)?"/g)).toHaveLength(4);
+    expect(html.match(/class="map-pin-hit-target"/g)).toHaveLength(4);
   });
 
   it('changes the physical treatment state while the house remains conditioned', () => {
