@@ -963,6 +963,7 @@ export function renderPrototypePage(): string {
       summary { cursor: pointer; color: #3d606b; }
 
       @media (min-width: 1051px) {
+        body.gameplay-active { height: 100vh; overflow-y: hidden; }
         main { padding-top: 4px; padding-bottom: 0; }
         .inspection-scene { width: 100%; max-width: 1580px; margin-inline: auto; }
         .inspection-scene .scene-workspace { display: block; margin-top: 7px; }

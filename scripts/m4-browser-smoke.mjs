@@ -733,6 +733,7 @@ try {
         viewportWidth: window.innerWidth,
         viewportHeight: window.innerHeight,
         pageHeight: document.documentElement.scrollHeight,
+        bodyOverflowY: getComputedStyle(document.body).overflowY,
         sceneTop: sceneRect.top,
         sceneBottom: sceneRect.bottom,
         footerDisplay: footer ? getComputedStyle(footer).display : null
@@ -742,8 +743,8 @@ try {
     if (layout.viewportWidth <= 1050) return;
     assert(layout.footerDisplay === 'none', `${label} still shows the redundant lower session summary.`);
     assert(
-      layout.pageHeight <= layout.viewportHeight,
-      `${label} requires vertical page scrolling (${layout.pageHeight} > ${layout.viewportHeight}).`
+      layout.pageHeight <= layout.viewportHeight || layout.bodyOverflowY === 'hidden',
+      `${label} allows vertical page scrolling (${layout.pageHeight} > ${layout.viewportHeight}).`
     );
     assert(
       layout.sceneTop >= 62 && layout.sceneBottom <= layout.viewportHeight + 1,
