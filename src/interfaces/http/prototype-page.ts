@@ -933,7 +933,14 @@ export function renderPrototypePage(): string {
         }
         .inspection-scene .inspection-confirmation,
         .inspection-scene .inspection-selection { padding: 8px 10px; }
-        .inspection-scene .inspection-confirmation p { margin-top: 2px; line-height: 1.3; }
+        .inspection-scene .inspection-confirmation {
+          display: grid;
+          grid-template-columns: auto minmax(0, 1fr);
+          align-items: center;
+          gap: 8px;
+        }
+        .inspection-scene .inspection-confirmation strong { white-space: nowrap; }
+        .inspection-scene .inspection-confirmation p { margin: 0; line-height: 1.3; }
         .inspection-scene .inspection-selection {
           grid-template-columns: auto minmax(0, 1fr);
           align-items: center;
