@@ -417,7 +417,7 @@ export function renderPrototypePage(): string {
         display: flex;
         align-items: center;
         gap: 9px;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
         padding: 8px 11px;
         border-left: 4px solid #6eaa55;
         border-radius: 0 8px 8px 0;
