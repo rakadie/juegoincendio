@@ -143,7 +143,7 @@ function territorySvg(model: PresentedSceneVisualModel): string {
   const grazing = byId(model, 'territory-grazing');
   const line = byId(model, 'territory-professional-line');
 
-  return `<svg class="territory-svg territory-map" viewBox="0 0 900 500" role="group" aria-label="${escapeHtml(
+  return `<svg class="territory-svg territory-map" viewBox="0 0 900 500" preserveAspectRatio="xMidYMid slice" role="group" aria-label="${escapeHtml(
     model.ariaLabel
   )}" data-visual-base="territory-photo-v3">
     ${renderSceneArtDefs()}
@@ -170,7 +170,7 @@ function territorySvg(model: PresentedSceneVisualModel): string {
           <path class="map-fuel-gap-mark" d="M357 103 h38 M366 93 l-9 10 9 10 M386 93 l9 10 -9 10" />
         </g>
       </g>
-      ${renderTerritoryMapPin(2, 316, 86, 'Vegetación unida', 160, continuity?.selected === true)}
+      ${renderTerritoryMapPin(2, 316, 115, 'Vegetación unida', 160, continuity?.selected === true)}
     </g>
     <g id="territory-residues" class="visual-hotspot ${stateClass(residues)}"${hotspotAttributes(
       residues
@@ -210,7 +210,7 @@ function housingSvg(model: PresentedSceneVisualModel): string {
   const access = byId(model, 'housing-local-access');
   const house = byId(model, 'housing-home');
 
-  return `<svg class="territory-svg housing-plan" viewBox="0 0 900 500" role="group" aria-label="${escapeHtml(
+  return `<svg class="territory-svg housing-plan" viewBox="0 0 900 500" preserveAspectRatio="xMidYMid slice" role="group" aria-label="${escapeHtml(
     model.ariaLabel
   )}" data-visual-base="housing-photo-v3">
     ${renderSceneArtDefs()}
@@ -229,7 +229,7 @@ function housingSvg(model: PresentedSceneVisualModel): string {
           <circle cx="850" cy="440" r="5" fill="#8c572d" /><circle cx="815" cy="383" r="5" fill="#8c572d" /><circle cx="787" cy="321" r="5" fill="#8c572d" />
         </g>
       </g>
-      ${renderHousingPin(3, 718, 443, 'Acceso local', 116, access?.selected === true)}
+      ${renderHousingPin(3, 718, 390, 'Acceso local', 116, access?.selected === true)}
     </g>
     <g id="housing-canopy" class="visual-hotspot ${stateClass(canopy)}"${hotspotAttributes(
       canopy
@@ -245,7 +245,7 @@ function housingSvg(model: PresentedSceneVisualModel): string {
         <path class="housing-canopy-gap" d="M276 79 Q293 134 281 207 Q300 214 313 198 Q309 133 299 81Z" />
         <path class="housing-gap-mark" d="M154 127 l9 9 16 -20 M286 136 l9 9 16 -20" />
       </g>
-      ${renderHousingPin(2, 195, 77, 'Copas unidas', 125, canopy?.selected === true)}
+      ${renderHousingPin(2, 195, 110, 'Copas unidas', 125, canopy?.selected === true)}
     </g>
     <g id="housing-vertical-fuel" class="visual-hotspot ${stateClass(
       vertical

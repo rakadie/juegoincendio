@@ -423,7 +423,7 @@ try {
     await assertOpenSceneCard(actionId, expectedMobile, template);
     if (evidenceName) {
       const cardSelector = `[data-visual-action-card-id=${JSON.stringify(actionId)}]:not([hidden])`;
-      await captureViewportEvidence(evidenceName, cardSelector, { minWidth: 220, minHeight: 76 });
+      await captureViewportEvidence(evidenceName, cardSelector, { minWidth: 220, minHeight: 60 });
     }
     const selector = `[data-visual-action-card-id=${JSON.stringify(actionId)}]:not([hidden]) [data-action-id=${JSON.stringify(actionId)}]`;
     await activateWithPointer(selector, pointer);
@@ -436,7 +436,8 @@ try {
   }
 
   async function chooseFromPointMenu(actionId, activation, expectedMobile, template = 'territory') {
-    const itemSelector = `.scene-side-panel [data-focus-action-id=${JSON.stringify(actionId)}]`;
+    const hotspotSelector = `.visual-scene[data-visual-template=${JSON.stringify(template)}] .visual-hotspot[data-focus-action-id=${JSON.stringify(actionId)}]`;
+    const itemSelector = activation === 'keyboard' ? hotspotSelector : `${hotspotSelector} .map-pin-disc`;
     if (activation === 'keyboard') await pressEnter(itemSelector);
     else await activateWithPointer(itemSelector, activation);
     await waitFor(
@@ -444,7 +445,7 @@ try {
         const card = document.querySelector(${JSON.stringify(`[data-visual-action-card-id="${actionId}"]`)});
         return card && !card.hidden;
       })()`,
-      `${actionId} action tray opened from the point menu with ${activation}`
+      `${actionId} action tray opened from the map point with ${activation}`
     );
     await assertOpenSceneCard(actionId, expectedMobile, template);
     const actionSelector = `[data-visual-action-card-id=${JSON.stringify(actionId)}]:not([hidden]) [data-action-id=${JSON.stringify(actionId)}]`;
@@ -454,23 +455,16 @@ try {
       `Boolean(document.querySelector(${JSON.stringify(
         `[data-action-card-id="${actionId}"].selected, [data-visual-action-card-id="${actionId}"].selected`
       )}))`,
-      `${actionId} selected from the point menu with ${activation}`
+      `${actionId} selected from the map point with ${activation}`
     );
   }
 
   async function assertTerritoryLayout(expectedMobile) {
-    if (expectedMobile) {
-      await pressEnter('.scene-side-trigger');
-      await waitFor(`document.getElementById('scene-side-panel')?.classList.contains('is-open') === true`, 'territory side drawer open');
-      await sleep(240);
-    }
     const layout = await evaluate(`(async () => {
       const scene = document.querySelector('.visual-scene[data-visual-template="territory"]');
       const canvas = scene?.querySelector('.visual-canvas');
       const map = canvas?.querySelector('.territory-map');
-      const key = document.querySelector('.scene-side-panel .territory-map-key');
-      const panel = document.getElementById('scene-side-panel');
-      const trigger = document.querySelector('.scene-side-trigger');
+      const key = document.querySelector('.inspection-hidden-menu .territory-map-key');
       const photo = map?.querySelector('[data-background-layer="photo"]');
       const residuePile = map?.querySelector('.map-residue-pile');
       const roadContext = map?.querySelector('.map-road-context');
@@ -479,16 +473,9 @@ try {
       const vegetationLine = map?.querySelector('#territory-continuity .visual-vegetation-band');
       const grazingLine = map?.querySelector('#territory-grazing .visual-grazing');
       const reviewLine = map?.querySelector('#territory-professional-line .visual-professional-line');
-      if (!canvas || !map || !key || !panel || !trigger || !photo || !residuePile || !roadContext || !roadRisk || !roadLine || !vegetationLine || !grazingLine || !reviewLine) return null;
+      if (!canvas || !map || !key || !photo || !residuePile || !roadContext || !roadRisk || !roadLine || !vegetationLine || !grazingLine || !reviewLine) return null;
       const canvasRect = canvas.getBoundingClientRect();
       const mapRect = map.getBoundingClientRect();
-      const keyRect = key.getBoundingClientRect();
-      const panelRect = panel.getBoundingClientRect();
-      const triggerRect = trigger.getBoundingClientRect();
-      const items = Array.from(key.querySelectorAll('.territory-map-key-item')).map((element) => {
-        const rect = element.getBoundingClientRect();
-        return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, height: rect.height };
-      });
       const visiblePinParts = Array.from(map.querySelectorAll('.map-pin')).flatMap((pin, pinIndex) =>
         Array.from(pin.querySelectorAll('.map-pin-disc, .map-pin-label-bg')).flatMap((element) => {
           const rect = element.getBoundingClientRect();
@@ -519,12 +506,14 @@ try {
         pageWidth: document.documentElement.scrollWidth,
         canvas: { left: canvasRect.left, right: canvasRect.right },
         map: { left: mapRect.left, right: mapRect.right, top: mapRect.top, bottom: mapRect.bottom, width: mapRect.width, height: mapRect.height },
-        key: { left: keyRect.left, right: keyRect.right },
-        panel: { left: panelRect.left, right: panelRect.right, top: panelRect.top, bottom: panelRect.bottom },
-        panelOpen: panel.classList.contains('is-open'),
-        trigger: { width: triggerRect.width, height: triggerRect.height },
-        itemCount: items.length,
-        items,
+        keyHidden: getComputedStyle(key.closest('.inspection-hidden-menu')).display === 'none',
+        itemCount: key.querySelectorAll('.territory-map-key-item').length,
+        visibleSidePanels: Array.from(document.querySelectorAll('.inspection-scene .scene-side-panel')).filter((element) => {
+          const rect = element.getBoundingClientRect();
+          return rect.width > 0 && rect.height > 0;
+        }).length,
+        directControls: map.querySelectorAll('.visual-hotspot[tabindex="0"]').length,
+        pinParts: visiblePinParts,
         overlaps,
         hitTargets,
         residue: { width: residueRect.width, height: residueRect.height },
@@ -542,22 +531,12 @@ try {
       };
     })()`);
     assert(layout, 'Territory layout was not available.');
-    assert(layout.itemCount === 5, 'Territory legend must expose five controls.');
+    assert(layout.itemCount === 5 && layout.keyHidden, 'Territory must keep a hidden semantic legend for state synchronisation.');
+    assert(layout.directControls === 5, 'Territory must expose five direct controls on the map.');
+    assert(layout.visibleSidePanels === 0, 'Territory still reserves space for a right-hand card panel.');
     assert(layout.pageWidth <= layout.viewportWidth + 3, 'Territory layout has horizontal overflow.');
     assert(layout.map.left >= layout.canvas.left - 1 && layout.map.right <= layout.canvas.right + 1, 'Territory map is clipped by its canvas.');
-    assert(layout.key.left >= layout.panel.left - 1 && layout.key.right <= layout.panel.right + 1, 'Territory menu is clipped by its side panel.');
-    assert(
-      expectedMobile ? layout.panelOpen && layout.trigger.height >= 44 : layout.panel.left >= layout.canvas.right + 8,
-      expectedMobile ? 'Territory drawer did not open from its accessible trigger.' : 'Territory menu is not positioned beside the map.'
-    );
-    assert(
-      layout.items.every((item) => item.left >= layout.key.left - 1 && item.right <= layout.key.right + 1),
-      'A territory legend item escapes its container.'
-    );
-    assert(
-      layout.items.every((item) => item.height >= 56),
-      'Territory legend controls are smaller than their expected target size.'
-    );
+    assert(layout.pinParts.every((part) => part.left >= layout.map.left - 1 && part.right <= layout.map.right + 1 && part.top >= layout.map.top - 1 && part.bottom <= layout.map.bottom + 1), 'A territory marker or label is cropped by the panoramic map.');
     assert(layout.photoHref === '/images/territory-prevention-aerial-v1.jpg', 'Territory does not use the expected photographic base.');
     assert(layout.photoOk && layout.photoType?.startsWith('image/jpeg'), 'Territory photograph did not load as JPEG.');
     assert(layout.hitTargets.length === 5, 'Territory must expose five stable marker hit targets.');
@@ -567,63 +546,29 @@ try {
     assert(layout.strokes.vegetation <= 2.3 && layout.strokes.grazing <= 1.8 && layout.strokes.review <= 2.1, 'A territory guide line is visually too heavy.');
     assert(layout.overlaps.length === 0, 'Territory pins or visible labels overlap.');
     if (!expectedMobile) await assertGameplayFitsViewport('Territory inspection');
-    if (expectedMobile) {
-      await send('Input.dispatchKeyEvent', {
-        type: 'keyDown', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9, nativeVirtualKeyCode: 9, modifiers: 8
-      });
-      await send('Input.dispatchKeyEvent', {
-        type: 'keyUp', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9, nativeVirtualKeyCode: 9, modifiers: 8
-      });
-      assert(
-        await evaluate(`document.getElementById('scene-side-panel')?.contains(document.activeElement) === true`),
-        'Keyboard focus escaped the territory drawer.'
-      );
-      await send('Input.dispatchKeyEvent', {
-        type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27
-      });
-      await send('Input.dispatchKeyEvent', {
-        type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27
-      });
-      await waitFor(`document.getElementById('scene-side-panel')?.classList.contains('is-open') === false`, 'territory side drawer closed');
-      assert(
-        await evaluate(`document.activeElement === document.querySelector('.scene-side-trigger')`),
-        'Closing the territory drawer did not return keyboard focus to its trigger.'
-      );
-    }
   }
 
   async function assertHousingLayout(expectedMobile) {
-    if (expectedMobile) {
-      await pressEnter('.scene-side-trigger');
-      await waitFor(`document.getElementById('scene-side-panel')?.classList.contains('is-open') === true`, 'housing side drawer open');
-      await sleep(240);
-    }
     const layout = await evaluate(`(() => {
       const scene = document.querySelector('.visual-scene[data-visual-template="housing"]');
       const canvas = scene?.querySelector('.visual-canvas');
       const map = canvas?.querySelector('.housing-plan');
-      const key = document.querySelector('.scene-side-panel .housing-map-key');
-      const panel = document.getElementById('scene-side-panel');
-      const trigger = document.querySelector('.scene-side-trigger');
+      const key = document.querySelector('.inspection-hidden-menu .housing-map-key');
       const accessRisk = map?.querySelector('#housing-local-access .housing-access-risk');
       const accessCentre = map?.querySelector('#housing-local-access .housing-access-centre');
       const canopyLink = map?.querySelector('#housing-canopy .housing-canopy-link');
       const canopyCrown = map?.querySelector('#housing-canopy .housing-canopy-crown');
-      if (!canvas || !map || !key || !panel || !trigger || !accessRisk || !accessCentre || !canopyLink || !canopyCrown) return null;
+      if (!canvas || !map || !key || !accessRisk || !accessCentre || !canopyLink || !canopyCrown) return null;
       const canvasRect = canvas.getBoundingClientRect();
       const mapRect = map.getBoundingClientRect();
-      const keyRect = key.getBoundingClientRect();
-      const panelRect = panel.getBoundingClientRect();
-      const triggerRect = trigger.getBoundingClientRect();
-      const items = Array.from(key.querySelectorAll('.housing-map-key-item')).map((element) => {
-        const rect = element.getBoundingClientRect();
-        return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, height: rect.height };
-      });
-      const visiblePinParts = Array.from(map.querySelectorAll('.map-pin'))
-        .map((element) => {
+      const visiblePinParts = Array.from(map.querySelectorAll('.map-pin')).flatMap((pin, pinIndex) =>
+        Array.from(pin.querySelectorAll('.map-pin-disc, .map-pin-label-bg')).flatMap((element) => {
           const rect = element.getBoundingClientRect();
-          return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom };
-        });
+          return rect.width === 0 || rect.height === 0
+            ? []
+            : [{ pinIndex, left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom }];
+        })
+      );
       const hitTargets = Array.from(map.querySelectorAll('.map-pin-hit-target')).map((element) => {
         const rect = element.getBoundingClientRect();
         return { width: rect.width, height: rect.height };
@@ -633,6 +578,7 @@ try {
         for (let j = i + 1; j < visiblePinParts.length; j += 1) {
           const a = visiblePinParts[i];
           const b = visiblePinParts[j];
+          if (a.pinIndex === b.pinIndex) continue;
           if (a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top) {
             overlaps.push([i, j]);
           }
@@ -643,12 +589,14 @@ try {
         pageWidth: document.documentElement.scrollWidth,
         canvas: { left: canvasRect.left, right: canvasRect.right },
         map: { left: mapRect.left, right: mapRect.right, top: mapRect.top, bottom: mapRect.bottom },
-        key: { left: keyRect.left, right: keyRect.right },
-        panel: { left: panelRect.left, right: panelRect.right, top: panelRect.top, bottom: panelRect.bottom },
-        panelOpen: panel.classList.contains('is-open'),
-        trigger: { width: triggerRect.width, height: triggerRect.height },
-        itemCount: items.length,
-        items,
+        keyHidden: getComputedStyle(key.closest('.inspection-hidden-menu')).display === 'none',
+        itemCount: key.querySelectorAll('.housing-map-key-item').length,
+        visibleSidePanels: Array.from(document.querySelectorAll('.inspection-scene .scene-side-panel')).filter((element) => {
+          const rect = element.getBoundingClientRect();
+          return rect.width > 0 && rect.height > 0;
+        }).length,
+        directControls: map.querySelectorAll('.visual-hotspot[tabindex="0"]').length,
+        pinParts: visiblePinParts,
         overlaps,
         hitTargets,
         strokes: {
@@ -660,62 +608,44 @@ try {
       };
     })()`);
     assert(layout, 'Housing layout was not available.');
-    assert(layout.itemCount === 4, 'Housing legend must expose three actions and the house condition.');
+    assert(layout.itemCount === 4 && layout.keyHidden, 'Housing must keep a hidden semantic legend for state synchronisation.');
+    assert(layout.directControls === 4, 'Housing must expose its four direct map controls.');
+    assert(layout.visibleSidePanels === 0, 'Housing still reserves space for a right-hand card panel.');
     assert(layout.pageWidth <= layout.viewportWidth + 3, 'Housing layout has horizontal overflow.');
     assert(layout.map.left >= layout.canvas.left - 1 && layout.map.right <= layout.canvas.right + 1, 'Housing map is clipped by its canvas.');
-    assert(layout.key.left >= layout.panel.left - 1 && layout.key.right <= layout.panel.right + 1, 'Housing menu is clipped by its side panel.');
-    assert(
-      expectedMobile ? layout.panelOpen && layout.trigger.height >= 44 : layout.panel.left >= layout.canvas.right + 8,
-      expectedMobile ? 'Housing drawer did not open from its accessible trigger.' : 'Housing menu is not positioned beside the map.'
-    );
-    assert(
-      layout.items.every((item) => item.left >= layout.key.left - 1 && item.right <= layout.key.right + 1),
-      'A housing legend item escapes its container.'
-    );
-    assert(
-      layout.items.every((item) => item.height >= (expectedMobile ? 52 : 48)),
-      'Housing legend controls are smaller than their expected target size.'
-    );
+    assert(layout.pinParts.every((part) => part.left >= layout.map.left - 1 && part.right <= layout.map.right + 1 && part.top >= layout.map.top - 1 && part.bottom <= layout.map.bottom + 1), 'A housing marker or label is cropped by the panoramic map.');
     assert(layout.overlaps.length === 0, 'Housing pins or visible labels overlap.');
     assert(layout.hitTargets.length === 4, 'Housing must expose four stable marker hit targets.');
     assert(layout.hitTargets.every((target) => target.width >= 44 && target.height >= 44), 'A housing marker hit target is smaller than 44px.');
     assert(layout.strokes.accessRisk <= 8 && layout.strokes.accessCentre <= 1.7, 'Housing access overlay is visually too heavy.');
     assert(layout.strokes.canopyLink <= 5 && layout.strokes.canopyCrown <= 1.6, 'Housing canopy overlay is visually too heavy.');
     if (!expectedMobile) await assertGameplayFitsViewport('Housing inspection');
-    if (expectedMobile) {
-      await pressEnter('.scene-side-close');
-      await waitFor(`document.getElementById('scene-side-panel')?.classList.contains('is-open') === false`, 'housing side drawer closed');
-    }
   }
 
   async function assertWideInspectionLayout(template) {
     const layout = await evaluate(`(() => {
       const scene = document.querySelector('.inspection-scene');
-      const workspace = scene?.querySelector('.scene-workspace');
       const canvas = scene?.querySelector(${JSON.stringify(`.visual-scene[data-visual-template="${template}"] .visual-canvas`)});
-      const controls = scene?.querySelector('.scene-side-panel');
-      const learning = scene?.querySelector('.scene-learning-panel');
-      if (!scene || !workspace || !canvas || !controls || !learning) return null;
+      if (!scene || !canvas) return null;
       const sceneRect = scene.getBoundingClientRect();
       const canvasRect = canvas.getBoundingClientRect();
-      const controlsRect = controls.getBoundingClientRect();
-      const learningRect = learning.getBoundingClientRect();
       return {
         viewportWidth: window.innerWidth,
         viewportHeight: window.innerHeight,
         pageHeight: document.documentElement.scrollHeight,
-        columns: getComputedStyle(workspace).gridTemplateColumns.split(' ').filter(Boolean).length,
         scene: { left: sceneRect.left, right: sceneRect.right },
         canvas: { left: canvasRect.left, right: canvasRect.right },
-        controls: { left: controlsRect.left, right: controlsRect.right },
-        learning: { left: learningRect.left, right: learningRect.right }
+        visibleRightPanels: Array.from(scene.querySelectorAll('.scene-side-panel, .scene-learning-panel')).filter((element) => {
+          const rect = element.getBoundingClientRect();
+          return rect.width > 0 && rect.height > 0;
+        }).length
       };
     })()`);
     assert(layout, `${template} wide inspection layout was not available.`);
-    assert(layout.viewportWidth >= 1600 && layout.columns === 3, `${template} does not use the three-zone wide layout.`);
-    assert(layout.scene.left <= 140 && layout.scene.right >= layout.viewportWidth - 140, `${template} does not use the available wide-screen space: ${JSON.stringify(layout.scene)}.`);
-    assert(layout.canvas.right + 8 <= layout.controls.left, `${template} controls overlap the map in wide layout.`);
-    assert(layout.controls.right + 8 <= layout.learning.left, `${template} learning feedback is not separated from the options.`);
+    assert(layout.viewportWidth >= 1600, `${template} wide inspection was not tested at a wide viewport.`);
+    assert(layout.visibleRightPanels === 0, `${template} still shows card columns to the right of the photograph.`);
+    assert(layout.scene.left <= 190 && layout.scene.right >= layout.viewportWidth - 190, `${template} does not use the available wide-screen space: ${JSON.stringify(layout.scene)}.`);
+    assert(layout.canvas.left <= layout.scene.left + 30 && layout.canvas.right >= layout.scene.right - 30, `${template} photograph does not span the inspection scene.`);
     assert(layout.pageHeight <= layout.viewportHeight, `${template} wide layout requires vertical scrolling (${layout.pageHeight} > ${layout.viewportHeight}).`);
   }
 
@@ -824,20 +754,16 @@ try {
   async function assertOpenSceneCard(actionId, expectedMobile, template) {
     const geometry = await evaluate(`(() => {
       const canvas = document.querySelector(${JSON.stringify(`.visual-scene[data-visual-template="${template}"] .visual-canvas`)});
-      const panel = document.getElementById('scene-side-panel');
       const tray = document.querySelector('[data-visual-card-slot]');
       const card = tray?.querySelector(${JSON.stringify(`[data-visual-action-card-id="${actionId}"]`)});
       const button = card?.querySelector('.action-button');
-      if (!canvas || !panel || !tray || !card || card.hidden || !button) return null;
+      if (!canvas || !tray || !card || card.hidden || !button) return null;
       const canvasRect = canvas.getBoundingClientRect();
-      const panelRect = panel.getBoundingClientRect();
       const trayRect = tray.getBoundingClientRect();
       const cardRect = card.getBoundingClientRect();
       const buttonRect = button.getBoundingClientRect();
       return {
         canvas: { left: canvasRect.left, right: canvasRect.right, top: canvasRect.top, bottom: canvasRect.bottom },
-        panel: { left: panelRect.left, right: panelRect.right, top: panelRect.top, bottom: panelRect.bottom },
-        panelOpen: panel.classList.contains('is-open'),
         tray: { left: trayRect.left, right: trayRect.right, top: trayRect.top, bottom: trayRect.bottom },
         card: { left: cardRect.left, right: cardRect.right, top: cardRect.top, bottom: cardRect.bottom },
         button: { left: buttonRect.left, right: buttonRect.right, top: buttonRect.top, bottom: buttonRect.bottom, width: buttonRect.width, height: buttonRect.height },
@@ -853,9 +779,7 @@ try {
       geometry.card.top >= geometry.canvas.bottom - 1,
       `${actionId} card overlaps the ${template} map.`
     );
-    if (expectedMobile) {
-      assert(!geometry.panelOpen, `${actionId} unnecessarily opened the mobile options sheet.`);
-    } else {
+    if (!expectedMobile) {
       assert(geometry.tray.left >= geometry.canvas.left - 1 && geometry.tray.right <= geometry.canvas.right + 1, `${actionId} tray is not aligned with the ${template} map.`);
     }
     assert(
@@ -1051,9 +975,9 @@ try {
   await choose('limpiar-margenes-caminos');
   assert(
     await evaluate(`(() => {
-      const counter = document.querySelector('.selection-counter strong')?.textContent.trim();
+      const counter = document.querySelector('.inspection-taskbar-count')?.textContent.trim();
       const cards = Array.from(document.querySelectorAll('[data-visual-action-card-id]'));
-      return counter === '3 / 3' && cards.filter((card) => card.classList.contains('selected')).length === 3 &&
+      return counter === '3 / 3 mejoras' && cards.filter((card) => card.classList.contains('selected')).length === 3 &&
         cards.every((card) => card.querySelector('.action-button')?.disabled === true) &&
         Boolean(document.getElementById('advance-button'));
     })()`),
@@ -1108,7 +1032,7 @@ try {
       const clearance = zone?.querySelector('.housing-clearance');
       const dryFuel = zone?.querySelector('.housing-dry-fuel');
       const feedback = document.querySelector('.inspection-confirmation p')?.textContent;
-      const remaining = document.querySelector('.selection-remaining')?.textContent;
+      const remaining = document.querySelector('.inspection-selection small')?.textContent;
       const selected = document.querySelectorAll('.selected-action-chip').length;
       const change = document.querySelector('[data-change-action-id="podar-ramas-y-retirar-seco"]');
       const tool = change?.querySelector('.change-tool');
@@ -1116,7 +1040,7 @@ try {
       return zone?.classList.contains('state-reduced') && clearance && dryFuel &&
         getComputedStyle(clearance).display !== 'none' && getComputedStyle(dryFuel).display === 'none' &&
         feedback?.includes('Al fuego le cuesta más subir a las copas') &&
-        remaining === 'Puedes elegir 1 más' && selected === 1 && change && tool &&
+        remaining === 'Puedes elegir 1 mejora más.' && selected === 1 && change && tool &&
         getComputedStyle(tool).animationName !== 'none' && benefit?.includes('cuesta más subir');
     })()`),
     'Housing pruning did not update the visible fuel, feedback and remaining budget.'
@@ -1138,11 +1062,11 @@ try {
       const access = document.getElementById('housing-local-access');
       const obstructions = access?.querySelector('.housing-access-obstructions');
       const route = access?.querySelector('.housing-clear-route');
-      const counter = document.querySelector('.selection-counter strong')?.textContent.trim();
+      const counter = document.querySelector('.inspection-taskbar-count')?.textContent.trim();
       const cards = Array.from(document.querySelectorAll('[data-visual-action-card-id]'));
       return access?.classList.contains('state-clear') && obstructions && route &&
         getComputedStyle(obstructions).display === 'none' && getComputedStyle(route).display !== 'none' &&
-        counter === '2 / 2' && cards.filter((card) => card.classList.contains('selected')).length === 2 &&
+        counter === '2 / 2 mejoras' && cards.filter((card) => card.classList.contains('selected')).length === 2 &&
         cards.every((card) => card.querySelector('.action-button')?.disabled === true) &&
         Boolean(document.getElementById('advance-button'));
     })()`),

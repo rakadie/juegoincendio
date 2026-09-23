@@ -109,7 +109,7 @@ export function renderTerritoryMapBase(): string {
     <rect width="900" height="500" fill="#7d775d" />
     <image class="territory-photo-layer territory-photo-background" data-background-layer="photo" href="${TERRITORY_BACKGROUND_IMAGE}" x="0" y="0" width="900" height="500" preserveAspectRatio="xMidYMid slice" />
     <rect class="territory-photo-layer territory-photo-wash" width="900" height="500" />
-    <g transform="translate(24 22)">
+    <g transform="translate(24 60)">
       <rect class="territory-scene-caption" width="226" height="42" rx="10" />
       <text class="territory-place-label" x="18" y="27">FINCAS Y MONTE</text>
     </g>

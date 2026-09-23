@@ -41,8 +41,8 @@ describe('M3.8 north-star interface', () => {
 
   it('keeps inspections visual-first and exposes the official selection quota', () => {
     const html = renderPrototypePage();
-    expect(html).toContain('class="selection-counter"');
-    expect(html).toContain('Mejoras elegidas');
+    expect(html).toContain('class="inspection-taskbar-count"');
+    expect(html).toContain("scene.selectedCount + ' / ' + scene.actionQuota + ' mejoras'");
     expect(html).toContain('function visualMarkup()');
     expect(html).toContain('function actionCards(scene)');
     expect(html).toContain('function hydrateVisualActionCards(scene)');
@@ -93,24 +93,25 @@ describe('M3.8 north-star interface', () => {
     for (const label of ['Monte', 'Casa', 'Incendio', 'Final']) expect(html).toContain(`>${label}</span>`);
   });
 
-  it('separates inspection actions from the compact point menu and uses an accessible sheet on narrow screens', () => {
+  it('lets the prevention photograph span the scene and uses its points as the controls', () => {
     const html = renderPrototypePage();
-    expect(html).toContain('function sceneWorkspace(');
-    expect(html).toContain('class="scene-side-panel"');
+    const inspectionRenderer = html.slice(
+      html.indexOf('function renderInspection(scene)'),
+      html.indexOf('function renderSummary(scene)')
+    );
     expect(html).toContain('data-visual-menu-slot');
     expect(html).toContain('data-visual-card-slot');
     expect(html).toContain('inspection-action-tray');
     expect(html).toContain('arrangeVisualSideMenu()');
-    expect(html).toContain("window.matchMedia('(max-width: 1050px)')");
-    expect(html).toContain("panel.setAttribute('aria-modal', 'true')");
-    expect(html).toContain("main.setAttribute('inert', '')");
-    expect(html).toContain("event.key === 'Escape'");
-    expect(html).toContain("event.key === 'Tab'");
+    expect(html).toContain('.inspection-hidden-menu { display: none !important; }');
+    expect(html).toContain('height: min(690px, calc((100vw - 64px) * .5556));');
+    expect(inspectionRenderer).not.toContain('sceneWorkspace(');
+    expect(inspectionRenderer).not.toContain('scene-side-panel');
   });
 
   it('shows state-driven change illustrations in a separate learning area', () => {
     const html = renderPrototypePage();
-    expect(html).toContain('class="scene-learning-panel"');
+    expect(html).toContain('class="inspection-learning"');
     expect(html).toContain('function inspectionChangeVisual(scene)');
     expect(html).toContain('data-change-action-id');
     expect(html).toContain("'activar-pastoreo-preventivo': 'grazing'");

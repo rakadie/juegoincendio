@@ -63,12 +63,12 @@ El modelo visual es derivado, no se persiste y solo expresa estados ya interpret
 ### Composición de las escenas de prevención
 
 - La escena es el elemento dominante; sus puntos mantienen objetivos táctiles de al menos 44 × 44 px.
-- En escritorio, una lista lateral compacta ofrece una segunda vía para abrir cada punto sin reducir el mapa a una miniatura.
-- En móvil, esa lista se presenta como una hoja inferior temporal y no ocupa altura mientras se observa la escena.
+- En prevención, la fotografía ocupa todo el ancho útil: no hay una columna de tarjetas a su derecha. Los puntos numerados del propio mapa son controles accesibles con ratón, teclado y toque.
+- En móvil, la fotografía conserva los puntos numerados como controles táctiles amplios; no aparece un menú duplicado.
 - El detalle y el botón de la actuación aparecen en una bandeja independiente bajo el mapa.
 - La confirmación de lo que cambió y el recuento de mejoras permanecen separados de las opciones.
-- Mapa, lista y teclado abren la misma actuación; solo su botón ejecuta el comando oficial.
-- A partir de 1600 px, mapa, puntos y aprendizaje ocupan tres zonas distintas para aprovechar el ancho sin aumentar la altura de la fotografía.
+- Ratón, teclado y toque abren la misma actuación desde el mapa; solo su botón ejecuta el comando oficial.
+- En pantallas anchas, la escena preventiva se limita a un ancho panorámico legible y la fotografía rellena ese espacio. La actuación activa y el aprendizaje aparecen debajo únicamente cuando existen, sin competir con el mapa.
 - Cada actuación confirmada puede mostrar una viñeta animada y su beneficio; ambos se derivan de la última decisión real de la sesión y respetan `prefers-reduced-motion`.
 
 ## Vistas principales

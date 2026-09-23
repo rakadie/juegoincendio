@@ -81,6 +81,7 @@ export function renderHousingPlanDefs(): string {
         .housing-plan .map-pin-number { font-size: 23px; }
         .housing-plan .housing-place-label { font-size: 16px; letter-spacing: 1px; }
         .housing-plan .housing-scene-note { display: none; }
+        .housing-plan .housing-scale-caption { display: none; }
       }
     </style>
   </defs>`;
@@ -91,12 +92,12 @@ export function renderHousingPlanBase(): string {
     <rect width="900" height="500" fill="#c9c19f" />
     <image class="housing-photo-layer housing-photo-background" data-background-layer="photo" href="${HOUSING_BACKGROUND_IMAGE}" x="0" y="0" width="900" height="500" preserveAspectRatio="xMidYMid slice" />
     <rect class="housing-photo-layer housing-photo-wash" width="900" height="500" />
-    <g transform="translate(24 22)">
+    <g transform="translate(24 60)">
       <rect class="housing-scene-caption" width="292" height="42" rx="10" />
       <text class="housing-place-label" x="18" y="27">VIVIENDA Y ENTORNO</text>
     </g>
-    <g transform="translate(641 24)">
-      <rect class="housing-scene-caption" width="235" height="34" rx="9" />
+    <g transform="translate(641 60)">
+      <rect class="housing-scene-caption housing-scale-caption" width="235" height="34" rx="9" />
       <text class="housing-scene-note" x="118" y="22" text-anchor="middle">Las distancias no son exactas</text>
     </g>
   </g>`;

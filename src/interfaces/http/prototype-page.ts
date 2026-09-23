@@ -49,7 +49,7 @@ export function renderPrototypePage(): string {
         position: sticky;
         top: 0;
         z-index: 20;
-        min-height: 64px;
+        min-height: 62px;
         display: grid;
         grid-template-columns: minmax(210px, .8fr) minmax(520px, 2fr) minmax(160px, .7fr);
         align-items: center;
@@ -416,6 +416,7 @@ export function renderPrototypePage(): string {
       .inspection-taskbar {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 9px;
         margin-bottom: 6px;
         padding: 8px 11px;
@@ -426,15 +427,33 @@ export function renderPrototypePage(): string {
         font-size: .82rem;
         line-height: 1.35;
       }
-      .inspection-taskbar::before {
+      .inspection-taskbar-copy { min-width: 0; }
+      .inspection-taskbar-copy::before {
         content: 'Objetivo';
-        flex: 0 0 auto;
+        margin-right: 8px;
         color: #315a4b;
         font-size: .68rem;
         font-weight: 900;
         letter-spacing: .06em;
         text-transform: uppercase;
       }
+      .inspection-taskbar-count {
+        flex: 0 0 auto;
+        padding-left: 11px;
+        border-left: 1px solid #bdd0c0;
+        color: #315a4b;
+        font-size: .78rem;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+      .inspection-hidden-menu { display: none !important; }
+      .inspection-scene .visual-hotspot { -webkit-tap-highlight-color: transparent; }
+      .inspection-lowerbar { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: stretch; gap: 6px; margin-top: 6px; }
+      .inspection-learning { min-width: 0; }
+      .inspection-learning:has(.inspection-response.is-initial) { display: none; }
+      .inspection-advance { display: flex; }
+      .inspection-advance .footer-actions { margin: 0; }
+      .inspection-advance .primary { height: 100%; }
       [data-visual-card-slot][hidden] { display: none; }
       .inspection-action-tray { margin-top: 6px; }
       .inspection-action-tray .visual-card-layer {
@@ -945,40 +964,30 @@ export function renderPrototypePage(): string {
 
       @media (min-width: 1051px) {
         main { padding-top: 4px; padding-bottom: 0; }
-        .inspection-scene .scene-workspace {
-          grid-template-columns: minmax(0, 1fr) minmax(220px, 248px);
-          grid-template-areas:
-            "main controls"
-            "learning controls";
-          align-items: stretch;
-        }
-        .inspection-scene .scene-main { grid-area: main; }
-        .inspection-scene .scene-side-panel { grid-area: controls; }
-        .inspection-scene .scene-learning-panel { grid-area: learning; }
-        .inspection-scene .scene-side-panel {
-          top: 84px;
+        .inspection-scene { width: 100%; max-width: 1580px; margin-inline: auto; }
+        .inspection-scene .scene-workspace { display: block; margin-top: 7px; }
+        .inspection-scene .visual-scene[data-visual-template="territory"] .territory-map,
+        .inspection-scene .visual-scene[data-visual-template="housing"] .housing-plan {
+          width: 100%;
+          height: min(690px, calc((100vw - 64px) * .5556));
           max-height: none;
-          overflow: visible;
-          height: 100%;
-          padding: 10px;
-          gap: 7px;
-          background: linear-gradient(180deg, #f8faf7, #edf3ee);
-          box-shadow: 0 7px 20px rgba(7, 23, 38, .09);
+          aspect-ratio: auto;
         }
-        .inspection-scene .scene-side-header { padding-bottom: 6px; }
-        .inspection-scene .scene-side-panel .selection-counter { padding: 7px 9px; }
-        .inspection-scene .scene-side-panel .visual-hint { padding: 0 2px; }
-        .inspection-scene .scene-side-panel .territory-map-key,
-        .inspection-scene .scene-side-panel .housing-map-key { grid-template-columns: 1fr; gap: 5px; }
-        .inspection-scene .scene-side-panel .territory-map-key-item,
-        .inspection-scene .scene-side-panel .housing-map-key-item { min-height: 56px; padding: 6px 7px; }
-        .inspection-scene .scene-side-panel .territory-map-key-item:last-child { grid-column: auto; }
-        .inspection-scene .scene-side-panel .territory-map-key-item small,
-        .inspection-scene .scene-side-panel .housing-map-key-item small { margin-top: 2px; padding-block: 1px; }
+        .inspection-scene .scene-main:has(.inspection-response:not(.is-initial)) .visual-scene[data-visual-template="territory"] .territory-map,
+        .inspection-scene .scene-main:has(.inspection-response:not(.is-initial)) .visual-scene[data-visual-template="housing"] .housing-plan,
+        .inspection-scene .scene-main:has(.inspection-action-tray .visual-hover-card:not([hidden])) .visual-scene[data-visual-template="territory"] .territory-map,
+        .inspection-scene .scene-main:has(.inspection-action-tray .visual-hover-card:not([hidden])) .visual-scene[data-visual-template="housing"] .housing-plan {
+          height: min(540px, calc((100vw - 64px) * .5556));
+        }
+        .inspection-scene .scene-main:has(.inspection-response:not(.is-initial)) :is(.territory-scene-caption, .territory-place-label, .housing-scene-caption, .housing-place-label, .housing-scene-note),
+        .inspection-scene .scene-main:has(.inspection-action-tray .visual-hover-card:not([hidden])) :is(.territory-scene-caption, .territory-place-label, .housing-scene-caption, .housing-place-label, .housing-scene-note) {
+          display: none;
+        }
+        .inspection-scene .inspection-change-visual { width: 88px; }
         .inspection-scene .inspection-response {
           grid-template-columns: minmax(260px, .72fr) minmax(0, 1.28fr);
           gap: 8px;
-          margin-top: 6px;
+          margin: 0;
         }
         .inspection-scene .inspection-confirmation,
         .inspection-scene .inspection-selection { padding: 8px 10px; }
@@ -999,10 +1008,10 @@ export function renderPrototypePage(): string {
         .inspection-scene .inspection-selection small { grid-column: 2; grid-row: 1; text-align: right; }
         .inspection-scene .inspection-selection .selected-action-list,
         .inspection-scene .inspection-selection .selection-empty { grid-column: 1 / -1; }
-        .inspection-scene .scene-workspace:has(.inspection-action-tray .visual-hover-card:not([hidden])) .inspection-response {
+        .inspection-scene .scene-main:has(.inspection-action-tray .visual-hover-card:not([hidden])) .inspection-response {
           grid-template-columns: 1fr;
         }
-        .inspection-scene .scene-workspace:has(.inspection-action-tray .visual-hover-card:not([hidden])) .inspection-confirmation {
+        .inspection-scene .scene-main:has(.inspection-action-tray .visual-hover-card:not([hidden])) .inspection-confirmation {
           display: none;
         }
         .scene-with-side-panel .scene-heading { margin-bottom: 0; }
@@ -1038,45 +1047,6 @@ export function renderPrototypePage(): string {
       @media (min-width: 1600px) {
         main { width: min(1740px, 100%); }
         .scene:not(.inspection-scene), .entry { width: 100%; max-width: 1480px; margin-inline: auto; }
-        .inspection-scene .scene-workspace {
-          grid-template-columns: minmax(0, 1fr) 248px 310px;
-          grid-template-areas: "main controls learning";
-        }
-        .inspection-scene .scene-learning-panel {
-          min-height: 100%;
-          padding: 10px;
-          border: 1px solid #bac6c1;
-          border-radius: 12px;
-          background: linear-gradient(180deg, #edf5ee, #f8f4e8);
-          box-shadow: 0 7px 20px rgba(7, 23, 38, .08);
-        }
-        .inspection-scene .scene-learning-panel .inspection-response {
-          height: 100%;
-          grid-template-columns: 1fr;
-          align-content: start;
-          gap: 8px;
-          margin: 0;
-        }
-        .inspection-scene .scene-learning-panel .inspection-confirmation,
-        .inspection-scene .scene-learning-panel .inspection-selection { padding: 10px; }
-        .inspection-scene .scene-learning-panel .inspection-confirmation {
-          grid-template-columns: 1fr;
-          align-content: start;
-        }
-        .inspection-scene .scene-learning-panel .inspection-change-visual { width: 100%; }
-        .inspection-scene .scene-learning-panel .inspection-change-placeholder {
-          display: grid;
-          gap: 8px;
-          margin-bottom: 4px;
-          padding: 12px;
-          border: 1px solid #c3d1c7;
-          border-radius: 9px;
-          color: #315a4b;
-          background: rgba(255, 255, 255, .7);
-          font-size: .76rem;
-          font-weight: 800;
-        }
-        .inspection-change-placeholder svg { display: block; width: 100%; height: auto; }
       }
 
       @media (max-width: 1050px) {
@@ -1170,6 +1140,9 @@ export function renderPrototypePage(): string {
         .scene-side-panel .housing-map-key { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .scene-side-panel .territory-map-key-item:last-child { grid-column: 1 / -1; }
         .inspection-taskbar { align-items: flex-start; flex-direction: column; gap: 2px; }
+        .inspection-taskbar-count { width: 100%; padding: 4px 0 0; border-top: 1px solid #bdd0c0; border-left: 0; }
+        .inspection-lowerbar { grid-template-columns: 1fr; }
+        .inspection-advance .primary { width: 100%; }
         .inspection-action-tray .visual-hover-card { grid-template-columns: 1fr; gap: 7px; padding: 10px; }
         .inspection-action-tray .visual-card-action {
           grid-template-columns: 1fr;
@@ -1445,7 +1418,7 @@ export function renderPrototypePage(): string {
         const confirmation = scene.feedback
           ? '<div class="inspection-confirmation has-change">' + inspectionChangeVisual(scene) + '<div class="inspection-confirmation-copy"><strong>Cambio realizado</strong><p>' + escapeHtml(scene.feedback) + '</p></div></div>'
           : '<div class="inspection-confirmation is-empty"><div class="inspection-change-placeholder" aria-hidden="true"><svg viewBox="0 0 240 72"><circle cx="28" cy="36" r="17" fill="#fffaf0" stroke="#315a4b" stroke-width="3"/><text x="28" y="42" text-anchor="middle" fill="#315a4b" font-size="18" font-weight="800">1</text><path d="M51 36h35" fill="none" stroke="#70947d" stroke-width="4" stroke-linecap="round"/><path d="m78 28 10 8-10 8" fill="none" stroke="#70947d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><rect x="99" y="18" width="58" height="36" rx="8" fill="#fff" stroke="#315a4b" stroke-width="3"/><path d="M114 31h28m-28 10h20" stroke="#70947d" stroke-width="3" stroke-linecap="round"/><path d="M169 36h31" fill="none" stroke="#70947d" stroke-width="4" stroke-linecap="round"/><path d="m193 28 10 8-10 8" fill="none" stroke="#70947d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="222" cy="36" r="17" fill="#e4f0df" stroke="#4f9139" stroke-width="3"/><path d="m213 36 6 6 12-14" fill="none" stroke="#4f9139" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>1. Elige · 2. Actúa · 3. Mira el cambio</span></div><div class="inspection-confirmation-copy"><strong>Mira y elige</strong><p>Toca un punto del mapa para saber qué ocurre allí y qué puedes mejorar.</p></div></div>';
-        return '<section class="inspection-response" role="status" aria-live="polite" aria-atomic="true">' + confirmation +
+        return '<section class="inspection-response' + (!scene.feedback && selected.length === 0 ? ' is-initial' : '') + '" role="status" aria-live="polite" aria-atomic="true">' + confirmation +
           '<div class="inspection-selection"><strong>Mejoras elegidas</strong>' + selectedMarkup + '<small>' + remainingLabel + '</small></div></section>';
       }
 
@@ -1468,13 +1441,14 @@ export function renderPrototypePage(): string {
       }
 
       function renderInspection(scene) {
-        const remaining = Math.max(0, scene.actionQuota - scene.selectedCount);
-        const badge = '<div class="selection-counter"><small>Mejoras elegidas</small><strong>' + scene.selectedCount + ' / ' + scene.actionQuota + '</strong><span class="selection-remaining">' + (remaining === 0 ? 'Ya elegiste todas' : 'Puedes elegir ' + remaining + ' más') + '</span></div>';
-        const intro = badge + '<p class="visual-hint">Elige un punto en el mapa o en esta lista.</p>';
-        const main = '<div class="inspection-taskbar">' + escapeHtml(scene.objective) + '</div>' + visualMarkup() +
-          '<div class="inspection-action-tray" data-visual-card-slot hidden></div>';
+        const count = scene.selectedCount + ' / ' + scene.actionQuota + ' mejoras';
+        const main = '<div class="inspection-taskbar"><span class="inspection-taskbar-copy">' + escapeHtml(scene.objective) + '</span><span class="inspection-taskbar-count">' + escapeHtml(count) + '</span></div>' + visualMarkup() +
+          '<div class="inspection-hidden-menu" data-visual-menu-slot hidden></div>' +
+          '<div class="inspection-action-tray" data-visual-card-slot hidden></div>' +
+          '<div class="inspection-lowerbar"><div class="inspection-learning">' + inspectionResponse(scene) + '</div>' +
+          (scene.canAdvance ? '<div class="inspection-advance">' + advanceButton(scene) + '</div>' : '') + '</div>';
         return '<section class="scene scene-with-side-panel inspection-scene"><div class="scene-content">' + heading(scene, 'Prepara la zona', '') +
-          sceneWorkspace(main, 'Puntos y mejoras', intro, advanceButton(scene), 'Ver puntos y mejoras', inspectionResponse(scene)) + '</div></section>';
+          '<div class="scene-workspace"><div class="scene-main">' + main + '</div></div></div></section>';
       }
 
       function renderSummary(scene) {
@@ -1674,6 +1648,7 @@ export function renderPrototypePage(): string {
 
       function scheduleVisualCardClose() {
         if (usesSideDrawer() && document.getElementById('scene-side-panel')?.classList.contains('is-open')) return;
+        if (document.querySelector('.inspection-scene')) return;
         cancelVisualCardClose();
         visualCardCloseTimer = window.setTimeout(function () {
           const focusedCard = document.activeElement && document.activeElement.closest ? document.activeElement.closest('.visual-hover-card') : null;
