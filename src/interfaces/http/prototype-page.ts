@@ -950,6 +950,12 @@ export function renderPrototypePage(): string {
         .inspection-scene .inspection-selection small { grid-column: 2; grid-row: 1; text-align: right; }
         .inspection-scene .inspection-selection .selected-action-list,
         .inspection-scene .inspection-selection .selection-empty { grid-column: 1 / -1; }
+        .inspection-scene .scene-main:has(.inspection-action-tray .visual-hover-card:not([hidden])) .inspection-response {
+          grid-template-columns: 1fr;
+        }
+        .inspection-scene .scene-main:has(.inspection-action-tray .visual-hover-card:not([hidden])) .inspection-confirmation {
+          display: none;
+        }
         .scene-with-side-panel .scene-heading { margin-bottom: 0; }
         .scene-with-side-panel .scene-heading-copy {
           max-width: none;
