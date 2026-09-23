@@ -969,7 +969,7 @@ export function renderPrototypePage(): string {
         .inspection-scene .visual-scene[data-visual-template="territory"] .territory-map,
         .inspection-scene .visual-scene[data-visual-template="housing"] .housing-plan {
           width: 100%;
-          height: min(690px, 50vw);
+          height: min(690px, 47vw);
           max-height: none;
           aspect-ratio: auto;
         }
