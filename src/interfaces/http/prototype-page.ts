@@ -978,7 +978,7 @@ export function renderPrototypePage(): string {
         .inspection-scene .scene-main:has(.inspection-response:not(.is-initial)) .visual-scene[data-visual-template="housing"] .housing-plan,
         .inspection-scene .scene-main:has(.inspection-action-tray .visual-hover-card:not([hidden])) .visual-scene[data-visual-template="territory"] .territory-map,
         .inspection-scene .scene-main:has(.inspection-action-tray .visual-hover-card:not([hidden])) .visual-scene[data-visual-template="housing"] .housing-plan {
-          height: min(540px, 50vw);
+          height: min(500px, 47vw);
         }
         .inspection-scene .scene-main:has(.inspection-response:not(.is-initial)) :is(.territory-scene-caption, .territory-place-label, .housing-scene-caption, .housing-place-label, .housing-scene-note),
         .inspection-scene .scene-main:has(.inspection-action-tray .visual-hover-card:not([hidden])) :is(.territory-scene-caption, .territory-place-label, .housing-scene-caption, .housing-place-label, .housing-scene-note) {
