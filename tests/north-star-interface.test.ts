@@ -104,7 +104,7 @@ describe('M3.8 north-star interface', () => {
     expect(html).toContain('inspection-action-tray');
     expect(html).toContain('arrangeVisualSideMenu()');
     expect(html).toContain('.inspection-hidden-menu { display: none !important; }');
-    expect(html).toContain('height: min(690px, calc((100vw - 64px) * .5556));');
+    expect(html).toContain('height: min(690px, calc((100vw - 64px) * .53));');
     expect(inspectionRenderer).not.toContain('sceneWorkspace(');
     expect(inspectionRenderer).not.toContain('scene-side-panel');
   });
