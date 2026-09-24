@@ -60,14 +60,14 @@ describe('M4.3 pedagogical result closure', () => {
     expect(scene.variant).toBe('contained');
     expect(scene.relations).toHaveLength(5);
     expect(scene.relations.map(({ dimensionLabel }) => dimensionLabel)).toEqual([
-      'Carga de combustible',
-      'Continuidad del combustible',
-      'Acceso operativo',
-      'Defensibilidad',
-      'Oportunidad de ataque'
+      'Ramas y hierba seca',
+      'Plantas y árboles unidos',
+      'Paso para bomberos',
+      'Protección de las casas',
+      'Formas de apagar el fuego'
     ]);
     for (const relation of scene.relations) {
-      expect(relation.causeType).toBe('Acción aplicada');
+      expect(relation.causeType).toBe('Lo elegiste');
       expect(relation.causeActionLabels.length).toBeGreaterThan(0);
       expect(relation.stateLabel.length).toBeGreaterThan(0);
       expect(relation.manifestationLabel.length).toBeGreaterThan(0);
@@ -80,13 +80,13 @@ describe('M4.3 pedagogical result closure', () => {
 
     expect(scene.variant).toBe('overwhelmed');
     expect(scene.relations).toHaveLength(5);
-    const access = scene.relations.find(({ dimensionLabel }) => dimensionLabel === 'Acceso operativo');
+    const access = scene.relations.find(({ dimensionLabel }) => dimensionLabel === 'Paso para bomberos');
     expect(access).toMatchObject({
-      causeType: 'Omisión relevante',
-      dimensionLabel: 'Acceso operativo',
-      manifestationLabel: 'Bloqueo de accesos'
+      causeType: 'Quedó pendiente',
+      dimensionLabel: 'Paso para bomberos',
+      manifestationLabel: 'Camino bloqueado'
     });
-    expect(access?.causeActionLabels).toEqual(['Limpiar márgenes de caminos rurales']);
+    expect(access?.causeActionLabels).toEqual(['Limpiar los bordes del camino']);
   });
 
   it('uses the same information structure for contained and overwhelmed', () => {
@@ -100,9 +100,9 @@ describe('M4.3 pedagogical result closure', () => {
 
   it('defines the four player-facing steps rendered for every causal relation', () => {
     expect(M4_PLAYER_LOOP_CLIENT).toContain('appendResultStep(');
-    expect(M4_PLAYER_LOOP_CLIENT).toContain("'Causa'");
-    expect(M4_PLAYER_LOOP_CLIENT).toContain("'Estado heredado'");
-    expect(M4_PLAYER_LOOP_CLIENT).toContain("'Durante la crisis'");
-    expect(M4_PLAYER_LOOP_CLIENT).toContain("'Consecuencia'");
+    expect(M4_PLAYER_LOOP_CLIENT).toContain("'Antes del incendio'");
+    expect(M4_PLAYER_LOOP_CLIENT).toContain("'Así empezó'");
+    expect(M4_PLAYER_LOOP_CLIENT).toContain("'Cuando llegó el fuego'");
+    expect(M4_PLAYER_LOOP_CLIENT).toContain("'Qué ocurrió'");
   });
 });

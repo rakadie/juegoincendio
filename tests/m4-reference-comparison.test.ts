@@ -70,9 +70,9 @@ describe('M4.4 canonical reference comparison', () => {
   it('compares five canonical dimensions and three decisive manifestations per side', () => {
     const comparison = buildReferenceComparison(runCanonicalReference('prepared'));
 
-    expect(comparison.title).toBe('Tu partida y otro recorrido de referencia');
+    expect(comparison.title).toBe('Tu partida y otra forma de jugar');
     expect(comparison.explanation).toBe(
-      'Compara tu recorrido con una referencia canónica del mismo modelo para observar cómo cambian las condiciones y la respuesta.'
+      'Compara las dos partidas y mira cómo unas mejoras distintas cambian lo que ocurre durante el incendio.'
     );
     expect(comparison.current.dimensions.map(({ id }) => id)).toEqual([
       'fuelLoad',
@@ -111,9 +111,9 @@ describe('M4.4 canonical reference comparison', () => {
   });
 
   it('defines the player-facing comparison action and two explicit sides', () => {
-    expect(M4_PLAYER_LOOP_CLIENT).toContain('Comparar con otro recorrido');
+    expect(M4_PLAYER_LOOP_CLIENT).toContain('Comparar con otra partida');
     expect(M4_PLAYER_LOOP_CLIENT).toContain("renderComparisonSide('Tu partida'");
-    expect(M4_PLAYER_LOOP_CLIENT).toContain("renderComparisonSide('Otro recorrido de referencia'");
+    expect(M4_PLAYER_LOOP_CLIENT).toContain("renderComparisonSide('Otra partida'");
   });
 
   it('keeps both recipes versioned and branch-specific', () => {

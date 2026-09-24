@@ -49,12 +49,12 @@ export function renderPrototypePage(): string {
         position: sticky;
         top: 0;
         z-index: 20;
-        min-height: 76px;
+        min-height: 62px;
         display: grid;
         grid-template-columns: minmax(210px, .8fr) minmax(520px, 2fr) minmax(160px, .7fr);
         align-items: center;
         gap: 22px;
-        padding: 12px clamp(16px, 3vw, 38px);
+        padding: 8px clamp(16px, 3vw, 38px);
         color: #f7fbff;
         background: linear-gradient(90deg, #061522, var(--navy) 58%, #0c2130);
         border-bottom: 1px solid #294052;
@@ -63,8 +63,8 @@ export function renderPrototypePage(): string {
 
       .brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
       .brand-mark {
-        width: 42px;
-        height: 48px;
+        width: 38px;
+        height: 42px;
         display: grid;
         place-items: center;
         flex: 0 0 auto;
@@ -112,7 +112,17 @@ export function renderPrototypePage(): string {
         font-size: .78rem;
         font-weight: 850;
       }
-      .stage-label { min-width: 0; font-size: .8rem; font-weight: 780; line-height: 1.15; }
+      .stage-label {
+        position: relative;
+        z-index: 2;
+        justify-self: start;
+        min-width: 0;
+        padding: 2px 8px 2px 0;
+        background: var(--navy);
+        font-size: .8rem;
+        font-weight: 780;
+        line-height: 1.15;
+      }
       .stage.complete, .stage.active { color: #fff; }
       .stage.complete .stage-dot { border-color: #6dab4a; background: #5b9d3f; }
       .stage.active .stage-dot {
@@ -138,6 +148,7 @@ export function renderPrototypePage(): string {
       main { width: min(1480px, 100%); margin: 0 auto; padding: 18px clamp(12px, 2.5vw, 34px) 14px; }
       #game { min-height: 60vh; }
       #notice { min-height: 24px; margin-top: 10px; color: var(--red); font-weight: 700; }
+      #notice:empty { display: none; }
       .loading { min-height: 62vh; display: grid; place-items: center; color: var(--muted); }
 
       .entry {
@@ -243,6 +254,178 @@ export function renderPrototypePage(): string {
       }
       .visual-hint { margin: 10px 0 0; color: #53666f; font-size: .8rem; font-weight: 700; }
 
+      .scene-workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(300px, 350px);
+        align-items: start;
+        gap: clamp(12px, 1.6vw, 18px);
+        margin-top: 12px;
+        scroll-margin-top: 96px;
+      }
+      .scene.scene-with-side-panel { min-height: 0; overflow: visible; }
+      .scene-with-side-panel .scene-content { padding: clamp(14px, 1.7vw, 22px); }
+      .scene-main { min-width: 0; }
+      .scene-main .visual-scene { margin: 0; }
+      .scene-main > .inspection-response { margin-top: 10px; }
+      .scene-side-panel {
+        position: sticky;
+        top: 84px;
+        z-index: 9;
+        max-height: calc(100dvh - 102px);
+        display: grid;
+        align-content: start;
+        gap: 9px;
+        overflow: auto;
+        padding: 12px;
+        border: 1px solid #bac6c1;
+        border-radius: 12px;
+        background: rgba(248, 250, 247, .98);
+        box-shadow: 0 12px 30px rgba(7, 23, 38, .13);
+      }
+      .scene-side-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #d6ded9;
+      }
+      .scene-side-header h3 { margin: 0; color: #1f4034; font-size: 1rem; }
+      .scene-side-close {
+        display: none;
+        min-width: 44px;
+        min-height: 44px;
+        border: 1px solid #aebbb5;
+        border-radius: 9px;
+        color: #263941;
+        background: #fff;
+        cursor: pointer;
+        font-weight: 800;
+      }
+      .scene-side-trigger {
+        display: none;
+        width: 100%;
+        min-height: 48px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 11px 14px;
+        border: 1px solid #315f4e;
+        border-radius: 10px;
+        color: #fff;
+        background: #244c3d;
+        box-shadow: 0 8px 18px rgba(36, 76, 61, .18);
+        cursor: pointer;
+        font-weight: 820;
+      }
+      .scene-side-trigger::after { content: '\\2192'; font-size: 1.2rem; }
+      .scene-side-backdrop { display: none; }
+      .scene-side-panel .objective,
+      .scene-side-panel .visual-hint,
+      .scene-side-panel .inspection-response,
+      .scene-side-panel .actions,
+      .scene-side-panel .feedback,
+      .scene-side-panel .footer-actions { margin: 0; }
+      .scene-side-panel .selection-counter,
+      .scene-side-panel .scene-state-badge { width: 100%; }
+      .scene-side-panel .selection-counter,
+      .scene-side-panel .scene-state-badge {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 2px 10px;
+        padding: 8px 10px;
+        text-align: left;
+      }
+      .scene-side-panel .selection-counter strong,
+      .scene-side-panel .scene-state-badge strong { grid-column: 2; grid-row: 1; margin: 0; font-size: 1.15rem; }
+      .scene-side-panel .selection-counter .selection-remaining { grid-column: 1 / -1; margin: 0; }
+      .scene-side-panel .objective { padding: 9px 11px; font-size: .84rem; line-height: 1.35; }
+      .scene-side-panel .visual-hint { font-size: .74rem; line-height: 1.35; }
+      .scene-side-panel [data-visual-menu-slot] { display: grid; gap: 10px; }
+      .scene-side-panel [data-visual-menu-slot][hidden] { display: none; }
+      .scene-side-panel .territory-map-key,
+      .scene-side-panel .housing-map-key {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 7px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+      }
+      .scene-side-panel .territory-map-key-item,
+      .scene-side-panel .housing-map-key-item { min-height: 56px; padding: 8px; }
+      .scene-side-panel .housing-map-key-item {
+        border-color: #d3d9cf;
+        border-radius: 10px;
+        background: rgba(255,255,255,.9);
+        box-shadow: 0 2px 7px rgba(21, 50, 40, .08);
+      }
+      .scene-side-panel .housing-map-key-item:hover {
+        border-color: #9dac9f;
+        background: #fff;
+        box-shadow: 0 4px 11px rgba(21, 50, 40, .12);
+      }
+      .scene-side-panel .housing-map-key-item .housing-key-number {
+        flex-basis: 32px;
+        height: 32px;
+        border-width: 2px;
+        border-color: #8f7049;
+        font-size: 14px;
+        font-weight: 800;
+      }
+      .scene-side-panel .housing-map-key-item strong { color: #1b3c31; font-size: .8rem; }
+      .scene-side-panel .housing-map-key-item small {
+        width: fit-content;
+        margin-top: 5px;
+        padding: 2px 7px;
+        border-radius: 999px;
+        color: #6c5333;
+        background: #f6ead5;
+        font-size: .66rem;
+        font-weight: 700;
+      }
+      .scene-side-panel .territory-map-key-item:last-child { grid-column: 1 / -1; }
+      .scene-side-panel .visual-card-layer {
+        position: static;
+        display: grid;
+        pointer-events: auto;
+      }
+      .scene-side-panel .visual-hover-card {
+        position: static;
+        width: 100%;
+        max-height: none;
+        padding: 11px;
+        border-color: #c5d0cb;
+        box-shadow: 0 5px 15px rgba(7, 23, 38, .1);
+      }
+      .scene-side-panel .inspection-response { grid-template-columns: 1fr; }
+      .scene-side-panel .actions { grid-template-columns: 1fr; }
+      .scene-side-panel .action-card { min-height: 0; gap: 4px; padding: 10px; }
+      .scene-side-panel .action-card h3 { margin-bottom: 2px; font-size: .94rem; }
+      .scene-side-panel .action-card p { margin-bottom: 5px; font-size: .76rem; line-height: 1.35; }
+      .scene-side-panel .action-card button { min-height: 38px; }
+      .scene-side-panel .footer-actions {
+        position: sticky;
+        bottom: -12px;
+        z-index: 2;
+        padding: 8px 0 12px;
+        background: linear-gradient(180deg, rgba(248,250,247,0), #f8faf7 24%);
+      }
+      .scene-side-panel .footer-actions .primary { width: 100%; }
+      .scene-side-panel details { margin-top: 0; }
+      .inspection-hidden-menu { display: none !important; }
+      .inspection-scene .visual-hotspot { -webkit-tap-highlight-color: transparent; }
+      .inspection-advance { display: flex; }
+      .inspection-advance .footer-actions { margin: 0; }
+      .inspection-advance .primary { height: 100%; }
+      .scene-learning-panel { min-width: 0; }
+      .summary-dashboard { display: grid; grid-template-columns: minmax(280px, .8fr) minmax(0, 1.2fr); gap: 12px; align-items: start; }
+      .summary-dashboard .prevention-review { margin: 0; }
+      .summary-emergency { min-width: 0; }
+      .summary-emergency .balance-heading { margin-top: 0; }
+
+      body.gameplay-active .session-footer { display: none; }
+
       .scene.briefing {
         display: grid;
         align-items: end;
@@ -346,10 +529,67 @@ export function renderPrototypePage(): string {
         border-color: #b17638;
         background: #fff5df;
       }
+      .territory-map-key {
+        gap: 8px;
+        padding: 10px;
+        border-top-color: #c8d0c3;
+        background: linear-gradient(180deg, #f4f5ef 0%, #e9ede5 100%);
+      }
+      .territory-map-key-item {
+        min-height: 66px;
+        padding: 10px;
+        border-color: #d3d9cf;
+        border-radius: 10px;
+        background: rgba(255,255,255,.88);
+        box-shadow: 0 2px 7px rgba(21, 50, 40, .08);
+      }
+      .territory-map-key-item:hover {
+        border-color: #9dac9f;
+        background: #fff;
+        box-shadow: 0 4px 11px rgba(21, 50, 40, .12);
+      }
+      .territory-map-key-item.selected {
+        border-color: #4f8069;
+        background: #edf5ed;
+        box-shadow: inset 0 0 0 1px #4f8069, 0 3px 9px rgba(21, 50, 40, .1);
+      }
+      .territory-map-key-item .territory-key-number {
+        flex-basis: 32px;
+        height: 32px;
+        border-width: 2px;
+        border-color: #315b49;
+        color: #244c3d;
+        background: #fffdf5;
+        font-size: 14px;
+        font-weight: 800;
+      }
+      .territory-key-copy { min-width: 0; }
+      .territory-map-key-item strong { color: #1b3c31; font-size: .8rem; letter-spacing: -.01em; }
+      .territory-map-key-item small {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        width: fit-content;
+        margin-top: 5px;
+        padding: 2px 7px;
+        border-radius: 999px;
+        color: #6c5333;
+        background: #f6ead5;
+        font-size: .66rem;
+        font-weight: 700;
+      }
+      .territory-key-state-dot { width: 6px; height: 6px; border-radius: 50%; background: #bd7935; }
+      .territory-map-key-item:is(.state-treated, .state-broken, .state-clear, .state-evaluated) small {
+        color: #285946;
+        background: #e0ede0;
+      }
+      .territory-map-key-item:is(.state-treated, .state-broken, .state-clear, .state-evaluated) .territory-key-state-dot { background: #3e7b5d; }
       @media (max-width: 700px) {
         .territory-map-key, .housing-map-key { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 8px; }
         .territory-map-key-item:last-child { grid-column: 1 / -1; }
         .territory-map-key-item, .housing-map-key-item { min-height: 52px; }
+        .territory-map-key { gap: 7px; }
+        .territory-map-key-item { min-height: 68px; padding: 9px; }
         .visual-scene[data-visual-template="territory"] .visual-card-layer,
         .visual-scene[data-visual-template="housing"] .visual-card-layer { position: static; padding: 0 10px; }
         .visual-scene[data-visual-template="territory"] .visual-hover-card,
@@ -394,7 +634,7 @@ export function renderPrototypePage(): string {
       .visual-hotspot:hover { filter: brightness(1.12); }
       .visual-hotspot:focus-visible { outline: none; filter: brightness(1.16) drop-shadow(0 0 8px #f4b942); }
       .visual-capacity circle { fill: rgba(7, 23, 38, .82); stroke: #f0b44b; stroke-width: 4; }
-      .visual-capacity text { fill: #fff; font-size: 15px; font-weight: 900; letter-spacing: .05em; }
+      .visual-capacity text { fill: #fff; font-size: 10px; font-weight: 900; letter-spacing: .03em; }
 
       .state-treated .visual-residues { opacity: .18; stroke-dasharray: 8 18; }
       .state-broken .visual-vegetation-band, .state-broken .visual-canopy { stroke-dasharray: 20 28; opacity: .6; }
@@ -476,9 +716,15 @@ export function renderPrototypePage(): string {
         background: #fff;
       }
       .visual-dimension > div { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-      .visual-dimension-state { font-size: 1.08rem; font-weight: 850; text-transform: capitalize; }
-      .visual-dimension details { margin-top: auto; font-size: .78rem; }
-      .visual-dimension summary { color: #596b74; }
+      .visual-dimension-state { font-size: 1.08rem; font-weight: 850; }
+      .scene-main .visual-dimension-summary { gap: 7px; }
+      .scene-main .visual-dimension {
+        min-height: 78px;
+        gap: 8px;
+        padding: 9px;
+      }
+      .scene-main .visual-dimension-state { font-size: .95rem; }
+      .scene-main .visual-dimension small { font-size: .68rem; line-height: 1.25; }
 
       .actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 9px; margin-top: 16px; }
       .action-card {
@@ -513,6 +759,16 @@ export function renderPrototypePage(): string {
       button:disabled { cursor: not-allowed; opacity: .52; }
       .footer-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
       .feedback { margin-top: 14px; padding: 12px 14px; border: 1px solid #a9c9b6; border-radius: 8px; color: #234336; background: #edf7f0; }
+      .decision-feedback {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: center;
+        gap: 4px 12px;
+        margin-top: 10px;
+        border-left: 5px solid #3f775f;
+      }
+      .decision-feedback strong { white-space: nowrap; }
+      .decision-feedback p { margin: 0; font-size: .88rem; }
       .selection-counter .selection-remaining { display: block; margin-top: 3px; color: var(--muted); font-size: .72rem; }
       .inspection-response {
         display: grid;
@@ -529,6 +785,13 @@ export function renderPrototypePage(): string {
       }
       .inspection-confirmation { color: #29483a; border-color: #9fc4ad; background: #edf7f0; }
       .inspection-confirmation p { margin: 4px 0 0; font-size: .86rem; }
+      .inspection-confirmation.has-change {
+        display: grid;
+        grid-template-columns: 112px minmax(0, 1fr);
+        align-items: center;
+        gap: 10px;
+      }
+      .inspection-confirmation-copy { min-width: 0; }
       .inspection-confirmation.is-empty { color: #5b6b64; border-color: #cbd3d0; background: #f5f7f4; }
       .inspection-selection { display: grid; align-content: start; gap: 7px; }
       .inspection-selection > strong, .prevention-area h3 { font-size: .88rem; }
@@ -593,6 +856,220 @@ export function renderPrototypePage(): string {
       details { margin-top: 14px; }
       summary { cursor: pointer; color: #3d606b; }
 
+      /* Prevention is a continuous map, not a page surrounded by controls. */
+      body.gameplay-active:has(.inspection-scene) main {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        padding: 0;
+      }
+      body.gameplay-active:has(.inspection-scene) #game { height: calc(100dvh - 62px); min-height: 0; }
+      .inspection-scene {
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+        background: #102019;
+        box-shadow: none;
+      }
+      .inspection-scene .scene-content,
+      .inspection-scene .scene-workspace,
+      .inspection-scene .scene-main,
+      .inspection-scene .inspection-stage,
+      .inspection-scene .visual-scene,
+      .inspection-scene .visual-canvas { width: 100%; height: 100%; min-height: 0; }
+      .inspection-scene .scene-content { padding: 0; }
+      .inspection-scene .scene-workspace { display: block; margin: 0; }
+      .inspection-scene .visual-scene { display: block; margin: 0; }
+      .inspection-scene .visual-canvas {
+        position: relative;
+        display: block;
+        overflow: clip;
+        border: 0;
+        border-radius: 0;
+        background: #102019;
+      }
+      .inspection-scene .visual-canvas::before {
+        content: '';
+        position: absolute;
+        inset: -12px;
+        z-index: 0;
+        background-position: center;
+        background-size: cover;
+        filter: blur(8px) brightness(.58) saturate(.82);
+        transform: scale(1.03);
+      }
+      .inspection-scene .visual-scene[data-visual-template="territory"] .visual-canvas {
+        background: #102019;
+      }
+      .inspection-scene .visual-scene[data-visual-template="housing"] .visual-canvas {
+        background: #102019;
+      }
+      .inspection-scene .visual-scene[data-visual-template="territory"] .visual-canvas::before { background-image: url('/images/territory-prevention-aerial-v1.jpg'); }
+      .inspection-scene .visual-scene[data-visual-template="housing"] .visual-canvas::before { background-image: url('/images/housing-prevention-aerial-v2.jpg'); }
+      .inspection-scene .visual-scene[data-visual-template="territory"] .territory-map,
+      .inspection-scene .visual-scene[data-visual-template="housing"] .housing-plan {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        max-height: none;
+        aspect-ratio: auto;
+      }
+      .inspection-map-hud,
+      .inspection-map-progress,
+      .inspection-response,
+      .inspection-advance {
+        position: absolute;
+        z-index: 10;
+        color: #fffdf4;
+        background: rgba(7, 23, 38, .88);
+        border: 1px solid rgba(255, 250, 235, .34);
+        box-shadow: 0 12px 30px rgba(3, 13, 20, .28);
+        backdrop-filter: blur(9px);
+      }
+      .inspection-map-hud {
+        top: clamp(12px, 2vw, 24px);
+        left: clamp(12px, 2vw, 28px);
+        width: min(590px, calc(100% - 190px));
+        padding: 12px 15px;
+        border-left: 4px solid #f0b44b;
+        border-radius: 8px;
+      }
+      .inspection-map-hud .eyebrow { margin-bottom: 2px; color: #f5c66e; font-size: .66rem; }
+      .inspection-map-hud h2 { margin: 0 0 3px; color: #fff; font-size: clamp(1.25rem, 2vw, 1.85rem); line-height: 1.05; }
+      .inspection-map-hud p { margin: 0; color: #dce7e2; font-size: .82rem; line-height: 1.35; }
+      .inspection-map-progress {
+        top: clamp(12px, 2vw, 24px);
+        right: clamp(12px, 2vw, 28px);
+        min-width: 132px;
+        padding: 10px 13px;
+        border-radius: 8px;
+        text-align: right;
+      }
+      .inspection-map-progress small { display: block; color: #bfcfc8; font-size: .63rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+      .inspection-map-progress strong { display: block; margin-top: 1px; color: #fff; font-size: 1.2rem; }
+      .inspection-response {
+        left: clamp(12px, 2vw, 28px);
+        bottom: clamp(12px, 2vw, 24px);
+        width: min(650px, calc(100% - 230px));
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(190px, .8fr);
+        gap: 0;
+        margin: 0;
+        overflow: hidden;
+        border-radius: 10px;
+      }
+      .inspection-response.is-initial { display: none; }
+      .inspection-response .inspection-confirmation,
+      .inspection-response .inspection-selection {
+        min-width: 0;
+        padding: 10px 12px;
+        border: 0;
+        border-radius: 0;
+        color: #f7fbf8;
+        background: transparent;
+      }
+      .inspection-response .inspection-confirmation { border-right: 1px solid rgba(255,255,255,.18); }
+      .inspection-response .inspection-confirmation.has-change { display: block; }
+      .inspection-response .inspection-confirmation strong { color: #f4c36c; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; }
+      .inspection-response .inspection-confirmation p { margin: 3px 0 0; color: #f5f8f6; font-size: .82rem; line-height: 1.32; }
+      .inspection-response .inspection-selection { display: grid; gap: 5px; }
+      .inspection-response .inspection-selection > strong { color: #fff; font-size: .76rem; }
+      .inspection-response .inspection-selection small { color: #c3d0cb; font-size: .68rem; }
+      .inspection-response .selected-action-list { display: flex; flex-wrap: wrap; gap: 4px; }
+      .inspection-response .selected-action-chip {
+        max-width: 210px;
+        overflow: hidden;
+        padding: 3px 6px;
+        border-color: rgba(177, 216, 190, .55);
+        color: #eaf6ed;
+        background: rgba(62, 123, 93, .42);
+        font-size: .65rem;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .inspection-advance {
+        right: clamp(12px, 2vw, 28px);
+        bottom: clamp(12px, 2vw, 24px);
+        padding: 7px;
+        border-radius: 10px;
+      }
+      .inspection-advance .footer-actions { margin: 0; }
+      .inspection-advance .primary { min-height: 46px; }
+      .inspection-scene .visual-card-layer { position: absolute; inset: 0; z-index: 20; display: block; padding: 0; pointer-events: none; }
+      .inspection-scene .visual-hover-card {
+        position: absolute;
+        width: min(390px, calc(100% - 28px));
+        max-height: min(470px, calc(100% - 28px));
+        padding: 14px;
+        overflow: auto;
+        border: 1px solid rgba(244, 225, 186, .72);
+        border-left: 4px solid #d18b31;
+        border-radius: 9px;
+        color: #17242d;
+        background: rgba(252, 250, 243, .97);
+        box-shadow: 0 18px 48px rgba(3, 13, 20, .42);
+        backdrop-filter: blur(10px);
+        pointer-events: auto;
+      }
+      .inspection-scene .visual-hover-card .visual-card-state strong { color: #183c31; font-size: 1rem; }
+      .inspection-scene .visual-hover-card .visual-explanation { color: #4c5f66; font-size: .82rem; }
+      .inspection-scene .visual-hover-card .visual-card-action { margin-top: 10px; padding-top: 10px; }
+      .inspection-scene .visual-hover-card .action-button:not(:disabled) { color: #fff; border-color: #80420d; background: #9a4c08; }
+      .inspection-hidden-menu { display: none !important; }
+
+      @media (min-width: 1051px) {
+        body.gameplay-active { height: 100vh; overflow-y: hidden; }
+        main { padding-top: 4px; padding-bottom: 0; }
+        .inspection-scene { width: 100%; max-width: none; margin-inline: auto; }
+        .inspection-scene .scene-workspace { display: block; margin-top: 0; }
+        .inspection-scene .visual-scene[data-visual-template="territory"] .territory-map,
+        .inspection-scene .visual-scene[data-visual-template="housing"] .housing-plan {
+          width: 100%;
+          height: 100%;
+          max-height: none;
+          aspect-ratio: auto;
+        }
+        .scene-with-side-panel .scene-heading { margin-bottom: 0; }
+        .scene-with-side-panel .scene-heading-copy {
+          max-width: none;
+          display: grid;
+          grid-template-columns: minmax(300px, .8fr) minmax(360px, 1.2fr);
+          grid-template-rows: auto auto;
+          column-gap: 24px;
+          align-items: end;
+        }
+        .scene-with-side-panel .scene-heading-copy .eyebrow { grid-column: 1; grid-row: 1; margin-bottom: 2px; }
+        .scene-with-side-panel .scene-heading-copy h2 {
+          grid-column: 1;
+          grid-row: 2;
+          margin-bottom: 0;
+          font-size: clamp(1.55rem, 2.2vw, 2.15rem);
+        }
+        .scene-with-side-panel .scene-heading-copy .lead {
+          grid-column: 2;
+          grid-row: 1 / 3;
+          align-self: center;
+          font-size: .92rem;
+          line-height: 1.4;
+        }
+        .prevention-review-intro { margin-bottom: 7px; }
+        .prevention-area { padding: 10px; }
+        .prevention-area h3 { margin-bottom: 8px; }
+        .prevention-area-section + .prevention-area-section { margin-top: 9px; padding-top: 8px; }
+        .prevention-area ul { gap: 4px; }
+      }
+
+      @media (min-width: 1600px) {
+        main { width: min(1740px, 100%); }
+        .scene:not(.inspection-scene), .entry { width: 100%; max-width: 1480px; margin-inline: auto; }
+      }
+
       @media (max-width: 1050px) {
         .topbar { grid-template-columns: 1fr auto; }
         .journey { grid-column: 1 / -1; grid-row: 2; }
@@ -603,8 +1080,38 @@ export function renderPrototypePage(): string {
         .visual-scene[data-visual-template="housing"],
         .visual-scene[data-visual-template="crisis"],
         .result-layout { grid-template-columns: 1fr; }
-        .session-footer { grid-template-columns: 1fr 1fr; }
-        .footer-cell:last-child { grid-column: 1 / -1; }
+        .session-footer { display: none; }
+        .scene-workspace { grid-template-columns: 1fr; }
+        .summary-dashboard { grid-template-columns: 1fr; }
+        .scene-side-trigger { display: flex; }
+        .scene-side-panel {
+          position: fixed;
+          inset: auto 0 0 0;
+          z-index: 60;
+          width: 100%;
+          height: auto;
+          max-height: min(72dvh, 620px);
+          border: 0;
+          border-top: 1px solid #aebbb5;
+          border-radius: 18px 18px 0 0;
+          visibility: hidden;
+          transform: translateY(104%);
+          transition: transform .22s ease, visibility .22s linear;
+        }
+        .scene-side-panel.is-open { visibility: visible; transform: translateY(0); }
+        .scene-side-close { display: inline-grid; place-items: center; }
+        .scene-side-backdrop {
+          position: fixed;
+          inset: 0;
+          z-index: 55;
+          display: block;
+          border: 0;
+          background: rgba(4, 16, 24, .56);
+          cursor: pointer;
+        }
+        .scene-side-backdrop[hidden] { display: none; }
+        body.scene-side-locked { overflow: hidden; }
+        body.gameplay-active:has(.inspection-scene) #game { height: calc(100dvh - 112px); }
       }
 
       @media (max-width: 700px) {
@@ -625,6 +1132,8 @@ export function renderPrototypePage(): string {
           right: calc(-50% + 18px);
         }
         .stage-label {
+          justify-self: center;
+          padding: 2px 4px;
           overflow: visible;
           text-overflow: clip;
           white-space: normal;
@@ -637,16 +1146,63 @@ export function renderPrototypePage(): string {
         .entry-copy h1 { font-size: clamp(2.25rem, 12vw, 3.5rem); }
         .entry-visual { min-height: 220px; padding: 16px; }
         .scene { min-height: auto; border-radius: 10px; }
-        .scene-content { padding: 15px; }
-        .scene-heading { grid-template-columns: 1fr; gap: 10px; }
+        .scene-content { padding: 12px; }
+        .scene-heading { grid-template-columns: 1fr; gap: 7px; margin-bottom: 8px; }
+        .scene-heading h2 { font-size: clamp(1.45rem, 7vw, 1.9rem); }
+        .scene-heading .lead { font-size: .88rem; line-height: 1.35; }
         .selection-counter, .scene-state-badge { width: 100%; min-width: 0; display: flex; justify-content: space-between; align-items: center; text-align: left; }
         .selection-counter strong, .scene-state-badge strong { font-size: 1.05rem; }
         .visual-canvas, .territory-svg { min-height: 300px; }
-        .visual-dimension-summary, .actions { grid-template-columns: 1fr; }
+        .visual-dimension-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .actions { grid-template-columns: 1fr; }
         .inspection-response, .prevention-area-grid { grid-template-columns: 1fr; }
         .visual-hover-card { width: min(320px, calc(100% - 20px)); max-height: calc(100% - 20px); }
-        .session-footer { width: calc(100% - 16px); grid-template-columns: 1fr; }
-        .footer-cell:last-child { grid-column: auto; }
+        .scene-side-panel .visual-hover-card { width: 100%; max-height: none; }
+        .scene-side-panel .territory-map-key,
+        .scene-side-panel .housing-map-key { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .scene-side-panel .territory-map-key-item:last-child { grid-column: 1 / -1; }
+        .inspection-advance .primary { width: 100%; }
+        .decision-feedback { grid-template-columns: 1fr; }
+        .summary-dashboard { grid-template-columns: 1fr; }
+        body.gameplay-active:has(.inspection-scene) main { padding: 0; }
+        body.gameplay-active:has(.inspection-scene) #game { height: calc(100dvh - 115px); min-height: 560px; }
+        .inspection-scene { border-radius: 0; }
+        .inspection-map-hud {
+          top: 8px;
+          left: 8px;
+          width: calc(100% - 98px);
+          padding: 8px 10px;
+        }
+        .inspection-map-hud h2 { font-size: 1.08rem; }
+        .inspection-map-hud p { max-height: 2.7em; overflow: hidden; font-size: .72rem; }
+        .inspection-map-progress { top: 8px; right: 8px; min-width: 78px; padding: 7px 8px; }
+        .inspection-map-progress small { font-size: .52rem; }
+        .inspection-map-progress strong { font-size: .96rem; }
+        .inspection-response {
+          left: 8px;
+          bottom: 8px;
+          width: calc(100% - 16px);
+          grid-template-columns: 1fr;
+        }
+        .inspection-response .inspection-confirmation { border-right: 0; border-bottom: 1px solid rgba(255,255,255,.16); }
+        .inspection-response .inspection-selection { display: none; }
+        .inspection-advance { right: 8px; bottom: 8px; }
+        .inspection-scene:has(.inspection-advance) .inspection-response { right: 164px; width: auto; }
+        .inspection-scene .visual-scene[data-visual-template="territory"] .visual-card-layer,
+        .inspection-scene .visual-scene[data-visual-template="housing"] .visual-card-layer { position: absolute; inset: 0; left: 0 !important; right: 0 !important; padding: 0; }
+        .inspection-scene .visual-scene[data-visual-template="territory"] .visual-hover-card,
+        .inspection-scene .visual-scene[data-visual-template="housing"] .visual-hover-card {
+          position: absolute;
+          right: auto !important;
+          bottom: 8px;
+          left: 8px !important;
+          top: auto;
+          width: calc(100% - 16px) !important;
+          max-height: 48%;
+          margin: 0;
+          padding: 12px;
+          box-shadow: 0 14px 36px rgba(3, 13, 20, .48);
+        }
       }
 
       @media (prefers-reduced-motion: reduce) {
@@ -659,13 +1215,13 @@ export function renderPrototypePage(): string {
       <header class="topbar">
         <div class="brand" aria-label="Apaga las llamas">
           <div class="brand-mark" aria-hidden="true">🔥</div>
-          <div class="brand-copy"><strong>Apaga las llamas</strong><small>Decide hoy, protege mañana</small></div>
+          <div class="brand-copy"><strong>Apaga las llamas</strong><small>Prepara hoy, protege mañana</small></div>
         </div>
         <nav class="journey" aria-label="Progreso de la partida">
-          <div class="stage" data-stage-id="territory"><span class="stage-dot">1</span><span class="stage-label">Territorio</span></div>
-          <div class="stage" data-stage-id="housing"><span class="stage-dot">2</span><span class="stage-label">Vivienda</span></div>
-          <div class="stage" data-stage-id="crisis"><span class="stage-dot">3</span><span class="stage-label">Crisis</span></div>
-          <div class="stage" data-stage-id="result"><span class="stage-dot">4</span><span class="stage-label">Resultado</span></div>
+          <div class="stage" data-stage-id="territory"><span class="stage-dot">1</span><span class="stage-label">Monte</span></div>
+          <div class="stage" data-stage-id="housing"><span class="stage-dot">2</span><span class="stage-label">Casa</span></div>
+          <div class="stage" data-stage-id="crisis"><span class="stage-dot">3</span><span class="stage-label">Incendio</span></div>
+          <div class="stage" data-stage-id="result"><span class="stage-dot">4</span><span class="stage-label">Final</span></div>
         </nav>
         <div class="topbar-actions"><button class="ghost-button" id="restart-button" type="button" disabled>↻ Reiniciar</button></div>
       </header>
@@ -674,18 +1230,18 @@ export function renderPrototypePage(): string {
         <div id="game" aria-live="polite">
           <section class="entry" aria-labelledby="entry-title">
             <div class="entry-copy">
-              <p class="eyebrow">Simulación educativa municipal</p>
-              <h1 id="entry-title">Prepara hoy. Decide bajo presión después.</h1>
-              <p class="lead">Gestiona el territorio y la interfaz de vivienda antes del incendio. Cuando llegue la emergencia, las condiciones que hayas construido limitarán o ampliarán tus opciones.</p>
+              <p class="eyebrow">Juego educativo</p>
+              <h1 id="entry-title">Prepara el monte antes de que llegue el fuego</h1>
+              <p class="lead">Cuida las fincas, los caminos y una casa junto al monte. Después verás cómo tus decisiones ayudan —o dificultan— el trabajo de los bomberos.</p>
               <div class="entry-meta" aria-label="Información de la partida">
-                <span>Recorrido guiado</span>
+                <span>Historia guiada</span>
                 <span id="entry-duration">Duración orientativa</span>
               </div>
               <div class="entry-actions"><button class="primary" id="start-session-button" type="button">Comenzar partida</button></div>
-              <p class="entry-note">Cuando comiences, conocerás la misión antes de tomar tu primera decisión.</p>
+              <p class="entry-note">El juego te explicará cada paso antes de que elijas.</p>
             </div>
-            <div class="entry-visual" role="img" aria-label="Territorio de barranco e interfaz urbano-forestal del ejercicio">
-              <div class="entry-visual-card"><strong>Una preparación, una emergencia.</strong><p>Observa cómo las decisiones preventivas se vuelven condiciones operativas cuando comienza el incendio.</p></div>
+            <div class="entry-visual" role="img" aria-label="Monte, barranco y casas del juego">
+              <div class="entry-visual-card"><strong>Lo que haces antes importa.</strong><p>Prepara el lugar y descubre qué cambia cuando empieza el incendio.</p></div>
             </div>
           </section>
         </div>
@@ -693,9 +1249,9 @@ export function renderPrototypePage(): string {
       </main>
 
       <footer class="session-footer" id="session-footer" hidden aria-label="Resumen de la partida">
-        <div class="footer-cell"><strong>¿Por qué importa?</strong><p>La prevención modifica el territorio. El territorio condiciona las opciones disponibles durante el incendio.</p></div>
-        <div class="footer-cell"><strong>Tu recorrido</strong><p id="progress-copy">0 pasos completados</p><div class="progress-line" role="progressbar" aria-label="Progreso del recorrido" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="progress-bar" style="width:0%"></span></div><div class="meta-row"><span class="chip accent" id="scene-type">Misión</span><span class="chip" id="branch-chip">Ruta pendiente</span><span class="chip" id="session-status">Partida activa</span></div></div>
-        <div class="footer-cell"><strong>Últimas decisiones</strong><ol class="decision-history" id="decision-history"><li>Aún no hay decisiones.</li></ol></div>
+        <div class="footer-cell"><strong>¿Por qué importa?</strong><p>Un monte cuidado y unos caminos libres dan más opciones a los bomberos.</p></div>
+        <div class="footer-cell"><strong>Tu partida</strong><p id="progress-copy">0 pasos completados</p><div class="progress-line" role="progressbar" aria-label="Progreso de la partida" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="progress-bar" style="width:0%"></span></div><div class="meta-row"><span class="chip accent" id="scene-type">Misión</span><span class="chip" id="branch-chip">Historia sin decidir</span><span class="chip" id="session-status">Partida activa</span></div></div>
+        <div class="footer-cell"><strong>Lo último que elegiste</strong><ol class="decision-history" id="decision-history"><li>Aún no has elegido nada.</li></ol></div>
       </footer>
     </div>
 
@@ -733,19 +1289,37 @@ export function renderPrototypePage(): string {
         busy = true;
         try {
           const response = await fetch(path, { headers: { 'content-type': 'application/json' }, ...options });
-          const payload = await response.json();
-          if (!response.ok) throw new Error(payload.message || 'No se pudo completar la acción.');
+          let payload = await response.json();
+          if (!response.ok) throw new Error(requestErrorMessage(payload, response.status));
+          payload = await advancePastInterstitials(payload);
           currentView = payload;
           sessionId = payload.session.id;
           setSessionChrome(true);
           render();
           return true;
         } catch (error) {
-          notice.textContent = error instanceof Error ? error.message : 'Error inesperado.';
+          notice.textContent = error instanceof Error ? error.message : 'Ha ocurrido un problema. Inténtalo otra vez.';
           return false;
         } finally {
           busy = false;
         }
+      }
+
+      async function advancePastInterstitials(payload) {
+        let view = payload;
+        let guard = 0;
+        while (view && view.scene && (view.scene.type === 'summary' || view.scene.type === 'router') && view.scene.canAdvance && guard < 3) {
+          const response = await fetch('/api/game-sessions/' + encodeURIComponent(view.session.id) + '/advance', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: '{}'
+          });
+          const next = await response.json();
+          if (!response.ok) throw new Error(requestErrorMessage(next, response.status));
+          view = next;
+          guard += 1;
+        }
+        return view;
       }
 
       async function hydrateEntryContext() {
@@ -808,7 +1382,7 @@ export function renderPrototypePage(): string {
           card.classList.toggle('selected', Boolean(action.selected));
           if (button) {
             button.disabled = !action.available;
-            button.textContent = action.selected ? 'Seleccionada' : 'Elegir esta actuación';
+            button.textContent = action.selected ? 'Mejora hecha' : 'Hacer esta mejora';
           }
         });
       }
@@ -817,7 +1391,7 @@ export function renderPrototypePage(): string {
         return '<div class="actions">' + scene.actions.map(function (action) {
           const selected = action.selected ? ' selected' : '';
           const disabled = !action.available ? ' disabled' : '';
-          const label = action.selected ? 'Seleccionada' : 'Elegir';
+          const label = action.selected ? 'Mejora hecha' : 'Elegir';
           return '<article class="action-card' + selected + '" data-action-card-id="' + escapeHtml(action.id) + '">' +
             '<h3>' + escapeHtml(action.label) + '</h3>' +
             '<p>' + escapeHtml(action.description) + '</p>' +
@@ -836,32 +1410,52 @@ export function renderPrototypePage(): string {
         return '<div class="scene-heading"><div class="scene-heading-copy"><p class="eyebrow">' + escapeHtml(eyebrow) + '</p><h2>' + escapeHtml(scene.title) + '</h2><p class="lead">' + escapeHtml(scene.body || '') + '</p></div>' + (badge || '') + '</div>';
       }
 
+      function sceneWorkspace(mainMarkup, panelLabel, panelIntro, panelBody, triggerLabel, learningMarkup) {
+        return '<button class="scene-side-trigger" type="button" aria-controls="scene-side-panel" aria-expanded="false">' + escapeHtml(triggerLabel) + '</button>' +
+          '<div class="scene-workspace"><div class="scene-main">' + mainMarkup + '</div>' +
+          '<aside class="scene-side-panel" id="scene-side-panel" aria-label="' + escapeHtml(panelLabel) + '" aria-hidden="false">' +
+            '<div class="scene-side-header"><h3>' + escapeHtml(panelLabel) + '</h3><button class="scene-side-close" type="button" aria-label="Cerrar panel">Cerrar</button></div>' +
+            panelIntro + '<div data-visual-menu-slot hidden></div>' + panelBody +
+          '</aside>' + (learningMarkup ? '<aside class="scene-learning-panel" aria-label="Cambios y aprendizaje">' + learningMarkup + '</aside>' : '') +
+          '<button class="scene-side-backdrop" type="button" aria-label="Cerrar panel de opciones" hidden></button></div>';
+      }
+
+      function requestErrorMessage(payload, status) {
+        const code = payload && typeof payload.code === 'string' ? payload.code : '';
+        if (code === 'inspection-quota-incomplete') return 'Elige todas las mejoras disponibles antes de continuar.';
+        if (code === 'inspection-quota-reached') return 'Ya has elegido todas las mejoras permitidas en esta zona.';
+        if (code === 'session-not-found') return 'La partida ya no está disponible. Reiníciala para continuar.';
+        return status >= 500
+          ? 'No se pudo completar la operación. Inténtalo de nuevo en unos instantes.'
+          : 'No se pudo completar esta operación. Revisa la selección e inténtalo de nuevo.';
+      }
+
       function inspectionResponse(scene) {
         const selected = scene.actions.filter(function (action) { return action.selected; });
         const remaining = Math.max(0, scene.actionQuota - scene.selectedCount);
         const selectedMarkup = selected.length === 0
-          ? '<span class="selection-empty">Aún no has elegido ninguna.</span>'
+          ? '<span class="selection-empty">Aún no has elegido ninguna mejora.</span>'
           : '<div class="selected-action-list">' + selected.map(function (action) {
               return '<span class="selected-action-chip">' + escapeHtml(action.label) + '</span>';
             }).join('') + '</div>';
         const remainingLabel = remaining === 0
-          ? 'No quedan actuaciones disponibles en esta zona.'
-          : 'Queda' + (remaining === 1 ? '' : 'n') + ' ' + remaining + ' actuaci' + (remaining === 1 ? 'ón' : 'ones') + ' disponible' + (remaining === 1 ? '' : 's') + '.';
+          ? 'Ya has elegido todas las mejoras de esta zona.'
+          : 'Puedes elegir ' + remaining + ' mejora' + (remaining === 1 ? '' : 's') + ' más.';
         const confirmation = scene.feedback
-          ? '<div class="inspection-confirmation"><strong>Actuación aplicada</strong><p>' + escapeHtml(scene.feedback) + '</p></div>'
-          : '<div class="inspection-confirmation is-empty"><strong>Observa antes de actuar</strong><p>Elige un punto para relacionar el riesgo visible con una medida preventiva.</p></div>';
-        return '<section class="inspection-response" role="status" aria-live="polite" aria-atomic="true">' + confirmation +
-          '<div class="inspection-selection"><strong>Actuaciones elegidas</strong>' + selectedMarkup + '<small>' + remainingLabel + '</small></div></section>';
+          ? '<div class="inspection-confirmation has-change"><div class="inspection-confirmation-copy"><strong>Cambio en el mapa</strong><p>' + escapeHtml(scene.feedback) + '</p></div></div>'
+          : '<div class="inspection-confirmation is-empty"><div class="inspection-confirmation-copy"><strong>Elige en el mapa</strong><p>Toca un punto del mapa para saber qué ocurre allí y qué puedes mejorar.</p></div></div>';
+        return '<section class="inspection-response' + (!scene.feedback && selected.length === 0 ? ' is-initial' : '') + '" role="status" aria-live="polite" aria-atomic="true">' + confirmation +
+          '<div class="inspection-selection"><strong>Mejoras elegidas</strong>' + selectedMarkup + '<small>' + remainingLabel + '</small></div></section>';
       }
 
       function preventionAreaReview(scene) {
-        return '<section class="prevention-review" aria-label="Decisiones y condiciones pendientes por zona">' +
-          '<p class="prevention-review-intro">Compara lo aplicado con lo que sigue presente en cada zona.</p>' +
+        return '<section class="prevention-review" aria-label="Mejoras hechas y tareas pendientes por zona">' +
+          '<p class="prevention-review-intro">Estas son tus mejoras y las cosas que quedaron sin hacer.</p>' +
           '<div class="prevention-area-grid">' + scene.preventionAreas.map(function (area) {
-            const applied = '<div class="prevention-area-section"><strong>Actuaciones aplicadas</strong><ul class="applied-list">' + area.selectedActions.map(function (action) {
+            const applied = '<div class="prevention-area-section"><strong>Mejoras hechas</strong><ul class="applied-list">' + area.selectedActions.map(function (action) {
               return '<li>' + escapeHtml(action.label) + '</li>';
             }).join('') + '</ul></div>';
-            const pending = '<div class="prevention-area-section"><strong>Condiciones pendientes</strong><ul class="pending-list">' + area.pendingConditions.map(function (condition) {
+            const pending = '<div class="prevention-area-section"><strong>Cosas pendientes</strong><ul class="pending-list">' + area.pendingConditions.map(function (condition) {
               return '<li><b>' + escapeHtml(condition.label) + '</b><small>' + escapeHtml(condition.consequence) + '</small></li>';
             }).join('') + '</ul></div>';
             return '<article class="prevention-area" data-prevention-area="' + escapeHtml(area.sceneId) + '"><h3>' + escapeHtml(area.label) + '</h3>' + applied + pending + '</article>';
@@ -869,51 +1463,61 @@ export function renderPrototypePage(): string {
       }
 
       function renderBriefing(scene) {
-        return '<section class="scene briefing"><div class="scene-heading-copy"><p class="eyebrow">Misión municipal</p><h1>' + escapeHtml(scene.title) + '</h1><p class="lead">' + escapeHtml(scene.mission) + '</p>' + advanceButton(scene) + '</div></section>';
+        return '<section class="scene briefing"><div class="scene-heading-copy"><p class="eyebrow">Tu misión</p><h1>' + escapeHtml(scene.title) + '</h1><p class="lead">' + escapeHtml(scene.mission) + '</p>' + advanceButton(scene) + '</div></section>';
       }
 
       function renderInspection(scene) {
-        const remaining = Math.max(0, scene.actionQuota - scene.selectedCount);
-        const badge = '<div class="selection-counter"><small>Acciones seleccionadas</small><strong>' + scene.selectedCount + ' / ' + scene.actionQuota + '</strong><span class="selection-remaining">' + (remaining === 0 ? 'Presupuesto agotado' : 'Quedan ' + remaining) + '</span></div>';
-        return '<section class="scene"><div class="scene-content">' + heading(scene, 'Inspección preventiva', badge) +
-          '<div class="objective"><strong>Tu objetivo:</strong> ' + escapeHtml(scene.objective) + '</div>' +
-          '<p class="visual-hint">Pasa sobre un punto de la escena, enfócalo con el teclado o tócalo para ver y elegir la actuación.</p>' +
-          visualMarkup() + inspectionResponse(scene) + advanceButton(scene) + '</div></section>';
+        const count = scene.selectedCount + ' / ' + scene.actionQuota + ' mejoras';
+        const main = '<div class="inspection-stage">' + visualMarkup() +
+          '<header class="inspection-map-hud" data-inspection-overlay><p class="eyebrow">Prepara la zona</p><h2 id="inspection-map-heading">' + escapeHtml(scene.title) + '</h2><p>' + escapeHtml(scene.objective) + '</p></header>' +
+          '<div class="inspection-map-progress" data-inspection-overlay aria-label="' + escapeHtml(count) + '"><small>Mejoras</small><strong>' + escapeHtml(scene.selectedCount + ' / ' + scene.actionQuota) + '</strong></div>' +
+          '<div class="inspection-hidden-menu" data-visual-menu-slot hidden></div>' +
+          inspectionResponse(scene).replace('<section class="inspection-response', '<section data-inspection-overlay class="inspection-response') +
+          (scene.canAdvance ? '<div class="inspection-advance" data-inspection-overlay>' + advanceButton(scene) + '</div>' : '') + '</div>';
+        return '<section class="scene inspection-scene" aria-labelledby="inspection-map-heading"><div class="scene-content">' +
+          '<div class="scene-workspace"><div class="scene-main">' + main + '</div></div></div></section>';
       }
 
       function renderSummary(scene) {
-        return '<section class="scene"><div class="scene-content">' + heading(scene, 'Balance preventivo', '') +
-          '<div class="objective"><strong>Puente causal:</strong> lo que trataste en prevención define las condiciones que hereda la emergencia.</div>' +
-          preventionAreaReview(scene) +
-          '<div class="balance-caution"><strong>Reducción, no garantía:</strong> estas medidas reducen el riesgo y mejoran las condiciones operativas; no convierten una vivienda en completamente segura.</div>' +
-          '<h3 class="balance-heading">Condiciones que hereda la emergencia</h3>' + visualMarkup() + advanceButton(scene) + '</div></section>';
+        const main = '<div class="summary-dashboard">' + preventionAreaReview(scene) +
+          '<div class="summary-emergency"><h3 class="balance-heading">Así empieza la emergencia</h3>' + visualMarkup() + '</div></div>';
+        const intro = '<div class="objective"><strong>Qué ocurre ahora:</strong> lo que hiciste antes cambia las opciones de los bomberos.</div>' +
+          '<div class="balance-caution"><strong>Importante:</strong> las mejoras reducen el peligro, pero ninguna casa queda totalmente segura.</div>';
+        return '<section class="scene scene-with-side-panel"><div class="scene-content">' + heading(scene, 'Tus mejoras', '') +
+          sceneWorkspace(main, 'Balance preventivo', intro, advanceButton(scene), 'Ver balance y continuar') + '</div></section>';
       }
 
       function renderDecision(scene) {
         const branch = currentView.session.branch;
-        const badge = branch ? '<div class="scene-state-badge ' + escapeHtml(branch) + '"><small>Estado actual</small><strong>' + (branch === 'prepared' ? 'Preparado' : 'Vulnerable') + '</strong></div>' : '';
-        return '<section class="scene"><div class="scene-content">' + heading(scene, 'Decisión operativa' + (scene.difficulty ? ' · ' + scene.difficulty : ''), badge) +
-          '<div class="objective">' + escapeHtml(scene.context) + '</div>' + visualMarkup() + actionCards(scene) +
-          (scene.feedback ? '<div class="feedback"><strong>Consecuencia</strong><br>' + escapeHtml(scene.feedback) + '</div>' : '') +
-          advanceButton(scene) + '</div></section>';
+        const badge = branch ? '<div class="scene-state-badge ' + escapeHtml(branch) + '"><small>Situación</small><strong>' + (branch === 'prepared' ? 'Más opciones' : 'Pocas opciones') + '</strong></div>' : '';
+        const intro = badge + '<div class="objective">' + escapeHtml(scene.context) + '</div>';
+        const main = visualMarkup() + (scene.feedback
+          ? '<div class="feedback decision-feedback" role="status" aria-live="polite"><strong>Esto ocurre</strong><p>' + escapeHtml(scene.feedback) + '</p></div>'
+          : '');
+        const response = actionCards(scene) + advanceButton(scene);
+        return '<section class="scene scene-with-side-panel"><div class="scene-content">' + heading(scene, 'Decide qué hacer' + (scene.difficulty ? ' · ' + scene.difficulty : ''), '') +
+          sceneWorkspace(main, 'Elige qué hacer', intro, response, 'Ver opciones de respuesta') + '</div></section>';
       }
 
       function renderRouter(scene) {
-        return '<section class="scene"><div class="scene-content"><div class="router-mark" aria-hidden="true">↝</div>' + heading(scene, 'Transición causal automática', '') + visualMarkup() + advanceButton(scene) + '</div></section>';
+        return '<section class="scene scene-with-side-panel"><div class="scene-content"><div class="router-mark" aria-hidden="true">↝</div>' + heading(scene, 'El juego comprueba tus decisiones', '') +
+          sceneWorkspace(visualMarkup(), 'Siguiente paso', '', advanceButton(scene), 'Ver siguiente paso') + '</div></section>';
       }
 
       function renderResult(scene) {
-        const badge = '<div class="scene-state-badge ' + (scene.variant === 'contained' ? 'prepared' : 'vulnerable') + '"><small>Resultado</small><strong>' + (scene.variant === 'contained' ? 'Contenido' : 'Fuera de capacidad') + '</strong></div>';
-        const relations = '<div><p class="eyebrow">Cadena causal principal</p><div class="relations" aria-label="Cadenas causales de la partida">' + scene.relations.map(function (relation) {
+        const badge = '<div class="scene-state-badge ' + (scene.variant === 'contained' ? 'prepared' : 'vulnerable') + '"><small>Resultado</small><strong>' + (scene.variant === 'contained' ? 'Controlado' : 'Demasiado fuerte') + '</strong></div>';
+        const relations = '<div><p class="eyebrow">Por qué ocurrió</p><div class="relations" aria-label="Cómo influyeron tus decisiones">' + scene.relations.map(function (relation) {
           return '<article class="relation' + (relation.branchDecisive ? ' decisive' : '') + '"><h3>' + escapeHtml(relation.title) + '</h3>' +
-            '<div class="cause-list">Prevención → ' + relation.causeActionLabels.map(escapeHtml).join(' · ') + '</div>' +
+            '<div class="cause-list">' + escapeHtml(relation.causeType) + ' → ' + relation.causeActionLabels.map(escapeHtml).join(' · ') + '</div>' +
             '<p>' + escapeHtml(relation.effect) + '</p></article>';
         }).join('') + '</div></div>';
-        return '<section class="scene result-' + escapeHtml(scene.variant) + '"><div class="scene-content">' + heading(scene, 'Resultado · balance causal', badge) +
-          '<div class="result-layout"><div><p class="eyebrow">Estado heredado</p>' + visualMarkup() + '</div>' + relations + '</div>' +
-          '<div class="feedback">' + escapeHtml(scene.closing) + '</div>' +
-          '<details><summary>Revisar mis decisiones preventivas</summary><ul>' + currentView.session.preventionReview.map(function (entry) { return '<li>' + escapeHtml(entry.label) + '</li>'; }).join('') + '</ul></details>' +
-          advanceButton(scene) + '</div></section>';
+        const main = '<div class="result-layout"><div><p class="eyebrow">Así empezó la emergencia</p>' + visualMarkup() + '</div>' + relations + '</div>';
+        const intro = badge + '<div class="feedback">' + escapeHtml(scene.closing) + '</div>';
+        const review = '<details class="final-prevention-review"><summary>Revisar toda la preparación</summary><strong>Mejoras que elegiste</strong><ul>' + currentView.session.preventionReview.map(function (entry) { return '<li>' + escapeHtml(entry.label) + '</li>'; }).join('') + '</ul>' +
+          (currentView.session.pendingPreventionReview.length === 0 ? '' : '<strong>Mejoras que quedaron pendientes</strong><ul>' + currentView.session.pendingPreventionReview.map(function (entry) { return '<li>' + escapeHtml(entry.label) + '</li>'; }).join('') + '</ul>') +
+          '<p>Ninguna mejora elimina todo el riesgo.</p></details>' + advanceButton(scene);
+        return '<section class="scene scene-with-side-panel result-' + escapeHtml(scene.variant) + '"><div class="scene-content">' + heading(scene, 'Resultado de tus decisiones', '') +
+          sceneWorkspace(main, 'Tu resultado', intro, review, 'Ver resultado y opciones') + '</div></section>';
       }
 
       const RENDERERS = {
@@ -927,16 +1531,16 @@ export function renderPrototypePage(): string {
 
       const SCENE_TYPE_LABELS = {
         briefing: 'Misión',
-        inspection: 'Inspección',
-        summary: 'Balance',
-        decision: 'Decisión',
-        router: 'Transición',
-        result: 'Resultado'
+        inspection: 'Preparación',
+        summary: 'Tus mejoras',
+        decision: 'Emergencia',
+        router: 'Comprobación',
+        result: 'Final'
       };
 
       const BRANCH_LABELS = {
-        prepared: 'preparada',
-        vulnerable: 'vulnerable'
+        prepared: 'con más opciones',
+        vulnerable: 'con pocas opciones'
       };
 
       const STAGE_BY_VISUAL_TEMPLATE = {
@@ -949,6 +1553,123 @@ export function renderPrototypePage(): string {
       };
 
       let visualCardCloseTimer = null;
+      let sidePanelReturnFocus = null;
+      let sidePanelCleanup = null;
+
+      function arrangeVisualSideMenu() {
+        const slot = game.querySelector('[data-visual-menu-slot]');
+        const visualScene = game.querySelector('.visual-scene');
+        if (!slot || !visualScene) return;
+        const menu = visualScene.querySelector('.territory-map-key, .housing-map-key');
+        if (menu) slot.appendChild(menu);
+        slot.hidden = true;
+        const canvas = visualScene.querySelector('.visual-canvas');
+        if (canvas) game.querySelectorAll('[data-inspection-overlay]').forEach(function (overlay) { canvas.appendChild(overlay); });
+        fitInspectionMap();
+      }
+
+      function fitInspectionMap() {
+        const map = game.querySelector('.inspection-scene .territory-map, .inspection-scene .housing-plan');
+        if (!map) return;
+        const canvas = map.closest('.visual-canvas');
+        const ratio = canvas && canvas.clientHeight > 0 ? canvas.clientWidth / canvas.clientHeight : window.innerWidth / window.innerHeight;
+        map.setAttribute('preserveAspectRatio', ratio < 1.72 ? 'xMidYMid meet' : 'xMidYMid slice');
+      }
+
+      function usesSideDrawer() {
+        return window.matchMedia && window.matchMedia('(max-width: 1050px)').matches;
+      }
+
+      function openSceneSidePanel(source, moveFocus) {
+        const panel = document.getElementById('scene-side-panel');
+        const trigger = game.querySelector('.scene-side-trigger');
+        const backdrop = game.querySelector('.scene-side-backdrop');
+        const main = game.querySelector('.scene-main');
+        if (!panel || !trigger || !backdrop || !usesSideDrawer()) return;
+        sidePanelReturnFocus = source || trigger;
+        panel.classList.add('is-open');
+        panel.setAttribute('aria-hidden', 'false');
+        trigger.setAttribute('aria-expanded', 'true');
+        backdrop.hidden = false;
+        panel.setAttribute('role', 'dialog');
+        panel.setAttribute('aria-modal', 'true');
+        if (main) main.setAttribute('inert', '');
+        document.body.classList.add('scene-side-locked');
+        if (moveFocus) window.requestAnimationFrame(function () { panel.querySelector('.scene-side-close')?.focus(); });
+      }
+
+      function closeSceneSidePanel(restoreFocus) {
+        const panel = document.getElementById('scene-side-panel');
+        const trigger = game.querySelector('.scene-side-trigger');
+        const backdrop = game.querySelector('.scene-side-backdrop');
+        const main = game.querySelector('.scene-main');
+        if (!panel || !trigger || !backdrop) return;
+        panel.classList.remove('is-open');
+        panel.setAttribute('aria-hidden', usesSideDrawer() ? 'true' : 'false');
+        trigger.setAttribute('aria-expanded', 'false');
+        backdrop.hidden = true;
+        panel.removeAttribute('role');
+        panel.removeAttribute('aria-modal');
+        if (main) main.removeAttribute('inert');
+        document.body.classList.remove('scene-side-locked');
+        if (restoreFocus && sidePanelReturnFocus && sidePanelReturnFocus.isConnected) sidePanelReturnFocus.focus();
+      }
+
+      function wireSceneSidePanel() {
+        if (sidePanelCleanup) sidePanelCleanup();
+        const panel = document.getElementById('scene-side-panel');
+        const trigger = game.querySelector('.scene-side-trigger');
+        const close = game.querySelector('.scene-side-close');
+        const backdrop = game.querySelector('.scene-side-backdrop');
+        if (!panel || !trigger || !close || !backdrop) return;
+        const media = window.matchMedia('(max-width: 1050px)');
+        const onTrigger = function () { openSceneSidePanel(trigger, true); };
+        const onClose = function () { closeSceneSidePanel(true); };
+        const onKeydown = function (event) {
+          if (event.key === 'Escape' && panel.classList.contains('is-open')) {
+            event.preventDefault();
+            closeSceneSidePanel(true);
+            return;
+          }
+          if (event.key === 'Tab' && panel.classList.contains('is-open')) {
+            const controls = Array.from(panel.querySelectorAll('button:not(:disabled), summary, [tabindex="0"]')).filter(function (element) {
+              const rect = element.getBoundingClientRect();
+              return !element.hidden && rect.width > 0 && rect.height > 0 && getComputedStyle(element).visibility !== 'hidden';
+            });
+            if (controls.length === 0) return;
+            const first = controls[0];
+            const last = controls[controls.length - 1];
+            if (!panel.contains(document.activeElement)) {
+              event.preventDefault();
+              first.focus();
+            } else if (event.shiftKey && document.activeElement === first) {
+              event.preventDefault();
+              last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+              event.preventDefault();
+              first.focus();
+            }
+          }
+        };
+        const onMediaChange = function () {
+          if (!media.matches) closeSceneSidePanel(false);
+          else if (!panel.classList.contains('is-open')) panel.setAttribute('aria-hidden', 'true');
+        };
+        trigger.addEventListener('click', onTrigger);
+        close.addEventListener('click', onClose);
+        backdrop.addEventListener('click', onClose);
+        document.addEventListener('keydown', onKeydown);
+        media.addEventListener('change', onMediaChange);
+        onMediaChange();
+        sidePanelCleanup = function () {
+          trigger.removeEventListener('click', onTrigger);
+          close.removeEventListener('click', onClose);
+          backdrop.removeEventListener('click', onClose);
+          document.removeEventListener('keydown', onKeydown);
+          media.removeEventListener('change', onMediaChange);
+          document.body.classList.remove('scene-side-locked');
+        };
+      }
 
       function closeVisualCards() {
         document.querySelectorAll('.visual-hover-card').forEach(function (card) { card.hidden = true; });
@@ -961,6 +1682,8 @@ export function renderPrototypePage(): string {
       }
 
       function scheduleVisualCardClose() {
+        if (usesSideDrawer() && document.getElementById('scene-side-panel')?.classList.contains('is-open')) return;
+        if (document.querySelector('.inspection-scene')) return;
         cancelVisualCardClose();
         visualCardCloseTimer = window.setTimeout(function () {
           const focusedCard = document.activeElement && document.activeElement.closest ? document.activeElement.closest('.visual-hover-card') : null;
@@ -970,12 +1693,19 @@ export function renderPrototypePage(): string {
       }
 
       function positionVisualCard(element, card) {
-        const canvas = element.closest('.visual-canvas');
-        if (!canvas) return;
-        if (canvas.querySelector('.territory-map, .housing-plan') && window.matchMedia('(max-width: 700px)').matches) {
+        if (card.closest('.scene-side-panel')) {
           card.style.right = '';
           card.style.left = '';
           card.style.top = '';
+          return;
+        }
+        const canvas = element.closest('.visual-canvas');
+        if (!canvas) return;
+        if (canvas.querySelector('.territory-map, .housing-plan') && window.matchMedia('(max-width: 700px)').matches) {
+          card.style.right = '8px';
+          card.style.left = '8px';
+          card.style.top = 'auto';
+          card.style.bottom = '8px';
           return;
         }
         window.requestAnimationFrame(function () {
@@ -990,6 +1720,7 @@ export function renderPrototypePage(): string {
           let top = elementRect.top - canvasRect.top + (elementRect.height - cardRect.height) / 2;
           top = Math.max(gap, Math.min(top, canvasRect.height - cardRect.height - gap));
           card.style.right = 'auto';
+          card.style.bottom = '';
           card.style.left = Math.round(left) + 'px';
           card.style.top = Math.round(top) + 'px';
         });
@@ -1003,6 +1734,7 @@ export function renderPrototypePage(): string {
         closeVisualCards();
         card.hidden = false;
         element.setAttribute('aria-expanded', 'true');
+        if (card.closest('.scene-side-panel')) openSceneSidePanel(element, false);
         positionVisualCard(element, card);
         return card;
       }
@@ -1013,9 +1745,14 @@ export function renderPrototypePage(): string {
         if (!button) return;
         const card = button.closest('.action-card, .visual-hover-card');
         if (!card) return;
+        if (sourceElement && sourceElement.closest('.territory-map-key, .housing-map-key') && usesSideDrawer()) {
+          closeSceneSidePanel(false);
+        }
         if (button.disabled) { card.setAttribute('tabindex', '-1'); card.focus(); } else { button.focus(); }
-        if (sourceElement && sourceElement.closest('.territory-map-key, .housing-map-key')) {
-          card.scrollIntoView({ block: 'nearest', behavior: 'auto' });
+        const inspectionCanvas = card.closest('.inspection-scene .visual-canvas');
+        if (inspectionCanvas) {
+          inspectionCanvas.scrollLeft = 0;
+          inspectionCanvas.scrollTop = 0;
         }
         if (card.classList.contains('action-card')) {
           const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1025,14 +1762,15 @@ export function renderPrototypePage(): string {
 
       function wireCommands() {
         document.querySelectorAll('.action-button').forEach(function (button) {
-          button.addEventListener('click', function () {
+          button.addEventListener('click', async function () {
             button.disabled = true;
-            request('/api/game-sessions/' + encodeURIComponent(sessionId) + '/actions', { method: 'POST', body: JSON.stringify({ actionId: button.dataset.actionId }) });
+            const applied = await request('/api/game-sessions/' + encodeURIComponent(sessionId) + '/actions', { method: 'POST', body: JSON.stringify({ actionId: button.dataset.actionId }) });
+            if (!applied) button.disabled = false;
           });
         });
         document.querySelectorAll('[data-visual-element-id]').forEach(function (element) {
           element.addEventListener('mouseenter', function () {
-            if (visualHoverReady) openVisualCard(element);
+            if (visualHoverReady && !element.closest('.inspection-scene')) openVisualCard(element);
           });
           element.addEventListener('mouseleave', scheduleVisualCardClose);
           element.addEventListener('focus', function () { openVisualCard(element); });
@@ -1061,6 +1799,7 @@ export function renderPrototypePage(): string {
             advance.disabled = true;
             const advanced = await request('/api/game-sessions/' + encodeURIComponent(sessionId) + '/advance', { method: 'POST', body: '{}' });
             if (advanced) focusCurrentSceneHeading();
+            else advance.disabled = false;
           });
         }
       }
@@ -1096,8 +1835,8 @@ export function renderPrototypePage(): string {
         const progressLine = document.querySelector('.progress-line[role="progressbar"]');
         if (progressLine) progressLine.setAttribute('aria-valuenow', String(progress));
         document.getElementById('scene-type').textContent = SCENE_TYPE_LABELS[currentView.scene.type] || 'Escena';
-        document.getElementById('branch-chip').textContent = session.branch ? 'Ruta ' + (BRANCH_LABELS[session.branch] || session.branch) : 'Ruta pendiente';
-        document.getElementById('session-status').textContent = session.status === 'completed' ? 'Partida completada' : 'Partida activa';
+        document.getElementById('branch-chip').textContent = session.branch ? 'Historia ' + (BRANCH_LABELS[session.branch] || session.branch) : 'Historia sin decidir';
+        document.getElementById('session-status').textContent = session.status === 'completed' ? 'Partida terminada' : 'Partida en curso';
         const decisions = session.decisionReview.slice(-3);
         document.getElementById('decision-history').innerHTML = decisions.length === 0 ? '<li>Aún no hay decisiones.</li>' : decisions.map(function (decision) { return '<li>' + escapeHtml(decision.label) + '</li>'; }).join('');
       }
@@ -1106,12 +1845,15 @@ export function renderPrototypePage(): string {
         if (!currentView) return;
         const renderer = RENDERERS[currentView.scene.type];
         if (!renderer) throw new Error('Tipo de escena no soportado: ' + currentView.scene.type);
+        document.body.classList.add('gameplay-active');
         visualHoverReady = false;
         if (visualHoverTimer !== null) window.clearTimeout(visualHoverTimer);
         game.innerHTML = renderer(currentView.scene);
+        arrangeVisualSideMenu();
         renderJourney();
         renderFooter();
         hydrateVisualActionCards(currentView.scene);
+        wireSceneSidePanel();
         wireCommands();
         visualHoverTimer = window.setTimeout(function () { visualHoverReady = true; }, 220);
       }
@@ -1120,6 +1862,7 @@ export function renderPrototypePage(): string {
         if (!sessionId || busy) return;
         request('/api/game-sessions/' + encodeURIComponent(sessionId) + '/restart', { method: 'POST', body: '{}' });
       });
+      window.addEventListener('resize', fitInspectionMap);
       startButton.addEventListener('click', startSession);
       setSessionChrome(false);
       hydrateEntryContext();

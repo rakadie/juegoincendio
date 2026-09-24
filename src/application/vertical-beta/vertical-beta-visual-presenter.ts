@@ -73,6 +73,36 @@ const PRESENTATION_BANDS = {
   higherCriticalMax: 24
 } as const;
 
+const DIMENSION_STATE_LABELS: Readonly<
+  Record<keyof InheritedState, Readonly<Record<VisualDimensionState, string>>>
+> = {
+  fuelLoad: {
+    favorable: 'queda poca',
+    conditioned: 'queda bastante',
+    critical: 'queda demasiada'
+  },
+  fuelContinuity: {
+    favorable: 'pocos se tocan',
+    conditioned: 'algunos se tocan',
+    critical: 'muchos se tocan'
+  },
+  operationalAccess: {
+    favorable: 'paso libre',
+    conditioned: 'paso difícil',
+    critical: 'sin paso seguro'
+  },
+  defensibility: {
+    favorable: 'más fácil',
+    conditioned: 'difícil',
+    critical: 'muy difícil'
+  },
+  attackOpportunity: {
+    favorable: 'varias opciones',
+    conditioned: 'pocas opciones',
+    critical: 'casi ninguna opción'
+  }
+};
+
 const DIMENSION_ACTIONS: Readonly<Record<keyof InheritedState, readonly string[]>> = {
   fuelLoad: [
     'gestionar-restos-poda',
@@ -145,8 +175,8 @@ function territoryElements(selected: Set<string>): PresentedVisualElement[] {
       'residues',
       preventionState(selected, 'gestionar-restos-poda', 'treated', 'untreated'),
       selected.has('gestionar-restos-poda')
-        ? 'Los restos se han retirado o procesado.'
-        : 'Los restos siguen disponibles como combustible acumulado.',
+        ? 'Las ramas cortadas ya no están en el suelo.'
+        : 'Las ramas secas pueden ayudar al fuego a crecer.',
       'gestionar-restos-poda',
       selected.has('gestionar-restos-poda')
     ),
@@ -155,8 +185,8 @@ function territoryElements(selected: Set<string>): PresentedVisualElement[] {
       'vegetation',
       preventionState(selected, 'crear-discontinuidades-vegetales', 'broken', 'continuous'),
       selected.has('crear-discontinuidades-vegetales')
-        ? 'La continuidad entre sectores queda interrumpida.'
-        : 'La vegetación sigue conectando parcelas y ladera.',
+        ? 'Hay espacios sin plantas que frenan el paso del fuego.'
+        : 'Las plantas están unidas y el fuego puede pasar de una zona a otra.',
       'crear-discontinuidades-vegetales',
       selected.has('crear-discontinuidades-vegetales')
     ),
@@ -165,8 +195,8 @@ function territoryElements(selected: Set<string>): PresentedVisualElement[] {
       'road',
       preventionState(selected, 'limpiar-margenes-caminos', 'clear', 'constrained'),
       selected.has('limpiar-margenes-caminos')
-        ? 'El camino conserva anchura útil para entrada y repliegue.'
-        : 'Los márgenes reducen el corredor operativo.',
+        ? 'El camino tiene sitio para que entren y salgan los bomberos.'
+        : 'Las plantas de los bordes dejan poco espacio para pasar.',
       'limpiar-margenes-caminos',
       selected.has('limpiar-margenes-caminos')
     ),
@@ -175,8 +205,8 @@ function territoryElements(selected: Set<string>): PresentedVisualElement[] {
       'grazing',
       preventionState(selected, 'activar-pastoreo-preventivo', 'treated', 'untreated'),
       selected.has('activar-pastoreo-preventivo')
-        ? 'La franja prioritaria muestra menos combustible fino.'
-        : 'La franja mantiene combustible fino disponible.',
+        ? 'Los animales han comido parte de la hierba seca.'
+        : 'Todavía hay mucha hierba seca que puede arder.',
       'activar-pastoreo-preventivo',
       selected.has('activar-pastoreo-preventivo')
     ),
@@ -185,8 +215,8 @@ function territoryElements(selected: Set<string>): PresentedVisualElement[] {
       'professionalLine',
       preventionState(selected, 'evaluar-quema-tecnica', 'evaluated', 'unevaluated'),
       selected.has('evaluar-quema-tecnica')
-        ? 'La posición ha sido evaluada; no significa que la maniobra se haya ejecutado.'
-        : 'La posible posición estratégica sigue sin evaluación profesional.',
+        ? 'Una persona experta ha revisado la zona. No se ha quemado nada.'
+        : 'Una persona experta aún no ha revisado esta zona.',
       'evaluar-quema-tecnica',
       selected.has('evaluar-quema-tecnica')
     )
@@ -197,11 +227,11 @@ function housingElements(selected: Set<string>): PresentedVisualElement[] {
   return [
     visualElement(
       'housing-vertical-fuel',
-      'vegetation',
+      'lowVegetation',
       preventionState(selected, 'podar-ramas-y-retirar-seco', 'reduced', 'continuous'),
       selected.has('podar-ramas-y-retirar-seco')
-        ? 'La vegetación baja y las ramas podadas reducen la continuidad vertical.'
-        : 'Las ramas bajas mantienen continuidad vertical junto a la vivienda.',
+        ? 'Hay menos hierba seca y las ramas bajas se han cortado.'
+        : 'El fuego podría subir desde la hierba hasta las ramas bajas.',
       'podar-ramas-y-retirar-seco',
       selected.has('podar-ramas-y-retirar-seco')
     ),
@@ -210,8 +240,8 @@ function housingElements(selected: Set<string>): PresentedVisualElement[] {
       'canopy',
       preventionState(selected, 'separar-copas', 'broken', 'continuous'),
       selected.has('separar-copas')
-        ? 'Las discontinuidades entre copas reducen la continuidad horizontal.'
-        : 'Las copas siguen conectadas junto a la vivienda.',
+        ? 'Las copas están separadas y el fuego tiene más difícil saltar entre árboles.'
+        : 'Las copas se tocan y el fuego podría pasar de un árbol a otro.',
       'separar-copas',
       selected.has('separar-copas')
     ),
@@ -220,8 +250,8 @@ function housingElements(selected: Set<string>): PresentedVisualElement[] {
       'localAccess',
       preventionState(selected, 'despejar-accesos', 'clear', 'blocked'),
       selected.has('despejar-accesos')
-        ? 'El corredor despejado mejora la entrada, la maniobra y el repliegue.'
-        : 'El acceso local sigue comprometido para una autobomba.',
+        ? 'El camión de bomberos puede entrar, girar y salir mejor.'
+        : 'El camión de bomberos no tiene espacio suficiente para pasar.',
       'despejar-accesos',
       selected.has('despejar-accesos')
     ),
@@ -229,7 +259,7 @@ function housingElements(selected: Set<string>): PresentedVisualElement[] {
       'housing-home',
       'house',
       'conditioned',
-      'El tratamiento mejora condiciones; no garantiza que la vivienda sea defendible.'
+      'Las mejoras reducen el peligro, pero ninguna casa queda totalmente segura.'
     )
   ];
 }
@@ -261,60 +291,60 @@ function crisisElements(session: VisualSessionSource): PresentedVisualElement[] 
       'road',
       roadState,
       prepared
-        ? 'La cadena de acceso permite aproximación y repliegue.'
-        : 'La movilidad operativa está limitada por el estado heredado.'
+        ? 'El camino permite que los equipos entren y salgan.'
+        : 'Lo que quedó sin preparar dificulta el paso de los equipos.'
     ),
     visualElement(
       'crisis-retreat',
       'retreatRoute',
       prepared ? 'viable' : 'limited',
       prepared
-        ? 'Existe una ruta de repliegue identificable.'
-        : 'La retirada condiciona cualquier intento de sostener posición.'
+        ? 'Los equipos tienen una salida segura.'
+        : 'Los equipos deben poder salir antes de quedarse trabajando aquí.'
     ),
     visualElement(
       'crisis-position',
       'operationalPosition',
       positionState,
       prepared
-        ? 'La posición puede sostenerse dentro del modelo del juego.'
-        : 'La posición no puede sostenerse con seguridad.'
+        ? 'Los equipos pueden trabajar aquí sin perder la salida.'
+        : 'Trabajar aquí sería demasiado peligroso.'
     ),
     visualElement(
       'crisis-pressure',
       'firePressure',
       pressureState,
       prepared
-        ? 'La prevención conserva margen operativo frente a la presión del fuego.'
-        : 'La presión del fuego reduce el margen de actuación.'
+        ? 'La preparación da más tiempo y espacio para actuar.'
+        : 'El fuego fuerte deja menos tiempo para actuar.'
     ),
     visualElement(
       'crisis-attack-window',
       'attackWindow',
       attackState,
       prepared
-        ? 'Existe una ventana de ataque compatible con acceso y repliegue.'
-        : 'La ventana de ataque directo no está disponible.'
+        ? 'Los equipos pueden acercarse porque tienen entrada y salida.'
+        : 'Acercarse al fuego no es seguro en este momento.'
     ),
     visualElement(
       'crisis-crown',
       'crownEscalation',
       crownState,
       crown
-        ? 'La escalada a copas ya se manifiesta en esta escena.'
+        ? 'El fuego ya ha llegado a la parte alta de los árboles.'
         : prepared
-          ? 'En este recorrido no se manifiesta escalada a copas antes del resultado.'
-          : 'La continuidad mantiene riesgo de escalada a copas.'
+          ? 'El fuego todavía no ha llegado a las copas.'
+          : 'Las copas unidas facilitan que el fuego suba y avance.',
     ),
     visualElement(
       'crisis-capacity',
       'extinctionCapacity',
       capacityState,
       prepared
-        ? 'La respuesta conserva capacidad operativa en este punto del recorrido.'
+        ? 'Los equipos todavía pueden trabajar con seguridad.'
         : crown
-          ? 'La escalada a copas supera la capacidad de ataque directo en esta partida.'
-          : 'La capacidad de extinción está condicionada, pero el desenlace aún no se presenta.'
+          ? 'El fuego en las copas es demasiado peligroso para acercarse.'
+          : 'Los equipos tienen pocas opciones, pero la partida aún no ha terminado.',
     ),
     ...(sceneId === 'crisis-decision-emergency-fuel-break'
       ? [
@@ -323,8 +353,8 @@ function crisisElements(session: VisualSessionSource): PresentedVisualElement[] 
             'professionalLine',
             professionalLineEvaluated ? 'evaluated' : 'unevaluated',
             professionalLineEvaluated
-              ? 'La posición fue evaluada en prevención; su uso sigue condicionado por la crisis.'
-              : 'No existe evidencia preventiva de evaluación profesional.'
+              ? 'La zona se revisó antes. Ahora hay que comprobar si sigue siendo segura.'
+              : 'Esta zona no fue revisada antes del incendio.'
           )
         ]
       : []),
@@ -335,8 +365,8 @@ function crisisElements(session: VisualSessionSource): PresentedVisualElement[] 
             'localAccess',
             localAccessClear ? 'clear' : 'constrained',
             localAccessClear
-              ? 'El acceso local despejado facilita la defensa selectiva.'
-              : 'La defensa sigue condicionada por el acceso local.'
+              ? 'El camino despejado ayuda a proteger las casas que tienen salida.'
+              : 'El camino estrecho dificulta proteger las casas.'
           )
         ]
       : [])
@@ -382,7 +412,7 @@ function dimensionCauseLabels(
     .filter((actionId) => !selected.has(actionId))
     .map(actionLabel)
     .filter((label): label is string => label !== undefined)
-    .map((label) => `Sin tratar: ${label}`);
+    .map((label) => `Quedó pendiente: ${label}`);
 
   const prioritizedOmissions = omitted.slice(0, 2);
   const remainingSlots = Math.max(0, 4 - prioritizedOmissions.length);
@@ -400,7 +430,7 @@ function dimensionModels(session: VisualSessionSource): PresentedVisualDimension
         label: VERTICAL_BETA_DIMENSION_LABELS[id],
         value: session.inheritedState![id],
         state,
-        stateLabel: VERTICAL_BETA_VISUAL_COPY_ES.states[state],
+        stateLabel: DIMENSION_STATE_LABELS[id][state],
         causeActionLabels: dimensionCauseLabels(id, state, selected)
       };
     }
@@ -440,16 +470,16 @@ export function presentSceneVisualModel(
     templateId,
     ariaLabel:
       templateId === 'territory'
-        ? 'Estado visual del territorio y el combustible.'
+        ? 'Mapa de fincas, vegetación y caminos.'
         : templateId === 'housing'
-          ? 'Estado visual de la vivienda y su interfaz con la vegetación.'
+          ? 'Casa junto al monte con árboles, ramas y camino de entrada.'
           : templateId === 'crisis'
-            ? 'Manifestaciones visuales de las condiciones operativas durante la crisis.'
+            ? 'El incendio y las opciones que tienen los equipos.'
             : templateId === 'summary'
-              ? 'Resumen visual de las condiciones heredadas por la emergencia.'
+              ? 'Resumen de cómo empieza la emergencia.'
               : templateId === 'result'
-                ? 'Resumen visual de la cadena causal de la partida.'
-                : 'Misión y aviso común de la Vertical Beta 1.',
+                ? 'Resumen de tus decisiones y sus resultados.'
+                : 'Misión y primer aviso de incendio.',
     elements,
     dimensions: dimensionModels(session)
   };

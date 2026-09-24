@@ -141,7 +141,7 @@ export interface PresentedResultScene extends PresentedSceneBase<'result'> {
     id: string;
     title: string;
     effect: string;
-    causeType: 'Acción aplicada' | 'Omisión relevante';
+    causeType: 'Lo elegiste' | 'Quedó pendiente';
     causeActionLabels: readonly string[];
     dimensionLabel: string;
     stateLabel: string;
@@ -176,6 +176,11 @@ export interface VerticalBetaSessionView {
   }[];
   readonly history: readonly GameSessionEvent[];
   readonly preventionReview: readonly {
+    sceneId: PreventionInspectionSceneId;
+    actionId: string;
+    label: string;
+  }[];
+  readonly pendingPreventionReview: readonly {
     sceneId: PreventionInspectionSceneId;
     actionId: string;
     label: string;
@@ -223,6 +228,11 @@ function actionLabel(actionId: string): string {
 }
 
 function sessionView(session: GameSession): VerticalBetaSessionView {
+  const selectedPreventionActionIds = new Set(
+    session.decisions
+      .map(({ actionId }) => actionId)
+      .filter((actionId) => preventionActions.has(actionId))
+  );
   return {
     id: session.id,
     status: session.status,
@@ -243,7 +253,12 @@ function sessionView(session: GameSession): VerticalBetaSessionView {
       return entry === undefined
         ? []
         : [{ sceneId: entry.sceneId, actionId: decision.actionId, label: entry.action.label }];
-    })
+    }),
+    pendingPreventionReview: Array.from(preventionActions.entries()).flatMap(
+      ([actionId, entry]) => selectedPreventionActionIds.has(actionId)
+        ? []
+        : [{ sceneId: entry.sceneId, actionId, label: entry.action.label }]
+    )
   };
 }
 
@@ -358,7 +373,7 @@ function presentResult(session: GameSession): PresentedResultScene {
         title: copy.title,
         effect: copy.effect,
         causeType:
-          relation.cause.execution === 'completed' ? 'Acción aplicada' : 'Omisión relevante',
+          relation.cause.execution === 'completed' ? 'Lo elegiste' : 'Quedó pendiente',
         causeActionLabels: relation.cause.actionIds.map(actionLabel),
         dimensionLabel: dimension.label,
         stateLabel: dimension.stateLabel,

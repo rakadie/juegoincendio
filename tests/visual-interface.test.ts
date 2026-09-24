@@ -123,8 +123,8 @@ describe('M3 visual presenter', () => {
     expect(model.dimensions.find(({ id }) => id === 'operationalAccess')).toMatchObject({
       state: 'favorable',
       causeActionLabels: expect.arrayContaining([
-        'Limpiar márgenes de caminos rurales',
-        'Despejar accesos para autobombas'
+        'Limpiar los bordes del camino',
+        'Despejar la entrada'
       ])
     });
   });

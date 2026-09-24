@@ -33,10 +33,16 @@ describe('M3.8 north-star interface', () => {
     expect(html).not.toContain('<aside>');
   });
 
+  it('keeps the journey connector behind an opaque stage label', () => {
+    const html = renderPrototypePage();
+    expect(html).toContain('position: relative;\n        z-index: 2;\n        justify-self: start;');
+    expect(html).toContain('background: var(--navy);\n        font-size: .8rem;');
+  });
+
   it('keeps inspections visual-first and exposes the official selection quota', () => {
     const html = renderPrototypePage();
-    expect(html).toContain('class="selection-counter"');
-    expect(html).toContain('Acciones seleccionadas');
+    expect(html).toContain('class="inspection-map-progress"');
+    expect(html).toContain("scene.selectedCount + ' / ' + scene.actionQuota + ' mejoras'");
     expect(html).toContain('function visualMarkup()');
     expect(html).toContain('function actionCards(scene)');
     expect(html).toContain('function hydrateVisualActionCards(scene)');
@@ -53,11 +59,11 @@ describe('M3.8 north-star interface', () => {
 
   it('shows only the current crisis branch and gives result state and causality separate hierarchy', () => {
     const html = renderPrototypePage();
-    expect(html).toContain("'Preparado'");
-    expect(html).toContain("'Vulnerable'");
+    expect(html).toContain("'Más opciones'");
+    expect(html).toContain("'Pocas opciones'");
     expect(html).toContain('class="result-layout"');
-    expect(html).toContain('Cadena causal principal');
-    expect(html).toContain('Estado heredado');
+    expect(html).toContain('Por qué ocurrió');
+    expect(html).toContain('Así empezó la emergencia');
     expect(html).not.toContain('prepared-vs-vulnerable');
     expect(html).not.toContain('Estado preparado</');
     expect(html).not.toContain('Estado vulnerable</');
@@ -84,7 +90,32 @@ describe('M3.8 north-star interface', () => {
     const mobileSection = html.slice(html.indexOf('@media (max-width: 700px)'));
     expect(mobileSection).toContain('grid-template-columns: 1fr');
     expect(mobileSection).toContain('white-space: normal');
-    for (const label of ['Territorio', 'Vivienda', 'Crisis', 'Resultado']) expect(html).toContain(`>${label}</span>`);
+    for (const label of ['Monte', 'Casa', 'Incendio', 'Final']) expect(html).toContain(`>${label}</span>`);
+  });
+
+  it('lets the prevention photograph span the scene and uses its points as the controls', () => {
+    const html = renderPrototypePage();
+    const inspectionRenderer = html.slice(
+      html.indexOf('function renderInspection(scene)'),
+      html.indexOf('function renderSummary(scene)')
+    );
+    expect(html).toContain('data-visual-menu-slot');
+    expect(html).toContain('data-inspection-overlay');
+    expect(html).toContain('arrangeVisualSideMenu()');
+    expect(html).toContain('.inspection-hidden-menu { display: none !important; }');
+    expect(html).toContain('height: calc(100dvh - 62px);');
+    expect(html).not.toContain('<div class="inspection-action-tray"');
+    expect(inspectionRenderer).not.toContain('sceneWorkspace(');
+    expect(inspectionRenderer).not.toContain('scene-side-panel');
+  });
+
+  it('shows state-driven raster changes on the map instead of a separate learning area', () => {
+    const html = renderPrototypePage();
+    expect(html).toContain('class="inspection-response');
+    expect(html).toContain('Cambio en el mapa');
+    expect(html).not.toContain('<div class="inspection-learning"');
+    expect(html).toContain("view.scene.type === 'summary' || view.scene.type === 'router'");
+    expect(html).toContain('@media (prefers-reduced-motion: reduce)');
   });
 
   it('meets text contrast for the primary action color', () => {
@@ -98,9 +129,9 @@ describe('M3.8 north-star interface', () => {
   it('uses user-facing Spanish labels instead of leaking internal scene and branch enums', () => {
     const html = renderPrototypePage();
     expect(html).toContain("briefing: 'Misión'");
-    expect(html).toContain("inspection: 'Inspección'");
-    expect(html).toContain("prepared: 'preparada'");
-    expect(html).toContain("vulnerable: 'vulnerable'");
+    expect(html).toContain("inspection: 'Preparación'");
+    expect(html).toContain("prepared: 'con más opciones'");
+    expect(html).toContain("vulnerable: 'con pocas opciones'");
     expect(html).toContain('BRANCH_LABELS[session.branch]');
   });
 

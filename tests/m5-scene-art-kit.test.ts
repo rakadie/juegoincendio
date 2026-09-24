@@ -61,12 +61,12 @@ describe('M5.1 shared SVG scene art kit', () => {
     expect(renderSceneSmoke(10, 20)).toContain('data-art-primitive="smoke"');
   });
 
-  it('reuses the same kit in territory while keeping semantic hotspots explicit', () => {
+  it('keeps semantic territory hotspots over a replaceable photographic base', () => {
     const markup = territoryMarkup();
     expect(markup).toContain('data-scene-art-kit="m5-v1"');
-    expect(markup).toContain('data-art-primitive="tree"');
-    expect(markup).toContain('data-art-primitive="shrubs"');
-    expect(markup).toContain('data-art-primitive="rocks"');
+    expect(markup).toContain('data-visual-base="territory-photo-v3"');
+    expect(markup).toContain('data-background-layer="photo"');
+    expect(markup).toContain('/images/territory-prevention-aerial-v1.jpg');
     expect(markup).toContain('id="territory-road"');
     expect(markup).toContain('id="territory-professional-line"');
   });

@@ -209,7 +209,7 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
   }
 
   function directResultDetails(sceneContent) {
-    return Array.from(sceneContent.children).find(function (child) {
+    return sceneContent.querySelector('.scene-side-panel details') || Array.from(sceneContent.children).find(function (child) {
       return child.tagName === 'DETAILS';
     }) || null;
   }
@@ -241,7 +241,7 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
       dimensions.appendChild(item);
     });
     const manifestationTitle = document.createElement('h4');
-    manifestationTitle.textContent = 'Manifestaciones decisivas';
+    manifestationTitle.textContent = 'Cambios importantes';
     const manifestations = document.createElement('div');
     manifestations.className = 'm4-manifestations';
     side.manifestations.forEach(function (manifestation) {
@@ -268,7 +268,25 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
     const section = document.createElement('section');
     section.id = 'm4-reference-comparison';
     section.className = 'm4-comparison';
+    section.setAttribute('role', 'dialog');
+    section.setAttribute('aria-modal', 'true');
     section.setAttribute('aria-labelledby', 'm4-reference-comparison-title');
+    const close = document.createElement('button');
+    close.className = 'secondary m4-comparison-close';
+    close.type = 'button';
+    close.textContent = 'Cerrar comparación';
+    const closeComparison = function () {
+      section.remove();
+      const trigger = document.getElementById('compare-reference-button');
+      if (trigger) trigger.focus();
+    };
+    close.addEventListener('click', closeComparison);
+    section.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        event.stopPropagation();
+        closeComparison();
+      }
+    });
     const title = document.createElement('h3');
     title.id = 'm4-reference-comparison-title';
     title.textContent = payload.title;
@@ -278,17 +296,17 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
     grid.className = 'm4-comparison-grid';
     grid.append(
       renderComparisonSide('Tu partida', payload.current),
-      renderComparisonSide('Otro recorrido de referencia', payload.reference)
+      renderComparisonSide('Otra partida', payload.reference)
     );
     const replay = document.createElement('div');
     replay.className = 'm4-comparison-replay';
     const replayCopy = document.createElement('p');
-    replayCopy.textContent = 'Prueba una preparación diferente y observa qué cambia durante la emergencia.';
+    replayCopy.textContent = 'Elige otras mejoras y descubre qué cambia cuando llega el fuego.';
     replay.append(makeReplayButton('comparison-replay-button'), replayCopy);
-    section.append(title, explanation, grid, replay);
+    section.append(close, title, explanation, grid, replay);
     insertBeforeResultDetails(sceneContent, section);
-    title.setAttribute('tabindex', '-1');
-    title.focus();
+    section.setAttribute('tabindex', '-1');
+    section.focus();
   }
 
   function ensureResultActions() {
@@ -308,7 +326,7 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
       compare.id = 'compare-reference-button';
       compare.className = 'secondary';
       compare.type = 'button';
-      compare.textContent = 'Comparar con otro recorrido';
+      compare.textContent = 'Comparar con otra partida';
       compare.addEventListener('click', async function () {
         if (compare.disabled) return;
         compare.disabled = true;
@@ -332,7 +350,7 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
       actions.appendChild(makeReplayButton('replay-button'));
       const copy = document.createElement('p');
       copy.className = 'm4-replay-copy';
-      copy.textContent = 'Prueba una preparación diferente y observa qué cambia durante la emergencia.';
+      copy.textContent = 'Elige otras mejoras y descubre qué cambia cuando llega el fuego.';
       actions.appendChild(copy);
     }
   }
@@ -355,20 +373,35 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
         if (oldEffect) oldEffect.remove();
         const steps = document.createElement('ol');
         steps.className = 'm4-causal-steps';
-        steps.setAttribute('aria-label', 'Cadena causal de ' + relation.dimensionLabel);
+        steps.setAttribute('aria-label', 'Pasos que explican ' + relation.dimensionLabel);
         appendResultStep(
           steps,
-          'Causa',
+          'Antes del incendio',
           relation.causeType + ': ' + relation.causeActionLabels.join(' · ')
         );
         appendResultStep(
           steps,
-          'Estado heredado',
+          'Así empezó',
           relation.dimensionLabel + ': ' + relation.stateLabel
         );
-        appendResultStep(steps, 'Durante la crisis', relation.manifestationLabel);
-        appendResultStep(steps, 'Consecuencia', relation.effect);
-        if (title) title.insertAdjacentElement('afterend', steps); else card.appendChild(steps);
+        appendResultStep(steps, 'Cuando llegó el fuego', relation.manifestationLabel);
+        appendResultStep(steps, 'Qué ocurrió', relation.effect);
+        const outcome = document.createElement('p');
+        outcome.className = 'm4-causal-outcome';
+        outcome.textContent = relation.stateLabel + '. ' + relation.effect;
+        const details = document.createElement('details');
+        details.className = 'm4-causal-details';
+        const summary = document.createElement('summary');
+        summary.textContent = 'Ver la explicación paso a paso';
+        details.append(summary, steps);
+        details.addEventListener('toggle', function () {
+          if (!details.open) return;
+          container.querySelectorAll('.m4-causal-details[open]').forEach(function (other) {
+            if (other !== details) other.removeAttribute('open');
+          });
+        });
+        if (title) title.insertAdjacentElement('afterend', outcome); else card.appendChild(outcome);
+        outcome.insertAdjacentElement('afterend', details);
       });
       container.dataset.m4ClosureEnhanced = 'true';
     }
