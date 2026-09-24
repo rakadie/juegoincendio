@@ -36,6 +36,8 @@ describe('M5.2 territory north-star art direction', () => {
     expect(markup).toContain('state-continuous');
     expect(markup).toContain('state-unevaluated');
     expect(markup).toContain('class="territory-key-state-dot"');
+    expect(markup).toContain('href="/images/territory-grazing-goats-v1.png"');
+    expect(markup).toContain('href="/images/prevention-brush-worker-v1.png"');
   });
 
   it('changes treated objects through the same presenter-driven state classes', () => {

@@ -613,7 +613,7 @@ try {
     assert(layout.visibleSidePanels === 0, 'Housing still reserves space for a right-hand card panel.');
     assert(layout.pageWidth <= layout.viewportWidth + 3, 'Housing layout has horizontal overflow.');
     assert(layout.map.left >= layout.canvas.left - 1 && layout.map.right <= layout.canvas.right + 1, 'Housing map is clipped by its canvas.');
-    assert(layout.pinParts.every((part) => part.left >= layout.map.left - 1 && part.right <= layout.map.right + 1 && part.top >= layout.map.top - 1 && part.bottom <= layout.map.bottom + 1), 'A housing marker or label is cropped by the panoramic map.');
+    assert(layout.pinParts.every((part) => part.left >= layout.map.left - 1 && part.right <= layout.map.right + 1 && part.top >= layout.map.top - 1 && part.bottom <= layout.map.bottom + 1), `A housing marker or label is cropped by the panoramic map: ${JSON.stringify(layout.pinParts)} within ${JSON.stringify(layout.map)}.`);
     assert(layout.overlaps.length === 0, 'Housing pins or visible labels overlap.');
     assert(layout.hitTargets.length === 4, 'Housing must expose four stable marker hit targets.');
     assert(layout.hitTargets.every((target) => target.width >= 44 && target.height >= 44), 'A housing marker hit target is smaller than 44px.');
@@ -755,17 +755,14 @@ try {
   async function assertOpenSceneCard(actionId, expectedMobile, template) {
     const geometry = await evaluate(`(() => {
       const canvas = document.querySelector(${JSON.stringify(`.visual-scene[data-visual-template="${template}"] .visual-canvas`)});
-      const tray = document.querySelector('[data-visual-card-slot]');
-      const card = tray?.querySelector(${JSON.stringify(`[data-visual-action-card-id="${actionId}"]`)});
+      const card = canvas?.querySelector(${JSON.stringify(`[data-visual-action-card-id="${actionId}"]`)});
       const button = card?.querySelector('.action-button');
-      if (!canvas || !tray || !card || card.hidden || !button) return null;
+      if (!canvas || !card || card.hidden || !button) return null;
       const canvasRect = canvas.getBoundingClientRect();
-      const trayRect = tray.getBoundingClientRect();
       const cardRect = card.getBoundingClientRect();
       const buttonRect = button.getBoundingClientRect();
       return {
         canvas: { left: canvasRect.left, right: canvasRect.right, top: canvasRect.top, bottom: canvasRect.bottom },
-        tray: { left: trayRect.left, right: trayRect.right, top: trayRect.top, bottom: trayRect.bottom },
         card: { left: cardRect.left, right: cardRect.right, top: cardRect.top, bottom: cardRect.bottom },
         button: { left: buttonRect.left, right: buttonRect.right, top: buttonRect.top, bottom: buttonRect.bottom, width: buttonRect.width, height: buttonRect.height },
         viewportHeight: window.innerHeight
@@ -773,19 +770,13 @@ try {
     })()`);
     assert(geometry, `${actionId} card is not visible.`);
     assert(
-      geometry.card.left >= geometry.tray.left - 1 && geometry.card.right <= geometry.tray.right + 1,
-      `${actionId} card escapes the ${template} action tray horizontally.`
+      geometry.card.left >= geometry.canvas.left - 1 && geometry.card.right <= geometry.canvas.right + 1 &&
+        geometry.card.top >= geometry.canvas.top - 1 && geometry.card.bottom <= geometry.canvas.bottom + 1,
+      `${actionId} contextual card escapes the ${template} map: ${JSON.stringify(geometry)}.`
     );
-    assert(
-      geometry.card.top >= geometry.canvas.bottom - 1,
-      `${actionId} card overlaps the ${template} map.`
-    );
-    if (!expectedMobile) {
-      assert(geometry.tray.left >= geometry.canvas.left - 1 && geometry.tray.right <= geometry.canvas.right + 1, `${actionId} tray is not aligned with the ${template} map.`);
-    }
     assert(
       geometry.button.width > 0 && geometry.button.height >= 38 && geometry.button.bottom <= geometry.viewportHeight + 1,
-      `${actionId} card action is not visible in the action tray.`
+      `${actionId} contextual action is not visible.`
     );
     if (!expectedMobile) await assertGameplayFitsViewport(`${template} action tray`);
   }
@@ -976,9 +967,9 @@ try {
   await choose('limpiar-margenes-caminos');
   assert(
     await evaluate(`(() => {
-      const counter = document.querySelector('.inspection-taskbar-count')?.textContent.trim();
+      const counter = document.querySelector('.inspection-map-progress strong')?.textContent.trim();
       const cards = Array.from(document.querySelectorAll('[data-visual-action-card-id]'));
-      return counter === '3 / 3 mejoras' && cards.filter((card) => card.classList.contains('selected')).length === 3 &&
+      return counter === '3 / 3' && cards.filter((card) => card.classList.contains('selected')).length === 3 &&
         cards.every((card) => card.querySelector('.action-button')?.disabled === true) &&
         Boolean(document.getElementById('advance-button'));
     })()`),
@@ -1035,14 +1026,12 @@ try {
       const feedback = document.querySelector('.inspection-confirmation p')?.textContent;
       const remaining = document.querySelector('.inspection-selection small')?.textContent;
       const selected = document.querySelectorAll('.selected-action-chip').length;
-      const change = document.querySelector('[data-change-action-id="podar-ramas-y-retirar-seco"]');
-      const tool = change?.querySelector('.change-tool');
-      const benefit = change?.closest('.inspection-change-visual')?.querySelector('.change-benefit')?.textContent;
+      const worker = zone?.querySelector('.housing-clearance-worker');
       return zone?.classList.contains('state-reduced') && clearance && dryFuel &&
         getComputedStyle(clearance).display !== 'none' && getComputedStyle(dryFuel).display === 'none' &&
         feedback?.includes('Al fuego le cuesta más subir a las copas') &&
-        remaining === 'Puedes elegir 1 mejora más.' && selected === 1 && change && tool &&
-        getComputedStyle(tool).animationName !== 'none' && benefit?.includes('cuesta más subir');
+        remaining === 'Puedes elegir 1 mejora más.' && selected === 1 && worker &&
+        getComputedStyle(worker).display !== 'none' && getComputedStyle(worker).animationName !== 'none';
     })()`),
     'Housing pruning did not update the visible fuel, feedback and remaining budget.'
   );
@@ -1054,7 +1043,7 @@ try {
   await captureEvidence(
     'housing-feedback-mobile.png',
     '.inspection-response',
-    { minWidth: 300, minHeight: 100 }
+    { minWidth: 300, minHeight: 60 }
   );
   await chooseFromPointMenu('despejar-accesos', 'touch', true, 'housing');
 
@@ -1063,11 +1052,11 @@ try {
       const access = document.getElementById('housing-local-access');
       const obstructions = access?.querySelector('.housing-access-obstructions');
       const route = access?.querySelector('.housing-clear-route');
-      const counter = document.querySelector('.inspection-taskbar-count')?.textContent.trim();
+      const counter = document.querySelector('.inspection-map-progress strong')?.textContent.trim();
       const cards = Array.from(document.querySelectorAll('[data-visual-action-card-id]'));
       return access?.classList.contains('state-clear') && obstructions && route &&
         getComputedStyle(obstructions).display === 'none' && getComputedStyle(route).display !== 'none' &&
-        counter === '2 / 2 mejoras' && cards.filter((card) => card.classList.contains('selected')).length === 2 &&
+        counter === '2 / 2' && cards.filter((card) => card.classList.contains('selected')).length === 2 &&
         cards.every((card) => card.querySelector('.action-button')?.disabled === true) &&
         Boolean(document.getElementById('advance-button'));
     })()`),
@@ -1087,29 +1076,12 @@ try {
 
   await waitForSelector('#advance-button');
   await pressEnter('#advance-button');
-  await waitForSelector('.prevention-area');
-  const balanceState = await evaluate(`(() => {
-      const areas = document.querySelectorAll('.prevention-area');
-      const applied = document.querySelectorAll('.prevention-area .applied-list li');
-      const pending = document.querySelectorAll('.prevention-area .pending-list li');
-      const caution = document.querySelector('.balance-caution')?.textContent;
-      return { areas: areas.length, applied: applied.length, pending: pending.length, caution };
-    })()`);
-  assert(
-    balanceState?.areas === 2 && balanceState?.applied === 5 && balanceState?.pending === 3 &&
-      balanceState?.caution?.includes('ninguna casa queda totalmente segura'),
-    `Prevention balance did not distinguish applied decisions and pending conditions by area: ${JSON.stringify(balanceState)}`
-  );
-  await captureEvidence('prevention-balance-desktop.png', '.scene-content', {
-    minWidth: 700,
-    minHeight: 400
-  });
-  await assertGameplayFitsViewport('Prevention balance');
-  await pressEnter('#advance-button');
   await waitForSelector('[data-action-id="movilizar-y-verificar"]');
-  await chooseAndWait('movilizar-y-verificar', '#advance-button');
-  await pressEnter('#advance-button');
-  await waitForSelector('[data-action-id="autorizar-maniobra-condicionada"]');
+  assert(
+    await evaluate(`document.querySelector('.prevention-area') === null && document.querySelector('.router-mark') === null`),
+    'An explanatory interstitial interrupted the playable route.'
+  );
+  await chooseAndWait('movilizar-y-verificar', '[data-action-id="autorizar-maniobra-condicionada"]');
 
   await assertCrisisLayout();
   await assertGameplayFitsViewport('Prepared crisis decision');
@@ -1151,6 +1123,21 @@ try {
   await waitForSelector('.result-contained');
   await waitForSelector('#compare-reference-button');
   await waitForSelector('#replay-button');
+  await pressEnter('.final-prevention-review summary');
+  assert(
+    await evaluate(`(() => {
+      const review = document.querySelector('.final-prevention-review');
+      return review?.open === true && review.querySelectorAll('li').length >= 5 &&
+        review.textContent.includes('Mejoras que elegiste') && review.textContent.includes('quedaron pendientes') &&
+        review.textContent.includes('Ninguna mejora elimina todo el riesgo');
+    })()`),
+    'The final review does not expose both completed and pending prevention work.'
+  );
+  await captureEvidence('final-prevention-review-desktop.png', '.result-contained .scene-content', {
+    minWidth: 700,
+    minHeight: 400
+  });
+  await pressEnter('.final-prevention-review summary');
 
   await captureEvidence('result-desktop.png', '.result-contained .scene-content', {
     minWidth: 700,
@@ -1234,15 +1221,17 @@ try {
     await chooseFromPointMenu('activar-pastoreo-preventivo', 'mouse', false);
     assert(
       await evaluate(`(() => {
-        const change = document.querySelector('[data-change-action-id="activar-pastoreo-preventivo"]');
-        const animal = change?.querySelector('.change-animal-one');
-        const benefit = change?.closest('.inspection-change-visual')?.querySelector('.change-benefit')?.textContent;
-        return Boolean(change && animal && getComputedStyle(animal).animationName !== 'none' && benefit?.includes('menos hierba seca'));
+        const grazing = document.getElementById('territory-grazing');
+        const herd = grazing?.querySelector('.map-grazing-flock');
+        const feedback = document.querySelector('.inspection-confirmation p')?.textContent;
+        return Boolean(grazing?.classList.contains('state-treated') && herd &&
+          getComputedStyle(herd).display !== 'none' && getComputedStyle(herd).animationName !== 'none' &&
+          feedback?.includes('menos hierba seca'));
       })()`),
       'Preventive grazing did not show its state-driven animated benefit.'
     );
     await captureViewportEvidence('territory-grazing-change-desktop.png', '.inspection-response', {
-      minWidth: 700,
+      minWidth: 420,
       minHeight: 60
     });
     await choose('evaluar-quema-tecnica');
@@ -1309,12 +1298,8 @@ try {
     });
     await waitForSelector('#advance-button');
     await pressEnter('#advance-button');
-    await waitForSelector('.prevention-area');
-    await pressEnter('#advance-button');
     await waitForSelector('[data-action-id="movilizar-y-verificar"]');
-    await chooseAndWait('movilizar-y-verificar', '#advance-button');
-    await pressEnter('#advance-button');
-    await waitForSelector('[data-action-id="despejar-corredor-operativo"]');
+    await chooseAndWait('movilizar-y-verificar', '[data-action-id="despejar-corredor-operativo"]');
     assert(
       await evaluate(
         `document.querySelector('.visual-scene[data-visual-template="crisis"]')?.getAttribute('data-visual-scene-id') === 'crisis-decision-access-blockage'`
@@ -1348,7 +1333,7 @@ try {
   await choose('separar-copas');
   await waitForSelector('#advance-button');
   await pressEnter('#advance-button');
-  await waitForSelector('.prevention-area');
+  await waitForSelector('[data-action-id="movilizar-y-verificar"]');
   const boundedBalance = await evaluate(`(async () => {
     const envelope = JSON.parse(window.localStorage.getItem(${JSON.stringify(STORAGE_KEY)}));
     const response = await fetch('/api/game-sessions/' + encodeURIComponent(envelope.sessionId));
@@ -1371,9 +1356,9 @@ try {
     `The maximum fuel-continuity reduction did not produce a valid bounded balance: ${JSON.stringify(boundedBalance)}`
   );
   await assertJourneyLabels();
-  await captureEvidence('prevention-extreme-balance-desktop.png', '.scene-content', {
+  await captureEvidence('prevention-extreme-state-desktop.png', '.scene-content', {
     minWidth: 700,
-    minHeight: 400
+    minHeight: 180
   });
 
   assert(runtimeErrors.length === 0, `Browser console/runtime errors: ${runtimeErrors.join(' | ')}`);
@@ -1399,8 +1384,9 @@ try {
       'crisis-vulnerable-desktop.png',
       'crisis-vulnerable-mobile.png',
       'result-desktop.png',
+      'final-prevention-review-desktop.png',
       'comparison-desktop.png',
-      'prevention-extreme-balance-desktop.png'
+      'prevention-extreme-state-desktop.png'
     ];
     assert(
       required.every((name) => evidence.some((item) => item.name === name)),

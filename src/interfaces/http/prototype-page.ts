@@ -413,118 +413,12 @@ export function renderPrototypePage(): string {
       }
       .scene-side-panel .footer-actions .primary { width: 100%; }
       .scene-side-panel details { margin-top: 0; }
-      .inspection-taskbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 9px;
-        margin-bottom: 6px;
-        padding: 8px 11px;
-        border-left: 4px solid #6eaa55;
-        border-radius: 0 8px 8px 0;
-        color: #344851;
-        background: #edf3ea;
-        font-size: .82rem;
-        line-height: 1.35;
-      }
-      .inspection-taskbar-copy { min-width: 0; }
-      .inspection-taskbar-copy::before {
-        content: 'Objetivo';
-        margin-right: 8px;
-        color: #315a4b;
-        font-size: .68rem;
-        font-weight: 900;
-        letter-spacing: .06em;
-        text-transform: uppercase;
-      }
-      .inspection-taskbar-count {
-        flex: 0 0 auto;
-        padding-left: 11px;
-        border-left: 1px solid #bdd0c0;
-        color: #315a4b;
-        font-size: .78rem;
-        font-weight: 800;
-        white-space: nowrap;
-      }
       .inspection-hidden-menu { display: none !important; }
       .inspection-scene .visual-hotspot { -webkit-tap-highlight-color: transparent; }
-      .inspection-lowerbar { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: stretch; gap: 6px; margin-top: 6px; }
-      .inspection-learning { min-width: 0; }
-      .inspection-learning:has(.inspection-response.is-initial) { display: none; }
       .inspection-advance { display: flex; }
       .inspection-advance .footer-actions { margin: 0; }
       .inspection-advance .primary { height: 100%; }
-      [data-visual-card-slot][hidden] { display: none; }
-      .inspection-action-tray { margin-top: 6px; }
-      .inspection-action-tray .visual-card-layer {
-        position: static;
-        display: grid;
-        pointer-events: auto;
-      }
-      .inspection-action-tray .visual-hover-card {
-        position: static;
-        width: 100%;
-        max-height: none;
-        display: grid;
-        grid-template-columns: minmax(170px, .55fr) minmax(190px, .8fr) minmax(280px, 1.1fr);
-        align-items: center;
-        gap: 14px;
-        overflow: visible;
-        padding: 8px 10px;
-        border-color: #9eb7aa;
-        border-left: 5px solid #3f775f;
-        box-shadow: 0 5px 15px rgba(7, 23, 38, .09);
-      }
-      .inspection-action-tray .visual-hover-card[hidden] { display: none; }
-      .inspection-action-tray .visual-explanation { margin: 0; }
-      .inspection-action-tray .visual-card-action {
-        grid-template-columns: minmax(0, 1fr) auto;
-        align-items: center;
-        gap: 3px 10px;
-        margin: 0;
-        padding: 0 0 0 13px;
-        border-top: 0;
-        border-left: 1px solid #d7dedb;
-      }
-      .inspection-action-tray .visual-card-action p,
-      .inspection-action-tray .visual-card-action small { grid-column: 1; }
-      .inspection-action-tray .visual-card-action button { grid-column: 2; grid-row: 1 / 4; min-width: 150px; }
       .scene-learning-panel { min-width: 0; }
-      .inspection-change-visual { width: 112px; display: grid; gap: 5px; }
-      .inspection-change-vignette {
-        width: 100%;
-        margin: 0;
-        overflow: hidden;
-        border: 1px solid #a8bcae;
-        border-radius: 9px;
-        background: linear-gradient(180deg, #dfead9, #f7efd9);
-      }
-      .inspection-change-vignette svg { display: block; width: 100%; height: auto; }
-      .change-ground { fill: #d8c89f; }
-      .change-plant { fill: none; stroke: #527b50; stroke-width: 3; stroke-linecap: round; }
-      .change-ink { fill: none; stroke: #23473b; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-      .change-fill { fill: #356b55; }
-      .change-accent { fill: #d8892d; }
-      .change-light { fill: #fff8df; }
-      .change-tool { transform-box: fill-box; transform-origin: 12% 86%; animation: change-tool-cut 1.15s ease-in-out infinite alternate; }
-      .change-animal-one { animation: change-graze 1.8s ease-in-out infinite alternate; }
-      .change-animal-two { animation: change-graze 2.1s .25s ease-in-out infinite alternate-reverse; }
-      .change-route-marker { animation: change-route 1.8s ease-in-out infinite; }
-      .change-benefit {
-        display: inline-flex;
-        width: fit-content;
-        margin-top: 5px;
-        padding: 3px 7px;
-        border-radius: 999px;
-        color: #24543e;
-        background: #dcebdd;
-        font-size: .68rem;
-        font-weight: 800;
-      }
-      .inspection-change-placeholder { display: none; }
-      @keyframes change-tool-cut { from { transform: rotate(-8deg); } to { transform: rotate(17deg); } }
-      @keyframes change-graze { from { transform: translateX(-2px) rotate(-1deg); } to { transform: translateX(6px) rotate(2deg); } }
-      @keyframes change-route { 0% { transform: translateX(-18px); opacity: .25; } 45%, 70% { opacity: 1; } 100% { transform: translateX(32px); opacity: .2; } }
       .summary-dashboard { display: grid; grid-template-columns: minmax(280px, .8fr) minmax(0, 1.2fr); gap: 12px; align-items: start; }
       .summary-dashboard .prevention-review { margin: 0; }
       .summary-emergency { min-width: 0; }
@@ -962,58 +856,184 @@ export function renderPrototypePage(): string {
       details { margin-top: 14px; }
       summary { cursor: pointer; color: #3d606b; }
 
+      /* Prevention is a continuous map, not a page surrounded by controls. */
+      body.gameplay-active:has(.inspection-scene) main {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        padding: 0;
+      }
+      body.gameplay-active:has(.inspection-scene) #game { height: calc(100dvh - 62px); min-height: 0; }
+      .inspection-scene {
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+        background: #102019;
+        box-shadow: none;
+      }
+      .inspection-scene .scene-content,
+      .inspection-scene .scene-workspace,
+      .inspection-scene .scene-main,
+      .inspection-scene .inspection-stage,
+      .inspection-scene .visual-scene,
+      .inspection-scene .visual-canvas { width: 100%; height: 100%; min-height: 0; }
+      .inspection-scene .scene-content { padding: 0; }
+      .inspection-scene .scene-workspace { display: block; margin: 0; }
+      .inspection-scene .visual-scene { display: block; margin: 0; }
+      .inspection-scene .visual-canvas {
+        position: relative;
+        display: block;
+        overflow: clip;
+        border: 0;
+        border-radius: 0;
+        background: #102019;
+      }
+      .inspection-scene .visual-canvas::before {
+        content: '';
+        position: absolute;
+        inset: -12px;
+        z-index: 0;
+        background-position: center;
+        background-size: cover;
+        filter: blur(8px) brightness(.58) saturate(.82);
+        transform: scale(1.03);
+      }
+      .inspection-scene .visual-scene[data-visual-template="territory"] .visual-canvas {
+        background: #102019;
+      }
+      .inspection-scene .visual-scene[data-visual-template="housing"] .visual-canvas {
+        background: #102019;
+      }
+      .inspection-scene .visual-scene[data-visual-template="territory"] .visual-canvas::before { background-image: url('/images/territory-prevention-aerial-v1.jpg'); }
+      .inspection-scene .visual-scene[data-visual-template="housing"] .visual-canvas::before { background-image: url('/images/housing-prevention-aerial-v2.jpg'); }
+      .inspection-scene .visual-scene[data-visual-template="territory"] .territory-map,
+      .inspection-scene .visual-scene[data-visual-template="housing"] .housing-plan {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        max-height: none;
+        aspect-ratio: auto;
+      }
+      .inspection-map-hud,
+      .inspection-map-progress,
+      .inspection-response,
+      .inspection-advance {
+        position: absolute;
+        z-index: 10;
+        color: #fffdf4;
+        background: rgba(7, 23, 38, .88);
+        border: 1px solid rgba(255, 250, 235, .34);
+        box-shadow: 0 12px 30px rgba(3, 13, 20, .28);
+        backdrop-filter: blur(9px);
+      }
+      .inspection-map-hud {
+        top: clamp(12px, 2vw, 24px);
+        left: clamp(12px, 2vw, 28px);
+        width: min(590px, calc(100% - 190px));
+        padding: 12px 15px;
+        border-left: 4px solid #f0b44b;
+        border-radius: 8px;
+      }
+      .inspection-map-hud .eyebrow { margin-bottom: 2px; color: #f5c66e; font-size: .66rem; }
+      .inspection-map-hud h2 { margin: 0 0 3px; color: #fff; font-size: clamp(1.25rem, 2vw, 1.85rem); line-height: 1.05; }
+      .inspection-map-hud p { margin: 0; color: #dce7e2; font-size: .82rem; line-height: 1.35; }
+      .inspection-map-progress {
+        top: clamp(12px, 2vw, 24px);
+        right: clamp(12px, 2vw, 28px);
+        min-width: 132px;
+        padding: 10px 13px;
+        border-radius: 8px;
+        text-align: right;
+      }
+      .inspection-map-progress small { display: block; color: #bfcfc8; font-size: .63rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+      .inspection-map-progress strong { display: block; margin-top: 1px; color: #fff; font-size: 1.2rem; }
+      .inspection-response {
+        left: clamp(12px, 2vw, 28px);
+        bottom: clamp(12px, 2vw, 24px);
+        width: min(650px, calc(100% - 230px));
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(190px, .8fr);
+        gap: 0;
+        margin: 0;
+        overflow: hidden;
+        border-radius: 10px;
+      }
+      .inspection-response.is-initial { display: none; }
+      .inspection-response .inspection-confirmation,
+      .inspection-response .inspection-selection {
+        min-width: 0;
+        padding: 10px 12px;
+        border: 0;
+        border-radius: 0;
+        color: #f7fbf8;
+        background: transparent;
+      }
+      .inspection-response .inspection-confirmation { border-right: 1px solid rgba(255,255,255,.18); }
+      .inspection-response .inspection-confirmation.has-change { display: block; }
+      .inspection-response .inspection-confirmation strong { color: #f4c36c; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; }
+      .inspection-response .inspection-confirmation p { margin: 3px 0 0; color: #f5f8f6; font-size: .82rem; line-height: 1.32; }
+      .inspection-response .inspection-selection { display: grid; gap: 5px; }
+      .inspection-response .inspection-selection > strong { color: #fff; font-size: .76rem; }
+      .inspection-response .inspection-selection small { color: #c3d0cb; font-size: .68rem; }
+      .inspection-response .selected-action-list { display: flex; flex-wrap: wrap; gap: 4px; }
+      .inspection-response .selected-action-chip {
+        max-width: 210px;
+        overflow: hidden;
+        padding: 3px 6px;
+        border-color: rgba(177, 216, 190, .55);
+        color: #eaf6ed;
+        background: rgba(62, 123, 93, .42);
+        font-size: .65rem;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .inspection-advance {
+        right: clamp(12px, 2vw, 28px);
+        bottom: clamp(12px, 2vw, 24px);
+        padding: 7px;
+        border-radius: 10px;
+      }
+      .inspection-advance .footer-actions { margin: 0; }
+      .inspection-advance .primary { min-height: 46px; }
+      .inspection-scene .visual-card-layer { position: absolute; inset: 0; z-index: 20; display: block; padding: 0; pointer-events: none; }
+      .inspection-scene .visual-hover-card {
+        position: absolute;
+        width: min(390px, calc(100% - 28px));
+        max-height: min(470px, calc(100% - 28px));
+        padding: 14px;
+        overflow: auto;
+        border: 1px solid rgba(244, 225, 186, .72);
+        border-left: 4px solid #d18b31;
+        border-radius: 9px;
+        color: #17242d;
+        background: rgba(252, 250, 243, .97);
+        box-shadow: 0 18px 48px rgba(3, 13, 20, .42);
+        backdrop-filter: blur(10px);
+        pointer-events: auto;
+      }
+      .inspection-scene .visual-hover-card .visual-card-state strong { color: #183c31; font-size: 1rem; }
+      .inspection-scene .visual-hover-card .visual-explanation { color: #4c5f66; font-size: .82rem; }
+      .inspection-scene .visual-hover-card .visual-card-action { margin-top: 10px; padding-top: 10px; }
+      .inspection-scene .visual-hover-card .action-button:not(:disabled) { color: #fff; border-color: #80420d; background: #9a4c08; }
+      .inspection-hidden-menu { display: none !important; }
+
       @media (min-width: 1051px) {
         body.gameplay-active { height: 100vh; overflow-y: hidden; }
         main { padding-top: 4px; padding-bottom: 0; }
-        .inspection-scene { width: 100%; max-width: 1580px; margin-inline: auto; }
-        .inspection-scene .scene-workspace { display: block; margin-top: 7px; }
+        .inspection-scene { width: 100%; max-width: none; margin-inline: auto; }
+        .inspection-scene .scene-workspace { display: block; margin-top: 0; }
         .inspection-scene .visual-scene[data-visual-template="territory"] .territory-map,
         .inspection-scene .visual-scene[data-visual-template="housing"] .housing-plan {
           width: 100%;
-          height: min(690px, 47vw);
+          height: 100%;
           max-height: none;
           aspect-ratio: auto;
-        }
-        .inspection-scene .scene-main:has(.inspection-response:not(.is-initial)) .visual-scene[data-visual-template="territory"] .territory-map,
-        .inspection-scene .scene-main:has(.inspection-response:not(.is-initial)) .visual-scene[data-visual-template="housing"] .housing-plan,
-        .inspection-scene .scene-main:has(.inspection-action-tray .visual-hover-card:not([hidden])) .visual-scene[data-visual-template="territory"] .territory-map,
-        .inspection-scene .scene-main:has(.inspection-action-tray .visual-hover-card:not([hidden])) .visual-scene[data-visual-template="housing"] .housing-plan {
-          height: min(500px, 47vw);
-        }
-        .inspection-scene .scene-main:has(.inspection-response:not(.is-initial)) :is(.territory-scene-caption, .territory-place-label, .housing-scene-caption, .housing-place-label, .housing-scene-note),
-        .inspection-scene .scene-main:has(.inspection-action-tray .visual-hover-card:not([hidden])) :is(.territory-scene-caption, .territory-place-label, .housing-scene-caption, .housing-place-label, .housing-scene-note) {
-          display: none;
-        }
-        .inspection-scene .inspection-change-visual { width: 88px; }
-        .inspection-scene .inspection-response {
-          grid-template-columns: minmax(260px, .72fr) minmax(0, 1.28fr);
-          gap: 8px;
-          margin: 0;
-        }
-        .inspection-scene .inspection-confirmation,
-        .inspection-scene .inspection-selection { padding: 8px 10px; }
-        .inspection-scene .inspection-confirmation {
-          display: grid;
-          grid-template-columns: auto minmax(0, 1fr);
-          align-items: center;
-          gap: 8px;
-        }
-        .inspection-scene .inspection-confirmation strong { white-space: nowrap; }
-        .inspection-scene .inspection-confirmation p { margin: 0; line-height: 1.3; }
-        .inspection-scene .inspection-selection {
-          grid-template-columns: auto minmax(0, 1fr);
-          align-items: center;
-          gap: 5px 8px;
-        }
-        .inspection-scene .inspection-selection > strong { white-space: nowrap; }
-        .inspection-scene .inspection-selection small { grid-column: 2; grid-row: 1; text-align: right; }
-        .inspection-scene .inspection-selection .selected-action-list,
-        .inspection-scene .inspection-selection .selection-empty { grid-column: 1 / -1; }
-        .inspection-scene .scene-main:has(.inspection-action-tray .visual-hover-card:not([hidden])) .inspection-response {
-          grid-template-columns: 1fr;
-        }
-        .inspection-scene .scene-main:has(.inspection-action-tray .visual-hover-card:not([hidden])) .inspection-confirmation {
-          display: none;
         }
         .scene-with-side-panel .scene-heading { margin-bottom: 0; }
         .scene-with-side-panel .scene-heading-copy {
@@ -1091,6 +1111,7 @@ export function renderPrototypePage(): string {
         }
         .scene-side-backdrop[hidden] { display: none; }
         body.scene-side-locked { overflow: hidden; }
+        body.gameplay-active:has(.inspection-scene) #game { height: calc(100dvh - 112px); }
       }
 
       @media (max-width: 700px) {
@@ -1140,22 +1161,48 @@ export function renderPrototypePage(): string {
         .scene-side-panel .territory-map-key,
         .scene-side-panel .housing-map-key { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .scene-side-panel .territory-map-key-item:last-child { grid-column: 1 / -1; }
-        .inspection-taskbar { align-items: flex-start; flex-direction: column; gap: 2px; }
-        .inspection-taskbar-count { width: 100%; padding: 4px 0 0; border-top: 1px solid #bdd0c0; border-left: 0; }
-        .inspection-lowerbar { grid-template-columns: 1fr; }
         .inspection-advance .primary { width: 100%; }
-        .inspection-action-tray .visual-hover-card { grid-template-columns: 1fr; gap: 7px; padding: 10px; }
-        .inspection-action-tray .visual-card-action {
-          grid-template-columns: 1fr;
-          padding: 8px 0 0;
-          border-top: 1px solid #d7dedb;
-          border-left: 0;
-        }
-        .inspection-action-tray .visual-card-action button { grid-column: 1; grid-row: auto; width: 100%; }
-        .inspection-confirmation.has-change { grid-template-columns: 96px minmax(0, 1fr); }
-        .inspection-change-visual { width: 96px; }
         .decision-feedback { grid-template-columns: 1fr; }
         .summary-dashboard { grid-template-columns: 1fr; }
+        body.gameplay-active:has(.inspection-scene) main { padding: 0; }
+        body.gameplay-active:has(.inspection-scene) #game { height: calc(100dvh - 115px); min-height: 560px; }
+        .inspection-scene { border-radius: 0; }
+        .inspection-map-hud {
+          top: 8px;
+          left: 8px;
+          width: calc(100% - 98px);
+          padding: 8px 10px;
+        }
+        .inspection-map-hud h2 { font-size: 1.08rem; }
+        .inspection-map-hud p { max-height: 2.7em; overflow: hidden; font-size: .72rem; }
+        .inspection-map-progress { top: 8px; right: 8px; min-width: 78px; padding: 7px 8px; }
+        .inspection-map-progress small { font-size: .52rem; }
+        .inspection-map-progress strong { font-size: .96rem; }
+        .inspection-response {
+          left: 8px;
+          bottom: 8px;
+          width: calc(100% - 16px);
+          grid-template-columns: 1fr;
+        }
+        .inspection-response .inspection-confirmation { border-right: 0; border-bottom: 1px solid rgba(255,255,255,.16); }
+        .inspection-response .inspection-selection { display: none; }
+        .inspection-advance { right: 8px; bottom: 8px; }
+        .inspection-scene:has(.inspection-advance) .inspection-response { right: 164px; width: auto; }
+        .inspection-scene .visual-scene[data-visual-template="territory"] .visual-card-layer,
+        .inspection-scene .visual-scene[data-visual-template="housing"] .visual-card-layer { position: absolute; inset: 0; left: 0 !important; right: 0 !important; padding: 0; }
+        .inspection-scene .visual-scene[data-visual-template="territory"] .visual-hover-card,
+        .inspection-scene .visual-scene[data-visual-template="housing"] .visual-hover-card {
+          position: absolute;
+          right: auto !important;
+          bottom: 8px;
+          left: 8px !important;
+          top: auto;
+          width: calc(100% - 16px) !important;
+          max-height: 48%;
+          margin: 0;
+          padding: 12px;
+          box-shadow: 0 14px 36px rgba(3, 13, 20, .48);
+        }
       }
 
       @media (prefers-reduced-motion: reduce) {
@@ -1242,8 +1289,9 @@ export function renderPrototypePage(): string {
         busy = true;
         try {
           const response = await fetch(path, { headers: { 'content-type': 'application/json' }, ...options });
-          const payload = await response.json();
+          let payload = await response.json();
           if (!response.ok) throw new Error(requestErrorMessage(payload, response.status));
+          payload = await advancePastInterstitials(payload);
           currentView = payload;
           sessionId = payload.session.id;
           setSessionChrome(true);
@@ -1255,6 +1303,23 @@ export function renderPrototypePage(): string {
         } finally {
           busy = false;
         }
+      }
+
+      async function advancePastInterstitials(payload) {
+        let view = payload;
+        let guard = 0;
+        while (view && view.scene && (view.scene.type === 'summary' || view.scene.type === 'router') && view.scene.canAdvance && guard < 3) {
+          const response = await fetch('/api/game-sessions/' + encodeURIComponent(view.session.id) + '/advance', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: '{}'
+          });
+          const next = await response.json();
+          if (!response.ok) throw new Error(requestErrorMessage(next, response.status));
+          view = next;
+          guard += 1;
+        }
+        return view;
       }
 
       async function hydrateEntryContext() {
@@ -1365,46 +1430,6 @@ export function renderPrototypePage(): string {
           : 'No se pudo completar esta operación. Revisa la selección e inténtalo de nuevo.';
       }
 
-      function inspectionChangeVisual(scene) {
-        const decisions = currentView.session.decisionReview.filter(function (decision) {
-          return scene.actions.some(function (action) { return action.id === decision.actionId; });
-        });
-        const lastDecision = decisions.length > 0 ? decisions[decisions.length - 1] : null;
-        if (!scene.feedback || !lastDecision) return '';
-        const actionId = lastDecision.actionId;
-        const kindByAction = {
-          'gestionar-restos-poda': 'pruning',
-          'podar-ramas-y-retirar-seco': 'pruning',
-          'crear-discontinuidades-vegetales': 'separation',
-          'separar-copas': 'separation',
-          'limpiar-margenes-caminos': 'access',
-          'despejar-accesos': 'access',
-          'activar-pastoreo-preventivo': 'grazing',
-          'evaluar-quema-tecnica': 'assessment'
-        };
-        const benefitByAction = {
-          'gestionar-restos-poda': 'Menos ramas secas que puedan arder',
-          'podar-ramas-y-retirar-seco': 'Al fuego le cuesta más subir',
-          'crear-discontinuidades-vegetales': 'El fuego encuentra un corte',
-          'separar-copas': 'El fuego salta peor entre árboles',
-          'limpiar-margenes-caminos': 'Entrada y salida más fáciles',
-          'despejar-accesos': 'Más espacio para los bomberos',
-          'activar-pastoreo-preventivo': 'Queda menos hierba seca',
-          'evaluar-quema-tecnica': 'Más información para decidir'
-        };
-        const artByKind = {
-          pruning: '<svg viewBox="0 0 180 96" aria-hidden="true" focusable="false"><path class="change-ground" d="M0 67H180V96H0z"/><path class="change-plant" d="M18 70V42m0 13-10-8m10 2 11-10M43 70V51m0 8-8-5"/><g class="change-worker"><circle class="change-accent" cx="91" cy="25" r="9"/><path class="change-fill" d="M81 37h20l7 30H75z"/><path class="change-ink" d="M84 47 65 60m16-6 19 13M82 67 75 86m22-19 9 19"/></g><g class="change-tool"><path class="change-ink" d="M64 56 45 74m5-23 14 5"/><circle class="change-light" cx="63" cy="56" r="4"/></g><path class="change-ink" d="M123 70h39m-34-9 13 9-12 10"/></svg>',
-          grazing: '<svg viewBox="0 0 180 96" aria-hidden="true" focusable="false"><path class="change-ground" d="M0 68H180V96H0z"/><path class="change-plant" d="M12 75v-18m0 8-7-8m7 4 7-9m20 23V59m0 7-6-7m6 3 7-8m113 21V56m0 8-7-8"/><g class="change-animal-one"><ellipse class="change-light" cx="75" cy="55" rx="23" ry="15"/><circle class="change-fill" cx="101" cy="57" r="10"/><path class="change-ink" d="M61 66v18m19-18v18m27-19 6 9m-17-24 7-7"/></g><g class="change-animal-two"><ellipse class="change-light" cx="129" cy="36" rx="18" ry="12"/><circle class="change-fill" cx="149" cy="39" r="8"/><path class="change-ink" d="M119 45v14m15-14v14m19-15 5 7"/></g></svg>',
-          separation: '<svg viewBox="0 0 180 96" aria-hidden="true" focusable="false"><path class="change-ground" d="M0 75H180V96H0z"/><path class="change-ink" d="M46 73V42m88 31V42"/><circle class="change-fill" cx="42" cy="32" r="25"/><circle class="change-fill" cx="138" cy="32" r="25"/><path class="change-ink change-route-marker" d="M76 36h28m-22-7-7 7 7 7m16-14 7 7-7 7"/></svg>',
-          access: '<svg viewBox="0 0 180 96" aria-hidden="true" focusable="false"><path class="change-ground" d="M0 0H180V96H0z"/><path d="M-5 82 185 22" fill="none" stroke="#fff8df" stroke-width="25"/><path d="M-5 82 185 22" fill="none" stroke="#567a65" stroke-width="3" stroke-dasharray="10 7"/><g class="change-route-marker"><rect class="change-accent" x="67" y="43" width="31" height="16" rx="4"/><path class="change-fill" d="M74 43h16l-4-9h-9z"/><circle class="change-ink" cx="75" cy="61" r="4"/><circle class="change-ink" cx="92" cy="61" r="4"/></g></svg>',
-          assessment: '<svg viewBox="0 0 180 96" aria-hidden="true" focusable="false"><path class="change-ground" d="M0 72H180V96H0z"/><circle class="change-accent" cx="62" cy="25" r="9"/><path class="change-fill" d="M52 37h20l7 34H45z"/><path class="change-ink" d="M54 69 49 87m20-18 8 18m-1-39 20 6"/><rect class="change-light" x="94" y="33" width="37" height="47" rx="4"/><path class="change-ink" d="M103 47h19m-19 10h19m-19 10h11"/><path d="m139 57 8 8 18-22" fill="none" stroke="#4f9139" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-        };
-        const kind = kindByAction[actionId] || 'assessment';
-        const benefit = benefitByAction[actionId] || 'Mejores condiciones para actuar';
-        return '<div class="inspection-change-visual"><figure class="inspection-change-vignette change-' + escapeHtml(kind) + '" role="img" aria-label="Ilustración del cambio: ' + escapeHtml(benefit) + '" data-change-action-id="' + escapeHtml(actionId) + '">' + artByKind[kind] + '</figure>' +
-          '<span class="change-benefit">' + escapeHtml(benefit) + '</span></div>';
-      }
-
       function inspectionResponse(scene) {
         const selected = scene.actions.filter(function (action) { return action.selected; });
         const remaining = Math.max(0, scene.actionQuota - scene.selectedCount);
@@ -1417,8 +1442,8 @@ export function renderPrototypePage(): string {
           ? 'Ya has elegido todas las mejoras de esta zona.'
           : 'Puedes elegir ' + remaining + ' mejora' + (remaining === 1 ? '' : 's') + ' más.';
         const confirmation = scene.feedback
-          ? '<div class="inspection-confirmation has-change">' + inspectionChangeVisual(scene) + '<div class="inspection-confirmation-copy"><strong>Cambio realizado</strong><p>' + escapeHtml(scene.feedback) + '</p></div></div>'
-          : '<div class="inspection-confirmation is-empty"><div class="inspection-change-placeholder" aria-hidden="true"><svg viewBox="0 0 240 72"><circle cx="28" cy="36" r="17" fill="#fffaf0" stroke="#315a4b" stroke-width="3"/><text x="28" y="42" text-anchor="middle" fill="#315a4b" font-size="18" font-weight="800">1</text><path d="M51 36h35" fill="none" stroke="#70947d" stroke-width="4" stroke-linecap="round"/><path d="m78 28 10 8-10 8" fill="none" stroke="#70947d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><rect x="99" y="18" width="58" height="36" rx="8" fill="#fff" stroke="#315a4b" stroke-width="3"/><path d="M114 31h28m-28 10h20" stroke="#70947d" stroke-width="3" stroke-linecap="round"/><path d="M169 36h31" fill="none" stroke="#70947d" stroke-width="4" stroke-linecap="round"/><path d="m193 28 10 8-10 8" fill="none" stroke="#70947d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="222" cy="36" r="17" fill="#e4f0df" stroke="#4f9139" stroke-width="3"/><path d="m213 36 6 6 12-14" fill="none" stroke="#4f9139" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>1. Elige · 2. Actúa · 3. Mira el cambio</span></div><div class="inspection-confirmation-copy"><strong>Mira y elige</strong><p>Toca un punto del mapa para saber qué ocurre allí y qué puedes mejorar.</p></div></div>';
+          ? '<div class="inspection-confirmation has-change"><div class="inspection-confirmation-copy"><strong>Cambio en el mapa</strong><p>' + escapeHtml(scene.feedback) + '</p></div></div>'
+          : '<div class="inspection-confirmation is-empty"><div class="inspection-confirmation-copy"><strong>Elige en el mapa</strong><p>Toca un punto del mapa para saber qué ocurre allí y qué puedes mejorar.</p></div></div>';
         return '<section class="inspection-response' + (!scene.feedback && selected.length === 0 ? ' is-initial' : '') + '" role="status" aria-live="polite" aria-atomic="true">' + confirmation +
           '<div class="inspection-selection"><strong>Mejoras elegidas</strong>' + selectedMarkup + '<small>' + remainingLabel + '</small></div></section>';
       }
@@ -1443,12 +1468,13 @@ export function renderPrototypePage(): string {
 
       function renderInspection(scene) {
         const count = scene.selectedCount + ' / ' + scene.actionQuota + ' mejoras';
-        const main = '<div class="inspection-taskbar"><span class="inspection-taskbar-copy">' + escapeHtml(scene.objective) + '</span><span class="inspection-taskbar-count">' + escapeHtml(count) + '</span></div>' + visualMarkup() +
+        const main = '<div class="inspection-stage">' + visualMarkup() +
+          '<header class="inspection-map-hud" data-inspection-overlay><p class="eyebrow">Prepara la zona</p><h2 id="inspection-map-heading">' + escapeHtml(scene.title) + '</h2><p>' + escapeHtml(scene.objective) + '</p></header>' +
+          '<div class="inspection-map-progress" data-inspection-overlay aria-label="' + escapeHtml(count) + '"><small>Mejoras</small><strong>' + escapeHtml(scene.selectedCount + ' / ' + scene.actionQuota) + '</strong></div>' +
           '<div class="inspection-hidden-menu" data-visual-menu-slot hidden></div>' +
-          '<div class="inspection-action-tray" data-visual-card-slot hidden></div>' +
-          '<div class="inspection-lowerbar"><div class="inspection-learning">' + inspectionResponse(scene) + '</div>' +
-          (scene.canAdvance ? '<div class="inspection-advance">' + advanceButton(scene) + '</div>' : '') + '</div>';
-        return '<section class="scene scene-with-side-panel inspection-scene"><div class="scene-content">' + heading(scene, 'Prepara la zona', '') +
+          inspectionResponse(scene).replace('<section class="inspection-response', '<section data-inspection-overlay class="inspection-response') +
+          (scene.canAdvance ? '<div class="inspection-advance" data-inspection-overlay>' + advanceButton(scene) + '</div>' : '') + '</div>';
+        return '<section class="scene inspection-scene" aria-labelledby="inspection-map-heading"><div class="scene-content">' +
           '<div class="scene-workspace"><div class="scene-main">' + main + '</div></div></div></section>';
       }
 
@@ -1482,12 +1508,14 @@ export function renderPrototypePage(): string {
         const badge = '<div class="scene-state-badge ' + (scene.variant === 'contained' ? 'prepared' : 'vulnerable') + '"><small>Resultado</small><strong>' + (scene.variant === 'contained' ? 'Controlado' : 'Demasiado fuerte') + '</strong></div>';
         const relations = '<div><p class="eyebrow">Por qué ocurrió</p><div class="relations" aria-label="Cómo influyeron tus decisiones">' + scene.relations.map(function (relation) {
           return '<article class="relation' + (relation.branchDecisive ? ' decisive' : '') + '"><h3>' + escapeHtml(relation.title) + '</h3>' +
-            '<div class="cause-list">Antes del incendio → ' + relation.causeActionLabels.map(escapeHtml).join(' · ') + '</div>' +
+            '<div class="cause-list">' + escapeHtml(relation.causeType) + ' → ' + relation.causeActionLabels.map(escapeHtml).join(' · ') + '</div>' +
             '<p>' + escapeHtml(relation.effect) + '</p></article>';
         }).join('') + '</div></div>';
         const main = '<div class="result-layout"><div><p class="eyebrow">Así empezó la emergencia</p>' + visualMarkup() + '</div>' + relations + '</div>';
         const intro = badge + '<div class="feedback">' + escapeHtml(scene.closing) + '</div>';
-        const review = '<details><summary>Ver las mejoras que elegí</summary><ul>' + currentView.session.preventionReview.map(function (entry) { return '<li>' + escapeHtml(entry.label) + '</li>'; }).join('') + '</ul></details>' + advanceButton(scene);
+        const review = '<details class="final-prevention-review"><summary>Revisar toda la preparación</summary><strong>Mejoras que elegiste</strong><ul>' + currentView.session.preventionReview.map(function (entry) { return '<li>' + escapeHtml(entry.label) + '</li>'; }).join('') + '</ul>' +
+          (currentView.session.pendingPreventionReview.length === 0 ? '' : '<strong>Mejoras que quedaron pendientes</strong><ul>' + currentView.session.pendingPreventionReview.map(function (entry) { return '<li>' + escapeHtml(entry.label) + '</li>'; }).join('') + '</ul>') +
+          '<p>Ninguna mejora elimina todo el riesgo.</p></details>' + advanceButton(scene);
         return '<section class="scene scene-with-side-panel result-' + escapeHtml(scene.variant) + '"><div class="scene-content">' + heading(scene, 'Resultado de tus decisiones', '') +
           sceneWorkspace(main, 'Tu resultado', intro, review, 'Ver resultado y opciones') + '</div></section>';
       }
@@ -1530,16 +1558,22 @@ export function renderPrototypePage(): string {
 
       function arrangeVisualSideMenu() {
         const slot = game.querySelector('[data-visual-menu-slot]');
-        const cardSlot = game.querySelector('[data-visual-card-slot]');
         const visualScene = game.querySelector('.visual-scene');
         if (!slot || !visualScene) return;
         const menu = visualScene.querySelector('.territory-map-key, .housing-map-key');
-        const cards = visualScene.querySelector('.visual-card-layer');
         if (menu) slot.appendChild(menu);
-        if (cards && cardSlot) cardSlot.appendChild(cards);
-        else if (cards) slot.appendChild(cards);
-        slot.hidden = !menu;
-        if (cardSlot) cardSlot.hidden = !cards;
+        slot.hidden = true;
+        const canvas = visualScene.querySelector('.visual-canvas');
+        if (canvas) game.querySelectorAll('[data-inspection-overlay]').forEach(function (overlay) { canvas.appendChild(overlay); });
+        fitInspectionMap();
+      }
+
+      function fitInspectionMap() {
+        const map = game.querySelector('.inspection-scene .territory-map, .inspection-scene .housing-plan');
+        if (!map) return;
+        const canvas = map.closest('.visual-canvas');
+        const ratio = canvas && canvas.clientHeight > 0 ? canvas.clientWidth / canvas.clientHeight : window.innerWidth / window.innerHeight;
+        map.setAttribute('preserveAspectRatio', ratio < 1.72 ? 'xMidYMid meet' : 'xMidYMid slice');
       }
 
       function usesSideDrawer() {
@@ -1668,9 +1702,10 @@ export function renderPrototypePage(): string {
         const canvas = element.closest('.visual-canvas');
         if (!canvas) return;
         if (canvas.querySelector('.territory-map, .housing-plan') && window.matchMedia('(max-width: 700px)').matches) {
-          card.style.right = '';
-          card.style.left = '';
-          card.style.top = '';
+          card.style.right = '8px';
+          card.style.left = '8px';
+          card.style.top = 'auto';
+          card.style.bottom = '8px';
           return;
         }
         window.requestAnimationFrame(function () {
@@ -1685,6 +1720,7 @@ export function renderPrototypePage(): string {
           let top = elementRect.top - canvasRect.top + (elementRect.height - cardRect.height) / 2;
           top = Math.max(gap, Math.min(top, canvasRect.height - cardRect.height - gap));
           card.style.right = 'auto';
+          card.style.bottom = '';
           card.style.left = Math.round(left) + 'px';
           card.style.top = Math.round(top) + 'px';
         });
@@ -1713,8 +1749,10 @@ export function renderPrototypePage(): string {
           closeSceneSidePanel(false);
         }
         if (button.disabled) { card.setAttribute('tabindex', '-1'); card.focus(); } else { button.focus(); }
-        if (sourceElement && sourceElement.closest('.inspection-scene')) {
-          card.scrollIntoView({ block: 'nearest', behavior: 'auto' });
+        const inspectionCanvas = card.closest('.inspection-scene .visual-canvas');
+        if (inspectionCanvas) {
+          inspectionCanvas.scrollLeft = 0;
+          inspectionCanvas.scrollTop = 0;
         }
         if (card.classList.contains('action-card')) {
           const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1824,6 +1862,7 @@ export function renderPrototypePage(): string {
         if (!sessionId || busy) return;
         request('/api/game-sessions/' + encodeURIComponent(sessionId) + '/restart', { method: 'POST', body: '{}' });
       });
+      window.addEventListener('resize', fitInspectionMap);
       startButton.addEventListener('click', startSession);
       setSessionChrome(false);
       hydrateEntryContext();

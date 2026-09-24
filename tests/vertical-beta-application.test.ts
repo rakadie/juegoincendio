@@ -102,6 +102,7 @@ async function play(
   expect(view.scene.type).toBe('result');
   expect(view.scene).toMatchObject({ variant: branch === 'prepared' ? 'contained' : 'overwhelmed' });
   expect(view.session.preventionReview).toHaveLength(5);
+  expect(view.session.pendingPreventionReview).toHaveLength(3);
   return { view, visitedTypes };
 }
 

@@ -180,6 +180,11 @@ export interface VerticalBetaSessionView {
     actionId: string;
     label: string;
   }[];
+  readonly pendingPreventionReview: readonly {
+    sceneId: PreventionInspectionSceneId;
+    actionId: string;
+    label: string;
+  }[];
 }
 
 export interface VerticalBetaApplicationView {
@@ -223,6 +228,11 @@ function actionLabel(actionId: string): string {
 }
 
 function sessionView(session: GameSession): VerticalBetaSessionView {
+  const selectedPreventionActionIds = new Set(
+    session.decisions
+      .map(({ actionId }) => actionId)
+      .filter((actionId) => preventionActions.has(actionId))
+  );
   return {
     id: session.id,
     status: session.status,
@@ -243,7 +253,12 @@ function sessionView(session: GameSession): VerticalBetaSessionView {
       return entry === undefined
         ? []
         : [{ sceneId: entry.sceneId, actionId: decision.actionId, label: entry.action.label }];
-    })
+    }),
+    pendingPreventionReview: Array.from(preventionActions.entries()).flatMap(
+      ([actionId, entry]) => selectedPreventionActionIds.has(actionId)
+        ? []
+        : [{ sceneId: entry.sceneId, actionId, label: entry.action.label }]
+    )
   };
 }
 

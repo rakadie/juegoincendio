@@ -41,6 +41,8 @@ export function renderHousingPlanDefs(): string {
       .housing-plan #housing-vertical-fuel.state-reduced .housing-low-branches { display: none; }
       .housing-plan #housing-vertical-fuel.state-reduced .housing-clearance,
       .housing-plan #housing-vertical-fuel.state-reduced .housing-cut-marks { display: block; }
+      .housing-plan .housing-clearance-worker { display: none; pointer-events: none; transform-box: fill-box; transform-origin: center; filter: url(#housing-pin-shadow); }
+      .housing-plan #housing-vertical-fuel.state-reduced .housing-clearance-worker { display: block; animation: housing-worker-cut 1.15s ease-in-out infinite alternate; }
       .housing-plan #housing-canopy .housing-canopy-separated { display: none; }
       .housing-plan #housing-canopy.state-broken .housing-canopy-connected { display: none; }
       .housing-plan #housing-canopy.state-broken .housing-canopy-separated { display: block; }
@@ -74,6 +76,10 @@ export function renderHousingPlanDefs(): string {
       .housing-plan .visual-hotspot:hover, .housing-plan .visual-hotspot:focus-visible { filter: none; }
       .housing-plan .visual-hotspot:hover .map-pin-halo, .housing-plan .visual-hotspot:focus-visible .map-pin-halo { opacity: 1; }
       .housing-plan .visual-hotspot:focus-visible .map-pin-label-bg { stroke: #fffaf0; stroke-width: 3; }
+      @keyframes housing-worker-cut {
+        from { transform: translate(-1px, 1px) rotate(-1deg); }
+        to { transform: translate(3px, -1px) rotate(1.3deg); }
+      }
       @media (max-width: 700px) {
         .housing-plan .map-pin-label-bg, .housing-plan .map-pin-label { display: none; }
         .housing-plan .map-pin-disc { r: 26px; stroke-width: 3; }

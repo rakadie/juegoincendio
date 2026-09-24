@@ -155,6 +155,7 @@ function territorySvg(model: PresentedSceneVisualModel): string {
         <path class="map-road-risk" d="${TERRITORY_ROAD_PATH}" />
         <path class="visual-road" d="${TERRITORY_ROAD_PATH}" />
         <g class="map-road-obstruction">${renderTerritoryRoadDebris(292, 300, -12)}${renderTerritoryRoadDebris(530, 242, -17)}${renderTerritoryRoadDebris(711, 187, -24)}</g>
+        <image class="map-action-actor map-action-worker map-road-worker" href="/images/prevention-brush-worker-v1.png" x="493" y="207" width="92" height="92" preserveAspectRatio="xMidYMid meet" />
       </g>
       ${renderTerritoryMapPin(3, 462, 292, 'Camino rural', 137, road?.selected === true)}
     </g>
@@ -169,6 +170,7 @@ function territorySvg(model: PresentedSceneVisualModel): string {
           <ellipse class="map-fuel-gap-zone" cx="376" cy="103" rx="30" ry="21" />
           <path class="map-fuel-gap-mark" d="M357 103 h38 M366 93 l-9 10 9 10 M386 93 l9 10 -9 10" />
         </g>
+        <image class="map-action-actor map-action-worker map-continuity-worker" href="/images/prevention-brush-worker-v1.png" x="314" y="78" width="86" height="86" preserveAspectRatio="xMidYMid meet" />
       </g>
       ${renderTerritoryMapPin(2, 316, 125, 'Vegetación unida', 160, continuity?.selected === true)}
     </g>
@@ -179,6 +181,7 @@ function territorySvg(model: PresentedSceneVisualModel): string {
         <ellipse class="map-treated-ground" cx="209" cy="211" rx="43" ry="27" />
         <path class="map-treated-rake" d="M182 207 q27 -12 54 0 M183 216 q26 -11 52 0" />
         ${renderTerritoryBranchPile(209, 211, .9)}
+        <image class="map-action-actor map-action-worker map-residue-worker" href="/images/prevention-brush-worker-v1.png" x="174" y="176" width="82" height="82" preserveAspectRatio="xMidYMid meet" />
       </g>
       ${renderTerritoryMapPin(1, 205, 171, 'Ramas secas', 128, residues?.selected === true)}
     </g>
@@ -186,7 +189,7 @@ function territorySvg(model: PresentedSceneVisualModel): string {
       grazing
     )}>
       <path class="visual-grazing" d="${TERRITORY_GRAZING_PATH}" aria-hidden="true" />
-      <g class="map-grazing-flock" aria-hidden="true">${[[690, 346], [774, 318], [815, 404]].map(([x, y]) => `<g transform="translate(${x} ${y}) rotate(-12)" filter="url(#territory-overlay-shadow)"><ellipse cx="2" cy="3" rx="10" ry="4" fill="#182119" opacity=".25" /><ellipse rx="8" ry="5" fill="#ede7d2" stroke="#6f6756" stroke-width="1.2" /><circle cx="8" cy="-2" r="2.8" fill="#665c4e" /><path d="M-4 4 v5 m8 -5 v5 M9 -4 l2 -4" stroke="#665c4e" stroke-width="1.3" /></g>`).join('')}</g>
+      <image class="map-action-actor map-grazing-flock" href="/images/territory-grazing-goats-v1.png" x="692" y="322" width="128" height="86" preserveAspectRatio="xMidYMid meet" aria-hidden="true" />
       ${renderTerritoryMapPin(4, 746, 370, 'Zona de pastoreo', 158, grazing?.selected === true, 'left')}
     </g>
     <g id="territory-professional-line" class="visual-hotspot ${stateClass(line)}"${hotspotAttributes(
@@ -259,6 +262,7 @@ function housingSvg(model: PresentedSceneVisualModel): string {
         <path d="M121 387 h24 m42 44 h24 m43 -15 h24 m22 -64 h24" />
         <path d="M130 377 v10 m66 34 v10 m67 -25 v10 m46 -74 v10" />
       </g>
+      <image class="map-action-actor housing-clearance-worker" href="/images/prevention-brush-worker-v1.png" x="174" y="316" width="116" height="106" preserveAspectRatio="xMidYMid meet" aria-hidden="true" />
       <path class="housing-low-branches housing-risk-detail" d="M203 329 l-63 -54 m63 54 l-57 -7 m57 7 l57 -58 m-57 58 l69 2" aria-hidden="true" />
       ${renderHousingPin(1, 119, 288, 'Ramas y hierba seca', 165, vertical?.selected === true)}
     </g>

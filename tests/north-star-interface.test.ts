@@ -41,7 +41,7 @@ describe('M3.8 north-star interface', () => {
 
   it('keeps inspections visual-first and exposes the official selection quota', () => {
     const html = renderPrototypePage();
-    expect(html).toContain('class="inspection-taskbar-count"');
+    expect(html).toContain('class="inspection-map-progress"');
     expect(html).toContain("scene.selectedCount + ' / ' + scene.actionQuota + ' mejoras'");
     expect(html).toContain('function visualMarkup()');
     expect(html).toContain('function actionCards(scene)');
@@ -100,22 +100,21 @@ describe('M3.8 north-star interface', () => {
       html.indexOf('function renderSummary(scene)')
     );
     expect(html).toContain('data-visual-menu-slot');
-    expect(html).toContain('data-visual-card-slot');
-    expect(html).toContain('inspection-action-tray');
+    expect(html).toContain('data-inspection-overlay');
     expect(html).toContain('arrangeVisualSideMenu()');
     expect(html).toContain('.inspection-hidden-menu { display: none !important; }');
-    expect(html).toContain('height: min(690px, 47vw);');
+    expect(html).toContain('height: calc(100dvh - 62px);');
+    expect(html).not.toContain('<div class="inspection-action-tray"');
     expect(inspectionRenderer).not.toContain('sceneWorkspace(');
     expect(inspectionRenderer).not.toContain('scene-side-panel');
   });
 
-  it('shows state-driven change illustrations in a separate learning area', () => {
+  it('shows state-driven raster changes on the map instead of a separate learning area', () => {
     const html = renderPrototypePage();
-    expect(html).toContain('class="inspection-learning"');
-    expect(html).toContain('function inspectionChangeVisual(scene)');
-    expect(html).toContain('data-change-action-id');
-    expect(html).toContain("'activar-pastoreo-preventivo': 'grazing'");
-    expect(html).toContain("'evaluar-quema-tecnica': 'assessment'");
+    expect(html).toContain('class="inspection-response');
+    expect(html).toContain('Cambio en el mapa');
+    expect(html).not.toContain('<div class="inspection-learning"');
+    expect(html).toContain("view.scene.type === 'summary' || view.scene.type === 'router'");
     expect(html).toContain('@media (prefers-reduced-motion: reduce)');
   });
 

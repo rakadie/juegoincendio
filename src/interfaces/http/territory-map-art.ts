@@ -45,6 +45,10 @@ export function renderTerritoryMapDefs(): string {
       .territory-map .map-road-risk { fill: none; stroke: #c8793a; stroke-width: 2.6; stroke-linecap: round; stroke-dasharray: 7 8; opacity: .9; }
       .territory-map #territory-road.state-clear .map-road-risk { stroke: #8fc28d; stroke-width: 2.4; stroke-dasharray: none; opacity: .82; }
       .territory-map #territory-road.state-clear .visual-road { stroke: #f3f8e9; stroke-width: 1.2; stroke-dasharray: none; }
+      .territory-map .map-action-actor { display: none; pointer-events: none; transform-box: fill-box; transform-origin: center; filter: url(#territory-overlay-shadow); }
+      .territory-map #territory-road.state-clear .map-road-worker,
+      .territory-map #territory-continuity.state-broken .map-continuity-worker,
+      .territory-map #territory-residues.state-treated .map-residue-worker { display: block; animation: territory-worker-cut 1.15s ease-in-out infinite alternate; }
       .territory-map .map-road-obstruction { opacity: 1; filter: url(#territory-overlay-shadow); }
       .territory-map #territory-road.state-clear .map-road-obstruction { display: none; }
       .territory-map .map-road-debris-shadow { fill: #251b13; opacity: .28; }
@@ -71,7 +75,7 @@ export function renderTerritoryMapDefs(): string {
       .territory-map #territory-grazing .visual-grazing { marker-start: none; fill: url(#territory-pasture-natural); stroke: #f0c779; stroke-width: 1.5; stroke-dasharray: 7 7; opacity: .68; }
       .territory-map #territory-grazing.state-treated .visual-grazing { fill: url(#territory-pasture-managed); stroke: #cfe6c4; stroke-width: 1.7; stroke-dasharray: none; opacity: .72; }
       .territory-map .map-grazing-flock { display: none; }
-      .territory-map #territory-grazing.state-treated .map-grazing-flock { display: block; }
+      .territory-map #territory-grazing.state-treated .map-grazing-flock { display: block; animation: territory-herd-graze 2.8s ease-in-out infinite alternate; }
 
       .territory-map #territory-professional-line .visual-professional-line { marker-start: none; fill: none; stroke: #f2c36d; stroke-width: 1.8; stroke-dasharray: 6 7; opacity: .9; }
       .territory-map #territory-professional-line.state-evaluated .visual-professional-line { stroke: #cfe9c8; stroke-width: 2; stroke-dasharray: 12 7; }
@@ -92,6 +96,15 @@ export function renderTerritoryMapDefs(): string {
       .territory-map .visual-hotspot:hover, .territory-map .visual-hotspot:focus-visible { filter: none; }
       .territory-map .visual-hotspot:hover .map-pin-halo, .territory-map .visual-hotspot:focus-visible .map-pin-halo { opacity: 1; }
       .territory-map .visual-hotspot:focus-visible .map-pin-label-bg { stroke: #ffd68a; stroke-width: 3; }
+
+      @keyframes territory-worker-cut {
+        from { transform: translate(-1px, 1px) rotate(-1.2deg); }
+        to { transform: translate(3px, -1px) rotate(1.4deg); }
+      }
+      @keyframes territory-herd-graze {
+        from { transform: translate(-3px, 1px) scale(.99); }
+        to { transform: translate(5px, -2px) scale(1.01); }
+      }
 
       @media (max-width: 700px) {
         .territory-map .map-pin-label-bg, .territory-map .map-pin-label, .territory-map .map-pin-tail { display: none; }

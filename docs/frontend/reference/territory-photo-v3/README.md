@@ -1,24 +1,25 @@
-# Territorio fotográfico y controles profesionales
+# Territorio fotográfico y juego contextual
 
 Issue de referencia: #176.
 
 ## Problema
 
-El mapa vectorial permitía completar la fase, pero abstraía demasiado el relieve y colocaba los controles sobre una superficie plana. Costaba relacionar el barranco, la pista, el pinar, las parcelas y los pastos con las decisiones preventivas. La leyenda tampoco diferenciaba con suficiente jerarquía el lugar, su condición y el estado de la actuación.
+La versión anterior ya usaba una fotografía, pero reservaba demasiado espacio a una lista lateral y desplazaba las explicaciones y decisiones fuera del área visible. El mapa quedaba pequeño, había zonas blancas y la relación entre el punto elegido, la actuación y su efecto se perdía. Los cambios sobre el terreno seguían dependiendo en exceso de líneas y dibujos vectoriales.
 
 ## Comportamiento resultante
 
-La escena usa una fotografía aérea original y neutral del paisaje canario. La imagen no incluye actuaciones ejecutadas: el estado real del juego sigue dibujando encima las cinco localizaciones y sus consecuencias.
+La fotografía ocupa toda la superficie jugable entre la cabecera y el borde inferior de la ventana. No hay menú derecho ni bandeja bajo el mapa. La información necesaria se reparte en cuatro capas breves:
 
-- Los restos ocupan un claro real y desaparecen al gestionarlos.
-- La continuidad sigue la masa de pinar y abre huecos visibles al tratarla.
-- El corredor se alinea con la pista fotografiada y pasa a operativo al limpiar márgenes.
-- El pastoreo queda limitado a la parcela reconocible del extremo inferior derecho.
-- La evaluación técnica se representa como una medición de la ladera; no implica una quema ejecutada.
+- título y objetivo, arriba a la izquierda;
+- contador de mejoras, arriba a la derecha;
+- ficha contextual junto al punto que se abre al tocarlo, enfocarlo o hacer clic;
+- confirmación y mejoras elegidas, sobre el borde inferior de la propia fotografía.
 
-Los pines usan discos numerados estables, etiquetas oscuras de alto contraste en escritorio y áreas de interacción transparentes mayores de 44 px. En móvil se ocultan las etiquetas sobre la foto y la leyenda pasa a ser el control principal. Cada tarjeta separa nombre, condición y estado tratado/no tratado.
+Los cinco puntos continúan siendo controles accesibles y conservan sus números, estados y áreas de pulsación. La ficha contextual explica con palabras sencillas qué ocurre y qué mejora se puede realizar. El mapa admite ratón, teclado y toque sin depender de un panel separado.
 
-Las guías ya no tapan la fotografía: el eje del camino mide como máximo 1,2 px y las zonas de vegetación y pastoreo usan contornos de entre 1,5 y 2,2 px. Los textos visibles se han reescrito con frases cortas y palabras concretas para que un niño o una niña de 10 años pueda relacionar lo que ve, la mejora que elige y el cambio que produce.
+Los cambios proceden del estado real del juego. Al gestionar vegetación se muestra sobre el lugar una persona trabajando con desbrozadora; al activar el pastoreo aparece un pequeño rebaño de cabras. Son recursos raster fotorrealistas con movimiento CSS suave, integrados en la escena y escalados según la perspectiva. Los restos, huecos entre vegetación y corredor de la pista siguen cambiando con cada actuación. La evaluación técnica permanece identificada como una revisión: el texto confirma que no se ha quemado nada.
+
+Las pantallas explicativas intermedias ya no cortan el recorrido. El motor conserva sus estados y relaciones causales, pero la interfaz avanza directamente desde la prevención a la decisión jugable. La revisión completa de lo realizado y lo pendiente puede abrirse al final de la partida.
 
 ## Capturas reales de navegador
 
@@ -30,9 +31,9 @@ Las imágenes se capturaron con Chrome mediante `Page.captureScreenshot`; no son
 |---|---|
 | ![Mapa vectorial anterior en escritorio](antes-vectorial-escritorio.png) | ![Mapa vectorial anterior en móvil](antes-vectorial-movil.png) |
 
-### Después: fotografía y estado inicial
+### Después: fotografía a pantalla completa
 
-| Escritorio | Móvil |
+| Estado inicial en escritorio | Estado inicial en móvil |
 |---|---|
 | ![Mapa fotográfico inicial en escritorio](despues-inicial-escritorio.png) | ![Mapa fotográfico inicial en móvil](despues-inicial-movil.png) |
 
@@ -42,33 +43,31 @@ Las imágenes se capturaron con Chrome mediante `Page.captureScreenshot`; no son
 |---|---|
 | ![Mapa fotográfico tratado en escritorio](despues-tratado-escritorio.png) | ![Mapa fotográfico tratado en móvil](despues-tratado-movil.png) |
 
-### Selección táctil
+### Selección táctil contextual
 
-![Tarjeta de actuación abierta con control táctil](menu-tactil-movil.png)
+![Ficha de actuación abierta sobre el mapa con control táctil](menu-tactil-movil.png)
 
 ### Recorrido y combinación límite
 
-La línea de progreso queda detrás de un fondo opaco y ya no atraviesa los rótulos de las etapas.
+La línea de progreso queda detrás de un fondo opaco y no atraviesa los rótulos de las etapas.
 
 ![Cabecera del recorrido sin rótulos atravesados](cabecera-sin-tachado-escritorio.png)
 
-La combinación de mayor reducción de continuidad —discontinuidades, márgenes, pastoreo, poda y separación de copas— satura el indicador en `0` y permite abrir el balance sin error.
+La combinación de mayor reducción de continuidad satura el indicador en `0`; el juego continúa sin errores de validación.
 
-![Balance obtenido con la combinación límite](balance-combinacion-limite-escritorio.png)
+![Estado obtenido con la combinación límite](balance-combinacion-limite-escritorio.png)
 
 ## Validación
 
-- Chrome real a 1280 × 900 y 390 × 844: `M5_VISUAL_SMOKE_OK`.
-- Cinco pines y cinco controles; áreas interactivas de al menos 44 px.
-- Tarjetas de leyenda de al menos 64 px en escritorio y 66 px en móvil.
-- Pines, rótulos visibles y tarjetas sin solapamientos ni recortes.
-- Guías del camino, la vegetación, el pastoreo y la zona para revisar por debajo de 2,3 px; el halo del camino no supera 7 px.
-- La pila de restos ocupa menos del 14 % del ancho y del 16 % del alto del mapa.
-- Ratón, teclado y toque abren las tarjetas y permiten elegir acciones.
-- Se conserva el límite de tres actuaciones y el avance a vivienda, crisis y resultado.
+- Chrome real a 1920 × 920, 1280 × 900 y 390 × 844: `M5_VISUAL_SMOKE_OK`.
+- Fotografía ajustada al alto y ancho jugables, sin menú lateral, bandeja inferior ni desplazamiento de página.
+- Cinco puntos estables y controles de al menos 44 px; fichas dentro del mapa y acción siempre visible.
+- Apertura y selección con ratón, `Tab` + `Enter`/espacio y toque.
+- Animaciones raster visibles únicamente cuando el estado correspondiente está aplicado.
+- Límite de tres actuaciones y avance directo a vivienda, incendio y resultado.
 - Las 30 combinaciones legales de tres actuaciones territoriales y dos de vivienda producen dimensiones enteras entre 0 y 100.
-- `npm run accept:m5`: 200 pruebas Vitest, aceptación M4 y M5, tipos, compilación y auditoría de dependencias en verde.
+- `npm run accept:m5`: auditoría sin vulnerabilidades, tipos y compilación correctos, 202 pruebas Vitest, 4 pruebas de aceptación M4 y 4 de aceptación M5.
 
 ## Alcance y reversión
 
-No cambian el motor, las acciones, el presupuesto ni las consecuencias. La fotografía es una base neutral; todos los cambios visibles proceden del presentador. Para volver al mapa anterior se puede revertir el commit de esta entrega, incluidos los dos recursos raster y las reglas visuales asociadas.
+No cambian el motor, las acciones, el presupuesto ni las consecuencias. La fotografía sigue siendo una base neutral y los cambios visibles proceden del presentador. En móvil, la panorámica completa se mantiene en una banda central y la misma imagen desenfocada ocupa el resto del fondo para evitar recortes de puntos o espacios blancos. Los recursos raster son una primera biblioteca de efectos ampliable con fuego, equipos y animales adicionales.

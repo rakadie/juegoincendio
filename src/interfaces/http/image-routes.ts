@@ -8,6 +8,8 @@ const IMAGE_FILES = [
   'gameplay-wildfire-scene.png',
   'territory-prevention-aerial-v1.jpg',
   'housing-prevention-aerial-v2.jpg',
+  'territory-grazing-goats-v1.png',
+  'prevention-brush-worker-v1.png',
   'crisis-ravine-aerial-v1.jpg',
   'crisis-scrub-fire-v1.png',
   'avatar-forestal-hombre.png',
