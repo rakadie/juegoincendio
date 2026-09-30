@@ -32,8 +32,11 @@ export function renderHousingPlanDefs(): string {
       .housing-plan .housing-scene-caption { fill: #102821; fill-opacity: .86; stroke: #f8f2df; stroke-opacity: .72; stroke-width: 1; }
       .housing-plan .housing-place-label { fill: #fffaf0; font-size: 13px; font-weight: 750; letter-spacing: 1.7px; }
       .housing-plan .housing-scene-note { fill: #f3ead5; font-size: 11px; }
-      .housing-plan .housing-risk-zone { fill: #c47a32; fill-opacity: .12; stroke: #ffe0a8; stroke-width: 1.5; stroke-dasharray: 6 7; }
-      .housing-plan .housing-risk-detail { fill: none; stroke: #fff1ce; stroke-width: 1.6; stroke-linecap: round; filter: drop-shadow(0 1px 1px #513219); }
+      .housing-plan .visual-hotspot path, .housing-plan .visual-hotspot ellipse { vector-effect: non-scaling-stroke; }
+      .housing-plan .housing-risk-zone { fill: #c47a32; fill-opacity: .045; stroke: #ffe0a8; stroke-width: .9; stroke-dasharray: 6 7; opacity: .58; transition: fill-opacity .2s ease, opacity .2s ease, stroke-width .2s ease; }
+      .housing-plan .housing-risk-detail { fill: none; stroke: #fff1ce; stroke-width: .85; stroke-linecap: round; opacity: .5; filter: drop-shadow(0 1px 1px #513219); transition: opacity .2s ease, stroke-width .2s ease; }
+      .housing-plan #housing-vertical-fuel:is(:hover, :focus-visible, .is-context-active) .housing-risk-zone { fill-opacity: .09; stroke-width: 1.25; opacity: .95; }
+      .housing-plan #housing-vertical-fuel:is(:hover, :focus-visible, .is-context-active) .housing-risk-detail { stroke-width: 1.2; opacity: .9; }
       .housing-plan #housing-vertical-fuel .housing-clearance { display: none; fill: url(#housing-treated-ground); stroke: #e9f1db; stroke-width: 1.5; stroke-dasharray: 6 6; opacity: .36; }
       .housing-plan #housing-vertical-fuel .housing-cut-marks { display: none; fill: none; stroke: #496c57; stroke-width: 2; stroke-linecap: round; }
       .housing-plan #housing-vertical-fuel.state-reduced .housing-risk-zone,
@@ -42,26 +45,32 @@ export function renderHousingPlanDefs(): string {
       .housing-plan #housing-vertical-fuel.state-reduced .housing-clearance,
       .housing-plan #housing-vertical-fuel.state-reduced .housing-cut-marks { display: block; }
       .housing-plan .housing-clearance-worker { display: none; pointer-events: none; transform-box: fill-box; transform-origin: center; filter: url(#housing-pin-shadow); }
-      .housing-plan #housing-vertical-fuel.state-reduced .housing-clearance-worker { display: block; animation: housing-worker-cut 1.15s ease-in-out infinite alternate; }
+      .housing-plan #housing-vertical-fuel.state-reduced .housing-clearance-worker { display: block; animation: housing-worker-cut 1.9s ease-in-out infinite alternate; }
       .housing-plan #housing-canopy .housing-canopy-separated { display: none; }
       .housing-plan #housing-canopy.state-broken .housing-canopy-connected { display: none; }
       .housing-plan #housing-canopy.state-broken .housing-canopy-separated { display: block; }
-      .housing-plan #housing-canopy .housing-canopy-crown { fill: none; stroke: #ffe4ae; stroke-width: 1.5; stroke-dasharray: 7 7; filter: drop-shadow(0 1px 1px #274433); }
-      .housing-plan #housing-canopy .housing-canopy-link { fill: none; stroke: #c87831; stroke-width: 5; stroke-linecap: round; opacity: .3; }
-      .housing-plan #housing-canopy .housing-canopy-link-detail { fill: none; stroke: #fff1c9; stroke-width: 1.5; stroke-dasharray: 6 7; }
+      .housing-plan #housing-canopy .housing-canopy-crown { fill: none; stroke: #ffe4ae; stroke-width: 1; stroke-dasharray: 7 7; opacity: .56; filter: drop-shadow(0 1px 1px #274433); transition: opacity .2s ease, stroke-width .2s ease; }
+      .housing-plan #housing-canopy .housing-canopy-link { fill: none; stroke: #c87831; stroke-width: 2.5; stroke-linecap: round; opacity: .14; transition: opacity .2s ease, stroke-width .2s ease; }
+      .housing-plan #housing-canopy .housing-canopy-link-detail { fill: none; stroke: #fff1c9; stroke-width: .8; stroke-dasharray: 6 7; opacity: .48; transition: opacity .2s ease, stroke-width .2s ease; }
+      .housing-plan #housing-canopy:is(:hover, :focus-visible, .is-context-active) .housing-canopy-crown { stroke-width: 1.35; opacity: .95; }
+      .housing-plan #housing-canopy:is(:hover, :focus-visible, .is-context-active) .housing-canopy-link { stroke-width: 3; opacity: .24; }
+      .housing-plan #housing-canopy:is(:hover, :focus-visible, .is-context-active) .housing-canopy-link-detail { stroke-width: 1.15; opacity: .88; }
       .housing-plan #housing-canopy.state-broken .housing-canopy-crown { stroke: #dcedd7; }
       .housing-plan #housing-canopy.state-broken .housing-canopy-gap { fill: url(#housing-treated-ground); stroke: #f3f7e8; stroke-width: 1.5; stroke-dasharray: 5 6; opacity: .6; }
       .housing-plan #housing-canopy.state-broken .housing-gap-mark { fill: none; stroke: #3f7359; stroke-width: 2.2; stroke-linecap: round; }
-      .housing-plan #housing-local-access .housing-access-risk { fill: none; stroke: #c87831; stroke-width: 8; stroke-linecap: round; opacity: .22; }
-      .housing-plan #housing-local-access .housing-access-centre { fill: none; stroke: #fff0c6; stroke-width: 1.6; stroke-linecap: round; stroke-dasharray: 6 7; }
-      .housing-plan #housing-local-access .housing-clear-route { display: none; fill: none; stroke: #dcebd6; stroke-width: 8; stroke-linecap: round; opacity: .3; }
-      .housing-plan #housing-local-access .housing-clear-route-line { display: none; fill: none; stroke: #356b53; stroke-width: 1.8; stroke-linecap: round; stroke-dasharray: 8 7; }
+      .housing-plan #housing-local-access .housing-access-risk { fill: none; stroke: #c87831; stroke-width: 4; stroke-linecap: round; opacity: .1; transition: opacity .2s ease, stroke-width .2s ease; }
+      .housing-plan #housing-local-access .housing-access-centre { fill: none; stroke: #fff0c6; stroke-width: 1; stroke-linecap: round; stroke-dasharray: 6 7; opacity: .58; transition: opacity .2s ease, stroke-width .2s ease; }
+      .housing-plan #housing-local-access:is(:hover, :focus-visible, .is-context-active) .housing-access-risk { stroke-width: 5; opacity: .18; }
+      .housing-plan #housing-local-access:is(:hover, :focus-visible, .is-context-active) .housing-access-centre { stroke-width: 1.35; opacity: .94; }
+      .housing-plan #housing-local-access .housing-clear-route { display: none; fill: none; stroke: #dcebd6; stroke-width: 5; stroke-linecap: round; opacity: .17; }
+      .housing-plan #housing-local-access .housing-clear-route-line { display: none; fill: none; stroke: #356b53; stroke-width: 1.25; stroke-linecap: round; stroke-dasharray: 8 7; opacity: .82; }
       .housing-plan #housing-local-access.state-clear .housing-access-risk,
       .housing-plan #housing-local-access.state-clear .housing-access-obstructions { display: none; }
       .housing-plan #housing-local-access.state-clear .housing-clear-route,
       .housing-plan #housing-local-access.state-clear .housing-clear-route-line { display: block; }
       .housing-plan .housing-access-obstructions { fill: none; stroke: #fff0cf; stroke-width: 5; stroke-linecap: round; filter: drop-shadow(0 1px 1px #513219); }
-      .housing-plan .housing-condition-ring { fill: #c07832; fill-opacity: .05; stroke: #ffe1ac; stroke-width: 1.5; stroke-dasharray: 7 8; }
+      .housing-plan .housing-condition-ring { fill: #c07832; fill-opacity: .025; stroke: #ffe1ac; stroke-width: .85; stroke-dasharray: 7 8; opacity: .46; transition: fill-opacity .2s ease, opacity .2s ease, stroke-width .2s ease; }
+      .housing-plan #housing-home:is(:hover, :focus-visible, .is-context-active) .housing-condition-ring { fill-opacity: .055; stroke-width: 1.2; opacity: .9; }
       .housing-plan .map-pin-hit-target { fill: #fff; fill-opacity: .001; stroke: none; pointer-events: all; }
       .housing-plan .map-pin-halo { fill: none; stroke: #ffe2a7; stroke-width: 3; opacity: 0; }
       .housing-plan .map-pin-disc { fill: #fffaf0; stroke: #765837; stroke-width: 2.5; filter: url(#housing-pin-shadow); }
@@ -74,18 +83,18 @@ export function renderHousingPlanDefs(): string {
       .housing-plan .map-pin[data-applied="true"] .map-pin-check { display: block; }
       .housing-plan .map-pin-info .map-pin-disc { fill: #fff5df; stroke: #b17638; }
       .housing-plan .visual-hotspot:hover, .housing-plan .visual-hotspot:focus-visible { filter: none; }
-      .housing-plan .visual-hotspot:hover .map-pin-halo, .housing-plan .visual-hotspot:focus-visible .map-pin-halo { opacity: 1; }
+      .housing-plan .visual-hotspot:hover .map-pin-halo, .housing-plan .visual-hotspot:focus-visible .map-pin-halo, .housing-plan .visual-hotspot.is-context-active .map-pin-halo { opacity: 1; }
       .housing-plan .visual-hotspot:focus-visible .map-pin-label-bg { stroke: #fffaf0; stroke-width: 3; }
       @keyframes housing-worker-cut {
-        from { transform: translate(-1px, 1px) rotate(-1deg); }
-        to { transform: translate(3px, -1px) rotate(1.3deg); }
+        from { transform: translate(-.6px, .5px) rotate(-.4deg); }
+        to { transform: translate(1px, -.5px) rotate(.5deg); }
       }
       @media (max-width: 700px) {
         .housing-plan .map-pin-label-bg, .housing-plan .map-pin-label { display: none; }
-        .housing-plan .map-pin-disc { r: 26px; stroke-width: 3; }
-        .housing-plan .map-pin-halo { r: 31px; }
-        .housing-plan .map-pin-number { font-size: 23px; }
-        .housing-plan .housing-place-label { font-size: 16px; letter-spacing: 1px; }
+        .housing-plan .map-pin-disc { r: 40px; stroke-width: 3; }
+        .housing-plan .map-pin-halo { r: 48px; }
+        .housing-plan .map-pin-number { font-size: 34px; }
+        .housing-plan .housing-place-label { font-size: 22px; letter-spacing: 1px; }
         .housing-plan .housing-scene-note { display: none; }
         .housing-plan .housing-scale-caption { display: none; }
       }

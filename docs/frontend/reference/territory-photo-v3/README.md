@@ -66,8 +66,8 @@ La combinación de mayor reducción de continuidad satura el indicador en `0`; e
 - Animaciones raster visibles únicamente cuando el estado correspondiente está aplicado.
 - Límite de tres actuaciones y avance directo a vivienda, incendio y resultado.
 - Las 30 combinaciones legales de tres actuaciones territoriales y dos de vivienda producen dimensiones enteras entre 0 y 100.
-- `npm run accept:m5`: auditoría sin vulnerabilidades, tipos y compilación correctos, 202 pruebas Vitest, 4 pruebas de aceptación M4 y 4 de aceptación M5.
+- `npm run accept:m5`: auditoría sin vulnerabilidades, tipos y compilación correctos, 203 pruebas Vitest, 4 pruebas de aceptación M4 y 4 de aceptación M5.
 
 ## Alcance y reversión
 
-No cambian el motor, las acciones, el presupuesto ni las consecuencias. La fotografía sigue siendo una base neutral y los cambios visibles proceden del presentador. En móvil, la panorámica completa se mantiene en una banda central y la misma imagen desenfocada ocupa el resto del fondo para evitar recortes de puntos o espacios blancos. Los recursos raster son una primera biblioteca de efectos ampliable con fuego, equipos y animales adicionales.
+No cambian el motor, las acciones, el presupuesto ni las consecuencias. La fotografía sigue siendo una base neutral y los cambios visibles proceden del presentador. En móvil, la panorámica completa se mantiene en una banda central y la misma imagen, oscurecida pero nítida, ocupa el resto del fondo para evitar recortes o huecos sin paisaje. Los recursos raster son una primera biblioteca de efectos ampliable con fuego, equipos y animales adicionales.

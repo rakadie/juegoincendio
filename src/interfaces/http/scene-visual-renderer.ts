@@ -126,11 +126,9 @@ function visualCards(model: PresentedSceneVisualModel): string {
         )}</p>${
           element.actionId === undefined
             ? ''
-            : `<div class="visual-card-action"><strong data-visual-action-label>${escapeHtml(
-                element.label
-              )}</strong><p data-visual-action-description></p><small data-visual-action-reason hidden></small><button class="secondary action-button" data-action-id="${escapeHtml(
+            : `<div class="visual-card-action"><p data-visual-action-description></p><small data-visual-action-reason hidden></small><button class="secondary action-button" data-action-id="${escapeHtml(
                 element.actionId
-              )}" type="button">Hacer mejora</button></div>`
+              )}" type="button">Aplicar mejora</button></div>`
         }</article>`
     )
     .join('')}</div>`;
@@ -318,7 +316,6 @@ function crisisSvg(model: PresentedSceneVisualModel): string {
             houseAccess
           )}><path class="visual-house" d="M735 297 l45 -34 48 34 v73 h-93 z" /><path class="visual-road local" d="M585 352 Q702 324 842 349" /></g>`
     }
-    <g class="visual-label-group" aria-hidden="true"><text x="388" y="475">el mismo barranco cambia según lo que preparaste</text></g>
   </svg>`;
 }
 

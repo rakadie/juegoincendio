@@ -37,26 +37,31 @@ export function renderTerritoryMapDefs(): string {
       .territory-map .map-base, .territory-map .territory-photo-layer { pointer-events: none; }
       .territory-map .territory-photo-background { width: 900px; height: 500px; }
       .territory-map .territory-photo-wash { fill: url(#territory-photo-wash); }
+      .territory-map .visual-hotspot path, .territory-map .visual-hotspot ellipse { vector-effect: non-scaling-stroke; }
       .territory-map .territory-scene-caption { fill: #102821; fill-opacity: .9; stroke: #fffaf0; stroke-opacity: .72; stroke-width: 1; }
       .territory-map .territory-place-label { fill: #fffaf0; font-size: 13px; font-weight: 750; letter-spacing: 1.7px; }
 
-      .territory-map .map-road-context { fill: none; stroke: #fff8e8; stroke-width: 7; stroke-linecap: round; opacity: .16; }
-      .territory-map #territory-road .visual-road { marker-start: none; fill: none; stroke: #fff7e7; stroke-width: 1.2; stroke-linecap: round; stroke-dasharray: 5 8; opacity: .92; }
-      .territory-map .map-road-risk { fill: none; stroke: #c8793a; stroke-width: 2.6; stroke-linecap: round; stroke-dasharray: 7 8; opacity: .9; }
-      .territory-map #territory-road.state-clear .map-road-risk { stroke: #8fc28d; stroke-width: 2.4; stroke-dasharray: none; opacity: .82; }
-      .territory-map #territory-road.state-clear .visual-road { stroke: #f3f8e9; stroke-width: 1.2; stroke-dasharray: none; }
+      .territory-map .map-road-context { fill: none; stroke: #fff8e8; stroke-width: 4; stroke-linecap: round; opacity: .07; transition: opacity .2s ease, stroke-width .2s ease; }
+      .territory-map #territory-road .visual-road { marker-start: none; fill: none; stroke: #fff7e7; stroke-width: 1; stroke-linecap: round; stroke-dasharray: 5 8; opacity: .42; transition: opacity .2s ease, stroke-width .2s ease; }
+      .territory-map .map-road-risk { fill: none; stroke: #c8793a; stroke-width: 1.15; stroke-linecap: round; stroke-dasharray: 7 8; opacity: .24; transition: opacity .2s ease, stroke-width .2s ease; }
+      .territory-map #territory-road:is(:hover, :focus-visible, .is-context-active) .map-road-context { stroke-width: 5; opacity: .13; }
+      .territory-map #territory-road:is(:hover, :focus-visible, .is-context-active) .visual-road { stroke-width: 1.3; opacity: .96; }
+      .territory-map #territory-road:is(:hover, :focus-visible, .is-context-active) .map-road-risk { stroke-width: 1.75; opacity: .9; }
+      .territory-map #territory-road.state-clear .map-road-risk { stroke: #8fc28d; stroke-width: 1.5; stroke-dasharray: none; opacity: .66; }
+      .territory-map #territory-road.state-clear .visual-road { stroke: #f3f8e9; stroke-width: 1.1; stroke-dasharray: none; opacity: .78; }
       .territory-map .map-action-actor { display: none; pointer-events: none; transform-box: fill-box; transform-origin: center; filter: url(#territory-overlay-shadow); }
       .territory-map #territory-road.state-clear .map-road-worker,
       .territory-map #territory-continuity.state-broken .map-continuity-worker,
-      .territory-map #territory-residues.state-treated .map-residue-worker { display: block; animation: territory-worker-cut 1.15s ease-in-out infinite alternate; }
+      .territory-map #territory-residues.state-treated .map-residue-worker { display: block; animation: territory-worker-cut 1.8s ease-in-out infinite alternate; }
       .territory-map .map-road-obstruction { opacity: 1; filter: url(#territory-overlay-shadow); }
       .territory-map #territory-road.state-clear .map-road-obstruction { display: none; }
       .territory-map .map-road-debris-shadow { fill: #251b13; opacity: .28; }
       .territory-map .map-road-debris-branch { fill: none; stroke: #5f4430; stroke-width: 3.2; stroke-linecap: round; }
       .territory-map .map-road-debris-twig { fill: none; stroke: #9b7954; stroke-width: 1.6; stroke-linecap: round; }
 
-      .territory-map #territory-continuity .visual-vegetation-band { marker-start: none; fill: none; stroke: #f1c879; stroke-width: 2.2; stroke-dasharray: 8 9; opacity: .9; }
-      .territory-map #territory-continuity.state-broken .visual-vegetation-band { stroke: #cfe8c6; stroke-width: 2.2; stroke-dasharray: 22 34; opacity: .96; }
+      .territory-map #territory-continuity .visual-vegetation-band { marker-start: none; fill: none; stroke: #f1c879; stroke-width: 1.15; stroke-dasharray: 8 9; opacity: .28; transition: opacity .2s ease, stroke-width .2s ease; }
+      .territory-map #territory-continuity:is(:hover, :focus-visible, .is-context-active) .visual-vegetation-band { stroke-width: 1.75; opacity: .9; }
+      .territory-map #territory-continuity.state-broken .visual-vegetation-band { stroke: #cfe8c6; stroke-width: 1.45; stroke-dasharray: 22 34; opacity: .72; }
       .territory-map .map-fuel-gap { display: none; }
       .territory-map #territory-continuity.state-broken .map-fuel-gap { display: block; }
       .territory-map .map-fuel-gap-zone { fill: url(#territory-treated-ground); stroke: #f5f5e8; stroke-width: 1.4; stroke-dasharray: 5 5; opacity: .58; }
@@ -72,13 +77,15 @@ export function renderTerritoryMapDefs(): string {
       .territory-map #territory-residues.state-treated .map-treated-rake { display: block; }
       .territory-map .map-treated-rake { display: none; fill: none; stroke: #426f57; stroke-width: 2.5; stroke-linecap: round; opacity: .9; }
 
-      .territory-map #territory-grazing .visual-grazing { marker-start: none; fill: url(#territory-pasture-natural); stroke: #f0c779; stroke-width: 1.5; stroke-dasharray: 7 7; opacity: .68; }
-      .territory-map #territory-grazing.state-treated .visual-grazing { fill: url(#territory-pasture-managed); stroke: #cfe6c4; stroke-width: 1.7; stroke-dasharray: none; opacity: .72; }
+      .territory-map #territory-grazing .visual-grazing { marker-start: none; fill: url(#territory-pasture-natural); stroke: #f0c779; stroke-width: .9; stroke-dasharray: 7 7; opacity: .14; transition: opacity .2s ease, stroke-width .2s ease; }
+      .territory-map #territory-grazing:is(:hover, :focus-visible, .is-context-active) .visual-grazing { stroke-width: 1.25; opacity: .38; }
+      .territory-map #territory-grazing.state-treated .visual-grazing { fill: url(#territory-pasture-managed); stroke: #cfe6c4; stroke-width: 1.15; stroke-dasharray: none; opacity: .28; }
       .territory-map .map-grazing-flock { display: none; }
-      .territory-map #territory-grazing.state-treated .map-grazing-flock { display: block; animation: territory-herd-graze 2.8s ease-in-out infinite alternate; }
+      .territory-map #territory-grazing.state-treated .map-grazing-flock { display: block; animation: territory-herd-graze 4.2s ease-in-out infinite alternate; }
 
-      .territory-map #territory-professional-line .visual-professional-line { marker-start: none; fill: none; stroke: #f2c36d; stroke-width: 1.8; stroke-dasharray: 6 7; opacity: .9; }
-      .territory-map #territory-professional-line.state-evaluated .visual-professional-line { stroke: #cfe9c8; stroke-width: 2; stroke-dasharray: 12 7; }
+      .territory-map #territory-professional-line .visual-professional-line { marker-start: none; fill: none; stroke: #f2c36d; stroke-width: .9; stroke-dasharray: 6 7; opacity: .28; transition: opacity .2s ease, stroke-width .2s ease; }
+      .territory-map #territory-professional-line:is(:hover, :focus-visible, .is-context-active) .visual-professional-line { stroke-width: 1.5; opacity: .9; }
+      .territory-map #territory-professional-line.state-evaluated .visual-professional-line { stroke: #cfe9c8; stroke-width: 1.2; stroke-dasharray: 12 7; opacity: .72; }
       .territory-map .map-survey-point { fill: #173a30; stroke: #fff6e2; stroke-width: 1.5; filter: url(#territory-overlay-shadow); }
 
       .territory-map .map-pin { filter: url(#territory-overlay-shadow); }
@@ -94,24 +101,24 @@ export function renderTerritoryMapDefs(): string {
       .territory-map .map-pin[data-applied="true"] .map-pin-number { fill: #fffaf0; }
       .territory-map .map-pin[data-applied="true"] .map-pin-check { display: block; }
       .territory-map .visual-hotspot:hover, .territory-map .visual-hotspot:focus-visible { filter: none; }
-      .territory-map .visual-hotspot:hover .map-pin-halo, .territory-map .visual-hotspot:focus-visible .map-pin-halo { opacity: 1; }
+      .territory-map .visual-hotspot:hover .map-pin-halo, .territory-map .visual-hotspot:focus-visible .map-pin-halo, .territory-map .visual-hotspot.is-context-active .map-pin-halo { opacity: 1; }
       .territory-map .visual-hotspot:focus-visible .map-pin-label-bg { stroke: #ffd68a; stroke-width: 3; }
 
       @keyframes territory-worker-cut {
-        from { transform: translate(-1px, 1px) rotate(-1.2deg); }
-        to { transform: translate(3px, -1px) rotate(1.4deg); }
+        from { transform: translate(-.6px, .5px) rotate(-.45deg); }
+        to { transform: translate(1px, -.5px) rotate(.55deg); }
       }
       @keyframes territory-herd-graze {
-        from { transform: translate(-3px, 1px) scale(.99); }
-        to { transform: translate(5px, -2px) scale(1.01); }
+        from { transform: translate(-1px, .5px) scale(.995); }
+        to { transform: translate(2px, -.8px) scale(1.005); }
       }
 
       @media (max-width: 700px) {
         .territory-map .map-pin-label-bg, .territory-map .map-pin-label, .territory-map .map-pin-tail { display: none; }
-        .territory-map .map-pin-disc { r: 29px; stroke-width: 4; }
-        .territory-map .map-pin-halo { r: 35px; }
-        .territory-map .map-pin-number { font-size: 24px; }
-        .territory-map .territory-place-label { font-size: 16px; letter-spacing: 1px; }
+        .territory-map .map-pin-disc { r: 42px; stroke-width: 3; }
+        .territory-map .map-pin-halo { r: 50px; }
+        .territory-map .map-pin-number { font-size: 34px; }
+        .territory-map .territory-place-label { font-size: 22px; letter-spacing: 1px; }
       }
     </style>
   </defs>`;

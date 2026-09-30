@@ -45,6 +45,16 @@ export function renderPrototypePage(): string {
       }
 
       .northstar-shell { min-height: 100vh; display: flex; flex-direction: column; }
+      body.gameplay-active .northstar-shell {
+        width: 100%;
+        height: 100dvh;
+        min-height: 0;
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr);
+        overflow: hidden;
+      }
+      body.gameplay-active .northstar-shell > main { min-height: 0; overflow: auto; }
+      body.gameplay-active .northstar-shell > main > #game { height: 100%; min-height: 0; }
       .topbar {
         position: sticky;
         top: 0;
@@ -427,16 +437,123 @@ export function renderPrototypePage(): string {
       body.gameplay-active .session-footer { display: none; }
 
       .scene.briefing {
+        position: relative;
+        isolation: isolate;
+        width: 100%;
+        height: 100%;
+        min-height: 0;
         display: grid;
-        align-items: end;
-        padding: clamp(28px, 5vw, 72px);
+        align-items: center;
+        padding: clamp(22px, 4vw, 56px);
         color: #fff;
         background:
-          linear-gradient(90deg, rgba(5, 17, 26, .94), rgba(5, 17, 26, .58) 58%, rgba(5,17,26,.18)),
+          linear-gradient(90deg, rgba(5, 17, 26, .9), rgba(5, 17, 26, .46) 58%, rgba(5,17,26,.2)),
           url('/images/operational-command-hero.png') center / cover;
       }
-      .scene.briefing .lead { max-width: 680px; color: #dce7ec; font-size: 1.08rem; }
+      .scene.briefing::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: linear-gradient(180deg, rgba(2,12,19,.08), rgba(2,12,19,.62));
+      }
+      .mission-briefing-shell {
+        width: min(1180px, 100%);
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(230px, 310px);
+        align-items: end;
+        gap: clamp(14px, 2vw, 24px);
+        margin-inline: auto;
+      }
+      .mission-briefing-panel,
+      .mission-briefing-note {
+        border: 1px solid rgba(255,250,235,.3);
+        background: linear-gradient(145deg, rgba(7,23,38,.94), rgba(12,39,43,.88));
+        box-shadow: 0 22px 55px rgba(2,12,19,.42), inset 0 1px rgba(255,255,255,.08);
+        backdrop-filter: blur(12px) saturate(1.08);
+      }
+      .mission-briefing-panel {
+        padding: clamp(18px, 2.6vw, 30px);
+        border-left: 5px solid #f0b44b;
+        border-radius: 12px;
+      }
+      .mission-briefing-kicker {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+        color: #f6c66c;
+        font-size: .66rem;
+        font-weight: 900;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+      }
+      .mission-briefing-kicker span:last-child {
+        padding: 3px 7px;
+        border: 1px solid rgba(122,183,139,.48);
+        border-radius: 999px;
+        color: #bfe1c7;
+        background: rgba(62,123,93,.24);
+      }
+      .scene.briefing .scene-heading-copy { max-width: 780px; }
+      .scene.briefing h1 { max-width: 760px; margin-bottom: 10px; font-size: clamp(2.15rem, 4.6vw, 4.05rem); }
+      .scene.briefing .lead { max-width: 760px; color: #dce7ec; font-size: clamp(.92rem, 1.3vw, 1.08rem); }
       .scene.briefing .eyebrow { color: #f0b44b; }
+      .mission-briefing-steps {
+        counter-reset: mission-step;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 7px;
+        margin: 18px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .mission-briefing-steps li {
+        counter-increment: mission-step;
+        min-width: 0;
+        display: grid;
+        grid-template-columns: 28px minmax(0, 1fr);
+        gap: 8px;
+        padding: 9px;
+        border: 1px solid rgba(255,255,255,.16);
+        border-radius: 7px;
+        background: rgba(255,255,255,.055);
+      }
+      .mission-briefing-steps li::before {
+        content: '0' counter(mission-step);
+        display: grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        border: 1px solid rgba(240,180,75,.56);
+        border-radius: 5px;
+        color: #f7c875;
+        font-size: .65rem;
+        font-weight: 900;
+      }
+      .mission-briefing-steps strong { display: block; color: #fff; font-size: .78rem; }
+      .mission-briefing-steps small { display: block; margin-top: 2px; color: #becdc7; font-size: .68rem; line-height: 1.3; }
+      .mission-briefing-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        margin-top: 16px;
+        padding-top: 14px;
+        border-top: 1px solid rgba(255,255,255,.16);
+      }
+      .mission-briefing-footer p { max-width: 520px; margin: 0; color: #dce7e2; font-size: .78rem; line-height: 1.4; }
+      .mission-briefing-footer p strong { color: #f5c66e; text-transform: uppercase; letter-spacing: .06em; }
+      .mission-briefing-footer .footer-actions { flex: 0 0 auto; margin: 0; }
+      .mission-briefing-footer .primary { min-width: 180px; }
+      .mission-briefing-note {
+        padding: 16px;
+        border-top: 4px solid #619a70;
+        border-radius: 10px;
+      }
+      .mission-briefing-note span { color: #98bca5; font-size: .62rem; font-weight: 900; letter-spacing: .11em; text-transform: uppercase; }
+      .mission-briefing-note strong { display: block; margin-top: 6px; color: #fff; font-size: 1rem; line-height: 1.25; }
+      .mission-briefing-note p { margin: 7px 0 0; color: #c8d7d1; font-size: .76rem; line-height: 1.4; }
 
       .visual-scene { display: grid; gap: 12px; margin: 18px 0; }
       .visual-scene[data-visual-template="territory"],
@@ -660,17 +777,21 @@ export function renderPrototypePage(): string {
         right: 16px;
         width: min(360px, calc(100% - 32px));
         max-height: calc(100% - 32px);
-        overflow: auto;
         padding: 14px;
-        border: 1px solid rgba(212, 222, 218, .96);
-        border-radius: 11px;
-        color: var(--ink);
-        background: rgba(255, 255, 255, .97);
-        box-shadow: 0 16px 38px rgba(5, 20, 29, .28);
+        overflow: hidden auto;
+        border: 1px solid rgba(245, 210, 145, .48);
+        border-left: 3px solid #d89034;
+        border-radius: 10px;
+        color: #f7faf7;
+        background: linear-gradient(145deg, rgba(7, 23, 38, .97), rgba(13, 43, 43, .95));
+        box-shadow: 0 18px 44px rgba(3, 13, 20, .42), inset 0 1px rgba(255,255,255,.08);
+        backdrop-filter: blur(12px) saturate(1.08);
         pointer-events: auto;
       }
       .visual-hover-card[hidden] { display: none; }
-      .visual-hover-card.selected { border-color: #79a867; box-shadow: 0 16px 38px rgba(5, 20, 29, .24), inset 0 0 0 1px #79a867; }
+      .visual-hover-card:not([hidden]) { animation: contextual-card-enter .24s cubic-bezier(.2,.8,.2,1) both; }
+      .visual-hover-card.is-closing { animation: contextual-card-exit .14s ease-in both; pointer-events: none; }
+      .visual-hover-card.selected { border-color: #80b88c; border-left-color: #80b88c; box-shadow: 0 18px 44px rgba(3,13,20,.38), inset 0 0 0 1px rgba(128,184,140,.45); }
       .visual-card-state {
         display: grid;
         grid-template-columns: 18px minmax(0, 1fr);
@@ -678,13 +799,24 @@ export function renderPrototypePage(): string {
         gap: 10px;
       }
       .visual-card-state > span:last-child { display: grid; gap: 2px; }
-      .visual-card-state small, .visual-dimension small, .visual-explanation { color: var(--muted); }
+      .visual-card-state strong { color: #fffdf4; }
+      .visual-card-state small { color: #f1c97f; }
+      .visual-dimension small { color: var(--muted); }
+      .visual-explanation { color: #cedbd6; }
       .visual-explanation { margin: 9px 0 0; font-size: .8rem; line-height: 1.4; }
-      .visual-card-action { display: grid; gap: 7px; margin-top: 12px; padding-top: 11px; border-top: 1px solid #d7dedb; }
+      .visual-card-action { display: grid; gap: 7px; margin-top: 12px; padding-top: 11px; border-top: 1px solid rgba(255,255,255,.16); }
       .visual-card-action > strong { font-size: .92rem; }
-      .visual-card-action p { margin: 0; color: var(--muted); font-size: .79rem; line-height: 1.35; }
-      .visual-card-action small { color: var(--red); }
+      .visual-card-action p { margin: 0; color: #c8d5d0; font-size: .79rem; line-height: 1.35; }
+      .visual-card-action small { color: #ffb7a8; }
       .visual-card-action button { justify-self: start; min-width: 120px; }
+      @keyframes contextual-card-enter {
+        from { opacity: 0; transform: translateY(9px) scale(.985); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+      @keyframes contextual-card-exit {
+        from { opacity: 1; transform: translateY(0) scale(1); }
+        to { opacity: 0; transform: translateY(5px) scale(.99); }
+      }
       .visual-status-symbol {
         width: 17px;
         height: 17px;
@@ -862,8 +994,9 @@ export function renderPrototypePage(): string {
         max-width: none;
         margin: 0;
         padding: 0;
+        overflow: hidden;
       }
-      body.gameplay-active:has(.inspection-scene) #game { height: calc(100dvh - 62px); min-height: 0; }
+      body.gameplay-active:has(.inspection-scene) #game { height: 100%; min-height: 0; }
       .inspection-scene {
         width: 100%;
         height: 100%;
@@ -898,8 +1031,8 @@ export function renderPrototypePage(): string {
         z-index: 0;
         background-position: center;
         background-size: cover;
-        filter: blur(8px) brightness(.58) saturate(.82);
-        transform: scale(1.03);
+        filter: brightness(.55) saturate(.78);
+        transform: scale(1.015);
       }
       .inspection-scene .visual-scene[data-visual-template="territory"] .visual-canvas {
         background: #102019;
@@ -1004,24 +1137,289 @@ export function renderPrototypePage(): string {
       .inspection-scene .visual-card-layer { position: absolute; inset: 0; z-index: 20; display: block; padding: 0; pointer-events: none; }
       .inspection-scene .visual-hover-card {
         position: absolute;
-        width: min(390px, calc(100% - 28px));
-        max-height: min(470px, calc(100% - 28px));
-        padding: 14px;
+        width: min(330px, calc(100% - 28px));
+        max-height: min(430px, calc(100% - 28px));
+        padding: 12px;
         overflow: auto;
-        border: 1px solid rgba(244, 225, 186, .72);
-        border-left: 4px solid #d18b31;
-        border-radius: 9px;
-        color: #17242d;
-        background: rgba(252, 250, 243, .97);
+        border: 1px solid rgba(244, 225, 186, .52);
+        border-left: 3px solid #d18b31;
+        border-radius: 10px;
+        color: #f7faf7;
+        background: linear-gradient(145deg, rgba(7,23,38,.97), rgba(13,43,43,.95));
         box-shadow: 0 18px 48px rgba(3, 13, 20, .42);
         backdrop-filter: blur(10px);
         pointer-events: auto;
       }
-      .inspection-scene .visual-hover-card .visual-card-state strong { color: #183c31; font-size: 1rem; }
-      .inspection-scene .visual-hover-card .visual-explanation { color: #4c5f66; font-size: .82rem; }
-      .inspection-scene .visual-hover-card .visual-card-action { margin-top: 10px; padding-top: 10px; }
-      .inspection-scene .visual-hover-card .action-button:not(:disabled) { color: #fff; border-color: #80420d; background: #9a4c08; }
+      .inspection-scene .visual-hover-card .visual-card-state strong { color: #fffdf4; font-size: .92rem; }
+      .inspection-scene .visual-hover-card .visual-card-state small { color: #f1c97f; }
+      .inspection-scene .visual-hover-card .visual-explanation { color: #cedbd6; font-size: .76rem; }
+      .inspection-scene .visual-hover-card .visual-card-action { margin-top: 8px; padding-top: 8px; }
+      .inspection-scene .visual-hover-card .visual-card-action > strong { color: #fff; }
+      .inspection-scene .visual-hover-card .action-button:not(:disabled) { color: #fff; border-color: #d08b3a; background: linear-gradient(180deg, #b86312, #914206); }
       .inspection-hidden-menu { display: none !important; }
+
+      /* Emergency decisions continue on the photograph instead of opening a side menu. */
+      body.gameplay-active:has(.crisis-decision-scene) {
+        height: 100dvh;
+        overflow: hidden;
+      }
+      body.gameplay-active:has(.crisis-decision-scene) main {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      body.gameplay-active:has(.crisis-decision-scene) #game { height: 100%; min-height: 0; }
+      .crisis-decision-scene {
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        margin: 0;
+        overflow: hidden;
+        border: 0;
+        border-radius: 0;
+        background: #102019;
+        box-shadow: none;
+      }
+      .crisis-decision-scene .scene-content,
+      .crisis-decision-scene .decision-stage,
+      .crisis-decision-scene .visual-scene,
+      .crisis-decision-scene .visual-canvas { width: 100%; height: 100%; min-height: 0; }
+      .crisis-decision-scene .scene-content { padding: 0; }
+      .decision-stage { position: relative; overflow: clip; background: #102019; }
+      .decision-stage.has-command-hero {
+        background:
+          linear-gradient(90deg, rgba(5,17,26,.86), rgba(5,17,26,.34) 58%, rgba(5,17,26,.5)),
+          url('/images/operational-command-hero.png') center / cover;
+      }
+      .decision-stage.has-command-hero > .visual-scene { display: none; }
+      .crisis-decision-scene .visual-scene { display: block; margin: 0; }
+      .crisis-decision-scene .visual-canvas {
+        position: relative;
+        display: block;
+        overflow: clip;
+        border: 0;
+        border-radius: 0;
+        background: #102019;
+      }
+      .crisis-decision-scene .visual-canvas::before {
+        content: '';
+        position: absolute;
+        inset: -12px;
+        z-index: 0;
+        background: url('/images/crisis-ravine-aerial-v1.jpg') center / cover;
+        filter: brightness(.52) saturate(.76);
+        transform: scale(1.015);
+      }
+      .crisis-decision-scene .crisis-svg {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        max-height: none;
+      }
+      .decision-map-hud,
+      .decision-map-status,
+      .decision-preparation-review,
+      .decision-action-menu,
+      .decision-outcome,
+      .decision-advance {
+        position: absolute;
+        z-index: 15;
+        color: #fffdf4;
+        border: 1px solid rgba(255,250,235,.28);
+        background: linear-gradient(145deg, rgba(7,23,38,.94), rgba(12,39,43,.9));
+        box-shadow: 0 16px 38px rgba(3,13,20,.42), inset 0 1px rgba(255,255,255,.07);
+        backdrop-filter: blur(12px) saturate(1.08);
+      }
+      .decision-map-hud {
+        top: clamp(12px, 2vw, 24px);
+        left: clamp(12px, 2vw, 28px);
+        width: min(670px, calc(100% - 390px));
+        padding: 12px 15px;
+        border-left: 4px solid #f0b44b;
+        border-radius: 8px;
+      }
+      .decision-map-hud .eyebrow { margin-bottom: 2px; color: #f5c66e; font-size: .66rem; }
+      .decision-map-hud h2 { margin: 0 0 3px; color: #fff; font-size: clamp(1.2rem, 2vw, 1.8rem); line-height: 1.05; }
+      .decision-map-hud p { margin: 0; color: #edf4f0; font-size: .82rem; line-height: 1.32; }
+      .decision-context { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; margin-top: 7px; padding-top: 7px; border-top: 1px solid rgba(255,255,255,.16); }
+      .decision-context span { color: #f5c66e; font-size: .58rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+      .decision-context small { color: #bfd0c8; font-size: .7rem; line-height: 1.3; }
+      .decision-map-status {
+        top: clamp(12px, 2vw, 24px);
+        right: clamp(12px, 2vw, 28px);
+        min-width: 150px;
+        padding: 10px 13px;
+        border-radius: 8px;
+        text-align: right;
+      }
+      .decision-map-status small { display: block; color: #bdcbc5; font-size: .62rem; font-weight: 850; letter-spacing: .06em; text-transform: uppercase; }
+      .decision-map-status strong { display: block; margin-top: 2px; color: #fff; font-size: 1.06rem; }
+      .decision-map-status.prepared { border-bottom: 4px solid #6eaa55; }
+      .decision-map-status.vulnerable { border-bottom: 4px solid #d46a4d; }
+      .decision-preparation-review {
+        top: 86px;
+        right: clamp(12px, 2vw, 28px);
+        width: min(480px, calc(100% - 28px));
+        max-height: min(58%, 490px);
+        margin: 0;
+        overflow: auto;
+        border-radius: 8px;
+      }
+      .decision-preparation-review[hidden] { display: none; }
+      .decision-preparation-review summary { padding: 10px 13px; color: #fff; font-size: .78rem; font-weight: 800; }
+      .decision-preparation-review[open] summary { border-bottom: 1px solid rgba(255,255,255,.16); }
+      .decision-preparation-review .visual-dimension-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; padding: 8px; }
+      .decision-preparation-review .visual-dimension {
+        min-height: 0;
+        gap: 6px;
+        padding: 8px;
+        border-color: rgba(255,255,255,.18);
+        color: #dce9e3;
+        background: rgba(255,255,255,.08);
+      }
+      .decision-preparation-review .visual-dimension > div { color: #fff; }
+      .decision-preparation-review .visual-dimension strong { font-size: .7rem; }
+      .decision-preparation-review .visual-dimension-state { font-size: .8rem; }
+      .decision-preparation-review .visual-dimension small { display: none; }
+      .decision-action-menu {
+        left: 50%;
+        bottom: clamp(12px, 2vw, 24px);
+        width: min(940px, calc(100% - 56px));
+        padding: 8px 9px 9px;
+        transform: translateX(-50%);
+        border-radius: 9px;
+        animation: decision-menu-enter .28s cubic-bezier(.2,.8,.2,1) both;
+      }
+      .decision-action-menu:has(.actions[data-action-count="1"]) { width: min(420px, calc(100% - 56px)); }
+      .decision-action-menu:has(.actions[data-action-count="2"]) { width: min(580px, calc(100% - 56px)); }
+      .decision-action-menu:has(.actions[data-action-count="3"]) { width: min(740px, calc(100% - 56px)); }
+      .decision-action-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 6px; padding: 0 2px; }
+      .decision-action-heading strong { color: #f5c66e; font-size: .75rem; letter-spacing: .08em; }
+      .decision-action-heading span { color: #c5d2cc; font-size: .68rem; }
+      .decision-action-menu .actions { counter-reset: decision-choice; grid-template-columns: repeat(auto-fit, minmax(180px, 220px)); justify-content: center; gap: 7px; margin: 0; }
+      .decision-action-menu .actions[data-action-count="1"] { grid-template-columns: minmax(280px, 360px); }
+      .decision-action-menu .action-card {
+        position: relative;
+        counter-increment: decision-choice;
+        min-height: 0;
+        gap: 4px;
+        padding: 8px 8px 8px 41px;
+        overflow: hidden;
+        border-color: rgba(255,255,255,.2);
+        border-radius: 6px;
+        color: #fff;
+        background: linear-gradient(150deg, rgba(255,255,255,.105), rgba(255,255,255,.055));
+        transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+        animation: decision-card-enter .3s cubic-bezier(.2,.8,.2,1) both;
+      }
+      .decision-action-menu .action-card::before {
+        content: '';
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 3px;
+        background: #778d87;
+      }
+      .decision-action-menu .action-card::after {
+        content: '0' counter(decision-choice);
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        width: 25px;
+        height: 25px;
+        display: grid;
+        place-items: center;
+        border: 1px solid rgba(245,198,110,.52);
+        border-radius: 5px;
+        color: #f5c66e;
+        background: rgba(7,23,38,.54);
+        font-size: .62rem;
+        font-weight: 900;
+        letter-spacing: .04em;
+      }
+      .decision-action-menu .action-card:has(button:not(:disabled))::before { background: #d88a32; }
+      .decision-action-menu .action-card:has(button:not(:disabled)):hover,
+      .decision-action-menu .action-card:has(button:not(:disabled)):focus-within {
+        transform: translateY(-2px);
+        border-color: rgba(245,198,110,.62);
+        background: linear-gradient(150deg, rgba(244,190,96,.16), rgba(255,255,255,.07));
+        box-shadow: 0 10px 22px rgba(2,10,16,.24);
+      }
+      .decision-action-menu .action-card:nth-child(2) { animation-delay: .035s; }
+      .decision-action-menu .action-card:nth-child(3) { animation-delay: .07s; }
+      .decision-action-menu .action-card:nth-child(4) { animation-delay: .105s; }
+      .decision-action-menu .action-card h3 { margin: 0; color: #fff; font-size: .8rem; line-height: 1.17; }
+      .decision-action-menu .action-card p { margin: 0; color: #d6e0dc; font-size: .67rem; line-height: 1.26; }
+      .decision-action-menu .action-card small { color: #ffd2c7; font-size: .63rem; line-height: 1.22; }
+      .decision-action-menu .action-card button { width: 100%; min-height: 36px; margin-top: 3px; padding-block: 6px; color: #17242d; background: #f7f4e9; font-size: .72rem; letter-spacing: .035em; text-transform: uppercase; }
+      .decision-action-menu .action-card button:not(:disabled) { color: #fff; border-color: #d38a3a; background: linear-gradient(180deg, #b96211, #934406); box-shadow: 0 5px 13px rgba(0,0,0,.18); }
+      .decision-outcome {
+        left: clamp(12px, 2vw, 28px);
+        bottom: clamp(12px, 2vw, 24px);
+        width: min(760px, calc(100% - 250px));
+        padding: 12px 14px;
+        border-left: 5px solid #70ad80;
+        border-radius: 9px;
+        animation: decision-outcome-enter .3s cubic-bezier(.2,.8,.2,1) both;
+      }
+      .decision-outcome .decision-outcome-kicker { display: block; color: #8fc89c; font-size: .62rem; font-weight: 850; letter-spacing: .09em; text-transform: uppercase; }
+      .decision-outcome strong { display: block; margin-top: 2px; color: #f5c66e; font-size: .78rem; }
+      .decision-outcome p { margin: 3px 0 0; color: #f4f7f5; font-size: .86rem; line-height: 1.35; }
+      .decision-advance { right: clamp(12px, 2vw, 28px); bottom: clamp(12px, 2vw, 24px); padding: 7px; border-radius: 9px; }
+      .decision-advance .footer-actions { margin: 0; }
+      .decision-advance .primary { min-height: 46px; }
+
+      @keyframes decision-menu-enter {
+        from { opacity: 0; translate: 0 14px; }
+        to { opacity: 1; translate: 0 0; }
+      }
+      @keyframes decision-card-enter {
+        from { opacity: 0; transform: translateY(7px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes decision-outcome-enter {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .result-screen { width: 100%; max-width: 1740px; min-height: 0; margin-inline: auto; overflow: visible; }
+      .result-screen .scene-content { display: grid; gap: 10px; padding: clamp(12px, 1.8vw, 24px); }
+      .result-hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 18px;
+        padding: 12px 15px;
+        border: 1px solid #c5cfca;
+        border-left: 6px solid #4f9139;
+        border-radius: 11px;
+        background: linear-gradient(115deg, #eef3ef, #fafbf9 65%, #edf1ee);
+      }
+      .result-overwhelmed .result-hero { border-left-color: #b73228; }
+      .result-hero h2 { margin: 0 0 3px; font-size: clamp(1.45rem, 2.2vw, 2rem); }
+      .result-hero p:not(.eyebrow) { margin: 0; color: #4c5d66; font-size: .84rem; line-height: 1.35; }
+      .result-screen .result-layout { grid-template-columns: minmax(0, .62fr) minmax(0, 1.38fr); margin: 0; }
+      .result-conditions, .result-causes { min-width: 0; }
+      .result-conditions { padding: 10px; border: 1px solid #c8d1cd; border-radius: 10px; background: #f2f6f3; }
+      .result-conditions .visual-scene { margin: 0; }
+      .result-conditions .visual-dimension-summary { grid-template-columns: 1fr; gap: 5px; }
+      .result-conditions .visual-dimension { min-height: 0; padding: 7px 8px; }
+      .result-causes .relations { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+      .result-screen .relation { padding: 9px 10px; }
+      .result-screen .relation.decisive { grid-column: 1 / -1; }
+      .final-prevention-review { margin: 0; padding: 0; border: 1px solid #b8c6c0; border-radius: 9px; background: #f7faf8; }
+      .final-prevention-review summary { padding: 10px 13px; font-weight: 800; }
+      .final-prevention-review-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 4px 13px 12px; }
+      .final-prevention-review-grid section { padding: 10px; border-radius: 8px; background: #fff; }
+      .final-prevention-review-grid strong { font-size: .82rem; }
+      .final-prevention-review-grid ul { margin: 7px 0 0; padding-left: 20px; }
+      .final-prevention-review-grid li { margin: 2px 0; font-size: .78rem; }
+      .final-prevention-review-grid > p { grid-column: 1 / -1; margin: 0; color: #6e4b20; font-size: .78rem; }
+      .result-screen > .scene-content > .footer-actions { margin: 0; }
 
       @media (min-width: 1051px) {
         body.gameplay-active { height: 100vh; overflow-y: hidden; }
@@ -1076,6 +1474,8 @@ export function renderPrototypePage(): string {
         .topbar-actions { grid-column: 2; grid-row: 1; }
         .entry { grid-template-columns: 1fr; }
         .entry-visual { min-height: 280px; }
+        .mission-briefing-shell { grid-template-columns: 1fr; }
+        .mission-briefing-note { max-width: 620px; }
         .visual-scene[data-visual-template="territory"],
         .visual-scene[data-visual-template="housing"],
         .visual-scene[data-visual-template="crisis"],
@@ -1111,7 +1511,12 @@ export function renderPrototypePage(): string {
         }
         .scene-side-backdrop[hidden] { display: none; }
         body.scene-side-locked { overflow: hidden; }
-        body.gameplay-active:has(.inspection-scene) #game { height: calc(100dvh - 112px); }
+        body.gameplay-active:has(.inspection-scene) #game { height: 100%; }
+        body.gameplay-active:has(.crisis-decision-scene) #game { height: 100%; }
+        .decision-map-hud { width: min(610px, calc(100% - 220px)); }
+        .decision-action-menu { width: calc(100% - 24px); }
+        .result-screen .result-layout { grid-template-columns: 1fr; }
+        .result-conditions .visual-dimension-summary { grid-template-columns: repeat(5, minmax(0, 1fr)); }
       }
 
       @media (max-width: 700px) {
@@ -1147,6 +1552,21 @@ export function renderPrototypePage(): string {
         .entry-visual { min-height: 220px; padding: 16px; }
         .scene { min-height: auto; border-radius: 10px; }
         .scene-content { padding: 12px; }
+        .scene.briefing { height: auto; min-height: 100%; align-items: start; padding: 10px; border-radius: 0; }
+        .mission-briefing-shell { gap: 8px; }
+        .mission-briefing-panel { padding: 14px; border-left-width: 4px; border-radius: 9px; }
+        .mission-briefing-kicker { margin-bottom: 8px; }
+        .scene.briefing h1 { margin-bottom: 7px; font-size: clamp(1.9rem, 9vw, 2.55rem); line-height: 1; }
+        .scene.briefing .lead { font-size: .82rem; line-height: 1.38; }
+        .mission-briefing-steps { grid-template-columns: 1fr; gap: 5px; margin-top: 12px; }
+        .mission-briefing-steps li { min-height: 45px; align-items: center; padding: 7px; }
+        .mission-briefing-steps small { font-size: .65rem; }
+        .mission-briefing-footer { align-items: stretch; flex-direction: column; gap: 9px; margin-top: 11px; padding-top: 10px; }
+        .mission-briefing-footer .footer-actions { width: 100%; }
+        .mission-briefing-footer .primary { width: 100%; min-height: 44px; }
+        .mission-briefing-note { padding: 11px 13px; }
+        .mission-briefing-note strong { margin-top: 3px; font-size: .86rem; }
+        .mission-briefing-note p { margin-top: 4px; font-size: .69rem; }
         .scene-heading { grid-template-columns: 1fr; gap: 7px; margin-bottom: 8px; }
         .scene-heading h2 { font-size: clamp(1.45rem, 7vw, 1.9rem); }
         .scene-heading .lead { font-size: .88rem; line-height: 1.35; }
@@ -1165,7 +1585,81 @@ export function renderPrototypePage(): string {
         .decision-feedback { grid-template-columns: 1fr; }
         .summary-dashboard { grid-template-columns: 1fr; }
         body.gameplay-active:has(.inspection-scene) main { padding: 0; }
-        body.gameplay-active:has(.inspection-scene) #game { height: calc(100dvh - 115px); min-height: 560px; }
+        body.gameplay-active:has(.inspection-scene) #game { height: 100%; min-height: 0; }
+        body.gameplay-active:has(.crisis-decision-scene) main { padding: 0; }
+        body.gameplay-active:has(.crisis-decision-scene) #game { height: 100%; min-height: 0; }
+        .crisis-decision-scene { border-radius: 0; }
+        .decision-map-hud {
+          top: 8px;
+          left: 8px;
+          width: calc(100% - 16px);
+          padding: 8px 10px;
+        }
+        .decision-map-hud h2 { font-size: 1.08rem; }
+        .decision-map-hud p { font-size: .72rem; }
+        .decision-context { grid-template-columns: 1fr; gap: 2px; margin-top: 5px; padding-top: 5px; }
+        .decision-context small { font-size: .63rem; line-height: 1.25; }
+        .decision-map-status { top: 142px; right: 8px; min-width: 104px; padding: 7px 8px; }
+        .decision-map-status strong { font-size: .88rem; }
+        .decision-preparation-review { top: 142px; left: 8px; right: auto; width: min(205px, calc(100% - 128px)); max-height: 42%; }
+        .decision-preparation-review[open] { width: calc(100% - 16px); max-height: 27%; }
+        .decision-preparation-review summary { padding: 8px 9px; font-size: .68rem; }
+        .decision-preparation-review .visual-dimension-summary { grid-template-columns: 1fr; }
+        .decision-action-menu,
+        .has-command-hero .decision-action-menu {
+          left: 8px;
+          right: 8px;
+          bottom: 8px;
+          width: auto;
+          max-height: none;
+          overflow: visible;
+          padding: 8px;
+          transform: none;
+        }
+        .decision-action-menu:has(.actions[data-action-count="1"]) {
+          left: 50%;
+          right: auto;
+          width: min(326px, calc(100% - 16px));
+          transform: translateX(-50%);
+        }
+        .decision-action-heading { position: sticky; top: -8px; z-index: 2; padding: 5px 0 7px; background: rgba(7,23,38,.98); }
+        .decision-action-menu .actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .decision-action-menu .action-card { display: grid; grid-template-columns: 1fr; gap: 3px; padding: 7px 7px 7px 34px; }
+        .decision-action-menu .action-card::after { top: 7px; left: 7px; width: 21px; height: 21px; font-size: .56rem; }
+        .decision-action-menu .action-card:only-child { grid-column: 1 / -1; }
+        .decision-action-menu .action-card:last-child:nth-child(odd):not(:only-child) {
+          grid-column: 1 / -1;
+          width: calc((100% - 7px) / 2);
+          justify-self: center;
+        }
+        .decision-action-menu .action-card h3,
+        .decision-action-menu .action-card p,
+        .decision-action-menu .action-card small { grid-column: 1; }
+        .decision-action-menu .action-card p {
+          display: -webkit-box;
+          overflow: hidden;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 4;
+        }
+        .decision-action-menu .action-card small {
+          display: -webkit-box;
+          overflow: hidden;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 3;
+        }
+        .decision-action-menu .action-card button { grid-column: 1; width: 100%; min-width: 0; min-height: 44px; margin: 3px 0 0; }
+        .decision-outcome { left: 8px; right: 8px; bottom: 70px; width: auto; padding: 10px 11px; }
+        .decision-outcome p { font-size: .78rem; }
+        .decision-advance { right: 8px; bottom: 8px; left: 8px; }
+        .decision-advance .primary { width: 100%; }
+        .result-hero { grid-template-columns: 1fr; gap: 8px; }
+        .result-hero .scene-state-badge { width: 100%; }
+        .result-screen .result-layout { grid-template-columns: 1fr; }
+        .result-conditions .visual-dimension-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .result-causes .relations { grid-template-columns: 1fr; }
+        .result-screen .relation.decisive { grid-column: auto; }
+        .final-prevention-review-grid { grid-template-columns: 1fr; }
+        .final-prevention-review-grid > p { grid-column: 1; }
         .inspection-scene { border-radius: 0; }
         .inspection-map-hud {
           top: 8px;
@@ -1382,21 +1876,21 @@ export function renderPrototypePage(): string {
           card.classList.toggle('selected', Boolean(action.selected));
           if (button) {
             button.disabled = !action.available;
-            button.textContent = action.selected ? 'Mejora hecha' : 'Hacer esta mejora';
+            button.textContent = action.selected ? 'Mejora aplicada' : 'Aplicar mejora';
           }
         });
       }
 
       function actionCards(scene) {
-        return '<div class="actions">' + scene.actions.map(function (action) {
+        return '<div class="actions" data-action-count="' + escapeHtml(String(scene.actions.length)) + '">' + scene.actions.map(function (action) {
           const selected = action.selected ? ' selected' : '';
           const disabled = !action.available ? ' disabled' : '';
-          const label = action.selected ? 'Mejora hecha' : 'Elegir';
+          const label = action.selected ? 'Aplicada' : 'Elegir';
           return '<article class="action-card' + selected + '" data-action-card-id="' + escapeHtml(action.id) + '">' +
             '<h3>' + escapeHtml(action.label) + '</h3>' +
             '<p>' + escapeHtml(action.description) + '</p>' +
             (action.unavailableReason ? '<small>' + escapeHtml(action.unavailableReason) + '</small>' : '') +
-            '<button class="secondary action-button" data-action-id="' + escapeHtml(action.id) + '" type="button"' + disabled + '>' + label + '</button>' +
+            '<button class="secondary action-button" data-action-id="' + escapeHtml(action.id) + '" type="button" aria-label="' + escapeHtml(label + ': ' + action.label) + '"' + disabled + '>' + label + '</button>' +
           '</article>';
         }).join('') + '</div>';
       }
@@ -1463,7 +1957,12 @@ export function renderPrototypePage(): string {
       }
 
       function renderBriefing(scene) {
-        return '<section class="scene briefing"><div class="scene-heading-copy"><p class="eyebrow">Tu misión</p><h1>' + escapeHtml(scene.title) + '</h1><p class="lead">' + escapeHtml(scene.mission) + '</p>' + advanceButton(scene) + '</div></section>';
+        return '<section class="scene briefing" aria-labelledby="mission-briefing-title"><div class="mission-briefing-shell"><div class="mission-briefing-panel">' +
+          '<div class="mission-briefing-kicker"><span>Misión 01</span><span>Prevención</span></div>' +
+          '<div class="scene-heading-copy"><h1 id="mission-briefing-title">' + escapeHtml(scene.title) + '</h1><p class="lead">' + escapeHtml(scene.mission) + '</p></div>' +
+          '<ol class="mission-briefing-steps" aria-label="Fases de la misión"><li><span><strong>Observa</strong><small>Localiza las condiciones de riesgo.</small></span></li><li><span><strong>Decide</strong><small>Distribuye cinco actuaciones en dos zonas.</small></span></li><li><span><strong>Comprueba</strong><small>Responde a la emergencia y revisa el resultado.</small></span></li></ol>' +
+          '<div class="mission-briefing-footer"><p><strong>Objetivo:</strong> mejorar las condiciones sin presentar el territorio como completamente seguro.</p>' + advanceButton(scene) + '</div></div>' +
+          '<aside class="mission-briefing-note" aria-label="Cómo funciona la simulación"><span>Protocolo de juego</span><strong>Observa · decide · comprueba</strong><p>Cada actuación deja un cambio visible y modifica las opciones de los equipos durante el incendio.</p></aside></div></section>';
       }
 
       function renderInspection(scene) {
@@ -1489,14 +1988,17 @@ export function renderPrototypePage(): string {
 
       function renderDecision(scene) {
         const branch = currentView.session.branch;
-        const badge = branch ? '<div class="scene-state-badge ' + escapeHtml(branch) + '"><small>Situación</small><strong>' + (branch === 'prepared' ? 'Más opciones' : 'Pocas opciones') + '</strong></div>' : '';
-        const intro = badge + '<div class="objective">' + escapeHtml(scene.context) + '</div>';
-        const main = visualMarkup() + (scene.feedback
-          ? '<div class="feedback decision-feedback" role="status" aria-live="polite"><strong>Esto ocurre</strong><p>' + escapeHtml(scene.feedback) + '</p></div>'
-          : '');
-        const response = actionCards(scene) + advanceButton(scene);
-        return '<section class="scene scene-with-side-panel"><div class="scene-content">' + heading(scene, 'Decide qué hacer' + (scene.difficulty ? ' · ' + scene.difficulty : ''), '') +
-          sceneWorkspace(main, 'Elige qué hacer', intro, response, 'Ver opciones de respuesta') + '</div></section>';
+        const hasCrisisMap = currentView.visual && currentView.visual.templateId === 'crisis';
+        const selectedAction = scene.actions.find(function (action) { return action.selected; });
+        const badge = branch ? '<div class="decision-map-status ' + escapeHtml(branch) + '" data-decision-overlay><small>Margen de actuación</small><strong>' + (branch === 'prepared' ? 'Amplio' : 'Limitado') + '</strong></div>' : '';
+        const hud = '<header class="decision-map-hud" data-decision-overlay><p class="eyebrow">EMERGENCIA' + (scene.difficulty ? ' · NIVEL ' + escapeHtml(String(scene.difficulty).toLocaleUpperCase('es')) : '') + '</p><h2 id="decision-map-heading">' + escapeHtml(scene.title) + '</h2><p>' + escapeHtml(scene.body || '') + '</p><div class="decision-context"><span>Condición operativa</span><small>' + escapeHtml(scene.context) + '</small></div></header>';
+        const preparation = '<details class="decision-preparation-review" data-decision-overlay><summary>Ver condiciones de partida</summary><div data-crisis-condition-slot></div></details>';
+        const choice = scene.feedback ? '' : '<section class="decision-action-menu" data-decision-overlay aria-label="Elige qué hacen los equipos"><div class="decision-action-heading"><strong>DECISIÓN OPERATIVA</strong><span>Selecciona la respuesta del equipo.</span></div>' + actionCards(scene) + '</section>';
+        const outcome = scene.feedback
+          ? '<section class="decision-outcome" data-decision-overlay role="status" aria-live="polite"><span class="decision-outcome-kicker">Resolución</span><strong>' + (selectedAction ? escapeHtml(selectedAction.label) : 'Respuesta aplicada') + '</strong><p>' + escapeHtml(scene.feedback) + '</p></section>'
+          : '';
+        const next = scene.canAdvance ? '<div class="decision-advance" data-decision-overlay>' + advanceButton(scene) + '</div>' : '';
+        return '<section class="scene crisis-decision-scene" aria-labelledby="decision-map-heading"><div class="scene-content"><div class="decision-stage ' + (hasCrisisMap ? 'has-crisis-map' : 'has-command-hero') + '">' + visualMarkup() + hud + badge + preparation + choice + outcome + next + '</div></div></section>';
       }
 
       function renderRouter(scene) {
@@ -1505,19 +2007,19 @@ export function renderPrototypePage(): string {
       }
 
       function renderResult(scene) {
-        const badge = '<div class="scene-state-badge ' + (scene.variant === 'contained' ? 'prepared' : 'vulnerable') + '"><small>Resultado</small><strong>' + (scene.variant === 'contained' ? 'Controlado' : 'Demasiado fuerte') + '</strong></div>';
-        const relations = '<div><p class="eyebrow">Por qué ocurrió</p><div class="relations" aria-label="Cómo influyeron tus decisiones">' + scene.relations.map(function (relation) {
+        const badge = '<div class="scene-state-badge ' + (scene.variant === 'contained' ? 'prepared' : 'vulnerable') + '"><small>Estado final</small><strong>' + (scene.variant === 'contained' ? 'Contenido' : 'Fuera de capacidad') + '</strong></div>';
+        const relations = '<section class="result-causes"><p class="eyebrow">Por qué ocurrió</p><div class="relations" aria-label="Cómo influyeron tus decisiones">' + scene.relations.map(function (relation) {
           return '<article class="relation' + (relation.branchDecisive ? ' decisive' : '') + '"><h3>' + escapeHtml(relation.title) + '</h3>' +
             '<div class="cause-list">' + escapeHtml(relation.causeType) + ' → ' + relation.causeActionLabels.map(escapeHtml).join(' · ') + '</div>' +
             '<p>' + escapeHtml(relation.effect) + '</p></article>';
-        }).join('') + '</div></div>';
-        const main = '<div class="result-layout"><div><p class="eyebrow">Así empezó la emergencia</p>' + visualMarkup() + '</div>' + relations + '</div>';
-        const intro = badge + '<div class="feedback">' + escapeHtml(scene.closing) + '</div>';
-        const review = '<details class="final-prevention-review"><summary>Revisar toda la preparación</summary><strong>Mejoras que elegiste</strong><ul>' + currentView.session.preventionReview.map(function (entry) { return '<li>' + escapeHtml(entry.label) + '</li>'; }).join('') + '</ul>' +
-          (currentView.session.pendingPreventionReview.length === 0 ? '' : '<strong>Mejoras que quedaron pendientes</strong><ul>' + currentView.session.pendingPreventionReview.map(function (entry) { return '<li>' + escapeHtml(entry.label) + '</li>'; }).join('') + '</ul>') +
-          '<p>Ninguna mejora elimina todo el riesgo.</p></details>' + advanceButton(scene);
-        return '<section class="scene scene-with-side-panel result-' + escapeHtml(scene.variant) + '"><div class="scene-content">' + heading(scene, 'Resultado de tus decisiones', '') +
-          sceneWorkspace(main, 'Tu resultado', intro, review, 'Ver resultado y opciones') + '</div></section>';
+        }).join('') + '</div></section>';
+        const conditions = '<section class="result-conditions"><p class="eyebrow">Así empezó la emergencia</p>' + visualMarkup() + '</section>';
+        const main = '<div class="result-layout">' + conditions + relations + '</div>';
+        const hero = '<header class="result-hero"><div><p class="eyebrow">INFORME DE OPERACIÓN</p><h2>' + escapeHtml(scene.title) + '</h2><p>' + escapeHtml(scene.closing) + '</p></div>' + badge + '</header>';
+        const review = '<details class="final-prevention-review"><summary>Registro de preparación</summary><div class="final-prevention-review-grid"><section><strong>Medidas aplicadas</strong><ul>' + currentView.session.preventionReview.map(function (entry) { return '<li>' + escapeHtml(entry.label) + '</li>'; }).join('') + '</ul></section>' +
+          (currentView.session.pendingPreventionReview.length === 0 ? '' : '<section><strong>Condiciones pendientes</strong><ul>' + currentView.session.pendingPreventionReview.map(function (entry) { return '<li>' + escapeHtml(entry.label) + '</li>'; }).join('') + '</ul></section>') +
+          '<p>Las medidas reducen el riesgo, pero no lo eliminan.</p></div></details>';
+        return '<section class="scene result-screen result-' + escapeHtml(scene.variant) + '"><div class="scene-content">' + hero + main + review + advanceButton(scene) + '</div></section>';
       }
 
       const RENDERERS = {
@@ -1553,6 +2055,7 @@ export function renderPrototypePage(): string {
       };
 
       let visualCardCloseTimer = null;
+      const visualCardAnimationTimers = new WeakMap();
       let sidePanelReturnFocus = null;
       let sidePanelCleanup = null;
 
@@ -1566,6 +2069,22 @@ export function renderPrototypePage(): string {
         const canvas = visualScene.querySelector('.visual-canvas');
         if (canvas) game.querySelectorAll('[data-inspection-overlay]').forEach(function (overlay) { canvas.appendChild(overlay); });
         fitInspectionMap();
+      }
+
+      function arrangeDecisionStage() {
+        const stage = game.querySelector('.decision-stage');
+        if (!stage) return;
+        const preparation = stage.querySelector('.decision-preparation-review');
+        const conditionSlot = stage.querySelector('[data-crisis-condition-slot]');
+        const dimensionSummary = stage.querySelector('.visual-dimension-summary');
+        if (preparation && conditionSlot && dimensionSummary) conditionSlot.appendChild(dimensionSummary);
+        else if (preparation) preparation.hidden = true;
+        const canvas = stage.querySelector('.visual-canvas');
+        if (canvas) {
+          stage.querySelectorAll('[data-decision-overlay]').forEach(function (overlay) { canvas.appendChild(overlay); });
+          const map = canvas.querySelector('.crisis-svg');
+          if (map) map.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+        }
       }
 
       function fitInspectionMap() {
@@ -1671,9 +2190,31 @@ export function renderPrototypePage(): string {
         };
       }
 
-      function closeVisualCards() {
-        document.querySelectorAll('.visual-hover-card').forEach(function (card) { card.hidden = true; });
-        document.querySelectorAll('[data-visual-element-id]').forEach(function (element) { element.setAttribute('aria-expanded', 'false'); });
+      function closeVisualCards(exceptCard) {
+        const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        document.querySelectorAll('.visual-hover-card').forEach(function (card) {
+          if (card === exceptCard) return;
+          const animationTimer = visualCardAnimationTimers.get(card);
+          if (animationTimer) window.clearTimeout(animationTimer);
+          visualCardAnimationTimers.delete(card);
+          if (card.hidden || reducedMotion) {
+            card.hidden = true;
+            card.classList.remove('is-closing');
+            return;
+          }
+          card.classList.add('is-closing');
+          const timer = window.setTimeout(function () {
+            card.hidden = true;
+            card.classList.remove('is-closing');
+            visualCardAnimationTimers.delete(card);
+          }, 150);
+          visualCardAnimationTimers.set(card, timer);
+        });
+        document.querySelectorAll('[data-visual-element-id]').forEach(function (element) {
+          const staysOpen = Boolean(exceptCard && element.getAttribute('aria-controls') === exceptCard.id);
+          element.setAttribute('aria-expanded', staysOpen ? 'true' : 'false');
+          element.classList.toggle('is-context-active', staysOpen);
+        });
       }
 
       function cancelVisualCardClose() {
@@ -1714,15 +2255,50 @@ export function renderPrototypePage(): string {
           const elementRect = anchor.getBoundingClientRect();
           const cardRect = card.getBoundingClientRect();
           const gap = 14;
-          let left = elementRect.right - canvasRect.left + gap;
-          if (left + cardRect.width > canvasRect.width - gap) left = elementRect.left - canvasRect.left - cardRect.width - gap;
-          left = Math.max(gap, Math.min(left, canvasRect.width - cardRect.width - gap));
-          let top = elementRect.top - canvasRect.top + (elementRect.height - cardRect.height) / 2;
-          top = Math.max(gap, Math.min(top, canvasRect.height - cardRect.height - gap));
+          const clampLeft = function (value) { return Math.max(gap, Math.min(value, canvasRect.width - cardRect.width - gap)); };
+          const clampTop = function (value) { return Math.max(gap, Math.min(value, canvasRect.height - cardRect.height - gap)); };
+          const anchorLeft = elementRect.left - canvasRect.left;
+          const anchorTop = elementRect.top - canvasRect.top;
+          const anchorCenterX = anchorLeft + elementRect.width / 2;
+          const anchorCenterY = anchorTop + elementRect.height / 2;
+          const candidates = [
+            { left: elementRect.right - canvasRect.left + gap, top: anchorCenterY - cardRect.height / 2 },
+            { left: anchorLeft - cardRect.width - gap, top: anchorCenterY - cardRect.height / 2 },
+            { left: anchorCenterX - cardRect.width / 2, top: elementRect.bottom - canvasRect.top + gap },
+            { left: anchorCenterX - cardRect.width / 2, top: anchorTop - cardRect.height - gap }
+          ].map(function (candidate, index) {
+            return { left: clampLeft(candidate.left), top: clampTop(candidate.top), index: index };
+          });
+          const obstacles = Array.from(canvas.querySelectorAll('.map-pin, [data-inspection-overlay]')).filter(function (obstacle) {
+            return !element.contains(obstacle) && !card.contains(obstacle) && obstacle !== card;
+          }).map(function (obstacle) {
+            const rect = obstacle.getBoundingClientRect();
+            return {
+              left: rect.left - canvasRect.left,
+              right: rect.right - canvasRect.left,
+              top: rect.top - canvasRect.top,
+              bottom: rect.bottom - canvasRect.top
+            };
+          });
+          const scored = candidates.map(function (candidate) {
+            const candidateRect = {
+              left: candidate.left,
+              right: candidate.left + cardRect.width,
+              top: candidate.top,
+              bottom: candidate.top + cardRect.height
+            };
+            const overlap = obstacles.reduce(function (total, obstacle) {
+              const width = Math.max(0, Math.min(candidateRect.right, obstacle.right) - Math.max(candidateRect.left, obstacle.left));
+              const height = Math.max(0, Math.min(candidateRect.bottom, obstacle.bottom) - Math.max(candidateRect.top, obstacle.top));
+              return total + width * height;
+            }, 0);
+            return { left: candidate.left, top: candidate.top, score: overlap + candidate.index };
+          }).sort(function (leftCandidate, rightCandidate) { return leftCandidate.score - rightCandidate.score; });
+          const best = scored[0];
           card.style.right = 'auto';
           card.style.bottom = '';
-          card.style.left = Math.round(left) + 'px';
-          card.style.top = Math.round(top) + 'px';
+          card.style.left = Math.round(best.left) + 'px';
+          card.style.top = Math.round(best.top) + 'px';
         });
       }
 
@@ -1731,9 +2307,14 @@ export function renderPrototypePage(): string {
         const cardId = element.getAttribute('aria-controls');
         const card = cardId ? document.getElementById(cardId) : null;
         if (!card) return null;
-        closeVisualCards();
+        closeVisualCards(card);
+        const animationTimer = visualCardAnimationTimers.get(card);
+        if (animationTimer) window.clearTimeout(animationTimer);
+        visualCardAnimationTimers.delete(card);
+        card.classList.remove('is-closing');
         card.hidden = false;
         element.setAttribute('aria-expanded', 'true');
+        element.classList.add('is-context-active');
         if (card.closest('.scene-side-panel')) openSceneSidePanel(element, false);
         positionVisualCard(element, card);
         return card;
@@ -1850,6 +2431,7 @@ export function renderPrototypePage(): string {
         if (visualHoverTimer !== null) window.clearTimeout(visualHoverTimer);
         game.innerHTML = renderer(currentView.scene);
         arrangeVisualSideMenu();
+        arrangeDecisionStage();
         renderJourney();
         renderFooter();
         hydrateVisualActionCards(currentView.scene);

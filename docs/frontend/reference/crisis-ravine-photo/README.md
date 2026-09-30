@@ -44,7 +44,7 @@ Las capturas proceden del recorrido automatizado en Chrome mediante `Page.captur
 - Recurso JPEG servido correctamente y base idéntica en las rutas preparada y vulnerable.
 - Indicador de capacidad con zona táctil mínima de 44 px en móvil.
 - Fuego y humo limitados a menos de un tercio de la altura del mapa para que no dominen la escena; vía, repliegue, posición, copas y oportunidad permanecen dentro del lienzo.
-- Línea de estado de la carretera limitada a 2,4 px y halo de integración limitado a 7 px.
+- Línea de estado de la carretera limitada a 1,5 px y halo de integración limitado a 3,5 px.
 - Zona orgánica de copas limitada al 34 % del ancho y al 26 % de la altura del mapa; no se renderizan copas circulares artificiales.
 - Recorrido completo desde territorio y vivienda hasta ambas variantes de emergencia y el resultado final.
 

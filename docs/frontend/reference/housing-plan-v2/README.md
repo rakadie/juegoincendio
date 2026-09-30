@@ -50,7 +50,7 @@ La revisión final distingue lo aplicado y lo que quedó pendiente:
 
 ## Validación realizada
 
-- `npm run accept:m5`: auditoría sin vulnerabilidades, tipos y compilación correctos, 202 pruebas Vitest, 4 pruebas de aceptación M4 y 4 de aceptación M5.
+- `npm run accept:m5`: auditoría sin vulnerabilidades, tipos y compilación correctos, 203 pruebas Vitest, 4 pruebas de aceptación M4 y 4 de aceptación M5.
 - Chrome real a 1920 × 920, 1280 × 900 y 390 × 844: `M5_VISUAL_SMOKE_OK`, sin desplazamiento de página, espacios blancos, tarjetas laterales ni acciones fuera de pantalla.
 - Apertura y selección de los tres puntos con toque, teclado y ratón; la ficha permanece dentro del lienzo.
 - Comprobación antes/después de vegetación baja, copas y acceso mediante estilos calculados del navegador.
@@ -67,8 +67,8 @@ La revisión final distingue lo aplicado y lo que quedó pendiente:
 3. Elegir tres mejoras en fincas tocando los puntos de la fotografía.
 4. En vivienda, abrir los puntos 1, 2 y 3 con ratón, `Tab` + `Enter`/espacio o toque. Aplicar dos actuaciones y comparar el elemento antes y después.
 5. Verificar la confirmación, el contador 2/2 y la tercera opción deshabilitada.
-6. Continuar directamente al incendio y abrir «Revisar toda la preparación» en el resultado final.
+6. Continuar directamente al incendio y abrir «Registro de preparación» en el resultado final.
 
 ## Limitaciones y reversión
 
-Las imágenes de fondo y los actores raster son recursos educativos y no documentan una finca, vivienda o cuadrilla reales. En móvil se conserva la panorámica completa en una banda central, acompañada por una ampliación desenfocada del mismo paisaje, para que ningún punto quede recortado. El presupuesto obliga a dejar una condición de vivienda pendiente y la revisión final la hace explícita.
+Las imágenes de fondo y los actores raster son recursos educativos y no documentan una finca, vivienda o cuadrilla reales. En móvil se conserva la panorámica completa en una banda central, acompañada por la misma fotografía oscurecida y nítida, para que ningún punto quede recortado y toda la pantalla mantenga contexto. El presupuesto obliga a dejar una condición de vivienda pendiente y la revisión final la hace explícita.

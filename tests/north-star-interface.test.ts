@@ -59,14 +59,49 @@ describe('M3.8 north-star interface', () => {
 
   it('shows only the current crisis branch and gives result state and causality separate hierarchy', () => {
     const html = renderPrototypePage();
-    expect(html).toContain("'Más opciones'");
-    expect(html).toContain("'Pocas opciones'");
+    expect(html).toContain("'Amplio'");
+    expect(html).toContain("'Limitado'");
+    expect(html).toContain('class="scene crisis-decision-scene"');
+    expect(html).toContain('class="decision-action-menu"');
+    expect(html).toContain('data-action-count="');
+    expect(html).toContain("counter-increment: decision-choice");
+    expect(html).toContain('width: min(940px, calc(100% - 56px));');
+    expect(html).toContain('class="decision-context"');
+    expect(html).toContain('class="decision-outcome"');
+    expect(html).toContain('data-crisis-condition-slot');
+    expect(html).toContain('arrangeDecisionStage()');
     expect(html).toContain('class="result-layout"');
+    expect(html).toContain('class="scene result-screen result-');
+    expect(html).toContain('class="result-hero"');
+    expect(html).toContain('DECISIÓN OPERATIVA');
+    expect(html).toContain('Resolución');
+    expect(html).toContain('INFORME DE OPERACIÓN');
     expect(html).toContain('Por qué ocurrió');
     expect(html).toContain('Así empezó la emergencia');
     expect(html).not.toContain('prepared-vs-vulnerable');
     expect(html).not.toContain('Estado preparado</');
     expect(html).not.toContain('Estado vulnerable</');
+    const decisionRenderer = html.slice(
+      html.indexOf('function renderDecision(scene)'),
+      html.indexOf('function renderRouter(scene)')
+    );
+    const resultRenderer = html.slice(
+      html.indexOf('function renderResult(scene)'),
+      html.indexOf('const RENDERERS')
+    );
+    expect(decisionRenderer).not.toContain('sceneWorkspace(');
+    expect(decisionRenderer).not.toContain('scene-side-panel');
+    expect(resultRenderer).not.toContain('sceneWorkspace(');
+    expect(resultRenderer).not.toContain('scene-side-panel');
+  });
+
+  it('presents the briefing as a compact mission screen', () => {
+    const html = renderPrototypePage();
+    expect(html).toContain('class="mission-briefing-panel"');
+    expect(html).toContain('class="mission-briefing-steps"');
+    expect(html).toContain('Misión 01');
+    expect(html).toContain('Observa · decide · comprueba');
+    expect(html).toContain('.scene.briefing {');
   });
 
   it('derives journey stages from the visual presenter contract instead of canonical scene IDs', () => {
@@ -103,7 +138,8 @@ describe('M3.8 north-star interface', () => {
     expect(html).toContain('data-inspection-overlay');
     expect(html).toContain('arrangeVisualSideMenu()');
     expect(html).toContain('.inspection-hidden-menu { display: none !important; }');
-    expect(html).toContain('height: calc(100dvh - 62px);');
+    expect(html).toContain('grid-template-rows: auto minmax(0, 1fr);');
+    expect(html).toContain('body.gameplay-active:has(.inspection-scene) #game { height: 100%;');
     expect(html).not.toContain('<div class="inspection-action-tray"');
     expect(inspectionRenderer).not.toContain('sceneWorkspace(');
     expect(inspectionRenderer).not.toContain('scene-side-panel');
@@ -116,6 +152,9 @@ describe('M3.8 north-star interface', () => {
     expect(html).not.toContain('<div class="inspection-learning"');
     expect(html).toContain("view.scene.type === 'summary' || view.scene.type === 'router'");
     expect(html).toContain('@media (prefers-reduced-motion: reduce)');
+    expect(html).toContain("element.classList.add('is-context-active')");
+    expect(html).toContain("card.classList.add('is-closing')");
+    expect(html).toContain('@keyframes contextual-card-enter');
   });
 
   it('meets text contrast for the primary action color', () => {

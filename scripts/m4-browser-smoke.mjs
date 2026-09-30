@@ -421,6 +421,7 @@ try {
   async function chooseWithPointer(actionId, pointer, expectedMobile, evidenceName, template = 'territory') {
     await openVisualActionCard(actionId, pointer);
     await assertOpenSceneCard(actionId, expectedMobile, template);
+    await sleep(260);
     if (evidenceName) {
       const cardSelector = `[data-visual-action-card-id=${JSON.stringify(actionId)}]:not([hidden])`;
       await captureViewportEvidence(evidenceName, cardSelector, { minWidth: 220, minHeight: 60 });
@@ -659,19 +660,35 @@ try {
       const road = map?.querySelector('#crisis-road .visual-road');
       const roadBed = map?.querySelector('#crisis-road .crisis-road-bed');
       const crownZone = map?.querySelector('#crisis-crown .crisis-crown-zone');
-      if (!canvas || !map || !photo || !fire || !capacity || !road || !roadBed || !crownZone) return null;
+      const decisionScene = document.querySelector('.crisis-decision-scene');
+      const actionMenu = decisionScene?.querySelector('.decision-action-menu');
+      if (!canvas || !map || !photo || !fire || !capacity || !road || !roadBed || !crownZone || !decisionScene || !actionMenu) return null;
       const canvasRect = canvas.getBoundingClientRect();
       const mapRect = map.getBoundingClientRect();
+      const actionMenuRect = actionMenu.getBoundingClientRect();
       const fireRect = fire.getBoundingClientRect();
       const capacityRect = capacity.getBoundingClientRect();
       const crownRect = crownZone.getBoundingClientRect();
+      const actionCards = Array.from(actionMenu.querySelectorAll('.action-card')).map((card) => {
+        const rect = card.getBoundingClientRect();
+        const buttonRect = card.querySelector('button')?.getBoundingClientRect();
+        return { width: rect.width, height: rect.height, buttonHeight: buttonRect?.height ?? 0 };
+      });
       const response = await fetch(photo.getAttribute('href'));
       const fireResponse = await fetch(fire.getAttribute('href'));
       return {
         viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight,
         pageWidth: document.documentElement.scrollWidth,
+        pageHeight: document.documentElement.scrollHeight,
         canvas: { left: canvasRect.left, right: canvasRect.right },
         map: { left: mapRect.left, right: mapRect.right, width: mapRect.width, height: mapRect.height },
+        actionMenu: { left: actionMenuRect.left, right: actionMenuRect.right, top: actionMenuRect.top, bottom: actionMenuRect.bottom },
+        actionCards,
+        visibleSidePanels: Array.from(decisionScene.querySelectorAll('.scene-side-panel')).filter((element) => {
+          const rect = element.getBoundingClientRect();
+          return rect.width > 0 && rect.height > 0;
+        }).length,
         fire: { width: fireRect.width, height: fireRect.height },
         roadStrokeWidth: Number.parseFloat(getComputedStyle(road).strokeWidth),
         roadBedStrokeWidth: Number.parseFloat(getComputedStyle(roadBed).strokeWidth),
@@ -688,6 +705,23 @@ try {
     })()`);
     assert(layout, 'Crisis ravine layout was not available.');
     assert(layout.pageWidth <= layout.viewportWidth + 3, 'Crisis layout has horizontal overflow.');
+    assert(layout.pageHeight <= layout.viewportHeight + 1, `Crisis decision requires page scrolling (${layout.pageHeight} > ${layout.viewportHeight}).`);
+    assert(layout.visibleSidePanels === 0, 'Crisis decision still reserves a right-hand options panel.');
+    assert(
+      layout.actionMenu.left >= -1 && layout.actionMenu.right <= layout.viewportWidth + 1 &&
+        layout.actionMenu.top >= 0 && layout.actionMenu.bottom <= layout.viewportHeight + 1,
+      `Crisis action menu escapes the viewport: ${JSON.stringify(layout.actionMenu)}.`
+    );
+    assert(
+      layout.actionCards.every((card) => card.width <= (layout.viewportWidth < 700 ? 190 : 230)),
+      `Crisis choices are not compact enough: ${JSON.stringify(layout.actionCards)}.`
+    );
+    if (layout.viewportWidth < 700) {
+      assert(
+        layout.actionCards.every((card) => card.buttonHeight >= 43),
+        `Crisis choice buttons are too small for touch: ${JSON.stringify(layout.actionCards)}.`
+      );
+    }
     assert(layout.map.left >= layout.canvas.left - 1 && layout.map.right <= layout.canvas.right + 1, 'Crisis photograph is clipped by its canvas.');
     assert(layout.href === '/images/crisis-ravine-aerial-v1.jpg', 'Crisis scene does not use the expected photographic base.');
     assert(layout.responseOk && layout.contentType?.startsWith('image/jpeg'), 'Crisis photograph did not load as JPEG.');
@@ -724,6 +758,37 @@ try {
     );
   }
 
+  async function assertBriefingLayout() {
+    const layout = await evaluate(`(() => {
+      const scene = document.querySelector('.scene.briefing');
+      const panel = scene?.querySelector('.mission-briefing-panel');
+      const note = scene?.querySelector('.mission-briefing-note');
+      const button = scene?.querySelector('#advance-button');
+      const main = document.querySelector('main');
+      if (!scene || !panel || !note || !button || !main) return null;
+      const panelRect = panel.getBoundingClientRect();
+      const noteRect = note.getBoundingClientRect();
+      const buttonRect = button.getBoundingClientRect();
+      return {
+        viewportWidth: innerWidth,
+        pageWidth: document.documentElement.scrollWidth,
+        mainClientHeight: main.clientHeight,
+        mainScrollHeight: main.scrollHeight,
+        panel: { left: panelRect.left, right: panelRect.right, top: panelRect.top, bottom: panelRect.bottom },
+        note: { left: noteRect.left, right: noteRect.right, top: noteRect.top, bottom: noteRect.bottom },
+        button: { width: buttonRect.width, height: buttonRect.height },
+        stepCount: scene.querySelectorAll('.mission-briefing-steps li').length
+      };
+    })()`);
+    assert(layout, 'Mission briefing layout was not available.');
+    assert(layout.pageWidth <= layout.viewportWidth + 3, 'Mission briefing has horizontal overflow.');
+    assert(layout.mainScrollHeight <= layout.mainClientHeight + 2, `Mission briefing requires internal scrolling: ${JSON.stringify(layout)}.`);
+    assert(layout.stepCount === 3, 'Mission briefing does not explain the three phases of play.');
+    assert(layout.panel.left >= -1 && layout.panel.right <= layout.viewportWidth + 1, 'Mission briefing panel escapes the viewport.');
+    assert(layout.note.left >= -1 && layout.note.right <= layout.viewportWidth + 1, 'Mission briefing note escapes the viewport.');
+    assert(layout.button.height >= 42, 'Mission briefing primary action is too small.');
+  }
+
   async function assertGameplayFitsViewport(label) {
     const layout = await evaluate(`(() => {
       const scene = document.querySelector('.scene');
@@ -757,6 +822,7 @@ try {
       const canvas = document.querySelector(${JSON.stringify(`.visual-scene[data-visual-template="${template}"] .visual-canvas`)});
       const card = canvas?.querySelector(${JSON.stringify(`[data-visual-action-card-id="${actionId}"]`)});
       const button = card?.querySelector('.action-button');
+      const hotspot = canvas?.querySelector(${JSON.stringify(`[data-focus-action-id="${actionId}"].visual-hotspot`)});
       if (!canvas || !card || card.hidden || !button) return null;
       const canvasRect = canvas.getBoundingClientRect();
       const cardRect = card.getBoundingClientRect();
@@ -765,6 +831,9 @@ try {
         canvas: { left: canvasRect.left, right: canvasRect.right, top: canvasRect.top, bottom: canvasRect.bottom },
         card: { left: cardRect.left, right: cardRect.right, top: cardRect.top, bottom: cardRect.bottom },
         button: { left: buttonRect.left, right: buttonRect.right, top: buttonRect.top, bottom: buttonRect.bottom, width: buttonRect.width, height: buttonRect.height },
+        hotspotExpanded: hotspot?.getAttribute('aria-expanded'),
+        hotspotActive: hotspot?.classList.contains('is-context-active'),
+        cardAnimationName: getComputedStyle(card).animationName,
         viewportHeight: window.innerHeight
       };
     })()`);
@@ -777,6 +846,14 @@ try {
     assert(
       geometry.button.width > 0 && geometry.button.height >= 38 && geometry.button.bottom <= geometry.viewportHeight + 1,
       `${actionId} contextual action is not visible.`
+    );
+    assert(
+      geometry.hotspotExpanded === 'true' && geometry.hotspotActive === true,
+      `${actionId} does not keep its map area visibly linked to the contextual card.`
+    );
+    assert(
+      geometry.cardAnimationName && geometry.cardAnimationName !== 'none',
+      `${actionId} contextual card has no entry motion.`
     );
     if (!expectedMobile) await assertGameplayFitsViewport(`${template} action tray`);
   }
@@ -800,7 +877,7 @@ try {
     await waitFor(
       `Boolean(document.querySelector(${JSON.stringify(
         `[data-action-card-id="${actionId}"].selected, [data-visual-action-card-id="${actionId}"].selected`
-      )}))`,
+      )}) || document.querySelector('.decision-outcome'))`,
       `${actionId} selected`
     );
   }
@@ -920,6 +997,11 @@ try {
 
   await pressEnter('#start-session-button');
   await waitForSelector('.scene.briefing');
+  await assertBriefingLayout();
+  await captureViewportEvidence('briefing-mobile.png', '.mission-briefing-panel', {
+    minWidth: 320,
+    minHeight: 380
+  });
   const firstEnvelope = await evaluate(
     `JSON.parse(window.localStorage.getItem(${JSON.stringify(STORAGE_KEY)}))`
   );
@@ -931,6 +1013,7 @@ try {
   await waitForSelector('#continue-session-button');
   await pressEnter('#continue-session-button');
   await waitForSelector('.scene.briefing');
+  await assertBriefingLayout();
 
   await advanceAndWait('[data-action-id="gestionar-restos-poda"]');
   await captureEvidence(
@@ -1081,6 +1164,18 @@ try {
     await evaluate(`document.querySelector('.prevention-area') === null && document.querySelector('.router-mark') === null`),
     'An explanatory interstitial interrupted the playable route.'
   );
+  await captureViewportEvidence('first-alert-desktop.png', '.decision-action-menu', {
+    minWidth: 300,
+    minHeight: 100
+  });
+  if (VISUAL_MODE) {
+    await setViewport(390, 844, true);
+    await captureViewportEvidence('first-alert-mobile.png', '.decision-action-menu', {
+      minWidth: 320,
+      minHeight: 100
+    });
+    await setViewport(1280, 900, false);
+  }
   await chooseAndWait('movilizar-y-verificar', '[data-action-id="autorizar-maniobra-condicionada"]');
 
   await assertCrisisLayout();
@@ -1105,12 +1200,14 @@ try {
   await choose('autorizar-maniobra-condicionada');
   assert(
     await evaluate(`(() => {
-      const feedback = document.querySelector('.decision-feedback');
-      return Boolean(feedback && feedback.closest('.scene-main') && !feedback.closest('.scene-side-panel'));
+      const feedback = document.querySelector('.decision-outcome');
+      return Boolean(feedback && !feedback.closest('.decision-action-menu') &&
+        document.querySelector('.decision-action-menu') === null &&
+        document.querySelector('.decision-advance #advance-button'));
     })()`),
-    'The decision result is mixed into the options panel instead of appearing beside the scene.'
+    'The decision result is mixed into the options instead of replacing them with a separate response.'
   );
-  await captureViewportEvidence('crisis-feedback-desktop.png', '.decision-feedback', {
+  await captureViewportEvidence('crisis-feedback-desktop.png', '.decision-outcome', {
     minWidth: 300,
     minHeight: 40
   });
@@ -1128,8 +1225,8 @@ try {
     await evaluate(`(() => {
       const review = document.querySelector('.final-prevention-review');
       return review?.open === true && review.querySelectorAll('li').length >= 5 &&
-        review.textContent.includes('Mejoras que elegiste') && review.textContent.includes('quedaron pendientes') &&
-        review.textContent.includes('Ninguna mejora elimina todo el riesgo');
+        review.textContent.includes('Medidas aplicadas') && review.textContent.includes('Condiciones pendientes') &&
+        review.textContent.includes('Las medidas reducen el riesgo, pero no lo eliminan');
     })()`),
     'The final review does not expose both completed and pending prevention work.'
   );
@@ -1181,6 +1278,30 @@ try {
     await evaluate(`document.activeElement === document.getElementById('compare-reference-button')`),
     'Closing the comparison did not return focus to its trigger.'
   );
+  await setViewport(390, 844, true);
+  assert(
+    await evaluate(`document.documentElement.scrollWidth <= window.innerWidth + 3`),
+    'Mobile result has horizontal overflow.'
+  );
+  await captureViewportEvidence('result-mobile.png', '.result-contained', {
+    minWidth: 320,
+    minHeight: 500
+  });
+  await pressEnter('.final-prevention-review summary');
+  assert(
+    await evaluate(`(() => {
+      const review = document.querySelector('.final-prevention-review[open]');
+      const rect = review?.getBoundingClientRect();
+      return Boolean(rect && rect.left >= 0 && rect.top >= 0 && rect.right <= innerWidth && rect.bottom <= innerHeight);
+    })()`),
+    'Mobile preparation register does not fit inside the viewport.'
+  );
+  await captureViewportEvidence('final-prevention-review-mobile.png', '.final-prevention-review[open]', {
+    minWidth: 320,
+    minHeight: 300
+  });
+  await pressEnter('.final-prevention-review summary');
+  await setViewport(1280, 900, false);
   await pressEnter('#compare-reference-button');
   await waitForSelector('#m4-reference-comparison');
 
@@ -1208,6 +1329,11 @@ try {
   );
   await pressEnter('#continue-session-button');
   await waitForSelector('.scene.briefing');
+  await assertBriefingLayout();
+  await captureViewportEvidence('briefing-desktop.png', '.mission-briefing-panel', {
+    minWidth: 700,
+    minHeight: 300
+  });
 
   if (VISUAL_MODE) {
     await advanceAndWait('[data-action-id="gestionar-restos-poda"]');
@@ -1365,6 +1491,8 @@ try {
 
   if (VISUAL_MODE) {
     const required = [
+      'briefing-mobile.png',
+      'briefing-desktop.png',
       'territory-initial-mobile.png',
       'territory-initial-desktop.png',
       'territory-wide-desktop.png',
@@ -1378,13 +1506,17 @@ try {
       'housing-treated-desktop.png',
       'housing-pruning-change-wide-desktop.png',
       'journey-housing-desktop.png',
+      'first-alert-desktop.png',
+      'first-alert-mobile.png',
       'crisis-prepared-desktop.png',
       'crisis-prepared-mobile.png',
       'crisis-feedback-desktop.png',
       'crisis-vulnerable-desktop.png',
       'crisis-vulnerable-mobile.png',
       'result-desktop.png',
+      'result-mobile.png',
       'final-prevention-review-desktop.png',
+      'final-prevention-review-mobile.png',
       'comparison-desktop.png',
       'prevention-extreme-state-desktop.png'
     ];

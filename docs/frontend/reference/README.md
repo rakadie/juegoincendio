@@ -2,7 +2,7 @@
 
 Referencia aprobada: [`m3-north-star-ui.jpg`](m3-north-star-ui.jpg).
 
-Evidencia de la representación híbrida: [`territory-photo-v3`](territory-photo-v3/README.md), [`housing-plan-v2`](housing-plan-v2/README.md) y [`crisis-ravine-photo`](crisis-ravine-photo/README.md).
+Evidencia de la representación híbrida: [`territory-photo-v3`](territory-photo-v3/README.md), [`housing-plan-v2`](housing-plan-v2/README.md), [`crisis-ravine-photo`](crisis-ravine-photo/README.md) y [`decision-report-v1`](decision-report-v1/README.md).
 
 ## Qué es vinculante
 

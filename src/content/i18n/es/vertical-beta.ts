@@ -8,10 +8,10 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
   namespace: 'verticalBeta',
   scenes: {
     'intro-briefing-mission': {
-      title: 'Prepara el monte y las casas',
+      title: 'Prepara el territorio antes del incendio',
       body:
-        'Mira el monte y las casas. Podrás elegir cinco mejoras. Lo que hagas ahora cambiará lo que podrán hacer los bomberos si hay un incendio.',
-      advanceLabel: 'Empezar'
+        'Analiza el monte y la vivienda. Dispones de cinco actuaciones preventivas. Tus decisiones cambiarán los accesos, las zonas de trabajo y las opciones de respuesta.',
+      advanceLabel: 'Iniciar preparación'
     },
     'prevention-inspection-territory-fuel': {
       title: 'Cuida las fincas y el monte',
@@ -185,17 +185,17 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
     },
     'crisis-decision-first-alert': {
       title: 'Primer aviso de incendio',
-      body: 'Se ve humo en el monte. Los equipos deben salir y comprobar qué ocurre.',
+      body: 'Se detecta humo en el monte. El primer equipo debe localizar el foco y comprobar los accesos.',
       context:
-        'Todas las partidas empiezan con este aviso. Después, tus mejoras cambiarán lo que ocurra.',
+        'La salida inicial es igual en todas las partidas. La preparación previa determina qué opciones habrá al llegar.',
       actions: {
         'movilizar-y-verificar': {
-          label: 'Enviar equipos y comprobar',
-          description: 'Enviar a los primeros equipos para que observen el incendio desde un lugar seguro.',
-          feedback: 'Los equipos ya están en camino y comprueban la situación.',
+          label: 'Movilizar y comprobar',
+          description: 'Enviar el primer equipo para localizar el incendio y valorar los accesos desde una posición segura.',
+          feedback: 'El primer equipo está en marcha y evalúa el incendio desde una posición segura.',
           consequences: {
-            prepared: 'Los equipos encuentran mejores caminos y más espacio para trabajar.',
-            vulnerable: 'Los equipos encuentran problemas que ya no pueden arreglar con el fuego cerca.'
+            prepared: 'Los equipos encuentran accesos preparados y más espacio para intervenir.',
+            vulnerable: 'Los equipos encuentran límites que ya no pueden corregir con el fuego cerca.'
           }
         }
       }
@@ -209,204 +209,204 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
     'crisis-decision-emergency-fuel-break': {
       title: 'Frenar el avance del fuego',
       body:
-        'El fuego avanza hacia una zona donde los equipos podrían intentar frenarlo.',
+        'El fuego avanza hacia una zona desde la que podría frenarse su recorrido.',
       context:
-        'Solo pueden acercarse si tienen un camino de entrada, un lugar seguro y una salida.',
+        'Antes de actuar deben comprobarse el acceso, la zona de trabajo y una salida segura.',
       advanceLabel: 'Continuar al barranco',
       actions: {
         'autorizar-maniobra-condicionada': {
-          label: 'Actuar solo si es seguro',
+          label: 'Intervenir con condiciones seguras',
           description:
-            'Dejar que los equipos actúen solo después de comprobar la entrada, el lugar y la salida.',
-          feedback: 'Los equipos actuarán únicamente mientras puedan entrar y salir con seguridad.',
+            'Intervenir tras confirmar el acceso, la posición de trabajo y la salida.',
+          feedback: 'La intervención se mantiene mientras la entrada y la salida sigan disponibles.',
           consequences: {
             prepared: 'Los equipos aprovechan la zona preparada y conservan una salida segura.'
           }
         },
         'mantener-evaluacion-sin-maniobra': {
-          label: 'Esperar y seguir observando',
-          description: 'No acercarse si el peligro es mayor que la ayuda que se podría conseguir.',
-          feedback: 'Los equipos esperan en un lugar seguro y siguen observando.',
+          label: 'Mantener la observación',
+          description: 'Observar desde una posición segura y conservar la opción de actuar después.',
+          feedback: 'Los equipos conservan una posición segura y siguen evaluando el avance.',
           consequences: {
             prepared: 'Los equipos conservan sus opciones sin entrar en una zona peligrosa.'
           }
         },
         'usar-linea-profesional-no-evaluada': {
-          label: 'Entrar sin revisar la zona',
-          description: 'Intentar actuar en un lugar que ninguna persona experta ha revisado.',
-          feedback: 'No se puede entrar sin saber si el lugar es seguro.',
-          blockedReason: 'Primero hay que revisar el lugar y comprobar una salida segura.'
+          label: 'Entrar sin comprobar la zona',
+          description: 'Intervenir sin confirmar la posición ni la ruta de salida.',
+          feedback: 'La intervención se detiene porque la zona todavía no está comprobada.',
+          blockedReason: 'Falta comprobar la posición y una salida segura.'
         }
       }
     },
     'crisis-decision-access-blockage': {
       title: 'Camino bloqueado',
       body:
-        'El camino ya no permite entrar, girar y salir con seguridad.',
+        'El camino ya no permite entrar, maniobrar y salir con seguridad.',
       context:
-        'El humo, las ramas y el fuego en los bordes hacen que el camino sea peligroso.',
+        'El humo, la vegetación de los márgenes y el fuego próximo comprometen el acceso.',
       advanceLabel: 'Continuar al barranco',
       actions: {
         'despejar-corredor-operativo': {
-          label: 'Abrir un paso temporal',
-          description: 'Comprobar y abrir un paso corto para los movimientos más necesarios.',
-          feedback: 'Hay un paso temporal, pero el camino sigue siendo difícil.',
+          label: 'Habilitar un paso temporal',
+          description: 'Abrir el espacio mínimo para los movimientos prioritarios.',
+          feedback: 'El paso temporal permite movimientos limitados; el acceso sigue siendo difícil.',
           consequences: {
             vulnerable: 'Los equipos usan un paso temporal, pero no pueden arreglar ahora todo el camino.'
           }
         },
         'cerrar-acceso-y-reorganizar-medios': {
-          label: 'Cerrar el camino y mover los equipos',
-          description: 'Cerrar el camino peligroso y llevar los equipos a lugares seguros.',
-          feedback: 'El camino queda cerrado y los equipos buscan otro lugar.',
+          label: 'Cerrar el acceso y reubicar equipos',
+          description: 'Cerrar el camino y trasladar los equipos a posiciones seguras.',
+          feedback: 'El acceso queda cerrado y los equipos se reubican fuera de la zona expuesta.',
           consequences: {
             vulnerable: 'Los equipos se quedan fuera del camino peligroso.'
           }
         },
         'introducir-maquinaria-sin-repliegue': {
-          label: 'Meter vehículos sin salida segura',
-          description: 'Enviar vehículos por un camino del que quizá no puedan salir.',
-          feedback: 'Los vehículos no pueden entrar sin una salida segura.',
+          label: 'Introducir vehículos sin salida',
+          description: 'Enviar vehículos por un camino que el fuego puede cerrar.',
+          feedback: 'La entrada se cancela porque los vehículos no tendrían una salida segura.',
           blockedReason: 'No hay un camino seguro para entrar, girar y salir.'
         },
         'usar-linea-profesional-sin-acceso': {
-          label: 'Usar la zona revisada sin camino',
-          description: 'Intentar llegar a la zona revisada sin una entrada y una salida seguras.',
-          feedback: 'La zona no se puede usar mientras el camino siga bloqueado.',
-          blockedReason: 'Una zona revisada tampoco sirve si los equipos no pueden entrar y salir.'
+          label: 'Usar la zona revisada sin acceso',
+          description: 'Intentar llegar a la zona revisada sin entrada ni salida seguras.',
+          feedback: 'La zona revisada no puede utilizarse mientras el acceso siga bloqueado.',
+          blockedReason: 'La zona no sirve si los equipos no pueden entrar y salir.'
         }
       }
     },
     'crisis-decision-ravine-fire': {
       title: 'Fuego en el barranco',
       body:
-        'El fuego entra en un barranco. La pendiente puede hacer que suba muy rápido.',
+        'El fuego entra en el barranco y acelera al subir por la pendiente.',
       context:
-        'Los equipos solo pueden acercarse si ven bien el fuego, tienen un lugar seguro y pueden salir.',
+        'Antes de intervenir, el equipo necesita visibilidad, una posición segura y una salida disponible.',
       advanceLabel: 'Continuar',
       actions: {
         'asegurar-flancos-y-repliegue': {
-          label: 'Proteger los lados y la salida',
-          description: 'Trabajar desde los lados del fuego sin perder el camino de salida.',
-          feedback: 'Los equipos protegen primero los lados del fuego y su salida.',
+          label: 'Asegurar los lados y la salida',
+          description: 'Trabajar desde los lados del incendio y mantener libre el camino de salida.',
+          feedback: 'Los equipos estabilizan los lados del incendio sin perder su salida.',
           consequences: {
             prepared: 'Los equipos pueden seguir trabajando y mantienen una salida segura.',
             vulnerable: 'Los equipos protegen su salida, pero no pueden quedarse en el barranco.'
           }
         },
         'mantener-ataque-anclado': {
-          label: 'Trabajar desde un lugar seguro',
-          description: 'Actuar desde un punto conocido con entrada y salida seguras.',
-          feedback: 'Los equipos trabajan sin perder su entrada ni su salida.',
+          label: 'Intervenir desde un punto seguro',
+          description: 'Actuar desde una posición comprobada con entrada y salida disponibles.',
+          feedback: 'Los equipos intervienen desde una posición estable y conservan la salida.',
           consequences: {
             prepared: 'Los equipos actúan desde un lugar seguro y conservan la salida.'
           }
         },
         'vigilancia-y-proteccion-indirecta': {
-          label: 'Vigilar desde fuera',
-          description: 'No entrar en el barranco y trabajar desde lugares alejados del fuego.',
-          feedback: 'Los equipos vigilan desde fuera para no quedar atrapados.',
+          label: 'Mantener vigilancia exterior',
+          description: 'Observar el avance desde fuera del barranco y proteger las zonas próximas.',
+          feedback: 'Los equipos vigilan desde el exterior y evitan una posición sin salida.',
           consequences: {
             prepared: 'Los equipos evitan acercarse de más y siguen vigilando.',
             vulnerable: 'Los equipos se protegen porque dentro del barranco no hay un lugar seguro.'
           }
         },
         'ataque-directo-sin-anclaje': {
-          label: 'Acercarse sin una salida',
-          description: 'Entrar cerca del fuego sin un lugar seguro ni un camino de salida.',
-          feedback: 'No se puede acercar a los equipos sin una salida segura.',
+          label: 'Entrar sin una salida segura',
+          description: 'Acercarse al frente sin una posición estable ni un camino de salida.',
+          feedback: 'La entrada se detiene porque el equipo podría quedar sin salida.',
           blockedReason: 'El fuego puede subir por el barranco y cortar la salida muy rápido.'
         }
       }
     },
     'crisis-decision-housing-defense': {
-      title: 'Proteger las casas',
+      title: 'Defensa de las viviendas',
       body:
-        'El fuego se acerca a las casas. Hay que decidir dónde pueden trabajar los equipos sin quedar atrapados.',
+        'El fuego se aproxima a las viviendas. Hay que priorizar posiciones que puedan defenderse sin exponer a los equipos.',
       context:
-        'Primero se comprueba qué casas tienen camino, espacio alrededor y una salida segura.',
+        'Antes de asignar recursos se comprueban el acceso, el espacio de trabajo y una salida segura.',
       advanceLabel: 'Ver resultado',
       actions: {
         'defender-desde-posicion-segura': {
-          label: 'Proteger desde un lugar seguro',
-          description: 'Ayudar en las casas que tienen una entrada y una salida seguras.',
-          feedback: 'Los equipos ayudan donde pueden entrar y salir con seguridad.',
+          label: 'Defender desde una posición segura',
+          description: 'Proteger las viviendas que permiten entrar, trabajar y salir con seguridad.',
+          feedback: 'Los equipos se sitúan donde pueden actuar sin perder la salida.',
           consequences: {
             prepared: 'Los equipos protegen las casas preparadas y conservan una salida.'
           }
         },
         'defensa-selectiva-con-prioridades': {
-          label: 'Ayudar primero donde es más seguro',
-          description: 'Llevar los equipos a las casas con espacio alrededor y camino de salida.',
-          feedback: 'Los equipos se concentran en los lugares donde pueden ayudar sin quedar atrapados.',
+          label: 'Priorizar viviendas defendibles',
+          description: 'Concentrar los recursos en viviendas con espacio de trabajo y salida disponible.',
+          feedback: 'Los recursos se concentran donde pueden actuar sin quedar expuestos.',
           consequences: {
             prepared: 'Los equipos ayudan primero en las casas mejor preparadas.'
           }
         },
         'defensa-total-sin-repliegue': {
-          label: 'Intentar proteger todas las casas',
-          description: 'Enviar equipos incluso a casas que no tienen una salida segura.',
-          feedback: 'No se puede poner a los equipos en peligro para intentar protegerlo todo.',
+          label: 'Intentar una defensa total',
+          description: 'Distribuir equipos también en viviendas sin espacio o salida suficientes.',
+          feedback: 'La defensa total se descarta porque dejaría equipos en posiciones inseguras.',
           blockedReason: 'Algunas casas no tienen espacio ni una salida segura para los equipos.'
         }
       }
     },
     'crisis-decision-crown-fire': {
-      title: 'Fuego en las copas de los árboles',
+      title: 'Fuego en las copas',
       body:
-        'El fuego llega a la parte alta de los árboles y avanza mucho más rápido.',
+        'El fuego alcanza las copas de los árboles y aumenta con rapidez su intensidad y velocidad.',
       context:
-        'El calor y las chispas hacen que acercarse sea demasiado peligroso. Lo primero es proteger vidas.',
+        'El ataque cercano deja de ser seguro. La prioridad pasa a proteger vidas y mantener las salidas.',
       advanceLabel: 'Ver resultado',
       actions: {
         'replegar-ante-fuego-de-copas': {
-          label: 'Alejarse y proteger vidas',
+          label: 'Retirar equipos y proteger vidas',
           description: 'Retirar a los equipos antes de que el fuego corte sus salidas.',
-          feedback: 'Los equipos se alejan antes de quedar atrapados.',
+          feedback: 'Los equipos se retiran a tiempo y mantienen abiertas sus salidas.',
           consequences: {
             vulnerable: 'Alejarse protege a los equipos de un fuego demasiado fuerte.'
           }
         },
         'ataque-indirecto-y-vigilancia': {
-          label: 'Vigilar desde lejos',
-          description: 'Observar el fuego y trabajar solo desde lugares seguros.',
-          feedback: 'Los equipos vigilan sin acercarse al fuego de las copas.',
+          label: 'Vigilar y actuar a distancia',
+          description: 'Observar el frente y trabajar únicamente desde posiciones seguras.',
+          feedback: 'Los equipos mantienen la vigilancia sin entrar en la zona de mayor intensidad.',
           consequences: {
             vulnerable: 'Vigilar desde lejos protege vidas y evita exponer a los equipos.'
           }
         },
         'sostener-ataque-directo': {
-          label: 'Seguir atacando de cerca',
-          description: 'Mantener personas cerca de un fuego muy rápido y fuerte.',
-          feedback: 'El fuego es demasiado fuerte para seguir atacando de cerca.',
+          label: 'Mantener el ataque cercano',
+          description: 'Mantener personal cerca de un frente que ya supera las condiciones seguras.',
+          feedback: 'El ataque cercano se cancela porque el frente supera el margen seguro.',
           blockedReason: 'Acercarse al fuego de las copas pondría en peligro a los equipos.'
         },
         'defender-posicion-sin-salida': {
-          label: 'Quedarse en un lugar sin salida',
-          description: 'Seguir trabajando donde no hay un camino seguro para salir.',
-          feedback: 'Ningún lugar es seguro si los equipos no pueden salir.',
+          label: 'Mantener una posición sin salida',
+          description: 'Seguir trabajando donde el fuego puede cerrar el camino de salida.',
+          feedback: 'La posición se abandona porque el equipo podría quedar aislado.',
           blockedReason: 'Los equipos necesitan siempre una salida segura.'
         }
       }
     },
     'ending-result-causal-report': {
       title: 'Así cambiaron tus decisiones la partida',
-      body: 'Mira qué preparaste, qué ocurrió durante el incendio y qué resultado tuvo.',
+      body: 'Revisa la preparación, las decisiones durante el incendio y su efecto en el resultado.',
       advanceLabel: 'Terminar la partida',
       variants: {
         contained: {
           title: 'Incendio contenido',
           summary:
-            'La preparación dejó caminos, salidas y lugares desde los que los equipos pudieron actuar.',
+            'La preparación mantuvo accesos, salidas y posiciones desde las que los equipos pudieron intervenir.',
           closing:
-            'Prepararse ayuda mucho, pero ningún lugar queda totalmente seguro ante un incendio real.'
+            'Las medidas redujeron el riesgo y ampliaron las opciones, pero ningún entorno queda completamente seguro.'
         },
         overwhelmed: {
-          title: 'Incendio demasiado fuerte',
+          title: 'Incendio fuera de capacidad',
           summary:
-            'Algunas mejoras ayudaron, pero faltaron caminos o lugares seguros para los equipos.',
+            'Algunas medidas fueron útiles, pero los accesos o las posiciones seguras no bastaron para sostener la intervención.',
           closing:
-            'Una mejora puede ayudar, pero otras tareas pendientes pueden seguir causando mucho peligro.'
+            'Las mejoras reducen parte del riesgo; las condiciones pendientes pueden limitar la respuesta durante la emergencia.'
         }
       }
     }
