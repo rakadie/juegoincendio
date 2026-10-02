@@ -18,11 +18,11 @@ La emergencia mantiene la fotografía a pantalla completa. La información se se
 - margen de actuación y condiciones de partida en un bloque independiente;
 - decisión operativa en una bandeja inferior compacta, sin menú lateral.
 
-Las elecciones se muestran como módulos numerados de estética táctica. En escritorio se limitan a 180–220 px y se centran; en móvil forman una cuadrícula de dos columnas, con una opción impar centrada y botones táctiles de al menos 44 px. Una decisión con una sola respuesta usa una bandeja específica más estrecha.
+Las elecciones se muestran como módulos numerados de estética táctica. En escritorio se limitan a 168–205 px y se centran; en móvil forman una cuadrícula de dos columnas y la opción impar ocupa una fila completa para evitar una tarjeta estrecha. Todos los botones mantienen al menos 44 px de alto. Una decisión con una sola respuesta usa una bandeja específica más estrecha.
 
 Las opciones desaparecen al elegir y dejan paso a una resolución breve. El texto utiliza un tono técnico accesible: explica acceso, posición y salida segura sin vocabulario interno del motor ni frases infantiles. Las alternativas no seguras permanecen visibles como parte del aprendizaje, pero están deshabilitadas y explican el motivo.
 
-Los trazos del barranco, la carretera, la salida y las copas son ahora guías finas que no ocultan la fotografía. En móvil, el mismo paisaje ocupa todo el fondo y la panorámica completa conserva los puntos y proporciones importantes.
+Los trazos del barranco, la carretera, la salida y las copas son ahora guías finas que no ocultan la fotografía. El fondo del barranco se ha rehecho con más detalle de roca, vegetación y firme. En escritorio ocupa todo el visor; en móvil usa un encuadre contextual que centra el acceso, el barranco, las copas o la vivienda según la decisión activa, sin franjas vacías.
 
 El cierre se presenta como un informe de operación de estética coherente con el juego. Distingue condiciones iniciales, relaciones causa-efecto y estado final. El registro de preparación se abre como una ventana superpuesta para consultar medidas aplicadas y condiciones pendientes sin partir el informe. La comparación conserva un fondo claro y contraste propio.
 
@@ -74,7 +74,7 @@ La respuesta sustituye a las opciones y mantiene el avance separado:
 
 ## Validación realizada
 
-- `npm run accept:m5`: 0 vulnerabilidades; 36 archivos y 203 pruebas superadas; aceptación M4 4/4 y M5 4/4.
+- `npm run accept:m5`: 0 vulnerabilidades; 36 archivos y 204 pruebas superadas; aceptación M4 4/4 y M5 4/4.
 - Recorrido visual automatizado completo en Chrome: `M5_VISUAL_SMOKE_OK`.
 - Escritorio a 1280 × 900 y 1920 × 920; móvil táctil a 390 × 844.
 - Ratón, `Tab` + `Enter` y toque comprobados en puntos del mapa y acciones.
@@ -92,4 +92,4 @@ La respuesta sustituye a las opciones y mantiene el avance separado:
 
 ## Límites conocidos
 
-Los operarios y el rebaño son recortes raster con movimiento CSS, no vídeo ni GIF. Constituyen una primera biblioteca de efectos que puede ampliarse con más equipos, animales y evolución del fuego. La vista móvil conserva la panorámica completa para no perder puntos interactivos y utiliza la misma foto como fondo de continuidad.
+Los operarios y el rebaño son recortes raster con movimiento CSS, no vídeo ni GIF. Constituyen una primera biblioteca de efectos que puede ampliarse con más equipos, animales y evolución del fuego. El encuadre móvil prioriza el área relevante de cada decisión; la panorámica completa sigue disponible en escritorio.

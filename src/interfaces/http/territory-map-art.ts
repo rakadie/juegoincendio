@@ -90,19 +90,19 @@ export function renderTerritoryMapDefs(): string {
 
       .territory-map .map-pin { filter: url(#territory-overlay-shadow); }
       .territory-map .map-pin-hit-target { fill: #fff; fill-opacity: .001; stroke: none; pointer-events: all; }
-      .territory-map .map-pin-halo { fill: none; stroke: #fff2d1; stroke-width: 3; opacity: 0; }
-      .territory-map .map-pin-tail { stroke: #fffaf0; stroke-width: 3; stroke-linecap: round; }
-      .territory-map .map-pin-disc { fill: #fffaf0; stroke: #173a30; stroke-width: 3; }
-      .territory-map .map-pin-number { fill: #173a30; font-size: 16px; font-weight: 800; text-anchor: middle; dominant-baseline: central; }
-      .territory-map .map-pin-label-bg { fill: #102821; fill-opacity: .92; stroke: #fffaf0; stroke-opacity: .78; stroke-width: 1.5; }
-      .territory-map .map-pin-label { fill: #fffaf0; font-size: 13px; font-weight: 650; dominant-baseline: central; }
-      .territory-map .map-pin-check { display: none; fill: none; stroke: #fffaf0; stroke-width: 2.7; stroke-linecap: round; stroke-linejoin: round; }
+      .territory-map .map-pin-halo { fill: none; stroke: #fff2d1; stroke-width: 2; opacity: 0; }
+      .territory-map .map-pin-tail { stroke: #fffaf0; stroke-width: 1.5; stroke-linecap: round; opacity: .7; }
+      .territory-map .map-pin-disc { fill: #fffaf0; stroke: #173a30; stroke-width: 2; }
+      .territory-map .map-pin-number { fill: #173a30; font-size: 11px; font-weight: 800; text-anchor: middle; dominant-baseline: central; }
+      .territory-map .map-pin-label-bg { fill: #102821; fill-opacity: .88; stroke: #fffaf0; stroke-opacity: .55; stroke-width: 1; }
+      .territory-map .map-pin-label { fill: #fffaf0; font-size: 9.5px; font-weight: 700; dominant-baseline: central; letter-spacing: .05px; }
+      .territory-map .map-pin-check { display: none; fill: none; stroke: #fffaf0; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
       .territory-map .map-pin[data-applied="true"] .map-pin-disc { fill: #2f6b55; stroke: #fffaf0; }
       .territory-map .map-pin[data-applied="true"] .map-pin-number { fill: #fffaf0; }
       .territory-map .map-pin[data-applied="true"] .map-pin-check { display: block; }
       .territory-map .visual-hotspot:hover, .territory-map .visual-hotspot:focus-visible { filter: none; }
       .territory-map .visual-hotspot:hover .map-pin-halo, .territory-map .visual-hotspot:focus-visible .map-pin-halo, .territory-map .visual-hotspot.is-context-active .map-pin-halo { opacity: 1; }
-      .territory-map .visual-hotspot:focus-visible .map-pin-label-bg { stroke: #ffd68a; stroke-width: 3; }
+      .territory-map .visual-hotspot:focus-visible .map-pin-label-bg { stroke: #ffd68a; stroke-width: 2; }
 
       @keyframes territory-worker-cut {
         from { transform: translate(-.6px, .5px) rotate(-.45deg); }
@@ -115,9 +115,9 @@ export function renderTerritoryMapDefs(): string {
 
       @media (max-width: 700px) {
         .territory-map .map-pin-label-bg, .territory-map .map-pin-label, .territory-map .map-pin-tail { display: none; }
-        .territory-map .map-pin-disc { r: 42px; stroke-width: 3; }
-        .territory-map .map-pin-halo { r: 50px; }
-        .territory-map .map-pin-number { font-size: 34px; }
+        .territory-map .map-pin-disc { r: 14px; stroke-width: 2; }
+        .territory-map .map-pin-halo { r: 19px; }
+        .territory-map .map-pin-number { font-size: 11px; }
         .territory-map .territory-place-label { font-size: 22px; letter-spacing: 1px; }
       }
     </style>
@@ -165,18 +165,18 @@ export function renderTerritoryMapPin(
   applied: boolean,
   side: TerritoryPinSide = 'right'
 ): string {
-  const labelX = side === 'right' ? 15 : -width - 15;
-  const textX = labelX + 18;
-  const tailStart = side === 'right' ? 18 : -18;
-  const tailEnd = side === 'right' ? 27 : -27;
+  const labelX = side === 'right' ? 10 : -width - 10;
+  const textX = labelX + 12;
+  const tailStart = side === 'right' ? 10 : -10;
+  const tailEnd = side === 'right' ? 16 : -16;
   return `<g class="map-pin" data-applied="${applied}" transform="translate(${x} ${y})" aria-hidden="true">
-    <circle class="map-pin-hit-target" r="62" />
+    <circle class="map-pin-hit-target" r="54" />
     <path class="map-pin-tail" d="M${tailStart} 0 H${tailEnd}" />
-    <rect class="map-pin-label-bg" x="${labelX}" y="-18" width="${width}" height="36" rx="9" />
+    <rect class="map-pin-label-bg" x="${labelX}" y="-12" width="${width}" height="24" rx="6" />
     <text class="map-pin-label" x="${textX}" y="0">${label}</text>
-    <circle class="map-pin-halo" r="26" />
-    <circle class="map-pin-disc" r="20" />
+    <circle class="map-pin-halo" r="18" />
+    <circle class="map-pin-disc" r="12" />
     <text class="map-pin-number" x="0" y="0">${number}</text>
-    <g class="map-pin-check" transform="translate(16 -16)"><circle r="7.5" fill="#2f6b55" stroke-width="1.5" /><path d="M-3 0 l2 2 4 -4" stroke-width="1.5" /></g>
+    <g class="map-pin-check" transform="translate(10 -10)"><circle r="5" fill="#2f6b55" stroke-width="1.2" /><path d="M-2 0 l1.5 1.5 3 -3" stroke-width="1.2" /></g>
   </g>`;
 }

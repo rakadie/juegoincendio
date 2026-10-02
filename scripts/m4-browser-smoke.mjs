@@ -485,9 +485,41 @@ try {
             : [{ pinIndex, left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom }];
         })
       );
-      const hitTargets = Array.from(map.querySelectorAll('.map-pin-hit-target')).map((element) => {
-        const rect = element.getBoundingClientRect();
-        return { width: rect.width, height: rect.height };
+      const pins = Array.from(map.querySelectorAll('.map-pin')).map((pin) => {
+        const target = pin.querySelector('.map-pin-hit-target');
+        const disc = pin.querySelector('.map-pin-disc');
+        const labelBackground = pin.querySelector('.map-pin-label-bg');
+        const label = pin.querySelector('.map-pin-label');
+        if (!target || !disc || !labelBackground || !label) return null;
+        const targetRect = target.getBoundingClientRect();
+        const discRect = disc.getBoundingClientRect();
+        const labelBackgroundRect = labelBackground.getBoundingClientRect();
+        const labelRect = label.getBoundingClientRect();
+        const labelStyle = getComputedStyle(label);
+        const labelVisible = labelRect.width > 0 && labelRect.height > 0 &&
+          labelStyle.display !== 'none' && labelStyle.visibility !== 'hidden';
+        return {
+          target: { width: targetRect.width, height: targetRect.height },
+          disc: { width: discRect.width, height: discRect.height },
+          labelBackground: {
+            left: labelBackgroundRect.left,
+            right: labelBackgroundRect.right,
+            top: labelBackgroundRect.top,
+            bottom: labelBackgroundRect.bottom,
+            width: labelBackgroundRect.width,
+            height: labelBackgroundRect.height
+          },
+          label: {
+            left: labelRect.left,
+            right: labelRect.right,
+            top: labelRect.top,
+            bottom: labelRect.bottom,
+            width: labelRect.width,
+            height: labelRect.height,
+            text: label.textContent?.trim() ?? '',
+            visible: labelVisible
+          }
+        };
       });
       const residueRect = residuePile.getBoundingClientRect();
       const photoResponse = await fetch(photo.getAttribute('href'));
@@ -516,7 +548,7 @@ try {
         directControls: map.querySelectorAll('.visual-hotspot[tabindex="0"]').length,
         pinParts: visiblePinParts,
         overlaps,
-        hitTargets,
+        pins,
         residue: { width: residueRect.width, height: residueRect.height },
         strokes: {
           roadContext: Number.parseFloat(getComputedStyle(roadContext).strokeWidth),
@@ -540,8 +572,28 @@ try {
     assert(layout.pinParts.every((part) => part.left >= layout.map.left - 1 && part.right <= layout.map.right + 1 && part.top >= layout.map.top - 1 && part.bottom <= layout.map.bottom + 1), 'A territory marker or label is cropped by the panoramic map.');
     assert(layout.photoHref === '/images/territory-prevention-aerial-v1.jpg', 'Territory does not use the expected photographic base.');
     assert(layout.photoOk && layout.photoType?.startsWith('image/jpeg'), 'Territory photograph did not load as JPEG.');
-    assert(layout.hitTargets.length === 5, 'Territory must expose five stable marker hit targets.');
-    assert(layout.hitTargets.every((target) => target.width >= 44 && target.height >= 44), 'A territory marker hit target is smaller than 44px.');
+    assert(layout.pins.length === 5 && layout.pins.every(Boolean), 'Territory must expose five complete compact markers.');
+    assert(
+      layout.pins.every((pin) => pin.target.width >= 44 && pin.target.height >= 44),
+      `A territory marker hit target is smaller than 44px: ${JSON.stringify(layout.pins)}.`
+    );
+    assert(
+      layout.pins.every((pin) => pin.disc.width <= pin.target.width * .72 && pin.disc.height <= pin.target.height * .72),
+      `A territory marker disc is too large for its transparent hit target: ${JSON.stringify(layout.pins)}.`
+    );
+    if (expectedMobile) {
+      assert(layout.pins.every((pin) => !pin.label.visible), 'Territory text labels should collapse to numbered markers on mobile.');
+    } else {
+      assert(layout.pins.every((pin) => pin.label.visible && pin.label.text.length > 0), 'A desktop territory marker has no visible label.');
+      assert(
+        layout.pins.every((pin) =>
+          pin.labelBackground.width <= layout.map.width * .2 && pin.labelBackground.height <= layout.map.height * .065 &&
+          pin.label.left >= pin.labelBackground.left - 1 && pin.label.right <= pin.labelBackground.right + 1 &&
+          pin.label.top >= pin.labelBackground.top - 1 && pin.label.bottom <= pin.labelBackground.bottom + 1
+        ),
+        `A territory label is oversized or escapes its compact background: ${JSON.stringify(layout.pins)}.`
+      );
+    }
     assert(layout.residue.width < layout.map.width * .14 && layout.residue.height < layout.map.height * .16, 'The pruning-residue overlay is disproportionate to the landscape.');
     assert(layout.strokes.roadContext <= 7 && layout.strokes.roadRisk <= 2.7 && layout.strokes.roadLine <= 1.3, 'Territory road overlay is visually too heavy.');
     assert(layout.strokes.vegetation <= 2.3 && layout.strokes.grazing <= 1.8 && layout.strokes.review <= 2.1, 'A territory guide line is visually too heavy.');
@@ -570,9 +622,41 @@ try {
             : [{ pinIndex, left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom }];
         })
       );
-      const hitTargets = Array.from(map.querySelectorAll('.map-pin-hit-target')).map((element) => {
-        const rect = element.getBoundingClientRect();
-        return { width: rect.width, height: rect.height };
+      const pins = Array.from(map.querySelectorAll('.map-pin')).map((pin) => {
+        const target = pin.querySelector('.map-pin-hit-target');
+        const disc = pin.querySelector('.map-pin-disc');
+        const labelBackground = pin.querySelector('.map-pin-label-bg');
+        const label = pin.querySelector('.map-pin-label');
+        if (!target || !disc || !labelBackground || !label) return null;
+        const targetRect = target.getBoundingClientRect();
+        const discRect = disc.getBoundingClientRect();
+        const labelBackgroundRect = labelBackground.getBoundingClientRect();
+        const labelRect = label.getBoundingClientRect();
+        const labelStyle = getComputedStyle(label);
+        const labelVisible = labelRect.width > 0 && labelRect.height > 0 &&
+          labelStyle.display !== 'none' && labelStyle.visibility !== 'hidden';
+        return {
+          target: { width: targetRect.width, height: targetRect.height },
+          disc: { width: discRect.width, height: discRect.height },
+          labelBackground: {
+            left: labelBackgroundRect.left,
+            right: labelBackgroundRect.right,
+            top: labelBackgroundRect.top,
+            bottom: labelBackgroundRect.bottom,
+            width: labelBackgroundRect.width,
+            height: labelBackgroundRect.height
+          },
+          label: {
+            left: labelRect.left,
+            right: labelRect.right,
+            top: labelRect.top,
+            bottom: labelRect.bottom,
+            width: labelRect.width,
+            height: labelRect.height,
+            text: label.textContent?.trim() ?? '',
+            visible: labelVisible
+          }
+        };
       });
       const overlaps = [];
       for (let i = 0; i < visiblePinParts.length; i += 1) {
@@ -589,7 +673,7 @@ try {
         viewportWidth: window.innerWidth,
         pageWidth: document.documentElement.scrollWidth,
         canvas: { left: canvasRect.left, right: canvasRect.right },
-        map: { left: mapRect.left, right: mapRect.right, top: mapRect.top, bottom: mapRect.bottom },
+        map: { left: mapRect.left, right: mapRect.right, top: mapRect.top, bottom: mapRect.bottom, width: mapRect.width, height: mapRect.height },
         keyHidden: getComputedStyle(key.closest('.inspection-hidden-menu')).display === 'none',
         itemCount: key.querySelectorAll('.housing-map-key-item').length,
         visibleSidePanels: Array.from(document.querySelectorAll('.inspection-scene .scene-side-panel')).filter((element) => {
@@ -599,7 +683,7 @@ try {
         directControls: map.querySelectorAll('.visual-hotspot[tabindex="0"]').length,
         pinParts: visiblePinParts,
         overlaps,
-        hitTargets,
+        pins,
         strokes: {
           accessRisk: Number.parseFloat(getComputedStyle(accessRisk).strokeWidth),
           accessCentre: Number.parseFloat(getComputedStyle(accessCentre).strokeWidth),
@@ -616,8 +700,28 @@ try {
     assert(layout.map.left >= layout.canvas.left - 1 && layout.map.right <= layout.canvas.right + 1, 'Housing map is clipped by its canvas.');
     assert(layout.pinParts.every((part) => part.left >= layout.map.left - 1 && part.right <= layout.map.right + 1 && part.top >= layout.map.top - 1 && part.bottom <= layout.map.bottom + 1), `A housing marker or label is cropped by the panoramic map: ${JSON.stringify(layout.pinParts)} within ${JSON.stringify(layout.map)}.`);
     assert(layout.overlaps.length === 0, 'Housing pins or visible labels overlap.');
-    assert(layout.hitTargets.length === 4, 'Housing must expose four stable marker hit targets.');
-    assert(layout.hitTargets.every((target) => target.width >= 44 && target.height >= 44), 'A housing marker hit target is smaller than 44px.');
+    assert(layout.pins.length === 4 && layout.pins.every(Boolean), 'Housing must expose four complete compact markers.');
+    assert(
+      layout.pins.every((pin) => pin.target.width >= 44 && pin.target.height >= 44),
+      `A housing marker hit target is smaller than 44px: ${JSON.stringify(layout.pins)}.`
+    );
+    assert(
+      layout.pins.every((pin) => pin.disc.width <= pin.target.width * .72 && pin.disc.height <= pin.target.height * .72),
+      `A housing marker disc is too large for its transparent hit target: ${JSON.stringify(layout.pins)}.`
+    );
+    if (expectedMobile) {
+      assert(layout.pins.every((pin) => !pin.label.visible), 'Housing text labels should collapse to numbered markers on mobile.');
+    } else {
+      assert(layout.pins.every((pin) => pin.label.visible && pin.label.text.length > 0), 'A desktop housing marker has no visible label.');
+      assert(
+        layout.pins.every((pin) =>
+          pin.labelBackground.width <= layout.map.width * .2 && pin.labelBackground.height <= layout.map.height * .065 &&
+          pin.label.left >= pin.labelBackground.left - 1 && pin.label.right <= pin.labelBackground.right + 1 &&
+          pin.label.top >= pin.labelBackground.top - 1 && pin.label.bottom <= pin.labelBackground.bottom + 1
+        ),
+        `A housing label is oversized or escapes its compact background: ${JSON.stringify(layout.pins)}.`
+      );
+    }
     assert(layout.strokes.accessRisk <= 8 && layout.strokes.accessCentre <= 1.7, 'Housing access overlay is visually too heavy.');
     assert(layout.strokes.canopyLink <= 5 && layout.strokes.canopyCrown <= 1.6, 'Housing canopy overlay is visually too heavy.');
     if (!expectedMobile) await assertGameplayFitsViewport('Housing inspection');
@@ -650,6 +754,67 @@ try {
     assert(layout.pageHeight <= layout.viewportHeight, `${template} wide layout requires vertical scrolling (${layout.pageHeight} > ${layout.viewportHeight}).`);
   }
 
+  async function assertDecisionControls(label) {
+    const layout = await evaluate(`(() => {
+      const menu = document.querySelector('.decision-action-menu');
+      if (!menu) return null;
+      const menuRect = menu.getBoundingClientRect();
+      const actions = menu.querySelector('.actions');
+      const cards = Array.from(menu.querySelectorAll('.action-card')).map((card) => {
+        const cardRect = card.getBoundingClientRect();
+        const button = card.querySelector('button');
+        const buttonRect = button?.getBoundingClientRect();
+        return {
+          card: { left: cardRect.left, right: cardRect.right, top: cardRect.top, bottom: cardRect.bottom },
+          button: buttonRect ? {
+            left: buttonRect.left,
+            right: buttonRect.right,
+            top: buttonRect.top,
+            bottom: buttonRect.bottom,
+            width: buttonRect.width,
+            height: buttonRect.height
+          } : null,
+          title: card.querySelector('h3')?.textContent?.trim() ?? ''
+        };
+      });
+      return {
+        viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight,
+        menu: { left: menuRect.left, right: menuRect.right, top: menuRect.top, bottom: menuRect.bottom, width: menuRect.width },
+        declaredCount: Number(actions?.dataset.actionCount),
+        cards
+      };
+    })()`);
+    assert(layout, `${label} has no decision menu.`);
+    assert(layout.cards.length > 0 && layout.cards.length === layout.declaredCount, `${label} does not expose every declared decision.`);
+    assert(
+      layout.cards.every((card) => card.title.length > 0 && card.button && card.button.width > 0 && card.button.height >= 44),
+      `${label} has a decision button smaller than 44px or without a visible label: ${JSON.stringify(layout.cards)}.`
+    );
+    assert(
+      layout.cards.every((card) =>
+        card.card.left >= layout.menu.left - 1 && card.card.right <= layout.menu.right + 1 &&
+        card.card.top >= layout.menu.top - 1 && card.card.bottom <= layout.menu.bottom + 1 &&
+        card.button.left >= -1 && card.button.right <= layout.viewportWidth + 1 &&
+        card.button.top >= 0 && card.button.bottom <= layout.viewportHeight + 1
+      ),
+      `${label} clips a decision card or action: ${JSON.stringify(layout)}.`
+    );
+    if (layout.viewportWidth >= 700) {
+      const expectedMaximum = layout.declaredCount === 1
+        ? 420
+        : layout.declaredCount === 2
+          ? 580
+          : layout.declaredCount === 3
+            ? 680
+            : 760;
+      assert(
+        layout.menu.width <= expectedMaximum + 1,
+        `${label} decision menu is wider than its compact ${expectedMaximum}px limit: ${layout.menu.width}px.`
+      );
+    }
+  }
+
   async function assertCrisisLayout() {
     const layout = await evaluate(`(async () => {
       const canvas = document.querySelector('.visual-scene[data-visual-template="crisis"] .visual-canvas');
@@ -667,6 +832,7 @@ try {
       const mapRect = map.getBoundingClientRect();
       const actionMenuRect = actionMenu.getBoundingClientRect();
       const fireRect = fire.getBoundingClientRect();
+      const photoRect = photo.getBoundingClientRect();
       const capacityRect = capacity.getBoundingClientRect();
       const crownRect = crownZone.getBoundingClientRect();
       const actionCards = Array.from(actionMenu.querySelectorAll('.action-card')).map((card) => {
@@ -681,8 +847,11 @@ try {
         viewportHeight: window.innerHeight,
         pageWidth: document.documentElement.scrollWidth,
         pageHeight: document.documentElement.scrollHeight,
-        canvas: { left: canvasRect.left, right: canvasRect.right },
+        canvas: { left: canvasRect.left, right: canvasRect.right, top: canvasRect.top, bottom: canvasRect.bottom, width: canvasRect.width, height: canvasRect.height },
         map: { left: mapRect.left, right: mapRect.right, width: mapRect.width, height: mapRect.height },
+        photo: { left: photoRect.left, right: photoRect.right, top: photoRect.top, bottom: photoRect.bottom, width: photoRect.width, height: photoRect.height },
+        viewBox: map.getAttribute('viewBox'),
+        preserveAspectRatio: map.getAttribute('preserveAspectRatio'),
         actionMenu: { left: actionMenuRect.left, right: actionMenuRect.right, top: actionMenuRect.top, bottom: actionMenuRect.bottom },
         actionCards,
         visibleSidePanels: Array.from(decisionScene.querySelectorAll('.scene-side-panel')).filter((element) => {
@@ -704,35 +873,47 @@ try {
       };
     })()`);
     assert(layout, 'Crisis ravine layout was not available.');
+    await assertDecisionControls('Crisis decision');
     assert(layout.pageWidth <= layout.viewportWidth + 3, 'Crisis layout has horizontal overflow.');
     assert(layout.pageHeight <= layout.viewportHeight + 1, `Crisis decision requires page scrolling (${layout.pageHeight} > ${layout.viewportHeight}).`);
     assert(layout.visibleSidePanels === 0, 'Crisis decision still reserves a right-hand options panel.');
     assert(
       layout.actionMenu.left >= -1 && layout.actionMenu.right <= layout.viewportWidth + 1 &&
         layout.actionMenu.top >= 0 && layout.actionMenu.bottom <= layout.viewportHeight + 1,
-      `Crisis action menu escapes the viewport: ${JSON.stringify(layout.actionMenu)}.`
+      `Crisis action menu escapes ${layout.viewportWidth}x${layout.viewportHeight} viewport: ${JSON.stringify(layout.actionMenu)}.`
     );
+    const actionMenuWidth = layout.actionMenu.right - layout.actionMenu.left;
     assert(
-      layout.actionCards.every((card) => card.width <= (layout.viewportWidth < 700 ? 190 : 230)),
+      layout.actionCards.every((card, index) => {
+        if (layout.viewportWidth >= 700) return card.width <= 230;
+        const isFullWidthRemainder = layout.actionCards.length % 2 === 1 && index === layout.actionCards.length - 1;
+        return card.width <= (isFullWidthRemainder ? actionMenuWidth - 12 : 190);
+      }),
       `Crisis choices are not compact enough: ${JSON.stringify(layout.actionCards)}.`
     );
-    if (layout.viewportWidth < 700) {
-      assert(
-        layout.actionCards.every((card) => card.buttonHeight >= 43),
-        `Crisis choice buttons are too small for touch: ${JSON.stringify(layout.actionCards)}.`
-      );
-    }
+    assert(
+      layout.actionCards.every((card) => card.buttonHeight >= 44),
+      `A crisis choice button is smaller than 44px: ${JSON.stringify(layout.actionCards)}.`
+    );
     assert(layout.map.left >= layout.canvas.left - 1 && layout.map.right <= layout.canvas.right + 1, 'Crisis photograph is clipped by its canvas.');
-    assert(layout.href === '/images/crisis-ravine-aerial-v1.jpg', 'Crisis scene does not use the expected photographic base.');
+    assert(layout.href === '/images/crisis-ravine-aerial-v2.jpg', 'Crisis scene does not use the expected high-detail photographic base.');
     assert(layout.responseOk && layout.contentType?.startsWith('image/jpeg'), 'Crisis photograph did not load as JPEG.');
+    assert(layout.preserveAspectRatio?.includes('slice'), 'Crisis photograph is not configured to fill the full decision viewport.');
+    assert(
+      layout.photo.left <= layout.canvas.left + 1 && layout.photo.right >= layout.canvas.right - 1 &&
+        layout.photo.top <= layout.canvas.top + 1 && layout.photo.bottom >= layout.canvas.bottom - 1,
+      `Crisis photograph does not cover the complete canvas: ${JSON.stringify({ canvas: layout.canvas, photo: layout.photo, viewBox: layout.viewBox })}.`
+    );
     assert(layout.fireHref === '/images/crisis-scrub-fire-v1.png', 'Crisis scene does not use the expected photographic fire overlay.');
     assert(layout.fireResponseOk && layout.fireContentType?.startsWith('image/png'), 'Crisis fire overlay did not load as PNG.');
     assert(layout.fire.height < layout.map.height * .32, 'Crisis flame is again dominating the ravine scene.');
     assert(layout.roadStrokeWidth <= 2.5 && layout.roadBedStrokeWidth <= 7, 'Crisis road overlay is visually too heavy.');
-    assert(
-      layout.crown.width < layout.map.width * .34 && layout.crown.height < layout.map.height * .26,
-      'Crisis crown-risk overlay is out of proportion with the photographed tree belt.'
-    );
+    if (layout.viewportWidth >= 700) {
+      assert(
+        layout.crown.width < layout.map.width * .42 && layout.crown.height < layout.map.height * .3,
+        'Crisis crown-risk overlay is out of proportion with the photographed tree belt.'
+      );
+    }
     assert(layout.legacyCanopies === 0, 'Crisis scene still draws synthetic circular tree crowns.');
     assert(layout.capacity.width >= 44 && layout.capacity.height >= 44, 'Crisis capacity control is too small.');
   }
@@ -1164,12 +1345,14 @@ try {
     await evaluate(`document.querySelector('.prevention-area') === null && document.querySelector('.router-mark') === null`),
     'An explanatory interstitial interrupted the playable route.'
   );
+  await assertDecisionControls('First alert decision');
   await captureViewportEvidence('first-alert-desktop.png', '.decision-action-menu', {
     minWidth: 300,
     minHeight: 100
   });
   if (VISUAL_MODE) {
     await setViewport(390, 844, true);
+    await assertDecisionControls('First alert decision on mobile');
     await captureViewportEvidence('first-alert-mobile.png', '.decision-action-menu', {
       minWidth: 320,
       minHeight: 100

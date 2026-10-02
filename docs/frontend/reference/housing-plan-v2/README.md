@@ -8,7 +8,7 @@ La escena fotográfica anterior seguía encajada entre un encabezado grande, un 
 
 ## Comportamiento resultante
 
-La fotografía aérea ocupa toda la superficie jugable. La vivienda, las copas, la vegetación baja y el acceso mantienen una perspectiva común con el mapa de fincas. No existe una columna de tarjetas: cada punto abre sobre la propia fotografía una ficha contextual compacta y accesible. El objetivo, el contador, la respuesta a la última decisión y el botón para continuar también flotan sobre el mapa sin crear una segunda pantalla.
+La fotografía aérea ocupa toda la superficie jugable. La vivienda, las copas, la vegetación baja y el acceso mantienen una perspectiva común con el mapa de fincas. No existe una columna de tarjetas: cada punto abre sobre la propia fotografía una ficha contextual compacta, estable y accesible. Los marcadores visibles se han reducido, mientras sus áreas táctiles permanecen por encima de 44 px. El objetivo, el contador, la respuesta a la última decisión y el botón para continuar también flotan sobre el mapa sin crear una segunda pantalla.
 
 Los cambios proceden de las decisiones registradas por el motor:
 
@@ -50,7 +50,7 @@ La revisión final distingue lo aplicado y lo que quedó pendiente:
 
 ## Validación realizada
 
-- `npm run accept:m5`: auditoría sin vulnerabilidades, tipos y compilación correctos, 203 pruebas Vitest, 4 pruebas de aceptación M4 y 4 de aceptación M5.
+- `npm run accept:m5`: auditoría sin vulnerabilidades, tipos y compilación correctos, 204 pruebas Vitest, 4 pruebas de aceptación M4 y 4 de aceptación M5.
 - Chrome real a 1920 × 920, 1280 × 900 y 390 × 844: `M5_VISUAL_SMOKE_OK`, sin desplazamiento de página, espacios blancos, tarjetas laterales ni acciones fuera de pantalla.
 - Apertura y selección de los tres puntos con toque, teclado y ratón; la ficha permanece dentro del lienzo.
 - Comprobación antes/después de vegetación baja, copas y acceso mediante estilos calculados del navegador.
@@ -71,4 +71,4 @@ La revisión final distingue lo aplicado y lo que quedó pendiente:
 
 ## Limitaciones y reversión
 
-Las imágenes de fondo y los actores raster son recursos educativos y no documentan una finca, vivienda o cuadrilla reales. En móvil se conserva la panorámica completa en una banda central, acompañada por la misma fotografía oscurecida y nítida, para que ningún punto quede recortado y toda la pantalla mantenga contexto. El presupuesto obliga a dejar una condición de vivienda pendiente y la revisión final la hace explícita.
+Las imágenes de fondo y los actores raster son recursos educativos y no documentan una finca, vivienda o cuadrilla reales. En móvil se conserva la panorámica completa en una banda central, acompañada por una extensión fotográfica desenfocada, para que ningún punto quede recortado y toda la pantalla mantenga contexto. El presupuesto obliga a dejar una condición de vivienda pendiente y la revisión final la hace explícita.

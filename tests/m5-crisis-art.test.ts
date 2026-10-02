@@ -53,10 +53,10 @@ describe('M5.4 shared ravine crisis art direction', () => {
     const prepared = reachPreparedCrisis('m5-crisis-prepared');
     const vulnerable = reachVulnerableCrisis('m5-crisis-vulnerable');
 
-    expect(prepared.markup).toContain('data-visual-base="shared-ravine-photo-v2"');
-    expect(vulnerable.markup).toContain('data-visual-base="shared-ravine-photo-v2"');
-    expect(prepared.markup).toContain('href="/images/crisis-ravine-aerial-v1.jpg"');
-    expect(vulnerable.markup).toContain('href="/images/crisis-ravine-aerial-v1.jpg"');
+    expect(prepared.markup).toContain('data-visual-base="shared-ravine-photo-v3"');
+    expect(vulnerable.markup).toContain('data-visual-base="shared-ravine-photo-v3"');
+    expect(prepared.markup).toContain('href="/images/crisis-ravine-aerial-v2.jpg"');
+    expect(vulnerable.markup).toContain('href="/images/crisis-ravine-aerial-v2.jpg"');
     expect(prepared.markup).toContain('href="/images/crisis-scrub-fire-v1.png"');
     expect(prepared.markup).toContain('class="visual-fire visual-fire-photo"');
     expect(prepared.markup).toContain('class="crisis-road-bed"');

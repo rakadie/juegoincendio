@@ -15,7 +15,7 @@ La fotografía ocupa toda la superficie jugable entre la cabecera y el borde inf
 - ficha contextual junto al punto que se abre al tocarlo, enfocarlo o hacer clic;
 - confirmación y mejoras elegidas, sobre el borde inferior de la propia fotografía.
 
-Los cinco puntos continúan siendo controles accesibles y conservan sus números, estados y áreas de pulsación. La ficha contextual explica con palabras sencillas qué ocurre y qué mejora se puede realizar. El mapa admite ratón, teclado y toque sin depender de un panel separado.
+Los cinco puntos continúan siendo controles accesibles, pero ahora usan discos y rótulos compactos. El área táctil transparente se mantiene por encima de 44 px. Las etiquetas nombran el elemento —no un estado antiguo— y la ficha contextual separa condición, actuación y efecto. Puede cerrarse con su control visible o con `Escape`.
 
 Los cambios proceden del estado real del juego. Al gestionar vegetación se muestra sobre el lugar una persona trabajando con desbrozadora; al activar el pastoreo aparece un pequeño rebaño de cabras. Son recursos raster fotorrealistas con movimiento CSS suave, integrados en la escena y escalados según la perspectiva. Los restos, huecos entre vegetación y corredor de la pista siguen cambiando con cada actuación. La evaluación técnica permanece identificada como una revisión: el texto confirma que no se ha quemado nada.
 
@@ -66,8 +66,8 @@ La combinación de mayor reducción de continuidad satura el indicador en `0`; e
 - Animaciones raster visibles únicamente cuando el estado correspondiente está aplicado.
 - Límite de tres actuaciones y avance directo a vivienda, incendio y resultado.
 - Las 30 combinaciones legales de tres actuaciones territoriales y dos de vivienda producen dimensiones enteras entre 0 y 100.
-- `npm run accept:m5`: auditoría sin vulnerabilidades, tipos y compilación correctos, 203 pruebas Vitest, 4 pruebas de aceptación M4 y 4 de aceptación M5.
+- `npm run accept:m5`: auditoría sin vulnerabilidades, tipos y compilación correctos, 204 pruebas Vitest, 4 pruebas de aceptación M4 y 4 de aceptación M5.
 
 ## Alcance y reversión
 
-No cambian el motor, las acciones, el presupuesto ni las consecuencias. La fotografía sigue siendo una base neutral y los cambios visibles proceden del presentador. En móvil, la panorámica completa se mantiene en una banda central y la misma imagen, oscurecida pero nítida, ocupa el resto del fondo para evitar recortes o huecos sin paisaje. Los recursos raster son una primera biblioteca de efectos ampliable con fuego, equipos y animales adicionales.
+No cambian el motor, las acciones, el presupuesto ni las consecuencias. La fotografía sigue siendo una base neutral y los cambios visibles proceden del presentador. En móvil, la panorámica completa se mantiene en una banda central y una extensión desenfocada de la misma imagen ocupa el resto del fondo: así se conservan todos los puntos sin recortes ni zonas blancas. Los recursos raster son una primera biblioteca de efectos ampliable con fuego, equipos y animales adicionales.

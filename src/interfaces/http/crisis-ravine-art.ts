@@ -2,7 +2,7 @@
  * Photo-backed crisis scene. The photograph is deliberately neutral: every
  * operational consequence is drawn as an SVG overlay from the current game state.
  */
-export const CRISIS_RAVINE_BACKGROUND_IMAGE = '/images/crisis-ravine-aerial-v1.jpg';
+export const CRISIS_RAVINE_BACKGROUND_IMAGE = '/images/crisis-ravine-aerial-v2.jpg';
 export const CRISIS_FIRE_IMAGE = '/images/crisis-scrub-fire-v1.png';
 
 export const CRISIS_ROAD_PATH =
@@ -30,8 +30,6 @@ export function renderCrisisRavineDefs(): string {
       .crisis-photo .crisis-base, .crisis-photo .crisis-photo-layer { pointer-events: none; }
       .crisis-photo .crisis-photo-background { width: 900px; height: 500px; }
       .crisis-photo .crisis-photo-wash { fill: url(#crisis-photo-wash); }
-      .crisis-photo .crisis-scene-caption { fill: #102821; fill-opacity: .88; stroke: #f8f2df; stroke-opacity: .72; stroke-width: 1; }
-      .crisis-photo .crisis-place-label { fill: #fffaf0; font-size: 13px; font-weight: 750; letter-spacing: 1.7px; }
       .crisis-photo .m5-art-smoke { filter: blur(1.2px); }
       .crisis-photo .visual-hotspot path,
       .crisis-photo .visual-hotspot circle { vector-effect: non-scaling-stroke; }
@@ -68,6 +66,13 @@ export function renderCrisisRavineDefs(): string {
       .crisis-photo #crisis-crown.state-crownFire .crisis-crown-zone { fill: #c9653d; opacity: .28; }
       .crisis-photo #crisis-crown.state-crownFire .crisis-crown-boundary { stroke: #f09a55; stroke-width: 1.35; stroke-dasharray: 5 6; opacity: .84; }
       .crisis-photo .visual-capacity { filter: url(#crisis-overlay-shadow); }
+      .crisis-photo .visual-capacity .capacity-shell { fill: #071c26; fill-opacity: .9; stroke: #f0b44b; stroke-width: 1.3; }
+      .crisis-photo .visual-capacity .capacity-icon { fill: none; stroke: #fffaf0; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+      .crisis-photo .visual-capacity .capacity-label { fill: #fffaf0; font-size: 7px; font-weight: 850; letter-spacing: .08em; }
+      .crisis-photo .crisis-tactical-marker { filter: url(#crisis-overlay-shadow); }
+      .crisis-photo .crisis-tactical-marker .marker-shell { fill: #0b302c; fill-opacity: .92; stroke: #f5c66e; stroke-width: 1.2; }
+      .crisis-photo .crisis-tactical-marker circle,
+      .crisis-photo .crisis-tactical-marker .marker-cross { fill: none; stroke: #fffaf0; stroke-width: 1.1; stroke-linecap: round; }
       .crisis-photo #crisis-pressure .crisis-flame { transform-box: fill-box; transform-origin: center bottom; filter: url(#crisis-overlay-shadow); }
       .crisis-photo #crisis-pressure.state-surface .crisis-flame { transform: scale(.76); }
       .crisis-photo #crisis-pressure.state-severe .crisis-flame { transform: scale(1.08); }
@@ -75,11 +80,6 @@ export function renderCrisisRavineDefs(): string {
       .crisis-photo #crisis-pressure.state-surface .visual-fire-photo { opacity: .78; }
       .crisis-photo .crisis-capacity-hit-target { fill: #fff; fill-opacity: .001; stroke: none; pointer-events: all; }
       .crisis-photo .visual-label-group text { font-size: 15px; }
-
-      @media (max-width: 700px) {
-        .crisis-photo .crisis-place-label { font-size: 16px; letter-spacing: 1px; }
-        .crisis-photo .visual-capacity text { font-size: 26px; }
-      }
     </style>
   </defs>`;
 }
@@ -89,10 +89,6 @@ export function renderCrisisRavineBase(): string {
     <rect width="900" height="500" fill="#77745d" />
     <image class="crisis-photo-layer crisis-photo-background" data-background-layer="photo" href="${CRISIS_RAVINE_BACKGROUND_IMAGE}" x="0" y="0" width="900" height="500" preserveAspectRatio="xMidYMid slice" />
     <rect class="crisis-photo-layer crisis-photo-wash" width="900" height="500" />
-    <g transform="translate(145 20)">
-      <rect class="crisis-scene-caption" width="250" height="42" rx="10" />
-      <text class="crisis-place-label" x="18" y="27">BARRANCO Y ACCESO</text>
-    </g>
   </g>`;
 }
 

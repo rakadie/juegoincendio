@@ -65,7 +65,10 @@ describe('M3.8 north-star interface', () => {
     expect(html).toContain('class="decision-action-menu"');
     expect(html).toContain('data-action-count="');
     expect(html).toContain("counter-increment: decision-choice");
-    expect(html).toContain('width: min(940px, calc(100% - 56px));');
+    expect(html).toContain('width: min(760px, calc(100% - 56px));');
+    expect(html).toContain(
+      '.decision-action-menu:has(.actions[data-action-count="3"]) { width: min(680px, calc(100% - 56px)); }'
+    );
     expect(html).toContain('class="decision-context"');
     expect(html).toContain('class="decision-outcome"');
     expect(html).toContain('data-crisis-condition-slot');
@@ -154,7 +157,22 @@ describe('M3.8 north-star interface', () => {
     expect(html).toContain('@media (prefers-reduced-motion: reduce)');
     expect(html).toContain("element.classList.add('is-context-active')");
     expect(html).toContain("card.classList.add('is-closing')");
+    expect(html).toContain('.visual-card-close {');
+    expect(html).toContain("card.querySelector('.visual-card-close')");
+    expect(html).toContain('function closeVisualCardAndRestoreFocus(card)');
+    expect(html).toContain('data-visual-action-label');
     expect(html).toContain('@keyframes contextual-card-enter');
+  });
+
+  it('uses product-facing language on entry and mission screens', () => {
+    const html = renderPrototypePage();
+    expect(html).toContain('Simulador interactivo');
+    expect(html).toContain('Recorrido guiado');
+    expect(html).toContain('Duración según recorrido');
+    expect(html).toContain('Cómo funciona la partida');
+    expect(html).toContain('Clave de la misión');
+    expect(html).not.toContain('Juego educativo');
+    expect(html).not.toContain('Duración orientativa');
   });
 
   it('meets text contrast for the primary action color', () => {

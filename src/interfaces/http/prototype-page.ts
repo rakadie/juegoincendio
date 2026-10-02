@@ -80,11 +80,11 @@ export function renderPrototypePage(): string {
         flex: 0 0 auto;
         border: 2px solid #f0b44b;
         border-radius: 12px 12px 16px 16px;
-        color: #fff;
-        background: #982c23;
-        font-size: 1.35rem;
+        color: #ffd271;
+        background: linear-gradient(160deg, #8e241f, #3e1720);
         box-shadow: inset 0 0 0 3px #071726;
       }
+      .brand-mark svg { width: 24px; height: 28px; fill: currentColor; filter: drop-shadow(0 2px 2px rgba(0,0,0,.35)); }
       .brand-copy { min-width: 0; }
       .brand-copy strong { display: block; font-size: 1rem; letter-spacing: .08em; text-transform: uppercase; }
       .brand-copy small { display: block; margin-top: 2px; color: #b9c8d2; font-size: .69rem; }
@@ -177,7 +177,7 @@ export function renderPrototypePage(): string {
         justify-content: center;
         padding: clamp(30px, 5vw, 76px);
       }
-      .entry-copy h1 { max-width: 780px; margin-bottom: 18px; }
+      .entry-copy h1 { max-width: 780px; margin-bottom: 18px; font-size: clamp(2.65rem, 4.4vw, 4rem); line-height: .98; }
       .entry-copy .lead { max-width: 720px; font-size: clamp(1rem, 1.5vw, 1.18rem); }
       .entry-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 4px; }
       .entry-meta span {
@@ -496,7 +496,7 @@ export function renderPrototypePage(): string {
         background: rgba(62,123,93,.24);
       }
       .scene.briefing .scene-heading-copy { max-width: 780px; }
-      .scene.briefing h1 { max-width: 760px; margin-bottom: 10px; font-size: clamp(2.15rem, 4.6vw, 4.05rem); }
+      .scene.briefing h1 { max-width: 760px; margin-bottom: 10px; font-size: clamp(2.15rem, 4vw, 3.35rem); }
       .scene.briefing .lead { max-width: 760px; color: #dce7ec; font-size: clamp(.92rem, 1.3vw, 1.08rem); }
       .scene.briefing .eyebrow { color: #f0b44b; }
       .mission-briefing-steps {
@@ -775,13 +775,13 @@ export function renderPrototypePage(): string {
         position: absolute;
         top: 16px;
         right: 16px;
-        width: min(360px, calc(100% - 32px));
+        width: min(296px, calc(100% - 32px));
         max-height: calc(100% - 32px);
-        padding: 14px;
+        padding: 11px;
         overflow: hidden auto;
         border: 1px solid rgba(245, 210, 145, .48);
         border-left: 3px solid #d89034;
-        border-radius: 10px;
+        border-radius: 8px;
         color: #f7faf7;
         background: linear-gradient(145deg, rgba(7, 23, 38, .97), rgba(13, 43, 43, .95));
         box-shadow: 0 18px 44px rgba(3, 13, 20, .42), inset 0 1px rgba(255,255,255,.08);
@@ -792,23 +792,42 @@ export function renderPrototypePage(): string {
       .visual-hover-card:not([hidden]) { animation: contextual-card-enter .24s cubic-bezier(.2,.8,.2,1) both; }
       .visual-hover-card.is-closing { animation: contextual-card-exit .14s ease-in both; pointer-events: none; }
       .visual-hover-card.selected { border-color: #80b88c; border-left-color: #80b88c; box-shadow: 0 18px 44px rgba(3,13,20,.38), inset 0 0 0 1px rgba(128,184,140,.45); }
+      .visual-card-close {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        width: 32px;
+        height: 32px;
+        display: grid;
+        place-items: center;
+        padding: 0;
+        border: 1px solid rgba(255,255,255,.2);
+        border-radius: 6px;
+        color: #edf5f1;
+        background: rgba(255,255,255,.07);
+        cursor: pointer;
+        font-size: 1rem;
+        line-height: 1;
+      }
+      .visual-card-close:hover { background: rgba(255,255,255,.14); }
       .visual-card-state {
         display: grid;
         grid-template-columns: 18px minmax(0, 1fr);
         align-items: start;
-        gap: 10px;
+        gap: 8px;
+        padding-right: 30px;
       }
       .visual-card-state > span:last-child { display: grid; gap: 2px; }
-      .visual-card-state strong { color: #fffdf4; }
-      .visual-card-state small { color: #f1c97f; }
+      .visual-card-state strong { color: #fffdf4; font-size: .9rem; line-height: 1.2; }
+      .visual-card-state small { color: #f1c97f; font-size: .75rem; }
       .visual-dimension small { color: var(--muted); }
       .visual-explanation { color: #cedbd6; }
-      .visual-explanation { margin: 9px 0 0; font-size: .8rem; line-height: 1.4; }
-      .visual-card-action { display: grid; gap: 7px; margin-top: 12px; padding-top: 11px; border-top: 1px solid rgba(255,255,255,.16); }
-      .visual-card-action > strong { font-size: .92rem; }
-      .visual-card-action p { margin: 0; color: #c8d5d0; font-size: .79rem; line-height: 1.35; }
-      .visual-card-action small { color: #ffb7a8; }
-      .visual-card-action button { justify-self: start; min-width: 120px; }
+      .visual-explanation { margin: 7px 0 0; font-size: .82rem; line-height: 1.38; }
+      .visual-card-action { display: grid; gap: 6px; margin-top: 9px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.16); }
+      .visual-card-action > strong { font-size: .88rem; }
+      .visual-card-action p { margin: 0; color: #c8d5d0; font-size: .8rem; line-height: 1.35; }
+      .visual-card-action small { color: #ffb7a8; font-size: .75rem; }
+      .visual-card-action button { justify-self: start; min-width: 112px; min-height: 44px; }
       @keyframes contextual-card-enter {
         from { opacity: 0; transform: translateY(9px) scale(.985); }
         to { opacity: 1; transform: translateY(0) scale(1); }
@@ -1053,6 +1072,10 @@ export function renderPrototypePage(): string {
         max-height: none;
         aspect-ratio: auto;
       }
+      .inspection-scene .territory-scene-caption,
+      .inspection-scene .territory-place-label,
+      .inspection-scene .housing-scene-caption,
+      .inspection-scene .housing-place-label { display: none; }
       .inspection-map-hud,
       .inspection-map-progress,
       .inspection-response,
@@ -1068,28 +1091,28 @@ export function renderPrototypePage(): string {
       .inspection-map-hud {
         top: clamp(12px, 2vw, 24px);
         left: clamp(12px, 2vw, 28px);
-        width: min(590px, calc(100% - 190px));
-        padding: 12px 15px;
-        border-left: 4px solid #f0b44b;
+        width: min(510px, calc(100% - 170px));
+        padding: 9px 12px;
+        border-left: 3px solid #f0b44b;
         border-radius: 8px;
       }
       .inspection-map-hud .eyebrow { margin-bottom: 2px; color: #f5c66e; font-size: .66rem; }
-      .inspection-map-hud h2 { margin: 0 0 3px; color: #fff; font-size: clamp(1.25rem, 2vw, 1.85rem); line-height: 1.05; }
-      .inspection-map-hud p { margin: 0; color: #dce7e2; font-size: .82rem; line-height: 1.35; }
+      .inspection-map-hud h2 { margin: 0 0 2px; color: #fff; font-size: clamp(1.15rem, 1.65vw, 1.55rem); line-height: 1.08; }
+      .inspection-map-hud p { margin: 0; color: #dce7e2; font-size: .76rem; line-height: 1.32; }
       .inspection-map-progress {
         top: clamp(12px, 2vw, 24px);
         right: clamp(12px, 2vw, 28px);
-        min-width: 132px;
-        padding: 10px 13px;
+        min-width: 112px;
+        padding: 8px 10px;
         border-radius: 8px;
         text-align: right;
       }
       .inspection-map-progress small { display: block; color: #bfcfc8; font-size: .63rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
-      .inspection-map-progress strong { display: block; margin-top: 1px; color: #fff; font-size: 1.2rem; }
+      .inspection-map-progress strong { display: block; margin-top: 1px; color: #fff; font-size: 1.05rem; }
       .inspection-response {
         left: clamp(12px, 2vw, 28px);
         bottom: clamp(12px, 2vw, 24px);
-        width: min(650px, calc(100% - 230px));
+        width: min(590px, calc(100% - 220px));
         display: grid;
         grid-template-columns: minmax(0, 1.2fr) minmax(190px, .8fr);
         gap: 0;
@@ -1137,23 +1160,23 @@ export function renderPrototypePage(): string {
       .inspection-scene .visual-card-layer { position: absolute; inset: 0; z-index: 20; display: block; padding: 0; pointer-events: none; }
       .inspection-scene .visual-hover-card {
         position: absolute;
-        width: min(330px, calc(100% - 28px));
-        max-height: min(430px, calc(100% - 28px));
-        padding: 12px;
+        width: min(296px, calc(100% - 28px));
+        max-height: min(380px, calc(100% - 28px));
+        padding: 10px;
         overflow: auto;
         border: 1px solid rgba(244, 225, 186, .52);
         border-left: 3px solid #d18b31;
-        border-radius: 10px;
+        border-radius: 8px;
         color: #f7faf7;
         background: linear-gradient(145deg, rgba(7,23,38,.97), rgba(13,43,43,.95));
         box-shadow: 0 18px 48px rgba(3, 13, 20, .42);
         backdrop-filter: blur(10px);
         pointer-events: auto;
       }
-      .inspection-scene .visual-hover-card .visual-card-state strong { color: #fffdf4; font-size: .92rem; }
-      .inspection-scene .visual-hover-card .visual-card-state small { color: #f1c97f; }
-      .inspection-scene .visual-hover-card .visual-explanation { color: #cedbd6; font-size: .76rem; }
-      .inspection-scene .visual-hover-card .visual-card-action { margin-top: 8px; padding-top: 8px; }
+      .inspection-scene .visual-hover-card .visual-card-state strong { color: #fffdf4; font-size: .88rem; }
+      .inspection-scene .visual-hover-card .visual-card-state small { color: #f1c97f; font-size: .74rem; }
+      .inspection-scene .visual-hover-card .visual-explanation { color: #cedbd6; font-size: .8rem; }
+      .inspection-scene .visual-hover-card .visual-card-action { margin-top: 7px; padding-top: 7px; }
       .inspection-scene .visual-hover-card .visual-card-action > strong { color: #fff; }
       .inspection-scene .visual-hover-card .action-button:not(:disabled) { color: #fff; border-color: #d08b3a; background: linear-gradient(180deg, #b86312, #914206); }
       .inspection-hidden-menu { display: none !important; }
@@ -1198,6 +1221,7 @@ export function renderPrototypePage(): string {
       .crisis-decision-scene .visual-canvas {
         position: relative;
         display: block;
+        isolation: isolate;
         overflow: clip;
         border: 0;
         border-radius: 0;
@@ -1206,11 +1230,11 @@ export function renderPrototypePage(): string {
       .crisis-decision-scene .visual-canvas::before {
         content: '';
         position: absolute;
-        inset: -12px;
+        inset: 0;
         z-index: 0;
-        background: url('/images/crisis-ravine-aerial-v1.jpg') center / cover;
-        filter: brightness(.52) saturate(.76);
-        transform: scale(1.015);
+        background: url('/images/crisis-ravine-aerial-v2.jpg') center / cover;
+        filter: brightness(.7) saturate(.9);
+        transform: none;
       }
       .crisis-decision-scene .crisis-svg {
         position: absolute;
@@ -1230,30 +1254,32 @@ export function renderPrototypePage(): string {
         position: absolute;
         z-index: 15;
         color: #fffdf4;
-        border: 1px solid rgba(255,250,235,.28);
-        background: linear-gradient(145deg, rgba(7,23,38,.94), rgba(12,39,43,.9));
-        box-shadow: 0 16px 38px rgba(3,13,20,.42), inset 0 1px rgba(255,255,255,.07);
-        backdrop-filter: blur(12px) saturate(1.08);
+        border: 1px solid rgba(213,229,220,.3);
+        background:
+          linear-gradient(145deg, rgba(6,20,31,.96), rgba(10,41,42,.91)),
+          radial-gradient(circle at 100% 0, rgba(240,180,75,.15), transparent 42%);
+        box-shadow: 0 18px 46px rgba(3,13,20,.44), inset 0 1px rgba(255,255,255,.09);
+        backdrop-filter: blur(14px) saturate(1.12);
       }
       .decision-map-hud {
         top: clamp(12px, 2vw, 24px);
         left: clamp(12px, 2vw, 28px);
-        width: min(670px, calc(100% - 390px));
-        padding: 12px 15px;
-        border-left: 4px solid #f0b44b;
-        border-radius: 8px;
+        width: min(570px, calc(100% - 330px));
+        padding: 10px 13px;
+        border-left: 2px solid #f0b44b;
+        border-radius: 10px;
       }
       .decision-map-hud .eyebrow { margin-bottom: 2px; color: #f5c66e; font-size: .66rem; }
-      .decision-map-hud h2 { margin: 0 0 3px; color: #fff; font-size: clamp(1.2rem, 2vw, 1.8rem); line-height: 1.05; }
-      .decision-map-hud p { margin: 0; color: #edf4f0; font-size: .82rem; line-height: 1.32; }
+      .decision-map-hud h2 { margin: 0 0 2px; color: #fff; font-size: clamp(1.12rem, 1.65vw, 1.5rem); line-height: 1.08; }
+      .decision-map-hud p { margin: 0; color: #edf4f0; font-size: .78rem; line-height: 1.32; }
       .decision-context { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; margin-top: 7px; padding-top: 7px; border-top: 1px solid rgba(255,255,255,.16); }
       .decision-context span { color: #f5c66e; font-size: .58rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
       .decision-context small { color: #bfd0c8; font-size: .7rem; line-height: 1.3; }
       .decision-map-status {
         top: clamp(12px, 2vw, 24px);
         right: clamp(12px, 2vw, 28px);
-        min-width: 150px;
-        padding: 10px 13px;
+        min-width: 124px;
+        padding: 8px 10px;
         border-radius: 8px;
         text-align: right;
       }
@@ -1262,16 +1288,16 @@ export function renderPrototypePage(): string {
       .decision-map-status.prepared { border-bottom: 4px solid #6eaa55; }
       .decision-map-status.vulnerable { border-bottom: 4px solid #d46a4d; }
       .decision-preparation-review {
-        top: 86px;
+        top: 78px;
         right: clamp(12px, 2vw, 28px);
-        width: min(480px, calc(100% - 28px));
-        max-height: min(58%, 490px);
+        width: min(360px, calc(100% - 28px));
+        max-height: min(54%, 420px);
         margin: 0;
         overflow: auto;
         border-radius: 8px;
       }
       .decision-preparation-review[hidden] { display: none; }
-      .decision-preparation-review summary { padding: 10px 13px; color: #fff; font-size: .78rem; font-weight: 800; }
+      .decision-preparation-review summary { padding: 9px 11px; color: #fff; font-size: .76rem; font-weight: 800; }
       .decision-preparation-review[open] summary { border-bottom: 1px solid rgba(255,255,255,.16); }
       .decision-preparation-review .visual-dimension-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; padding: 8px; }
       .decision-preparation-review .visual-dimension {
@@ -1289,31 +1315,33 @@ export function renderPrototypePage(): string {
       .decision-action-menu {
         left: 50%;
         bottom: clamp(12px, 2vw, 24px);
-        width: min(940px, calc(100% - 56px));
-        padding: 8px 9px 9px;
+        width: min(760px, calc(100% - 56px));
+        padding: 7px 8px 8px;
         transform: translateX(-50%);
-        border-radius: 9px;
+        border-radius: 12px;
         animation: decision-menu-enter .28s cubic-bezier(.2,.8,.2,1) both;
       }
-      .decision-action-menu:has(.actions[data-action-count="1"]) { width: min(420px, calc(100% - 56px)); }
-      .decision-action-menu:has(.actions[data-action-count="2"]) { width: min(580px, calc(100% - 56px)); }
-      .decision-action-menu:has(.actions[data-action-count="3"]) { width: min(740px, calc(100% - 56px)); }
-      .decision-action-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 6px; padding: 0 2px; }
-      .decision-action-heading strong { color: #f5c66e; font-size: .75rem; letter-spacing: .08em; }
-      .decision-action-heading span { color: #c5d2cc; font-size: .68rem; }
-      .decision-action-menu .actions { counter-reset: decision-choice; grid-template-columns: repeat(auto-fit, minmax(180px, 220px)); justify-content: center; gap: 7px; margin: 0; }
-      .decision-action-menu .actions[data-action-count="1"] { grid-template-columns: minmax(280px, 360px); }
+      .decision-action-menu:has(.actions[data-action-count="1"]) { width: min(360px, calc(100% - 56px)); }
+      .decision-action-menu:has(.actions[data-action-count="2"]) { width: min(500px, calc(100% - 56px)); }
+      .decision-action-menu:has(.actions[data-action-count="3"]) { width: min(680px, calc(100% - 56px)); }
+      .decision-action-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 5px; padding: 0 2px; }
+      .decision-action-heading strong { color: #f5c66e; font-size: .7rem; letter-spacing: .08em; }
+      .decision-action-heading span { color: #c5d2cc; font-size: .67rem; }
+      .decision-action-menu .actions { counter-reset: decision-choice; grid-template-columns: repeat(auto-fit, minmax(168px, 205px)); justify-content: center; gap: 6px; margin: 0; }
+      .decision-action-menu .actions[data-action-count="1"] { grid-template-columns: minmax(250px, 330px); }
       .decision-action-menu .action-card {
         position: relative;
         counter-increment: decision-choice;
         min-height: 0;
         gap: 4px;
-        padding: 8px 8px 8px 41px;
+        padding: 9px 42px 9px 38px;
         overflow: hidden;
         border-color: rgba(255,255,255,.2);
-        border-radius: 6px;
+        border-radius: 8px;
         color: #fff;
-        background: linear-gradient(150deg, rgba(255,255,255,.105), rgba(255,255,255,.055));
+        background:
+          linear-gradient(145deg, rgba(255,255,255,.12), rgba(255,255,255,.045)),
+          radial-gradient(circle at 100% 0, rgba(240,180,75,.1), transparent 45%);
         transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
         animation: decision-card-enter .3s cubic-bezier(.2,.8,.2,1) both;
       }
@@ -1327,14 +1355,14 @@ export function renderPrototypePage(): string {
       .decision-action-menu .action-card::after {
         content: '0' counter(decision-choice);
         position: absolute;
-        top: 8px;
-        left: 8px;
-        width: 25px;
-        height: 25px;
+        top: 7px;
+        left: 7px;
+        width: 22px;
+        height: 22px;
         display: grid;
         place-items: center;
         border: 1px solid rgba(245,198,110,.52);
-        border-radius: 5px;
+        border-radius: 6px;
         color: #f5c66e;
         background: rgba(7,23,38,.54);
         font-size: .62rem;
@@ -1352,10 +1380,25 @@ export function renderPrototypePage(): string {
       .decision-action-menu .action-card:nth-child(2) { animation-delay: .035s; }
       .decision-action-menu .action-card:nth-child(3) { animation-delay: .07s; }
       .decision-action-menu .action-card:nth-child(4) { animation-delay: .105s; }
-      .decision-action-menu .action-card h3 { margin: 0; color: #fff; font-size: .8rem; line-height: 1.17; }
-      .decision-action-menu .action-card p { margin: 0; color: #d6e0dc; font-size: .67rem; line-height: 1.26; }
-      .decision-action-menu .action-card small { color: #ffd2c7; font-size: .63rem; line-height: 1.22; }
-      .decision-action-menu .action-card button { width: 100%; min-height: 36px; margin-top: 3px; padding-block: 6px; color: #17242d; background: #f7f4e9; font-size: .72rem; letter-spacing: .035em; text-transform: uppercase; }
+      .action-card-icon {
+        position: absolute;
+        top: 7px;
+        right: 7px;
+        width: 28px;
+        height: 28px;
+        display: grid;
+        place-items: center;
+        border: 1px solid rgba(211,229,220,.25);
+        border-radius: 8px;
+        color: #dfe9e4;
+        background: rgba(4,18,27,.45);
+      }
+      .action-card-icon svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+      .decision-action-menu .action-card:has(button:not(:disabled)) .action-card-icon { color: #f5c66e; border-color: rgba(245,198,110,.42); }
+      .decision-action-menu .action-card h3 { margin: 0; color: #fff; font-size: .82rem; line-height: 1.2; }
+      .decision-action-menu .action-card p { margin: 0; color: #d6e0dc; font-size: .78rem; line-height: 1.3; }
+      .decision-action-menu .action-card small { color: #ffd2c7; font-size: .72rem; line-height: 1.25; }
+      .decision-action-menu .action-card button { width: 100%; min-height: 44px; margin-top: 3px; padding-block: 7px; color: #17242d; background: #f7f4e9; font-size: .7rem; letter-spacing: .035em; text-transform: uppercase; }
       .decision-action-menu .action-card button:not(:disabled) { color: #fff; border-color: #d38a3a; background: linear-gradient(180deg, #b96211, #934406); box-shadow: 0 5px 13px rgba(0,0,0,.18); }
       .decision-outcome {
         left: clamp(12px, 2vw, 28px);
@@ -1386,39 +1429,64 @@ export function renderPrototypePage(): string {
         to { opacity: 1; transform: translateY(0); }
       }
 
-      .result-screen { width: 100%; max-width: 1740px; min-height: 0; margin-inline: auto; overflow: visible; }
-      .result-screen .scene-content { display: grid; gap: 10px; padding: clamp(12px, 1.8vw, 24px); }
+      body.gameplay-active:has(.result-screen) main { width: 100%; max-width: none; margin: 0; padding: 0; }
+      .result-screen {
+        position: relative;
+        width: 100%;
+        max-width: none;
+        min-height: calc(100dvh - 62px);
+        margin: 0;
+        overflow: hidden;
+        border: 0;
+        border-radius: 0;
+        color: #f6faf7;
+        background:
+          linear-gradient(115deg, rgba(4,18,27,.97), rgba(7,37,36,.9) 55%, rgba(16,34,25,.9)),
+          url('/images/crisis-ravine-aerial-v2.jpg') center / cover;
+        box-shadow: none;
+      }
+      .result-screen::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: radial-gradient(circle at 82% 14%, rgba(240,180,75,.12), transparent 34%), linear-gradient(180deg, rgba(255,255,255,.035), transparent 35%);
+      }
+      .result-screen .scene-content { position: relative; z-index: 1; display: grid; gap: 10px; padding: clamp(12px, 1.8vw, 24px); }
       .result-hero {
         display: grid;
         grid-template-columns: minmax(0, 1fr) auto;
         align-items: center;
         gap: 18px;
         padding: 12px 15px;
-        border: 1px solid #c5cfca;
+        border: 1px solid rgba(213,229,220,.26);
         border-left: 6px solid #4f9139;
-        border-radius: 11px;
-        background: linear-gradient(115deg, #eef3ef, #fafbf9 65%, #edf1ee);
+        border-radius: 12px;
+        background: linear-gradient(115deg, rgba(14,42,50,.95), rgba(30,54,47,.9));
+        box-shadow: 0 16px 36px rgba(0,0,0,.22), inset 0 1px rgba(255,255,255,.07);
+        backdrop-filter: blur(12px);
       }
       .result-overwhelmed .result-hero { border-left-color: #b73228; }
       .result-hero h2 { margin: 0 0 3px; font-size: clamp(1.45rem, 2.2vw, 2rem); }
-      .result-hero p:not(.eyebrow) { margin: 0; color: #4c5d66; font-size: .84rem; line-height: 1.35; }
+      .result-hero p:not(.eyebrow) { margin: 0; color: #d5e1dc; font-size: .84rem; line-height: 1.35; }
       .result-screen .result-layout { grid-template-columns: minmax(0, .62fr) minmax(0, 1.38fr); margin: 0; }
       .result-conditions, .result-causes { min-width: 0; }
-      .result-conditions { padding: 10px; border: 1px solid #c8d1cd; border-radius: 10px; background: #f2f6f3; }
+      .result-conditions { padding: 10px; border: 1px solid rgba(213,229,220,.22); border-radius: 11px; background: rgba(4,20,29,.72); box-shadow: 0 16px 34px rgba(0,0,0,.2); backdrop-filter: blur(12px); }
       .result-conditions .visual-scene { margin: 0; }
       .result-conditions .visual-dimension-summary { grid-template-columns: 1fr; gap: 5px; }
       .result-conditions .visual-dimension { min-height: 0; padding: 7px 8px; }
       .result-causes .relations { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
-      .result-screen .relation { padding: 9px 10px; }
+      .result-screen .relation { min-height: 0; padding: 10px 10px 10px 44px; border-color: rgba(213,229,220,.22); color: #f8fbf9; background: linear-gradient(145deg, rgba(247,250,248,.96), rgba(226,235,231,.94)); box-shadow: 0 10px 26px rgba(0,0,0,.16); }
+      .result-screen .relation::before { width: 24px; height: 24px; display: grid; place-items: center; left: 11px; top: 10px; content: '↘'; border: 1px solid #8aa096; border-radius: 7px; color: #315a4b; background: #eef4f0; }
       .result-screen .relation.decisive { grid-column: 1 / -1; }
-      .final-prevention-review { margin: 0; padding: 0; border: 1px solid #b8c6c0; border-radius: 9px; background: #f7faf8; }
-      .final-prevention-review summary { padding: 10px 13px; font-weight: 800; }
+      .final-prevention-review { margin: 0; padding: 0; border: 1px solid rgba(213,229,220,.25); border-radius: 10px; color: #f4f8f5; background: rgba(4,20,29,.72); backdrop-filter: blur(12px); }
+      .final-prevention-review summary { padding: 10px 13px; color: #f5c66e; font-weight: 800; }
       .final-prevention-review-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 4px 13px 12px; }
-      .final-prevention-review-grid section { padding: 10px; border-radius: 8px; background: #fff; }
+      .final-prevention-review-grid section { padding: 10px; border: 1px solid rgba(255,255,255,.12); border-radius: 8px; background: rgba(255,255,255,.07); }
       .final-prevention-review-grid strong { font-size: .82rem; }
       .final-prevention-review-grid ul { margin: 7px 0 0; padding-left: 20px; }
       .final-prevention-review-grid li { margin: 2px 0; font-size: .78rem; }
-      .final-prevention-review-grid > p { grid-column: 1 / -1; margin: 0; color: #6e4b20; font-size: .78rem; }
+      .final-prevention-review-grid > p { grid-column: 1 / -1; margin: 0; color: #f1c97f; font-size: .78rem; }
       .result-screen > .scene-content > .footer-actions { margin: 0; }
 
       @media (min-width: 1051px) {
@@ -1465,7 +1533,7 @@ export function renderPrototypePage(): string {
 
       @media (min-width: 1600px) {
         main { width: min(1740px, 100%); }
-        .scene:not(.inspection-scene), .entry { width: 100%; max-width: 1480px; margin-inline: auto; }
+        .scene:not(.inspection-scene):not(.crisis-decision-scene):not(.result-screen), .entry { width: 100%; max-width: 1480px; margin-inline: auto; }
       }
 
       @media (max-width: 1050px) {
@@ -1513,14 +1581,14 @@ export function renderPrototypePage(): string {
         body.scene-side-locked { overflow: hidden; }
         body.gameplay-active:has(.inspection-scene) #game { height: 100%; }
         body.gameplay-active:has(.crisis-decision-scene) #game { height: 100%; }
-        .decision-map-hud { width: min(610px, calc(100% - 220px)); }
-        .decision-action-menu { width: calc(100% - 24px); }
+        .decision-map-hud { width: min(540px, calc(100% - 200px)); }
+        .decision-action-menu { width: min(720px, calc(100% - 24px)); }
         .result-screen .result-layout { grid-template-columns: 1fr; }
         .result-conditions .visual-dimension-summary { grid-template-columns: repeat(5, minmax(0, 1fr)); }
       }
 
       @media (max-width: 700px) {
-        .topbar { position: static; min-height: 0; grid-template-columns: 1fr auto; gap: 12px; padding: 11px 12px; }
+        .topbar { position: static; min-height: 0; grid-template-columns: 1fr auto; gap: 8px; padding: 8px 10px; }
         .brand-copy small { display: none; }
         .journey { gap: 4px; align-items: start; }
         .stage {
@@ -1547,8 +1615,8 @@ export function renderPrototypePage(): string {
         }
         main { padding: 10px 8px; }
         .entry { min-height: auto; border-radius: 10px; }
-        .entry-copy { padding: 24px 18px; }
-        .entry-copy h1 { font-size: clamp(2.25rem, 12vw, 3.5rem); }
+        .entry-copy { padding: 22px 18px; }
+        .entry-copy h1 { font-size: clamp(2.2rem, 10.5vw, 2.65rem); }
         .entry-visual { min-height: 220px; padding: 16px; }
         .scene { min-height: auto; border-radius: 10px; }
         .scene-content { padding: 12px; }
@@ -1556,7 +1624,7 @@ export function renderPrototypePage(): string {
         .mission-briefing-shell { gap: 8px; }
         .mission-briefing-panel { padding: 14px; border-left-width: 4px; border-radius: 9px; }
         .mission-briefing-kicker { margin-bottom: 8px; }
-        .scene.briefing h1 { margin-bottom: 7px; font-size: clamp(1.9rem, 9vw, 2.55rem); line-height: 1; }
+        .scene.briefing h1 { margin-bottom: 7px; font-size: clamp(1.85rem, 8vw, 2.35rem); line-height: 1; }
         .scene.briefing .lead { font-size: .82rem; line-height: 1.38; }
         .mission-briefing-steps { grid-template-columns: 1fr; gap: 5px; margin-top: 12px; }
         .mission-briefing-steps li { min-height: 45px; align-items: center; padding: 7px; }
@@ -1588,6 +1656,34 @@ export function renderPrototypePage(): string {
         body.gameplay-active:has(.inspection-scene) #game { height: 100%; min-height: 0; }
         body.gameplay-active:has(.crisis-decision-scene) main { padding: 0; }
         body.gameplay-active:has(.crisis-decision-scene) #game { height: 100%; min-height: 0; }
+        .inspection-scene .visual-canvas::before {
+          inset: -24px;
+          filter: blur(12px) brightness(.64) saturate(.76);
+          transform: scale(1.09);
+        }
+        .crisis-decision-scene .visual-canvas::before {
+          inset: 0;
+          filter: brightness(.72) saturate(.88);
+          transform: none;
+        }
+        .inspection-scene .visual-canvas::after,
+        .crisis-decision-scene .visual-canvas::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          z-index: 2;
+          pointer-events: none;
+          background: linear-gradient(180deg,
+            rgba(7,23,38,.26) 0,
+            rgba(7,23,38,.12) calc(50% - 32vw),
+            transparent calc(50% - 27.8vw),
+            transparent calc(50% + 27.8vw),
+            rgba(7,23,38,.12) calc(50% + 32vw),
+            rgba(7,23,38,.3) 100%);
+        }
+        .crisis-decision-scene .visual-canvas::after {
+          background: linear-gradient(180deg, rgba(4,18,27,.24), transparent 32%, transparent 64%, rgba(4,18,27,.34));
+        }
         .crisis-decision-scene { border-radius: 0; }
         .decision-map-hud {
           top: 8px;
@@ -1609,11 +1705,11 @@ export function renderPrototypePage(): string {
         .has-command-hero .decision-action-menu {
           left: 8px;
           right: 8px;
-          bottom: 8px;
+          bottom: 14px;
           width: auto;
           max-height: none;
           overflow: visible;
-          padding: 8px;
+          padding: 6px;
           transform: none;
         }
         .decision-action-menu:has(.actions[data-action-count="1"]) {
@@ -1622,15 +1718,20 @@ export function renderPrototypePage(): string {
           width: min(326px, calc(100% - 16px));
           transform: translateX(-50%);
         }
-        .decision-action-heading { position: sticky; top: -8px; z-index: 2; padding: 5px 0 7px; background: rgba(7,23,38,.98); }
+        .decision-action-heading { position: sticky; top: -6px; z-index: 2; margin-bottom: 3px; padding: 4px 1px 5px; background: rgba(7,23,38,.98); }
+        .decision-action-heading strong { font-size: .64rem; }
+        .decision-action-heading span { font-size: .61rem; }
         .decision-action-menu .actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        .decision-action-menu .action-card { display: grid; grid-template-columns: 1fr; gap: 3px; padding: 7px 7px 7px 34px; }
+        .decision-action-menu .action-card { display: grid; grid-template-columns: 1fr; gap: 2px; padding: 7px 37px 7px 32px; }
         .decision-action-menu .action-card::after { top: 7px; left: 7px; width: 21px; height: 21px; font-size: .56rem; }
+        .decision-action-menu .action-card-icon { top: 6px; right: 6px; width: 26px; height: 26px; }
+        .decision-action-menu .action-card h3 { font-size: .75rem; line-height: 1.15; }
+        .decision-action-menu .action-card p { font-size: .7rem; line-height: 1.2; }
+        .decision-action-menu .action-card small { font-size: .65rem; line-height: 1.2; }
         .decision-action-menu .action-card:only-child { grid-column: 1 / -1; }
         .decision-action-menu .action-card:last-child:nth-child(odd):not(:only-child) {
           grid-column: 1 / -1;
-          width: calc((100% - 7px) / 2);
-          justify-self: center;
+          width: 100%;
         }
         .decision-action-menu .action-card h3,
         .decision-action-menu .action-card p,
@@ -1639,13 +1740,13 @@ export function renderPrototypePage(): string {
           display: -webkit-box;
           overflow: hidden;
           -webkit-box-orient: vertical;
-          -webkit-line-clamp: 4;
+          -webkit-line-clamp: 2;
         }
         .decision-action-menu .action-card small {
           display: -webkit-box;
           overflow: hidden;
           -webkit-box-orient: vertical;
-          -webkit-line-clamp: 3;
+          -webkit-line-clamp: 2;
         }
         .decision-action-menu .action-card button { grid-column: 1; width: 100%; min-width: 0; min-height: 44px; margin: 3px 0 0; }
         .decision-outcome { left: 8px; right: 8px; bottom: 70px; width: auto; padding: 10px 11px; }
@@ -1653,6 +1754,7 @@ export function renderPrototypePage(): string {
         .decision-advance { right: 8px; bottom: 8px; left: 8px; }
         .decision-advance .primary { width: 100%; }
         .result-hero { grid-template-columns: 1fr; gap: 8px; }
+        .result-screen { min-height: calc(100dvh - 112px); }
         .result-hero .scene-state-badge { width: 100%; }
         .result-screen .result-layout { grid-template-columns: 1fr; }
         .result-conditions .visual-dimension-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1691,10 +1793,10 @@ export function renderPrototypePage(): string {
           bottom: 8px;
           left: 8px !important;
           top: auto;
-          width: calc(100% - 16px) !important;
-          max-height: 48%;
+          width: min(286px, calc(100% - 16px)) !important;
+          max-height: 42%;
           margin: 0;
-          padding: 12px;
+          padding: 10px;
           box-shadow: 0 14px 36px rgba(3, 13, 20, .48);
         }
       }
@@ -1708,7 +1810,7 @@ export function renderPrototypePage(): string {
     <div class="northstar-shell">
       <header class="topbar">
         <div class="brand" aria-label="Apaga las llamas">
-          <div class="brand-mark" aria-hidden="true">🔥</div>
+          <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 28"><path d="M13.7 1.5c.8 4.7-3.1 6.6-.9 10.2 1.2-1.8 3.2-2.8 3.7-5.7 4.4 4.1 5.5 7.7 3.8 12A8.9 8.9 0 0 1 12 26.5a8.3 8.3 0 0 1-8.3-8.4c0-4 2.2-7.3 6.3-10.6-.2 3.2.7 5 2 6.1.7-3 1.2-5.8 1.7-12.1Z"/><path d="M12.4 14.2c2.5 2.4 3.1 4.4 2.1 6.5A3.2 3.2 0 0 1 11.6 23a3.2 3.2 0 0 1-3.2-3.3c0-1.8 1-3.4 2.7-4.9-.1 1.5.3 2.4.9 2.9.2-1.2.3-2.3.4-3.5Z" fill="#fff3c4"/></svg></div>
           <div class="brand-copy"><strong>Apaga las llamas</strong><small>Prepara hoy, protege mañana</small></div>
         </div>
         <nav class="journey" aria-label="Progreso de la partida">
@@ -1724,12 +1826,12 @@ export function renderPrototypePage(): string {
         <div id="game" aria-live="polite">
           <section class="entry" aria-labelledby="entry-title">
             <div class="entry-copy">
-              <p class="eyebrow">Juego educativo</p>
+              <p class="eyebrow">Simulador interactivo</p>
               <h1 id="entry-title">Prepara el monte antes de que llegue el fuego</h1>
               <p class="lead">Cuida las fincas, los caminos y una casa junto al monte. Después verás cómo tus decisiones ayudan —o dificultan— el trabajo de los bomberos.</p>
               <div class="entry-meta" aria-label="Información de la partida">
-                <span>Historia guiada</span>
-                <span id="entry-duration">Duración orientativa</span>
+                <span>Recorrido guiado</span>
+                <span id="entry-duration">Duración según recorrido</span>
               </div>
               <div class="entry-actions"><button class="primary" id="start-session-button" type="button">Comenzar partida</button></div>
               <p class="entry-note">El juego te explicará cada paso antes de que elijas.</p>
@@ -1827,7 +1929,7 @@ export function renderPrototypePage(): string {
             entryDuration.textContent = 'Duración estimada: ' + target.min + '–' + target.max + ' min';
           }
         } catch {
-          entryDuration.textContent = 'Duración orientativa';
+          entryDuration.textContent = 'Duración según recorrido';
         }
       }
 
@@ -1881,12 +1983,28 @@ export function renderPrototypePage(): string {
         });
       }
 
+      function decisionActionIcon(actionId) {
+        const id = String(actionId || '');
+        let path = '<path d="M12 2.8 20 6v5.2c0 5-3.2 8.5-8 10-4.8-1.5-8-5-8-10V6Z" /><path d="m8.4 12 2.2 2.2 4.8-5" />';
+        if (/acceso|camino|corredor|paso|reubicar|cerrar/.test(id)) {
+          path = '<path d="M5 21 9 3M15 21l-2-9M12 7l-1-4M8 16h8" /><path d="M6.5 10h2M14 15h2" />';
+        } else if (/replegar|salida|flanco|retirada/.test(id)) {
+          path = '<path d="M20 11a8 8 0 1 1-3-6.2" /><path d="M20 4v7h-7" /><path d="m8 12 2.5 2.5L16 9" />';
+        } else if (/fuego|incendio|defender|intervenir|ataque|extin/.test(id)) {
+          path = '<path d="M13.5 2.5c.8 4-2.8 5.4-.7 8.4 1.2-1.5 2.8-2.3 3.2-4.7 3.5 3.3 4.4 6 3.1 9.2A7.7 7.7 0 0 1 12 21a7 7 0 0 1-7-7.1c0-3.2 1.8-6 5.3-8.8-.2 2.7.6 4.2 1.7 5.1.6-2.5 1-4.8 1.5-7.7Z" />';
+        } else if (/observar|verificar|evaluar|vigilar|mantener/.test(id)) {
+          path = '<circle cx="11" cy="11" r="6" /><path d="m16 16 5 5M8.5 11h5M11 8.5v5" />';
+        }
+        return '<span class="action-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24">' + path + '</svg></span>';
+      }
+
       function actionCards(scene) {
         return '<div class="actions" data-action-count="' + escapeHtml(String(scene.actions.length)) + '">' + scene.actions.map(function (action) {
           const selected = action.selected ? ' selected' : '';
           const disabled = !action.available ? ' disabled' : '';
           const label = action.selected ? 'Aplicada' : 'Elegir';
           return '<article class="action-card' + selected + '" data-action-card-id="' + escapeHtml(action.id) + '">' +
+            decisionActionIcon(action.id) +
             '<h3>' + escapeHtml(action.label) + '</h3>' +
             '<p>' + escapeHtml(action.description) + '</p>' +
             (action.unavailableReason ? '<small>' + escapeHtml(action.unavailableReason) + '</small>' : '') +
@@ -1962,7 +2080,7 @@ export function renderPrototypePage(): string {
           '<div class="scene-heading-copy"><h1 id="mission-briefing-title">' + escapeHtml(scene.title) + '</h1><p class="lead">' + escapeHtml(scene.mission) + '</p></div>' +
           '<ol class="mission-briefing-steps" aria-label="Fases de la misión"><li><span><strong>Observa</strong><small>Localiza las condiciones de riesgo.</small></span></li><li><span><strong>Decide</strong><small>Distribuye cinco actuaciones en dos zonas.</small></span></li><li><span><strong>Comprueba</strong><small>Responde a la emergencia y revisa el resultado.</small></span></li></ol>' +
           '<div class="mission-briefing-footer"><p><strong>Objetivo:</strong> mejorar las condiciones sin presentar el territorio como completamente seguro.</p>' + advanceButton(scene) + '</div></div>' +
-          '<aside class="mission-briefing-note" aria-label="Cómo funciona la simulación"><span>Protocolo de juego</span><strong>Observa · decide · comprueba</strong><p>Cada actuación deja un cambio visible y modifica las opciones de los equipos durante el incendio.</p></aside></div></section>';
+          '<aside class="mission-briefing-note" aria-label="Cómo funciona la partida"><span>Clave de la misión</span><strong>Observa · decide · comprueba</strong><p>Cada actuación deja un cambio visible y modifica las opciones de los equipos durante el incendio.</p></aside></div></section>';
       }
 
       function renderInspection(scene) {
@@ -2083,16 +2201,43 @@ export function renderPrototypePage(): string {
         if (canvas) {
           stage.querySelectorAll('[data-decision-overlay]').forEach(function (overlay) { canvas.appendChild(overlay); });
           const map = canvas.querySelector('.crisis-svg');
-          if (map) map.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+          if (map) fitCrisisMap(map, canvas);
         }
       }
 
-      function fitInspectionMap() {
-        const map = game.querySelector('.inspection-scene .territory-map, .inspection-scene .housing-plan');
-        if (!map) return;
-        const canvas = map.closest('.visual-canvas');
+      function fitFullscreenMap(map, canvas) {
         const ratio = canvas && canvas.clientHeight > 0 ? canvas.clientWidth / canvas.clientHeight : window.innerWidth / window.innerHeight;
-        map.setAttribute('preserveAspectRatio', ratio < 1.72 ? 'xMidYMid meet' : 'xMidYMid slice');
+        map.setAttribute('preserveAspectRatio', ratio >= 1.25 ? 'xMidYMid slice' : 'xMidYMid meet');
+      }
+
+      function fitInspectionMap() {
+        game.querySelectorAll('.inspection-scene .territory-map, .inspection-scene .housing-plan').forEach(function (map) {
+          fitFullscreenMap(map, map.closest('.visual-canvas'));
+        });
+      }
+
+      function fitCrisisMap(map, canvas) {
+        const ratio = canvas && canvas.clientHeight > 0 ? canvas.clientWidth / canvas.clientHeight : window.innerWidth / window.innerHeight;
+        const sceneId = map.closest('.visual-scene')?.getAttribute('data-visual-scene-id') || '';
+        map.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+        if (ratio >= 1.05) {
+          map.setAttribute('viewBox', '0 0 900 500');
+          return;
+        }
+        const focusWidth = Math.max(250, Math.min(420, Math.round(ratio * 500)));
+        let focusCenter = 452;
+        if (sceneId.includes('ravine-fire')) focusCenter = 520;
+        if (sceneId.includes('crown-fire')) focusCenter = 730;
+        if (sceneId.includes('housing-defense')) focusCenter = 750;
+        const focusX = Math.max(0, Math.min(900 - focusWidth, Math.round(focusCenter - focusWidth / 2)));
+        map.setAttribute('viewBox', focusX + ' 0 ' + focusWidth + ' 500');
+      }
+
+      function fitPlayableMaps() {
+        fitInspectionMap();
+        game.querySelectorAll('.crisis-decision-scene .crisis-svg').forEach(function (map) {
+          fitCrisisMap(map, map.closest('.visual-canvas'));
+        });
       }
 
       function usesSideDrawer() {
@@ -2302,6 +2447,14 @@ export function renderPrototypePage(): string {
         });
       }
 
+      function closeVisualCardAndRestoreFocus(card) {
+        const controller = Array.from(document.querySelectorAll('[data-visual-element-id]')).find(function (element) {
+          return element.getAttribute('aria-controls') === card.id;
+        });
+        closeVisualCards();
+        if (controller) controller.focus();
+      }
+
       function openVisualCard(element) {
         cancelVisualCardClose();
         const cardId = element.getAttribute('aria-controls');
@@ -2373,6 +2526,13 @@ export function renderPrototypePage(): string {
           card.addEventListener('mouseleave', scheduleVisualCardClose);
           card.addEventListener('focusin', cancelVisualCardClose);
           card.addEventListener('focusout', scheduleVisualCardClose);
+          card.addEventListener('keydown', function (event) {
+            if (event.key !== 'Escape') return;
+            event.preventDefault();
+            closeVisualCardAndRestoreFocus(card);
+          });
+          const close = card.querySelector('.visual-card-close');
+          if (close) close.addEventListener('click', function () { closeVisualCardAndRestoreFocus(card); });
         });
         const advance = document.getElementById('advance-button');
         if (advance) {
@@ -2444,7 +2604,7 @@ export function renderPrototypePage(): string {
         if (!sessionId || busy) return;
         request('/api/game-sessions/' + encodeURIComponent(sessionId) + '/restart', { method: 'POST', body: '{}' });
       });
-      window.addEventListener('resize', fitInspectionMap);
+      window.addEventListener('resize', fitPlayableMaps);
       startButton.addEventListener('click', startSession);
       setSessionChrome(false);
       hydrateEntryContext();

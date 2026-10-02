@@ -117,16 +117,14 @@ function visualCards(model: PresentedSceneVisualModel): string {
           element.actionId === undefined
             ? ''
             : ` data-visual-action-card-id="${escapeHtml(element.actionId)}"`
-        } hidden><div class="visual-card-state"><span class="visual-status-symbol" aria-hidden="true"></span><span><strong>${escapeHtml(
+        } hidden><button class="visual-card-close" type="button" aria-label="Cerrar información">×</button><div class="visual-card-state"><span class="visual-status-symbol" aria-hidden="true"></span><span><strong>${escapeHtml(
           element.label
-        )}</strong><small>${escapeHtml(element.stateLabel)}${
-          element.selected === true ? ' · hecha' : ''
-        }</small></span></div><p class="visual-explanation">${escapeHtml(
+        )}</strong><small>${escapeHtml(element.stateLabel)}</small></span></div><p class="visual-explanation">${escapeHtml(
           element.explanation
         )}</p>${
           element.actionId === undefined
             ? ''
-            : `<div class="visual-card-action"><p data-visual-action-description></p><small data-visual-action-reason hidden></small><button class="secondary action-button" data-action-id="${escapeHtml(
+            : `<div class="visual-card-action"><strong data-visual-action-label></strong><p data-visual-action-description></p><small data-visual-action-reason hidden></small><button class="secondary action-button" data-action-id="${escapeHtml(
                 element.actionId
               )}" type="button">Aplicar mejora</button></div>`
         }</article>`
@@ -155,7 +153,7 @@ function territorySvg(model: PresentedSceneVisualModel): string {
         <g class="map-road-obstruction">${renderTerritoryRoadDebris(292, 300, -12)}${renderTerritoryRoadDebris(530, 242, -17)}${renderTerritoryRoadDebris(711, 187, -24)}</g>
         <image class="map-action-actor map-action-worker map-road-worker" href="/images/prevention-brush-worker-v1.png" x="493" y="207" width="92" height="92" preserveAspectRatio="xMidYMid meet" />
       </g>
-      ${renderTerritoryMapPin(3, 462, 292, 'Camino rural', 137, road?.selected === true)}
+      ${renderTerritoryMapPin(3, 462, 292, road?.label ?? 'Camino rural', 90, road?.selected === true)}
     </g>
     <g id="territory-continuity" class="visual-hotspot ${stateClass(
       continuity
@@ -170,7 +168,7 @@ function territorySvg(model: PresentedSceneVisualModel): string {
         </g>
         <image class="map-action-actor map-action-worker map-continuity-worker" href="/images/prevention-brush-worker-v1.png" x="314" y="78" width="86" height="86" preserveAspectRatio="xMidYMid meet" />
       </g>
-      ${renderTerritoryMapPin(2, 316, 125, 'Vegetación unida', 160, continuity?.selected === true)}
+      ${renderTerritoryMapPin(2, 316, 125, continuity?.label ?? 'Vegetación', 82, continuity?.selected === true)}
     </g>
     <g id="territory-residues" class="visual-hotspot ${stateClass(residues)}"${hotspotAttributes(
       residues
@@ -181,20 +179,20 @@ function territorySvg(model: PresentedSceneVisualModel): string {
         ${renderTerritoryBranchPile(209, 211, .9)}
         <image class="map-action-actor map-action-worker map-residue-worker" href="/images/prevention-brush-worker-v1.png" x="174" y="176" width="82" height="82" preserveAspectRatio="xMidYMid meet" />
       </g>
-      ${renderTerritoryMapPin(1, 205, 171, 'Ramas secas', 128, residues?.selected === true)}
+      ${renderTerritoryMapPin(1, 205, 171, residues?.label ?? 'Ramas secas', 86, residues?.selected === true)}
     </g>
     <g id="territory-grazing" class="visual-hotspot ${stateClass(grazing)}"${hotspotAttributes(
       grazing
     )}>
       <path class="visual-grazing" d="${TERRITORY_GRAZING_PATH}" aria-hidden="true" />
       <image class="map-action-actor map-grazing-flock" href="/images/territory-grazing-goats-v1.png" x="692" y="322" width="128" height="86" preserveAspectRatio="xMidYMid meet" aria-hidden="true" />
-      ${renderTerritoryMapPin(4, 746, 370, 'Zona de pastoreo', 158, grazing?.selected === true, 'left')}
+      ${renderTerritoryMapPin(4, 746, 370, grazing?.label ?? 'Zona de pastoreo', 118, grazing?.selected === true, 'left')}
     </g>
     <g id="territory-professional-line" class="visual-hotspot ${stateClass(line)}"${hotspotAttributes(
       line
     )}>
       <g aria-hidden="true"><path class="visual-professional-line" d="${TERRITORY_EVALUATION_PATH}" /><circle class="map-survey-point" cx="650" cy="206" r="5" /><circle class="map-survey-point" cx="826" cy="142" r="5" /></g>
-      ${renderTerritoryMapPin(5, 748, 157, 'Zona para revisar', 150, line?.selected === true, 'left')}
+      ${renderTerritoryMapPin(5, 748, 157, line?.label ?? 'Zona para revisar', 116, line?.selected === true, 'left')}
     </g>
   </svg>`;
 }
@@ -230,7 +228,7 @@ function housingSvg(model: PresentedSceneVisualModel): string {
           <circle cx="850" cy="440" r="5" fill="#8c572d" /><circle cx="815" cy="383" r="5" fill="#8c572d" /><circle cx="787" cy="321" r="5" fill="#8c572d" />
         </g>
       </g>
-      ${renderHousingPin(3, 718, 375, 'Acceso local', 116, access?.selected === true)}
+      ${renderHousingPin(3, 718, 375, access?.label ?? 'Entrada a las casas', 116, access?.selected === true, 'left')}
     </g>
     <g id="housing-canopy" class="visual-hotspot ${stateClass(canopy)}"${hotspotAttributes(
       canopy
@@ -246,7 +244,7 @@ function housingSvg(model: PresentedSceneVisualModel): string {
         <path class="housing-canopy-gap" d="M276 79 Q293 134 281 207 Q300 214 313 198 Q309 133 299 81Z" />
         <path class="housing-gap-mark" d="M154 127 l9 9 16 -20 M286 136 l9 9 16 -20" />
       </g>
-      ${renderHousingPin(2, 195, 125, 'Copas unidas', 125, canopy?.selected === true)}
+      ${renderHousingPin(2, 195, 125, canopy?.label ?? 'Copas de los árboles', 118, canopy?.selected === true)}
     </g>
     <g id="housing-vertical-fuel" class="visual-hotspot ${stateClass(
       vertical
@@ -262,11 +260,11 @@ function housingSvg(model: PresentedSceneVisualModel): string {
       </g>
       <image class="map-action-actor housing-clearance-worker" href="/images/prevention-brush-worker-v1.png" x="174" y="316" width="116" height="106" preserveAspectRatio="xMidYMid meet" aria-hidden="true" />
       <path class="housing-low-branches housing-risk-detail" d="M203 329 l-63 -54 m63 54 l-57 -7 m57 7 l57 -58 m-57 58 l69 2" aria-hidden="true" />
-      ${renderHousingPin(1, 119, 288, 'Ramas y hierba seca', 165, vertical?.selected === true)}
+      ${renderHousingPin(1, 119, 288, vertical?.label ?? 'Ramas y hierba seca', 140, vertical?.selected === true)}
     </g>
     <g id="housing-home" class="visual-hotspot ${stateClass(house)}"${hotspotAttributes(house)}>
       ${renderHousingHome()}
-      ${renderHousingPin('i', 609, 241, 'Casa junto al monte', 158, false)}
+      ${renderHousingPin('i', 609, 241, house?.label ?? 'Casa junto al monte', 132, false)}
     </g>
   </svg>`;
 }
@@ -290,7 +288,7 @@ function crisisSvg(model: PresentedSceneVisualModel): string {
 
   return `<svg class="territory-svg crisis-svg crisis-photo" viewBox="0 0 900 500" role="img" aria-label="${escapeHtml(
     model.ariaLabel
-  )}" data-visual-base="shared-ravine-photo-v2">
+  )}" data-visual-base="shared-ravine-photo-v3">
     ${renderSceneArtDefs()}
     ${renderCrisisRavineDefs()}
     ${renderCrisisRavineBase()}
@@ -301,13 +299,18 @@ function crisisSvg(model: PresentedSceneVisualModel): string {
     <g id="crisis-pressure" class="visual-hotspot ${stateClass(pressure)}"${hotspotAttributes(pressure)}>${renderCrisisFlame()}</g>
     <g id="crisis-attack-window" class="visual-hotspot ${stateClass(attack)}"${hotspotAttributes(attack)}><path class="visual-attack-window" d="M410 220 Q470 196 535 218" /></g>
     <g id="crisis-crown" class="visual-hotspot ${stateClass(crown)}"${hotspotAttributes(crown)}><path class="crisis-crown-zone" d="${CRISIS_CROWN_ZONE_PATH}" /><path class="crisis-crown-boundary" d="${CRISIS_CROWN_ZONE_PATH}" /></g>
-    <g id="crisis-capacity" class="visual-hotspot visual-capacity ${stateClass(capacity)}"${hotspotAttributes(capacity)}><circle class="crisis-capacity-hit-target" cx="72" cy="91" r="62" /><circle cx="72" cy="91" r="35" /><text x="72" y="95" text-anchor="middle">BOMBEROS</text></g>
+    <g id="crisis-capacity" class="visual-hotspot visual-capacity ${stateClass(capacity)}" transform="translate(52 0)"${hotspotAttributes(capacity)}>
+      <circle class="crisis-capacity-hit-target" cx="74" cy="147" r="44" />
+      <rect class="capacity-shell" x="45" y="116" width="58" height="62" rx="14" />
+      <path class="capacity-icon" d="M62 143 v-5 a12 12 0 0 1 24 0 v5 M58 144 h32 M62 144 q2 14 12 14 t12 -14 M67 159 v5 h14 v-5" />
+      <text class="capacity-label" x="74" y="172" text-anchor="middle">EQUIPO</text>
+    </g>
     ${
       professionalLine === undefined
         ? ''
         : `<g id="crisis-professional-line" class="visual-hotspot ${stateClass(professionalLine)}"${hotspotAttributes(
             professionalLine
-          )}><path class="visual-professional-line" d="M330 271 Q430 213 532 241" /><circle class="visual-line-marker" cx="432" cy="229" r="12" /></g>`
+          )}><path class="visual-professional-line" d="M330 271 Q430 213 532 241" /><g class="crisis-tactical-marker" transform="translate(432 229)"><path class="marker-shell" d="M0 -9 L8 -4.5 V4.5 L0 9 -8 4.5 V-4.5 Z" /><circle r="3.2" /><path class="marker-cross" d="M-5 0 H5 M0 -5 V5" /></g></g>`
     }
     ${
       houseAccess === undefined

@@ -11,6 +11,7 @@ const IMAGE_FILES = [
   'territory-grazing-goats-v1.png',
   'prevention-brush-worker-v1.png',
   'crisis-ravine-aerial-v1.jpg',
+  'crisis-ravine-aerial-v2.jpg',
   'crisis-scrub-fire-v1.png',
   'avatar-forestal-hombre.png',
   'avatar-forestal-mujer.png',
