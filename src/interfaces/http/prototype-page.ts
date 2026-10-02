@@ -1398,7 +1398,7 @@ export function renderPrototypePage(): string {
       .decision-action-menu .action-card h3 { margin: 0; color: #fff; font-size: .82rem; line-height: 1.2; }
       .decision-action-menu .action-card p { margin: 0; color: #d6e0dc; font-size: .78rem; line-height: 1.3; }
       .decision-action-menu .action-card small { color: #ffd2c7; font-size: .72rem; line-height: 1.25; }
-      .decision-action-menu .action-card button { width: 100%; min-height: 44px; margin-top: 3px; padding-block: 7px; color: #17242d; background: #f7f4e9; font-size: .7rem; letter-spacing: .035em; text-transform: uppercase; }
+      .decision-action-menu .action-card button { width: 100%; min-height: 45px; margin-top: 3px; padding-block: 7px; color: #17242d; background: #f7f4e9; font-size: .7rem; letter-spacing: .035em; text-transform: uppercase; }
       .decision-action-menu .action-card button:not(:disabled) { color: #fff; border-color: #d38a3a; background: linear-gradient(180deg, #b96211, #934406); box-shadow: 0 5px 13px rgba(0,0,0,.18); }
       .decision-outcome {
         left: clamp(12px, 2vw, 28px);
@@ -1748,7 +1748,7 @@ export function renderPrototypePage(): string {
           -webkit-box-orient: vertical;
           -webkit-line-clamp: 2;
         }
-        .decision-action-menu .action-card button { grid-column: 1; width: 100%; min-width: 0; min-height: 44px; margin: 3px 0 0; }
+        .decision-action-menu .action-card button { grid-column: 1; width: 100%; min-width: 0; min-height: 45px; margin: 3px 0 0; }
         .decision-outcome { left: 8px; right: 8px; bottom: 70px; width: auto; padding: 10px 11px; }
         .decision-outcome p { font-size: .78rem; }
         .decision-advance { right: 8px; bottom: 8px; left: 8px; }
