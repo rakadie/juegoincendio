@@ -21,7 +21,7 @@ describe('M5.2 territory north-star art direction', () => {
     expect(markup.match(/class="map-pin"/g)).toHaveLength(5);
     expect(markup.match(/class="map-pin-hit-target"/g)).toHaveLength(5);
     expect(markup.match(/class="map-pin-hit-target" r="54"/g)).toHaveLength(5);
-    expect(markup.match(/class="map-pin-disc" r="12"/g)).toHaveLength(5);
+    expect(markup.match(/class="map-pin-disc" r="9"/g)).toHaveLength(5);
     expect(markup.match(/class="visual-card-close"/g)).toHaveLength(5);
     expect(markup).toContain('data-visual-action-label');
     for (const semanticId of [

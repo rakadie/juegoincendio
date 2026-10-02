@@ -124,8 +124,38 @@ export const M4_PLAYER_LOOP_CLIENT = String.raw`
     }
   }
 
+  async function restoreMissingSessionAndRetry(input, init, response) {
+    if (response.status !== 404) return response;
+    const envelope = readEnvelope();
+    if (!envelope) return response;
+    const pathname = pathnameFor(input);
+    const sessionPrefix = '/api/game-sessions/' + encodeURIComponent(envelope.sessionId);
+    const canRecover = pathname === sessionPrefix ||
+      pathname === sessionPrefix + '/actions' ||
+      pathname === sessionPrefix + '/advance' ||
+      pathname === sessionPrefix + '/restart';
+    if (!canRecover) return response;
+
+    try {
+      const restored = await originalFetch(sessionPrefix + '/restore', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          resumeSchemaVersion: envelope.resumeSchemaVersion,
+          referenceContextId: envelope.referenceContextId,
+          commands: envelope.commands
+        })
+      });
+      if (!restored.ok) return response;
+      return originalFetch(input, init);
+    } catch {
+      return response;
+    }
+  }
+
   window.fetch = async function (input, init) {
-    const response = await originalFetch(input, init);
+    let response = await originalFetch(input, init);
+    response = await restoreMissingSessionAndRetry(input, init, response);
     if (response.ok) {
       try {
         const payload = await response.clone().json();

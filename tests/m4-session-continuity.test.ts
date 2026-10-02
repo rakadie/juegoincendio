@@ -123,5 +123,7 @@ describe('M4.2 local session continuity', () => {
     expect(M4_PLAYER_LOOP_CLIENT).toContain("{ type: 'advance' }");
     expect(M4_PLAYER_LOOP_CLIENT).toContain("{ type: 'action', actionId }");
     expect(M4_PLAYER_LOOP_CLIENT).toContain('commands: []');
+    expect(M4_PLAYER_LOOP_CLIENT).toContain('restoreMissingSessionAndRetry');
+    expect(M4_PLAYER_LOOP_CLIENT).toContain("pathname === sessionPrefix + '/actions'");
   });
 });

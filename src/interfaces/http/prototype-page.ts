@@ -159,6 +159,26 @@ export function renderPrototypePage(): string {
       #game { min-height: 60vh; }
       #notice { min-height: 24px; margin-top: 10px; color: var(--red); font-weight: 700; }
       #notice:empty { display: none; }
+      body.gameplay-active #notice:not(:empty) {
+        position: fixed;
+        top: 72px;
+        left: 50%;
+        z-index: 80;
+        width: min(520px, calc(100% - 24px));
+        min-height: 0;
+        margin: 0;
+        padding: 9px 12px;
+        border: 1px solid rgba(255, 210, 196, .64);
+        border-left: 3px solid #e26a4f;
+        border-radius: 8px;
+        color: #fff8f4;
+        background: rgba(73, 22, 17, .95);
+        box-shadow: 0 14px 34px rgba(3, 13, 20, .35);
+        font-size: .78rem;
+        line-height: 1.35;
+        transform: translateX(-50%);
+        backdrop-filter: blur(10px);
+      }
       .loading { min-height: 62vh; display: grid; place-items: center; color: var(--muted); }
 
       .entry {
@@ -1091,24 +1111,24 @@ export function renderPrototypePage(): string {
       .inspection-map-hud {
         top: clamp(12px, 2vw, 24px);
         left: clamp(12px, 2vw, 28px);
-        width: min(510px, calc(100% - 170px));
-        padding: 9px 12px;
+        width: min(470px, calc(100% - 154px));
+        padding: 8px 11px;
         border-left: 3px solid #f0b44b;
         border-radius: 8px;
       }
       .inspection-map-hud .eyebrow { margin-bottom: 2px; color: #f5c66e; font-size: .66rem; }
-      .inspection-map-hud h2 { margin: 0 0 2px; color: #fff; font-size: clamp(1.15rem, 1.65vw, 1.55rem); line-height: 1.08; }
-      .inspection-map-hud p { margin: 0; color: #dce7e2; font-size: .76rem; line-height: 1.32; }
+      .inspection-map-hud h2 { margin: 0 0 2px; color: #fff; font-size: clamp(1.02rem, 1.35vw, 1.35rem); line-height: 1.08; }
+      .inspection-map-hud p { margin: 0; color: #dce7e2; font-size: .7rem; line-height: 1.3; }
       .inspection-map-progress {
         top: clamp(12px, 2vw, 24px);
         right: clamp(12px, 2vw, 28px);
-        min-width: 112px;
-        padding: 8px 10px;
+        min-width: 100px;
+        padding: 7px 9px;
         border-radius: 8px;
         text-align: right;
       }
       .inspection-map-progress small { display: block; color: #bfcfc8; font-size: .63rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
-      .inspection-map-progress strong { display: block; margin-top: 1px; color: #fff; font-size: 1.05rem; }
+      .inspection-map-progress strong { display: block; margin-top: 1px; color: #fff; font-size: .92rem; }
       .inspection-response {
         left: clamp(12px, 2vw, 28px);
         bottom: clamp(12px, 2vw, 24px);
@@ -1160,9 +1180,9 @@ export function renderPrototypePage(): string {
       .inspection-scene .visual-card-layer { position: absolute; inset: 0; z-index: 20; display: block; padding: 0; pointer-events: none; }
       .inspection-scene .visual-hover-card {
         position: absolute;
-        width: min(296px, calc(100% - 28px));
-        max-height: min(380px, calc(100% - 28px));
-        padding: 10px;
+        width: min(264px, calc(100% - 28px));
+        max-height: min(340px, calc(100% - 28px));
+        padding: 9px;
         overflow: auto;
         border: 1px solid rgba(244, 225, 186, .52);
         border-left: 3px solid #d18b31;
@@ -1173,11 +1193,13 @@ export function renderPrototypePage(): string {
         backdrop-filter: blur(10px);
         pointer-events: auto;
       }
-      .inspection-scene .visual-hover-card .visual-card-state strong { color: #fffdf4; font-size: .88rem; }
-      .inspection-scene .visual-hover-card .visual-card-state small { color: #f1c97f; font-size: .74rem; }
-      .inspection-scene .visual-hover-card .visual-explanation { color: #cedbd6; font-size: .8rem; }
+      .inspection-scene .visual-hover-card .visual-card-state strong { color: #fffdf4; font-size: .8rem; }
+      .inspection-scene .visual-hover-card .visual-card-state small { color: #f1c97f; font-size: .67rem; }
+      .inspection-scene .visual-hover-card .visual-explanation { color: #cedbd6; font-size: .73rem; line-height: 1.32; }
       .inspection-scene .visual-hover-card .visual-card-action { margin-top: 7px; padding-top: 7px; }
-      .inspection-scene .visual-hover-card .visual-card-action > strong { color: #fff; }
+      .inspection-scene .visual-hover-card .visual-card-action > strong { color: #fff; font-size: .78rem; }
+      .inspection-scene .visual-hover-card .visual-card-action p { font-size: .72rem; line-height: 1.3; }
+      .inspection-scene .visual-hover-card .action-button { min-width: 0; min-height: 44px; padding: 7px 10px; font-size: .76rem; }
       .inspection-scene .visual-hover-card .action-button:not(:disabled) { color: #fff; border-color: #d08b3a; background: linear-gradient(180deg, #b86312, #914206); }
       .inspection-hidden-menu { display: none !important; }
 
@@ -1793,10 +1815,10 @@ export function renderPrototypePage(): string {
           bottom: 8px;
           left: 8px !important;
           top: auto;
-          width: min(286px, calc(100% - 16px)) !important;
+          width: min(264px, calc(100% - 16px)) !important;
           max-height: 42%;
           margin: 0;
-          padding: 10px;
+          padding: 9px;
           box-shadow: 0 14px 36px rgba(3, 13, 20, .48);
         }
       }
@@ -2496,10 +2518,17 @@ export function renderPrototypePage(): string {
 
       function wireCommands() {
         document.querySelectorAll('.action-button').forEach(function (button) {
-          button.addEventListener('click', async function () {
+          button.addEventListener('click', async function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            if (busy || button.disabled) return;
+            const actionId = button.dataset.actionId;
+            if (!actionId) return;
             button.disabled = true;
-            const applied = await request('/api/game-sessions/' + encodeURIComponent(sessionId) + '/actions', { method: 'POST', body: JSON.stringify({ actionId: button.dataset.actionId }) });
+            button.setAttribute('aria-busy', 'true');
+            const applied = await request('/api/game-sessions/' + encodeURIComponent(sessionId) + '/actions', { method: 'POST', body: JSON.stringify({ actionId: actionId }) });
             if (!applied) button.disabled = false;
+            if (!applied) button.removeAttribute('aria-busy');
           });
         });
         document.querySelectorAll('[data-visual-element-id]').forEach(function (element) {
@@ -2522,6 +2551,8 @@ export function renderPrototypePage(): string {
           });
         });
         document.querySelectorAll('.visual-hover-card').forEach(function (card) {
+          card.addEventListener('pointerdown', function (event) { event.stopPropagation(); });
+          card.addEventListener('click', function (event) { event.stopPropagation(); });
           card.addEventListener('mouseenter', cancelVisualCardClose);
           card.addEventListener('mouseleave', scheduleVisualCardClose);
           card.addEventListener('focusin', cancelVisualCardClose);

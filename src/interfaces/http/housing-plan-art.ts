@@ -73,11 +73,11 @@ export function renderHousingPlanDefs(): string {
       .housing-plan .housing-condition-ring { fill: #c07832; fill-opacity: .025; stroke: #ffe1ac; stroke-width: .85; stroke-dasharray: 7 8; opacity: .46; transition: fill-opacity .2s ease, opacity .2s ease, stroke-width .2s ease; }
       .housing-plan #housing-home:is(:hover, :focus-visible, .is-context-active) .housing-condition-ring { fill-opacity: .055; stroke-width: 1.2; opacity: .9; }
       .housing-plan .map-pin-hit-target { fill: #fff; fill-opacity: .001; stroke: none; pointer-events: all; }
-      .housing-plan .map-pin-halo { fill: none; stroke: #ffe2a7; stroke-width: 2; opacity: 0; }
-      .housing-plan .map-pin-disc { fill: #fffaf0; stroke: #765837; stroke-width: 2; filter: url(#housing-pin-shadow); }
-      .housing-plan .map-pin-number { fill: #67492c; font-size: 11px; font-weight: 750; text-anchor: middle; dominant-baseline: central; }
+      .housing-plan .map-pin-halo { fill: none; stroke: #ffe2a7; stroke-width: 1.5; opacity: 0; }
+      .housing-plan .map-pin-disc { fill: #fffaf0; stroke: #765837; stroke-width: 1.5; filter: url(#housing-pin-shadow); }
+      .housing-plan .map-pin-number { fill: #67492c; font-size: 8.4px; font-weight: 750; text-anchor: middle; dominant-baseline: central; }
       .housing-plan .map-pin-label-bg { fill: #fffaf0; fill-opacity: .9; stroke: #765837; stroke-opacity: .72; stroke-width: 1; filter: url(#housing-pin-shadow); }
-      .housing-plan .map-pin-label { fill: #263b31; font-size: 9.5px; font-weight: 700; dominant-baseline: central; letter-spacing: .05px; }
+      .housing-plan .map-pin-label { fill: #263b31; font-size: 7.4px; font-weight: 700; dominant-baseline: central; letter-spacing: .04px; }
       .housing-plan .map-pin-check { display: none; fill: none; stroke: #fffaf0; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
       .housing-plan .map-pin[data-applied="true"] .map-pin-disc { fill: #346755; stroke: #fffaf0; }
       .housing-plan .map-pin[data-applied="true"] .map-pin-number { fill: #fffaf0; }
@@ -92,9 +92,9 @@ export function renderHousingPlanDefs(): string {
       }
       @media (max-width: 700px) {
         .housing-plan .map-pin-label-bg, .housing-plan .map-pin-label { display: none; }
-        .housing-plan .map-pin-disc { r: 14px; stroke-width: 2; }
-        .housing-plan .map-pin-halo { r: 19px; }
-        .housing-plan .map-pin-number { font-size: 11px; }
+        .housing-plan .map-pin-disc { r: 12px; stroke-width: 1.8; }
+        .housing-plan .map-pin-halo { r: 17px; }
+        .housing-plan .map-pin-number { font-size: 9.5px; }
         .housing-plan .housing-place-label { font-size: 22px; letter-spacing: 1px; }
         .housing-plan .housing-scene-note { display: none; }
         .housing-plan .housing-scale-caption { display: none; }
@@ -131,15 +131,15 @@ export function renderHousingPin(
   side: HousingPinSide = 'right'
 ): string {
   const infoClass = number === 'i' ? ' map-pin-info' : '';
-  const labelX = side === 'right' ? 8 : -width - 8;
-  const textX = labelX + 12;
+  const labelX = side === 'right' ? 7 : -width - 7;
+  const textX = labelX + 9;
   return `<g class="map-pin${infoClass}" data-applied="${applied}" transform="translate(${x} ${y})" aria-hidden="true">
     <circle class="map-pin-hit-target" r="54" />
-    <rect class="map-pin-label-bg" x="${labelX}" y="-12" width="${width}" height="24" rx="6" />
+    <rect class="map-pin-label-bg" x="${labelX}" y="-9" width="${width}" height="18" rx="4" />
     <text class="map-pin-label" x="${textX}" y="0">${label}</text>
-    <circle class="map-pin-halo" r="18" />
-    <circle class="map-pin-disc" r="12" />
+    <circle class="map-pin-halo" r="14" />
+    <circle class="map-pin-disc" r="9" />
     <text class="map-pin-number" x="0" y="0">${number}</text>
-    <g class="map-pin-check" transform="translate(10 -10)"><circle r="5" fill="#346755" stroke-width="1.2" /><path d="M-2 0 l1.5 1.5 3 -3" stroke-width="1.2" /></g>
+    <g class="map-pin-check" transform="translate(8 -8)"><circle r="4" fill="#346755" stroke-width="1" /><path d="M-1.6 0 l1.2 1.2 2.5 -2.5" stroke-width="1" /></g>
   </g>`;
 }

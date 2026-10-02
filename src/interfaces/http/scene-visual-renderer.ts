@@ -153,7 +153,7 @@ function territorySvg(model: PresentedSceneVisualModel): string {
         <g class="map-road-obstruction">${renderTerritoryRoadDebris(292, 300, -12)}${renderTerritoryRoadDebris(530, 242, -17)}${renderTerritoryRoadDebris(711, 187, -24)}</g>
         <image class="map-action-actor map-action-worker map-road-worker" href="/images/prevention-brush-worker-v1.png" x="493" y="207" width="92" height="92" preserveAspectRatio="xMidYMid meet" />
       </g>
-      ${renderTerritoryMapPin(3, 462, 292, road?.label ?? 'Camino rural', 90, road?.selected === true)}
+      ${renderTerritoryMapPin(3, 462, 292, road?.label ?? 'Camino rural', 72, road?.selected === true)}
     </g>
     <g id="territory-continuity" class="visual-hotspot ${stateClass(
       continuity
@@ -168,7 +168,7 @@ function territorySvg(model: PresentedSceneVisualModel): string {
         </g>
         <image class="map-action-actor map-action-worker map-continuity-worker" href="/images/prevention-brush-worker-v1.png" x="314" y="78" width="86" height="86" preserveAspectRatio="xMidYMid meet" />
       </g>
-      ${renderTerritoryMapPin(2, 316, 125, continuity?.label ?? 'Vegetación', 82, continuity?.selected === true)}
+      ${renderTerritoryMapPin(2, 316, 125, continuity?.label ?? 'Vegetación', 68, continuity?.selected === true)}
     </g>
     <g id="territory-residues" class="visual-hotspot ${stateClass(residues)}"${hotspotAttributes(
       residues
@@ -179,20 +179,20 @@ function territorySvg(model: PresentedSceneVisualModel): string {
         ${renderTerritoryBranchPile(209, 211, .9)}
         <image class="map-action-actor map-action-worker map-residue-worker" href="/images/prevention-brush-worker-v1.png" x="174" y="176" width="82" height="82" preserveAspectRatio="xMidYMid meet" />
       </g>
-      ${renderTerritoryMapPin(1, 205, 171, residues?.label ?? 'Ramas secas', 86, residues?.selected === true)}
+      ${renderTerritoryMapPin(1, 205, 171, residues?.label ?? 'Ramas secas', 70, residues?.selected === true)}
     </g>
     <g id="territory-grazing" class="visual-hotspot ${stateClass(grazing)}"${hotspotAttributes(
       grazing
     )}>
       <path class="visual-grazing" d="${TERRITORY_GRAZING_PATH}" aria-hidden="true" />
       <image class="map-action-actor map-grazing-flock" href="/images/territory-grazing-goats-v1.png" x="692" y="322" width="128" height="86" preserveAspectRatio="xMidYMid meet" aria-hidden="true" />
-      ${renderTerritoryMapPin(4, 746, 370, grazing?.label ?? 'Zona de pastoreo', 118, grazing?.selected === true, 'left')}
+      ${renderTerritoryMapPin(4, 746, 370, grazing?.label ?? 'Zona de pastoreo', 92, grazing?.selected === true, 'left')}
     </g>
     <g id="territory-professional-line" class="visual-hotspot ${stateClass(line)}"${hotspotAttributes(
       line
     )}>
       <g aria-hidden="true"><path class="visual-professional-line" d="${TERRITORY_EVALUATION_PATH}" /><circle class="map-survey-point" cx="650" cy="206" r="5" /><circle class="map-survey-point" cx="826" cy="142" r="5" /></g>
-      ${renderTerritoryMapPin(5, 748, 157, line?.label ?? 'Zona para revisar', 116, line?.selected === true, 'left')}
+      ${renderTerritoryMapPin(5, 748, 157, line?.label ?? 'Zona para revisar', 90, line?.selected === true, 'left')}
     </g>
   </svg>`;
 }
@@ -228,7 +228,7 @@ function housingSvg(model: PresentedSceneVisualModel): string {
           <circle cx="850" cy="440" r="5" fill="#8c572d" /><circle cx="815" cy="383" r="5" fill="#8c572d" /><circle cx="787" cy="321" r="5" fill="#8c572d" />
         </g>
       </g>
-      ${renderHousingPin(3, 718, 375, access?.label ?? 'Entrada a las casas', 116, access?.selected === true, 'left')}
+      ${renderHousingPin(3, 718, 375, access?.label ?? 'Entrada a las casas', 96, access?.selected === true, 'left')}
     </g>
     <g id="housing-canopy" class="visual-hotspot ${stateClass(canopy)}"${hotspotAttributes(
       canopy
@@ -244,7 +244,7 @@ function housingSvg(model: PresentedSceneVisualModel): string {
         <path class="housing-canopy-gap" d="M276 79 Q293 134 281 207 Q300 214 313 198 Q309 133 299 81Z" />
         <path class="housing-gap-mark" d="M154 127 l9 9 16 -20 M286 136 l9 9 16 -20" />
       </g>
-      ${renderHousingPin(2, 195, 125, canopy?.label ?? 'Copas de los árboles', 118, canopy?.selected === true)}
+      ${renderHousingPin(2, 195, 125, canopy?.label ?? 'Copas de los árboles', 98, canopy?.selected === true)}
     </g>
     <g id="housing-vertical-fuel" class="visual-hotspot ${stateClass(
       vertical
@@ -260,11 +260,11 @@ function housingSvg(model: PresentedSceneVisualModel): string {
       </g>
       <image class="map-action-actor housing-clearance-worker" href="/images/prevention-brush-worker-v1.png" x="174" y="316" width="116" height="106" preserveAspectRatio="xMidYMid meet" aria-hidden="true" />
       <path class="housing-low-branches housing-risk-detail" d="M203 329 l-63 -54 m63 54 l-57 -7 m57 7 l57 -58 m-57 58 l69 2" aria-hidden="true" />
-      ${renderHousingPin(1, 119, 288, vertical?.label ?? 'Ramas y hierba seca', 140, vertical?.selected === true)}
+      ${renderHousingPin(1, 119, 288, vertical?.label ?? 'Ramas y hierba seca', 112, vertical?.selected === true)}
     </g>
     <g id="housing-home" class="visual-hotspot ${stateClass(house)}"${hotspotAttributes(house)}>
       ${renderHousingHome()}
-      ${renderHousingPin('i', 609, 241, house?.label ?? 'Casa junto al monte', 132, false)}
+      ${renderHousingPin('i', 609, 241, house?.label ?? 'Casa junto al monte', 106, false)}
     </g>
   </svg>`;
 }
