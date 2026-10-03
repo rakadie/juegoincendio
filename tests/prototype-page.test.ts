@@ -8,7 +8,8 @@ describe('motor-backed product experience shell', () => {
     expect(html).toContain("request('/api/game-sessions', { method: 'POST'");
     expect(html).toContain('data-action-id');
     expect(html).toContain('id="advance-button"');
-    expect(html).toContain('Misión municipal');
+    expect(html).toContain('Misión 01');
+    expect(html).toContain('class="mission-briefing-panel"');
     expect(html).not.toContain('Panel de contenido técnico');
     expect(html).not.toContain('Bitácora operativa');
   });
@@ -43,5 +44,13 @@ describe('motor-backed product experience shell', () => {
     forbidden.forEach((term) => expect(html).not.toContain(term));
     expect(html).toContain('let currentView = null');
     expect(html).not.toContain('let state =');
+  });
+
+  it('recovers controls after failed requests without exposing domain messages', () => {
+    const html = renderPrototypePage();
+    expect(html).toContain('function requestErrorMessage(payload, status)');
+    expect(html).toContain('if (!applied) button.disabled = false;');
+    expect(html).toContain('else advance.disabled = false;');
+    expect(html).not.toContain("throw new Error(payload.message");
   });
 });

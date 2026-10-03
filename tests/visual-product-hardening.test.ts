@@ -90,8 +90,8 @@ describe('M3 product hardening', () => {
     expect(fuelLoad?.state).toBe('critical');
     expect(fuelLoad?.causeActionLabels).toEqual(
       expect.arrayContaining([
-        expect.stringContaining('Sin tratar: Gestionar restos de poda'),
-        expect.stringContaining('Sin tratar: Ejecutar pastoreo preventivo')
+        expect.stringContaining('Quedó pendiente: Retirar las ramas secas'),
+        expect.stringContaining('Quedó pendiente: Llevar el ganado a la zona')
       ])
     );
   });
@@ -111,8 +111,8 @@ describe('M3 product hardening', () => {
     expect(opportunity).toMatchObject({ state: 'critical', value: 24 });
     expect(opportunity?.causeActionLabels).toEqual(
       expect.arrayContaining([
-        'Sin tratar: Limpiar márgenes de caminos rurales',
-        'Sin tratar: Despejar accesos para autobombas'
+        'Quedó pendiente: Limpiar los bordes del camino',
+        'Quedó pendiente: Despejar la entrada'
       ])
     );
   });

@@ -8,12 +8,15 @@ import { M5_RESULT_VISUAL_STYLE } from '../src/interfaces/http/m5-result-visual-
 
 describe('M5.5 result and comparison visual hierarchy', () => {
   it('prioritizes outcome, inherited state, causal rails and replay through stable selectors', () => {
-    expect(M5_RESULT_VISUAL_STYLE).toContain('.scene[class*="result-"] .scene-heading');
+    expect(M5_RESULT_VISUAL_STYLE).toContain('.scene[class*="result-"] .result-hero');
     expect(M5_RESULT_VISUAL_STYLE).toContain('.scene[class*="result-"] .visual-dimension-summary');
     expect(M5_RESULT_VISUAL_STYLE).toContain('.scene[class*="result-"] .relation.decisive');
     expect(M5_RESULT_VISUAL_STYLE).toContain('.scene[class*="result-"] .m4-causal-steps');
     expect(M5_RESULT_VISUAL_STYLE).toContain('#m4-result-actions');
+    expect(M5_RESULT_VISUAL_STYLE).toContain('.final-prevention-review-grid section');
+    expect(M5_RESULT_VISUAL_STYLE).toContain('.final-prevention-review-grid section > p');
     expect(M5_RESULT_VISUAL_STYLE).toContain('.m4-comparison-grid');
+    expect(M5_RESULT_VISUAL_STYLE).toContain('color: #17242d;');
     expect(M5_RESULT_VISUAL_STYLE).toContain('.m4-comparison-replay');
   });
 
@@ -51,7 +54,7 @@ describe('M5.5 result and comparison visual hierarchy', () => {
     expect(comparison.reference.dimensions).toHaveLength(5);
     expect(comparison.current.manifestations).toHaveLength(3);
     expect(comparison.reference.manifestations).toHaveLength(3);
-    expect(comparison.title).toBe('Tu partida y otro recorrido de referencia');
+    expect(comparison.title).toBe('Tu partida y otra forma de jugar');
   });
 
   it('injects the M5 visual hierarchy into the same player page and keeps the M4 client', async () => {

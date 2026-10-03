@@ -271,18 +271,51 @@ try {
     await sleep(80);
   }
 
-  async function pressEnter(selector) {
-    await waitFor(
-      `(() => { const element = document.querySelector(${JSON.stringify(selector)}); return element && !element.disabled; })()`,
-      `${selector} enabled`
-    );
-    const focused = await evaluate(`(() => {
+  async function ensureSideDrawerOpenFor(selector) {
+    const needsDrawer = await evaluate(`(() => {
       const element = document.querySelector(${JSON.stringify(selector)});
-      if (!element) return false;
-      element.focus();
-      return document.activeElement === element;
+      const panel = element?.closest('.scene-side-panel');
+      return Boolean(panel && window.matchMedia('(max-width: 1050px)').matches && !panel.classList.contains('is-open'));
     })()`);
-    assert(focused, `Could not focus ${selector}`);
+    if (!needsDrawer) return;
+    await pressEnter('.scene-side-trigger');
+    await waitFor(
+      `(() => {
+        const panel = document.getElementById('scene-side-panel');
+        return panel?.classList.contains('is-open') === true && getComputedStyle(panel).visibility === 'visible';
+      })()`,
+      'side drawer opened and visible'
+    );
+  }
+
+  async function pressEnter(selector) {
+    if (selector !== '.scene-side-trigger') await ensureSideDrawerOpenFor(selector);
+    await waitFor(
+      `(() => {
+        const element = document.querySelector(${JSON.stringify(selector)});
+        if (!element || element.disabled) return false;
+        const rect = element.getBoundingClientRect();
+        const style = getComputedStyle(element);
+        return rect.width > 0 && rect.height > 0 && style.visibility !== 'hidden' && style.display !== 'none';
+      })()`,
+      `${selector} visible and enabled`
+    );
+    const focusState = await evaluate(`(() => {
+      const element = document.querySelector(${JSON.stringify(selector)});
+      if (!element) return { focused: false, reason: 'missing' };
+      element.focus();
+      const panel = element.closest('.scene-side-panel');
+      const card = element.closest('.visual-hover-card');
+      return {
+        focused: document.activeElement === element,
+        activeTag: document.activeElement?.tagName,
+        panelOpen: panel?.classList.contains('is-open'),
+        panelHidden: panel?.getAttribute('aria-hidden'),
+        cardHidden: card?.hidden,
+        disabled: element.disabled
+      };
+    })()`);
+    assert(focusState?.focused, `Could not focus ${selector}: ${JSON.stringify(focusState)}`);
     const key = {
       key: 'Enter',
       code: 'Enter',
@@ -299,6 +332,7 @@ try {
   }
 
   async function interactionPoint(selector) {
+    await ensureSideDrawerOpenFor(selector);
     await waitFor(
       `(() => {
         const element = document.querySelector(${JSON.stringify(selector)});
@@ -354,6 +388,7 @@ try {
 
   async function openVisualActionCard(actionId, pointer) {
     const hotspotSelector = `[data-focus-action-id=${JSON.stringify(actionId)}].visual-hotspot .map-pin-disc`;
+    const cardSelector = `[data-visual-action-card-id=${JSON.stringify(actionId)}]:not([hidden])`;
     await activateWithPointer(hotspotSelector, pointer);
     await waitFor(
       `(() => {
@@ -364,18 +399,32 @@ try {
       })()`,
       `${actionId} visual card opened with ${pointer}`
     );
+    const drawerOpen = await evaluate(`window.matchMedia('(max-width: 1050px)').matches && document.getElementById('scene-side-panel')?.classList.contains('is-open') === true`);
+    if (drawerOpen) {
+      await sleep(260);
+      await waitFor(`(() => {
+        const rect = document.getElementById('scene-side-panel')?.getBoundingClientRect();
+        return rect && Math.abs(rect.right - window.innerWidth) <= 1;
+      })()`, 'side drawer transition completed');
+    }
+    if (pointer === 'mouse') {
+      const cardPoint = await evaluate(`(() => {
+        const rect = document.querySelector(${JSON.stringify(cardSelector)})?.getBoundingClientRect();
+        return rect ? { x: rect.left + rect.width / 2, y: rect.top + Math.min(rect.height / 2, 80) } : null;
+      })()`);
+      assert(cardPoint, `${actionId} visual card has no mouse target.`);
+      await send('Input.dispatchMouseEvent', { type: 'mouseMoved', ...cardPoint });
+      await sleep(40);
+    }
   }
 
   async function chooseWithPointer(actionId, pointer, expectedMobile, evidenceName, template = 'territory') {
     await openVisualActionCard(actionId, pointer);
     await assertOpenSceneCard(actionId, expectedMobile, template);
+    await sleep(260);
     if (evidenceName) {
       const cardSelector = `[data-visual-action-card-id=${JSON.stringify(actionId)}]:not([hidden])`;
-      if (pointer === 'mouse') {
-        await captureViewportEvidence(evidenceName, cardSelector, { minWidth: 220, minHeight: 120 });
-      } else {
-        await captureEvidence(evidenceName, cardSelector, { minWidth: 280, minHeight: 120 });
-      }
+      await captureViewportEvidence(evidenceName, cardSelector, { minWidth: 220, minHeight: 60 });
     }
     const selector = `[data-visual-action-card-id=${JSON.stringify(actionId)}]:not([hidden]) [data-action-id=${JSON.stringify(actionId)}]`;
     await activateWithPointer(selector, pointer);
@@ -387,29 +436,99 @@ try {
     );
   }
 
+  async function chooseFromPointMenu(actionId, activation, expectedMobile, template = 'territory') {
+    const hotspotSelector = `.visual-scene[data-visual-template=${JSON.stringify(template)}] .visual-hotspot[data-focus-action-id=${JSON.stringify(actionId)}]`;
+    const itemSelector = activation === 'keyboard' ? hotspotSelector : `${hotspotSelector} .map-pin-disc`;
+    if (activation === 'keyboard') await pressEnter(itemSelector);
+    else await activateWithPointer(itemSelector, activation);
+    await waitFor(
+      `(() => {
+        const card = document.querySelector(${JSON.stringify(`[data-visual-action-card-id="${actionId}"]`)});
+        return card && !card.hidden;
+      })()`,
+      `${actionId} action tray opened from the map point with ${activation}`
+    );
+    await assertOpenSceneCard(actionId, expectedMobile, template);
+    const actionSelector = `[data-visual-action-card-id=${JSON.stringify(actionId)}]:not([hidden]) [data-action-id=${JSON.stringify(actionId)}]`;
+    if (activation === 'keyboard') await pressEnter(actionSelector);
+    else await activateWithPointer(actionSelector, activation);
+    await waitFor(
+      `Boolean(document.querySelector(${JSON.stringify(
+        `[data-action-card-id="${actionId}"].selected, [data-visual-action-card-id="${actionId}"].selected`
+      )}))`,
+      `${actionId} selected from the map point with ${activation}`
+    );
+  }
+
   async function assertTerritoryLayout(expectedMobile) {
-    const layout = await evaluate(`(() => {
-      const canvas = document.querySelector('.visual-scene[data-visual-template="territory"] .visual-canvas');
+    const layout = await evaluate(`(async () => {
+      const scene = document.querySelector('.visual-scene[data-visual-template="territory"]');
+      const canvas = scene?.querySelector('.visual-canvas');
       const map = canvas?.querySelector('.territory-map');
-      const key = canvas?.querySelector('.territory-map-key');
-      if (!canvas || !map || !key) return null;
+      const key = document.querySelector('.inspection-hidden-menu .territory-map-key');
+      const photo = map?.querySelector('[data-background-layer="photo"]');
+      const residuePile = map?.querySelector('.map-residue-pile');
+      const roadContext = map?.querySelector('.map-road-context');
+      const roadRisk = map?.querySelector('.map-road-risk');
+      const roadLine = map?.querySelector('#territory-road .visual-road');
+      const vegetationLine = map?.querySelector('#territory-continuity .visual-vegetation-band');
+      const grazingLine = map?.querySelector('#territory-grazing .visual-grazing');
+      const reviewLine = map?.querySelector('#territory-professional-line .visual-professional-line');
+      if (!canvas || !map || !key || !photo || !residuePile || !roadContext || !roadRisk || !roadLine || !vegetationLine || !grazingLine || !reviewLine) return null;
       const canvasRect = canvas.getBoundingClientRect();
       const mapRect = map.getBoundingClientRect();
-      const keyRect = key.getBoundingClientRect();
-      const items = Array.from(key.querySelectorAll('.territory-map-key-item')).map((element) => {
-        const rect = element.getBoundingClientRect();
-        return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, height: rect.height };
-      });
-      const visiblePinParts = Array.from(map.querySelectorAll('.map-pin'))
-        .map((element) => {
+      const visiblePinParts = Array.from(map.querySelectorAll('.map-pin')).flatMap((pin, pinIndex) =>
+        Array.from(pin.querySelectorAll('.map-pin-disc, .map-pin-label-bg')).flatMap((element) => {
           const rect = element.getBoundingClientRect();
-          return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom };
-        });
+          return rect.width === 0 || rect.height === 0
+            ? []
+            : [{ pinIndex, left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom }];
+        })
+      );
+      const pins = Array.from(map.querySelectorAll('.map-pin')).map((pin) => {
+        const target = pin.querySelector('.map-pin-hit-target');
+        const disc = pin.querySelector('.map-pin-disc');
+        const labelBackground = pin.querySelector('.map-pin-label-bg');
+        const label = pin.querySelector('.map-pin-label');
+        if (!target || !disc || !labelBackground || !label) return null;
+        const targetRect = target.getBoundingClientRect();
+        const discRect = disc.getBoundingClientRect();
+        const labelBackgroundRect = labelBackground.getBoundingClientRect();
+        const labelRect = label.getBoundingClientRect();
+        const labelStyle = getComputedStyle(label);
+        const labelVisible = labelRect.width > 0 && labelRect.height > 0 &&
+          labelStyle.display !== 'none' && labelStyle.visibility !== 'hidden';
+        return {
+          target: { width: targetRect.width, height: targetRect.height },
+          disc: { width: discRect.width, height: discRect.height },
+          labelBackground: {
+            left: labelBackgroundRect.left,
+            right: labelBackgroundRect.right,
+            top: labelBackgroundRect.top,
+            bottom: labelBackgroundRect.bottom,
+            width: labelBackgroundRect.width,
+            height: labelBackgroundRect.height
+          },
+          label: {
+            left: labelRect.left,
+            right: labelRect.right,
+            top: labelRect.top,
+            bottom: labelRect.bottom,
+            width: labelRect.width,
+            height: labelRect.height,
+            text: label.textContent?.trim() ?? '',
+            visible: labelVisible
+          }
+        };
+      });
+      const residueRect = residuePile.getBoundingClientRect();
+      const photoResponse = await fetch(photo.getAttribute('href'));
       const overlaps = [];
       for (let i = 0; i < visiblePinParts.length; i += 1) {
         for (let j = i + 1; j < visiblePinParts.length; j += 1) {
           const a = visiblePinParts[i];
           const b = visiblePinParts[j];
+          if (a.pinIndex === b.pinIndex) continue;
           if (a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top) {
             overlaps.push([i, j]);
           }
@@ -419,52 +538,132 @@ try {
         viewportWidth: window.innerWidth,
         pageWidth: document.documentElement.scrollWidth,
         canvas: { left: canvasRect.left, right: canvasRect.right },
-        map: { left: mapRect.left, right: mapRect.right, top: mapRect.top, bottom: mapRect.bottom },
-        key: { left: keyRect.left, right: keyRect.right },
-        itemCount: items.length,
-        items,
-        overlaps
+        map: { left: mapRect.left, right: mapRect.right, top: mapRect.top, bottom: mapRect.bottom, width: mapRect.width, height: mapRect.height },
+        keyHidden: getComputedStyle(key.closest('.inspection-hidden-menu')).display === 'none',
+        itemCount: key.querySelectorAll('.territory-map-key-item').length,
+        visibleSidePanels: Array.from(document.querySelectorAll('.inspection-scene .scene-side-panel')).filter((element) => {
+          const rect = element.getBoundingClientRect();
+          return rect.width > 0 && rect.height > 0;
+        }).length,
+        directControls: map.querySelectorAll('.visual-hotspot[tabindex="0"]').length,
+        pinParts: visiblePinParts,
+        overlaps,
+        pins,
+        residue: { width: residueRect.width, height: residueRect.height },
+        strokes: {
+          roadContext: Number.parseFloat(getComputedStyle(roadContext).strokeWidth),
+          roadRisk: Number.parseFloat(getComputedStyle(roadRisk).strokeWidth),
+          roadLine: Number.parseFloat(getComputedStyle(roadLine).strokeWidth),
+          vegetation: Number.parseFloat(getComputedStyle(vegetationLine).strokeWidth),
+          grazing: Number.parseFloat(getComputedStyle(grazingLine).strokeWidth),
+          review: Number.parseFloat(getComputedStyle(reviewLine).strokeWidth)
+        },
+        photoHref: photo.getAttribute('href'),
+        photoOk: photoResponse.ok,
+        photoType: photoResponse.headers.get('content-type')
       };
     })()`);
     assert(layout, 'Territory layout was not available.');
-    assert(layout.itemCount === 5, 'Territory legend must expose five controls.');
+    assert(layout.itemCount === 5 && layout.keyHidden, 'Territory must keep a hidden semantic legend for state synchronisation.');
+    assert(layout.directControls === 5, 'Territory must expose five direct controls on the map.');
+    assert(layout.visibleSidePanels === 0, 'Territory still reserves space for a right-hand card panel.');
     assert(layout.pageWidth <= layout.viewportWidth + 3, 'Territory layout has horizontal overflow.');
     assert(layout.map.left >= layout.canvas.left - 1 && layout.map.right <= layout.canvas.right + 1, 'Territory map is clipped by its canvas.');
-    assert(layout.key.left >= layout.canvas.left - 1 && layout.key.right <= layout.canvas.right + 1, 'Territory legend is clipped by its canvas.');
+    assert(layout.pinParts.every((part) => part.left >= layout.map.left - 1 && part.right <= layout.map.right + 1 && part.top >= layout.map.top - 1 && part.bottom <= layout.map.bottom + 1), 'A territory marker or label is cropped by the panoramic map.');
+    assert(layout.photoHref === '/images/territory-prevention-aerial-v1.jpg', 'Territory does not use the expected photographic base.');
+    assert(layout.photoOk && layout.photoType?.startsWith('image/jpeg'), 'Territory photograph did not load as JPEG.');
+    assert(layout.pins.length === 5 && layout.pins.every(Boolean), 'Territory must expose five complete compact markers.');
     assert(
-      layout.items.every((item) => item.left >= layout.key.left - 1 && item.right <= layout.key.right + 1),
-      'A territory legend item escapes its container.'
+      layout.pins.every((pin) => pin.target.width >= 44 && pin.target.height >= 44),
+      `A territory marker hit target is smaller than 44px: ${JSON.stringify(layout.pins)}.`
     );
     assert(
-      layout.items.every((item) => item.height >= (expectedMobile ? 52 : 48)),
-      'Territory legend controls are smaller than their expected target size.'
+      layout.pins.every((pin) => pin.disc.width <= pin.target.width * .72 && pin.disc.height <= pin.target.height * .72),
+      `A territory marker disc is too large for its transparent hit target: ${JSON.stringify(layout.pins)}.`
     );
+    if (expectedMobile) {
+      assert(layout.pins.every((pin) => !pin.label.visible), 'Territory text labels should collapse to numbered markers on mobile.');
+    } else {
+      assert(layout.pins.every((pin) => pin.label.visible && pin.label.text.length > 0), 'A desktop territory marker has no visible label.');
+      assert(
+        layout.pins.every((pin) =>
+          pin.labelBackground.width <= layout.map.width * .2 && pin.labelBackground.height <= layout.map.height * .065 &&
+          pin.label.left >= pin.labelBackground.left - 1 && pin.label.right <= pin.labelBackground.right + 1 &&
+          pin.label.top >= pin.labelBackground.top - 1 && pin.label.bottom <= pin.labelBackground.bottom + 1
+        ),
+        `A territory label is oversized or escapes its compact background: ${JSON.stringify(layout.pins)}.`
+      );
+    }
+    assert(layout.residue.width < layout.map.width * .14 && layout.residue.height < layout.map.height * .16, 'The pruning-residue overlay is disproportionate to the landscape.');
+    assert(layout.strokes.roadContext <= 7 && layout.strokes.roadRisk <= 2.7 && layout.strokes.roadLine <= 1.3, 'Territory road overlay is visually too heavy.');
+    assert(layout.strokes.vegetation <= 2.3 && layout.strokes.grazing <= 1.8 && layout.strokes.review <= 2.1, 'A territory guide line is visually too heavy.');
     assert(layout.overlaps.length === 0, 'Territory pins or visible labels overlap.');
+    if (!expectedMobile) await assertGameplayFitsViewport('Territory inspection');
   }
 
   async function assertHousingLayout(expectedMobile) {
     const layout = await evaluate(`(() => {
-      const canvas = document.querySelector('.visual-scene[data-visual-template="housing"] .visual-canvas');
+      const scene = document.querySelector('.visual-scene[data-visual-template="housing"]');
+      const canvas = scene?.querySelector('.visual-canvas');
       const map = canvas?.querySelector('.housing-plan');
-      const key = canvas?.querySelector('.housing-map-key');
-      if (!canvas || !map || !key) return null;
+      const key = document.querySelector('.inspection-hidden-menu .housing-map-key');
+      const accessRisk = map?.querySelector('#housing-local-access .housing-access-risk');
+      const accessCentre = map?.querySelector('#housing-local-access .housing-access-centre');
+      const canopyLink = map?.querySelector('#housing-canopy .housing-canopy-link');
+      const canopyCrown = map?.querySelector('#housing-canopy .housing-canopy-crown');
+      if (!canvas || !map || !key || !accessRisk || !accessCentre || !canopyLink || !canopyCrown) return null;
       const canvasRect = canvas.getBoundingClientRect();
       const mapRect = map.getBoundingClientRect();
-      const keyRect = key.getBoundingClientRect();
-      const items = Array.from(key.querySelectorAll('.housing-map-key-item')).map((element) => {
-        const rect = element.getBoundingClientRect();
-        return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, height: rect.height };
-      });
-      const visiblePinParts = Array.from(map.querySelectorAll('.map-pin'))
-        .map((element) => {
+      const visiblePinParts = Array.from(map.querySelectorAll('.map-pin')).flatMap((pin, pinIndex) =>
+        Array.from(pin.querySelectorAll('.map-pin-disc, .map-pin-label-bg')).flatMap((element) => {
           const rect = element.getBoundingClientRect();
-          return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom };
-        });
+          return rect.width === 0 || rect.height === 0
+            ? []
+            : [{ pinIndex, left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom }];
+        })
+      );
+      const pins = Array.from(map.querySelectorAll('.map-pin')).map((pin) => {
+        const target = pin.querySelector('.map-pin-hit-target');
+        const disc = pin.querySelector('.map-pin-disc');
+        const labelBackground = pin.querySelector('.map-pin-label-bg');
+        const label = pin.querySelector('.map-pin-label');
+        if (!target || !disc || !labelBackground || !label) return null;
+        const targetRect = target.getBoundingClientRect();
+        const discRect = disc.getBoundingClientRect();
+        const labelBackgroundRect = labelBackground.getBoundingClientRect();
+        const labelRect = label.getBoundingClientRect();
+        const labelStyle = getComputedStyle(label);
+        const labelVisible = labelRect.width > 0 && labelRect.height > 0 &&
+          labelStyle.display !== 'none' && labelStyle.visibility !== 'hidden';
+        return {
+          target: { width: targetRect.width, height: targetRect.height },
+          disc: { width: discRect.width, height: discRect.height },
+          labelBackground: {
+            left: labelBackgroundRect.left,
+            right: labelBackgroundRect.right,
+            top: labelBackgroundRect.top,
+            bottom: labelBackgroundRect.bottom,
+            width: labelBackgroundRect.width,
+            height: labelBackgroundRect.height
+          },
+          label: {
+            left: labelRect.left,
+            right: labelRect.right,
+            top: labelRect.top,
+            bottom: labelRect.bottom,
+            width: labelRect.width,
+            height: labelRect.height,
+            text: label.textContent?.trim() ?? '',
+            visible: labelVisible
+          }
+        };
+      });
       const overlaps = [];
       for (let i = 0; i < visiblePinParts.length; i += 1) {
         for (let j = i + 1; j < visiblePinParts.length; j += 1) {
           const a = visiblePinParts[i];
           const b = visiblePinParts[j];
+          if (a.pinIndex === b.pinIndex) continue;
           if (a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top) {
             overlaps.push([i, j]);
           }
@@ -474,27 +673,146 @@ try {
         viewportWidth: window.innerWidth,
         pageWidth: document.documentElement.scrollWidth,
         canvas: { left: canvasRect.left, right: canvasRect.right },
-        map: { left: mapRect.left, right: mapRect.right, top: mapRect.top, bottom: mapRect.bottom },
-        key: { left: keyRect.left, right: keyRect.right },
-        itemCount: items.length,
-        items,
-        overlaps
+        map: { left: mapRect.left, right: mapRect.right, top: mapRect.top, bottom: mapRect.bottom, width: mapRect.width, height: mapRect.height },
+        keyHidden: getComputedStyle(key.closest('.inspection-hidden-menu')).display === 'none',
+        itemCount: key.querySelectorAll('.housing-map-key-item').length,
+        visibleSidePanels: Array.from(document.querySelectorAll('.inspection-scene .scene-side-panel')).filter((element) => {
+          const rect = element.getBoundingClientRect();
+          return rect.width > 0 && rect.height > 0;
+        }).length,
+        directControls: map.querySelectorAll('.visual-hotspot[tabindex="0"]').length,
+        pinParts: visiblePinParts,
+        overlaps,
+        pins,
+        strokes: {
+          accessRisk: Number.parseFloat(getComputedStyle(accessRisk).strokeWidth),
+          accessCentre: Number.parseFloat(getComputedStyle(accessCentre).strokeWidth),
+          canopyLink: Number.parseFloat(getComputedStyle(canopyLink).strokeWidth),
+          canopyCrown: Number.parseFloat(getComputedStyle(canopyCrown).strokeWidth)
+        }
       };
     })()`);
     assert(layout, 'Housing layout was not available.');
-    assert(layout.itemCount === 4, 'Housing legend must expose three actions and the house condition.');
+    assert(layout.itemCount === 4 && layout.keyHidden, 'Housing must keep a hidden semantic legend for state synchronisation.');
+    assert(layout.directControls === 4, 'Housing must expose its four direct map controls.');
+    assert(layout.visibleSidePanels === 0, 'Housing still reserves space for a right-hand card panel.');
     assert(layout.pageWidth <= layout.viewportWidth + 3, 'Housing layout has horizontal overflow.');
     assert(layout.map.left >= layout.canvas.left - 1 && layout.map.right <= layout.canvas.right + 1, 'Housing map is clipped by its canvas.');
-    assert(layout.key.left >= layout.canvas.left - 1 && layout.key.right <= layout.canvas.right + 1, 'Housing legend is clipped by its canvas.');
-    assert(
-      layout.items.every((item) => item.left >= layout.key.left - 1 && item.right <= layout.key.right + 1),
-      'A housing legend item escapes its container.'
-    );
-    assert(
-      layout.items.every((item) => item.height >= (expectedMobile ? 52 : 48)),
-      'Housing legend controls are smaller than their expected target size.'
-    );
+    assert(layout.pinParts.every((part) => part.left >= layout.map.left - 1 && part.right <= layout.map.right + 1 && part.top >= layout.map.top - 1 && part.bottom <= layout.map.bottom + 1), `A housing marker or label is cropped by the panoramic map: ${JSON.stringify(layout.pinParts)} within ${JSON.stringify(layout.map)}.`);
     assert(layout.overlaps.length === 0, 'Housing pins or visible labels overlap.');
+    assert(layout.pins.length === 4 && layout.pins.every(Boolean), 'Housing must expose four complete compact markers.');
+    assert(
+      layout.pins.every((pin) => pin.target.width >= 44 && pin.target.height >= 44),
+      `A housing marker hit target is smaller than 44px: ${JSON.stringify(layout.pins)}.`
+    );
+    assert(
+      layout.pins.every((pin) => pin.disc.width <= pin.target.width * .72 && pin.disc.height <= pin.target.height * .72),
+      `A housing marker disc is too large for its transparent hit target: ${JSON.stringify(layout.pins)}.`
+    );
+    if (expectedMobile) {
+      assert(layout.pins.every((pin) => !pin.label.visible), 'Housing text labels should collapse to numbered markers on mobile.');
+    } else {
+      assert(layout.pins.every((pin) => pin.label.visible && pin.label.text.length > 0), 'A desktop housing marker has no visible label.');
+      assert(
+        layout.pins.every((pin) =>
+          pin.labelBackground.width <= layout.map.width * .2 && pin.labelBackground.height <= layout.map.height * .065 &&
+          pin.label.left >= pin.labelBackground.left - 1 && pin.label.right <= pin.labelBackground.right + 1 &&
+          pin.label.top >= pin.labelBackground.top - 1 && pin.label.bottom <= pin.labelBackground.bottom + 1
+        ),
+        `A housing label is oversized or escapes its compact background: ${JSON.stringify(layout.pins)}.`
+      );
+    }
+    assert(layout.strokes.accessRisk <= 8 && layout.strokes.accessCentre <= 1.7, 'Housing access overlay is visually too heavy.');
+    assert(layout.strokes.canopyLink <= 5 && layout.strokes.canopyCrown <= 1.6, 'Housing canopy overlay is visually too heavy.');
+    if (!expectedMobile) await assertGameplayFitsViewport('Housing inspection');
+  }
+
+  async function assertWideInspectionLayout(template) {
+    const layout = await evaluate(`(() => {
+      const scene = document.querySelector('.inspection-scene');
+      const canvas = scene?.querySelector(${JSON.stringify(`.visual-scene[data-visual-template="${template}"] .visual-canvas`)});
+      if (!scene || !canvas) return null;
+      const sceneRect = scene.getBoundingClientRect();
+      const canvasRect = canvas.getBoundingClientRect();
+      return {
+        viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight,
+        pageHeight: document.documentElement.scrollHeight,
+        scene: { left: sceneRect.left, right: sceneRect.right },
+        canvas: { left: canvasRect.left, right: canvasRect.right },
+        visibleRightPanels: Array.from(scene.querySelectorAll('.scene-side-panel, .scene-learning-panel')).filter((element) => {
+          const rect = element.getBoundingClientRect();
+          return rect.width > 0 && rect.height > 0;
+        }).length
+      };
+    })()`);
+    assert(layout, `${template} wide inspection layout was not available.`);
+    assert(layout.viewportWidth >= 1600, `${template} wide inspection was not tested at a wide viewport.`);
+    assert(layout.visibleRightPanels === 0, `${template} still shows card columns to the right of the photograph.`);
+    assert(layout.scene.left <= 190 && layout.scene.right >= layout.viewportWidth - 190, `${template} does not use the available wide-screen space: ${JSON.stringify(layout.scene)}.`);
+    assert(layout.canvas.left <= layout.scene.left + 30 && layout.canvas.right >= layout.scene.right - 30, `${template} photograph does not span the inspection scene.`);
+    assert(layout.pageHeight <= layout.viewportHeight, `${template} wide layout requires vertical scrolling (${layout.pageHeight} > ${layout.viewportHeight}).`);
+  }
+
+  async function assertDecisionControls(label) {
+    const layout = await evaluate(`(() => {
+      const menu = document.querySelector('.decision-action-menu');
+      if (!menu) return null;
+      const menuRect = menu.getBoundingClientRect();
+      const actions = menu.querySelector('.actions');
+      const cards = Array.from(menu.querySelectorAll('.action-card')).map((card) => {
+        const cardRect = card.getBoundingClientRect();
+        const button = card.querySelector('button');
+        const buttonRect = button?.getBoundingClientRect();
+        return {
+          card: { left: cardRect.left, right: cardRect.right, top: cardRect.top, bottom: cardRect.bottom },
+          button: buttonRect ? {
+            left: buttonRect.left,
+            right: buttonRect.right,
+            top: buttonRect.top,
+            bottom: buttonRect.bottom,
+            width: buttonRect.width,
+            height: buttonRect.height
+          } : null,
+          title: card.querySelector('h3')?.textContent?.trim() ?? ''
+        };
+      });
+      return {
+        viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight,
+        menu: { left: menuRect.left, right: menuRect.right, top: menuRect.top, bottom: menuRect.bottom, width: menuRect.width },
+        declaredCount: Number(actions?.dataset.actionCount),
+        cards
+      };
+    })()`);
+    assert(layout, `${label} has no decision menu.`);
+    assert(layout.cards.length > 0 && layout.cards.length === layout.declaredCount, `${label} does not expose every declared decision.`);
+    assert(
+      layout.cards.every((card) => card.title.length > 0 && card.button && card.button.width > 0 && card.button.height >= 44),
+      `${label} has a decision button smaller than 44px or without a visible label: ${JSON.stringify(layout.cards)}.`
+    );
+    assert(
+      layout.cards.every((card) =>
+        card.card.left >= layout.menu.left - 1 && card.card.right <= layout.menu.right + 1 &&
+        card.card.top >= layout.menu.top - 1 && card.card.bottom <= layout.menu.bottom + 1 &&
+        card.button.left >= -1 && card.button.right <= layout.viewportWidth + 1 &&
+        card.button.top >= 0 && card.button.bottom <= layout.viewportHeight + 1
+      ),
+      `${label} clips a decision card or action: ${JSON.stringify(layout)}.`
+    );
+    if (layout.viewportWidth >= 700) {
+      const expectedMaximum = layout.declaredCount === 1
+        ? 420
+        : layout.declaredCount === 2
+          ? 580
+          : layout.declaredCount === 3
+            ? 680
+            : 760;
+      assert(
+        layout.menu.width <= expectedMaximum + 1,
+        `${label} decision menu is wider than its compact ${expectedMaximum}px limit: ${layout.menu.width}px.`
+      );
+    }
   }
 
   async function assertCrisisLayout() {
@@ -504,79 +822,243 @@ try {
       const photo = map?.querySelector('[data-background-layer="photo"]');
       const fire = map?.querySelector('#crisis-pressure .visual-fire');
       const capacity = map?.querySelector('#crisis-capacity');
-      if (!canvas || !map || !photo || !fire || !capacity) return null;
+      const road = map?.querySelector('#crisis-road .visual-road');
+      const roadBed = map?.querySelector('#crisis-road .crisis-road-bed');
+      const crownZone = map?.querySelector('#crisis-crown .crisis-crown-zone');
+      const decisionScene = document.querySelector('.crisis-decision-scene');
+      const actionMenu = decisionScene?.querySelector('.decision-action-menu');
+      if (!canvas || !map || !photo || !fire || !capacity || !road || !roadBed || !crownZone || !decisionScene || !actionMenu) return null;
       const canvasRect = canvas.getBoundingClientRect();
       const mapRect = map.getBoundingClientRect();
+      const actionMenuRect = actionMenu.getBoundingClientRect();
       const fireRect = fire.getBoundingClientRect();
+      const photoRect = photo.getBoundingClientRect();
       const capacityRect = capacity.getBoundingClientRect();
+      const crownRect = crownZone.getBoundingClientRect();
+      const actionCards = Array.from(actionMenu.querySelectorAll('.action-card')).map((card) => {
+        const rect = card.getBoundingClientRect();
+        const buttonRect = card.querySelector('button')?.getBoundingClientRect();
+        return { width: rect.width, height: rect.height, buttonHeight: buttonRect?.height ?? 0 };
+      });
       const response = await fetch(photo.getAttribute('href'));
+      const fireResponse = await fetch(fire.getAttribute('href'));
       return {
         viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight,
         pageWidth: document.documentElement.scrollWidth,
-        canvas: { left: canvasRect.left, right: canvasRect.right },
+        pageHeight: document.documentElement.scrollHeight,
+        canvas: { left: canvasRect.left, right: canvasRect.right, top: canvasRect.top, bottom: canvasRect.bottom, width: canvasRect.width, height: canvasRect.height },
         map: { left: mapRect.left, right: mapRect.right, width: mapRect.width, height: mapRect.height },
+        photo: { left: photoRect.left, right: photoRect.right, top: photoRect.top, bottom: photoRect.bottom, width: photoRect.width, height: photoRect.height },
+        viewBox: map.getAttribute('viewBox'),
+        preserveAspectRatio: map.getAttribute('preserveAspectRatio'),
+        actionMenu: { left: actionMenuRect.left, right: actionMenuRect.right, top: actionMenuRect.top, bottom: actionMenuRect.bottom },
+        actionCards,
+        visibleSidePanels: Array.from(decisionScene.querySelectorAll('.scene-side-panel')).filter((element) => {
+          const rect = element.getBoundingClientRect();
+          return rect.width > 0 && rect.height > 0;
+        }).length,
         fire: { width: fireRect.width, height: fireRect.height },
+        roadStrokeWidth: Number.parseFloat(getComputedStyle(road).strokeWidth),
+        roadBedStrokeWidth: Number.parseFloat(getComputedStyle(roadBed).strokeWidth),
+        crown: { width: crownRect.width, height: crownRect.height },
+        legacyCanopies: map.querySelectorAll('#crisis-crown circle.visual-canopy').length,
         capacity: { width: capacityRect.width, height: capacityRect.height },
         href: photo.getAttribute('href'),
         responseOk: response.ok,
-        contentType: response.headers.get('content-type')
+        contentType: response.headers.get('content-type'),
+        fireHref: fire.getAttribute('href'),
+        fireResponseOk: fireResponse.ok,
+        fireContentType: fireResponse.headers.get('content-type')
       };
     })()`);
     assert(layout, 'Crisis ravine layout was not available.');
+    await assertDecisionControls('Crisis decision');
     assert(layout.pageWidth <= layout.viewportWidth + 3, 'Crisis layout has horizontal overflow.');
+    assert(layout.pageHeight <= layout.viewportHeight + 1, `Crisis decision requires page scrolling (${layout.pageHeight} > ${layout.viewportHeight}).`);
+    assert(layout.visibleSidePanels === 0, 'Crisis decision still reserves a right-hand options panel.');
+    assert(
+      layout.actionMenu.left >= -1 && layout.actionMenu.right <= layout.viewportWidth + 1 &&
+        layout.actionMenu.top >= 0 && layout.actionMenu.bottom <= layout.viewportHeight + 1,
+      `Crisis action menu escapes ${layout.viewportWidth}x${layout.viewportHeight} viewport: ${JSON.stringify(layout.actionMenu)}.`
+    );
+    const actionMenuWidth = layout.actionMenu.right - layout.actionMenu.left;
+    assert(
+      layout.actionCards.every((card, index) => {
+        if (layout.viewportWidth >= 700) return card.width <= 230;
+        const isFullWidthRemainder = layout.actionCards.length % 2 === 1 && index === layout.actionCards.length - 1;
+        return card.width <= (isFullWidthRemainder ? actionMenuWidth - 12 : 190);
+      }),
+      `Crisis choices are not compact enough: ${JSON.stringify(layout.actionCards)}.`
+    );
+    assert(
+      layout.actionCards.every((card) => card.buttonHeight >= 44),
+      `A crisis choice button is smaller than 44px: ${JSON.stringify(layout.actionCards)}.`
+    );
     assert(layout.map.left >= layout.canvas.left - 1 && layout.map.right <= layout.canvas.right + 1, 'Crisis photograph is clipped by its canvas.');
-    assert(layout.href === '/images/crisis-ravine-aerial-v1.jpg', 'Crisis scene does not use the expected photographic base.');
+    assert(layout.href === '/images/crisis-ravine-aerial-v2.jpg', 'Crisis scene does not use the expected high-detail photographic base.');
     assert(layout.responseOk && layout.contentType?.startsWith('image/jpeg'), 'Crisis photograph did not load as JPEG.');
+    assert(layout.preserveAspectRatio?.includes('slice'), 'Crisis photograph is not configured to fill the full decision viewport.');
+    assert(
+      layout.photo.left <= layout.canvas.left + 1 && layout.photo.right >= layout.canvas.right - 1 &&
+        layout.photo.top <= layout.canvas.top + 1 && layout.photo.bottom >= layout.canvas.bottom - 1,
+      `Crisis photograph does not cover the complete canvas: ${JSON.stringify({ canvas: layout.canvas, photo: layout.photo, viewBox: layout.viewBox })}.`
+    );
+    assert(layout.fireHref === '/images/crisis-scrub-fire-v1.png', 'Crisis scene does not use the expected photographic fire overlay.');
+    assert(layout.fireResponseOk && layout.fireContentType?.startsWith('image/png'), 'Crisis fire overlay did not load as PNG.');
     assert(layout.fire.height < layout.map.height * .32, 'Crisis flame is again dominating the ravine scene.');
+    assert(layout.roadStrokeWidth <= 2.5 && layout.roadBedStrokeWidth <= 7, 'Crisis road overlay is visually too heavy.');
+    if (layout.viewportWidth >= 700) {
+      assert(
+        layout.crown.width < layout.map.width * .42 && layout.crown.height < layout.map.height * .3,
+        'Crisis crown-risk overlay is out of proportion with the photographed tree belt.'
+      );
+    }
+    assert(layout.legacyCanopies === 0, 'Crisis scene still draws synthetic circular tree crowns.');
     assert(layout.capacity.width >= 44 && layout.capacity.height >= 44, 'Crisis capacity control is too small.');
+  }
+
+  async function assertJourneyLabels() {
+    const labels = await evaluate(`Array.from(document.querySelectorAll('.stage-label')).map((label) => {
+      const style = getComputedStyle(label);
+      return {
+        text: label.textContent.trim(),
+        position: style.position,
+        zIndex: Number(style.zIndex),
+        backgroundColor: style.backgroundColor,
+        textDecorationLine: style.textDecorationLine
+      };
+    })`);
+    assert(labels?.length === 4, 'The four journey labels are not available.');
+    assert(
+      labels.every((label) =>
+        label.position === 'relative' && label.zIndex >= 2 &&
+        label.backgroundColor !== 'rgba(0, 0, 0, 0)' && label.textDecorationLine === 'none'
+      ),
+      `A journey connector can cross its label: ${JSON.stringify(labels)}`
+    );
+  }
+
+  async function assertBriefingLayout() {
+    const layout = await evaluate(`(() => {
+      const scene = document.querySelector('.scene.briefing');
+      const panel = scene?.querySelector('.mission-briefing-panel');
+      const note = scene?.querySelector('.mission-briefing-note');
+      const button = scene?.querySelector('#advance-button');
+      const main = document.querySelector('main');
+      if (!scene || !panel || !note || !button || !main) return null;
+      const panelRect = panel.getBoundingClientRect();
+      const noteRect = note.getBoundingClientRect();
+      const buttonRect = button.getBoundingClientRect();
+      return {
+        viewportWidth: innerWidth,
+        pageWidth: document.documentElement.scrollWidth,
+        mainClientHeight: main.clientHeight,
+        mainScrollHeight: main.scrollHeight,
+        panel: { left: panelRect.left, right: panelRect.right, top: panelRect.top, bottom: panelRect.bottom },
+        note: { left: noteRect.left, right: noteRect.right, top: noteRect.top, bottom: noteRect.bottom },
+        button: { width: buttonRect.width, height: buttonRect.height },
+        stepCount: scene.querySelectorAll('.mission-briefing-steps li').length
+      };
+    })()`);
+    assert(layout, 'Mission briefing layout was not available.');
+    assert(layout.pageWidth <= layout.viewportWidth + 3, 'Mission briefing has horizontal overflow.');
+    assert(layout.mainScrollHeight <= layout.mainClientHeight + 2, `Mission briefing requires internal scrolling: ${JSON.stringify(layout)}.`);
+    assert(layout.stepCount === 3, 'Mission briefing does not explain the three phases of play.');
+    assert(layout.panel.left >= -1 && layout.panel.right <= layout.viewportWidth + 1, 'Mission briefing panel escapes the viewport.');
+    assert(layout.note.left >= -1 && layout.note.right <= layout.viewportWidth + 1, 'Mission briefing note escapes the viewport.');
+    assert(layout.button.height >= 42, 'Mission briefing primary action is too small.');
+  }
+
+  async function assertGameplayFitsViewport(label) {
+    const layout = await evaluate(`(() => {
+      const scene = document.querySelector('.scene');
+      const footer = document.getElementById('session-footer');
+      const sceneRect = scene?.getBoundingClientRect();
+      return sceneRect ? {
+        viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight,
+        pageHeight: document.documentElement.scrollHeight,
+        bodyOverflowY: getComputedStyle(document.body).overflowY,
+        sceneTop: sceneRect.top,
+        sceneBottom: sceneRect.bottom,
+        footerDisplay: footer ? getComputedStyle(footer).display : null
+      } : null;
+    })()`);
+    assert(layout, `${label} has no visible scene.`);
+    if (layout.viewportWidth <= 1050) return;
+    assert(layout.footerDisplay === 'none', `${label} still shows the redundant lower session summary.`);
+    assert(
+      layout.pageHeight <= layout.viewportHeight || layout.bodyOverflowY === 'hidden',
+      `${label} allows vertical page scrolling (${layout.pageHeight} > ${layout.viewportHeight}).`
+    );
+    assert(
+      layout.sceneTop >= 62 && layout.sceneBottom <= layout.viewportHeight + 1,
+      `${label} does not fit between the journey header and the viewport bottom.`
+    );
   }
 
   async function assertOpenSceneCard(actionId, expectedMobile, template) {
     const geometry = await evaluate(`(() => {
       const canvas = document.querySelector(${JSON.stringify(`.visual-scene[data-visual-template="${template}"] .visual-canvas`)});
-      const key = canvas?.querySelector(${JSON.stringify(template === 'territory' ? '.territory-map-key' : '.housing-map-key')});
       const card = canvas?.querySelector(${JSON.stringify(`[data-visual-action-card-id="${actionId}"]`)});
       const button = card?.querySelector('.action-button');
-      if (!canvas || !key || !card || card.hidden || !button) return null;
+      const hotspot = canvas?.querySelector(${JSON.stringify(`[data-focus-action-id="${actionId}"].visual-hotspot`)});
+      if (!canvas || !card || card.hidden || !button) return null;
       const canvasRect = canvas.getBoundingClientRect();
-      const keyRect = key.getBoundingClientRect();
       const cardRect = card.getBoundingClientRect();
       const buttonRect = button.getBoundingClientRect();
       return {
         canvas: { left: canvasRect.left, right: canvasRect.right, top: canvasRect.top, bottom: canvasRect.bottom },
-        keyBottom: keyRect.bottom,
         card: { left: cardRect.left, right: cardRect.right, top: cardRect.top, bottom: cardRect.bottom },
-        button: { width: buttonRect.width, height: buttonRect.height }
+        button: { left: buttonRect.left, right: buttonRect.right, top: buttonRect.top, bottom: buttonRect.bottom, width: buttonRect.width, height: buttonRect.height },
+        hotspotExpanded: hotspot?.getAttribute('aria-expanded'),
+        hotspotActive: hotspot?.classList.contains('is-context-active'),
+        cardAnimationName: getComputedStyle(card).animationName,
+        viewportHeight: window.innerHeight
       };
     })()`);
     assert(geometry, `${actionId} card is not visible.`);
     assert(
-      geometry.card.left >= geometry.canvas.left - 1 && geometry.card.right <= geometry.canvas.right + 1,
-      `${actionId} card escapes the ${template} canvas horizontally.`
+      geometry.card.left >= geometry.canvas.left - 1 && geometry.card.right <= geometry.canvas.right + 1 &&
+        geometry.card.top >= geometry.canvas.top - 1 && geometry.card.bottom <= geometry.canvas.bottom + 1,
+      `${actionId} contextual card escapes the ${template} map: ${JSON.stringify(geometry)}.`
     );
     assert(
-      geometry.card.top >= geometry.canvas.top - 1 && geometry.card.bottom <= geometry.canvas.bottom + 1,
-      `${actionId} card escapes the ${template} canvas vertically.`
+      geometry.button.width > 0 && geometry.button.height >= 38 && geometry.button.bottom <= geometry.viewportHeight + 1,
+      `${actionId} contextual action is not visible.`
     );
-    if (expectedMobile) {
-      assert(geometry.card.top >= geometry.keyBottom - 1, `${actionId} mobile card overlaps the ${template} legend.`);
-    }
-    assert(geometry.button.width > 0 && geometry.button.height > 0, `${actionId} card action is not visible.`);
+    assert(
+      geometry.hotspotExpanded === 'true' && geometry.hotspotActive === true,
+      `${actionId} does not keep its map area visibly linked to the contextual card.`
+    );
+    assert(
+      geometry.cardAnimationName && geometry.cardAnimationName !== 'none',
+      `${actionId} contextual card has no entry motion.`
+    );
+    if (!expectedMobile) await assertGameplayFitsViewport(`${template} action tray`);
   }
 
   async function choose(actionId) {
     const selector = `[data-action-id=${JSON.stringify(actionId)}]`;
     await waitForSelector(selector);
-    const hotspotSelector = `[data-focus-action-id=${JSON.stringify(actionId)}]`;
-    const hasContextualHotspot = await evaluate(
-      `Boolean(document.querySelector(${JSON.stringify(hotspotSelector)}))`
-    );
-    if (hasContextualHotspot) await pressEnter(hotspotSelector);
+    const mapHotspotSelector = `[data-focus-action-id=${JSON.stringify(actionId)}].visual-hotspot`;
+    const sideHotspotSelector = `.scene-side-panel [data-focus-action-id=${JSON.stringify(actionId)}]`;
+    const useOpenSidePanel = await evaluate(`document.getElementById('scene-side-panel')?.classList.contains('is-open') === true`);
+    const hotspotSelector = useOpenSidePanel ? sideHotspotSelector : mapHotspotSelector;
+    const hasContextualHotspot = await evaluate(`Boolean(document.querySelector(${JSON.stringify(hotspotSelector)}))`);
+    if (hasContextualHotspot) {
+      await pressEnter(hotspotSelector);
+      await waitFor(
+        `(() => { const button = document.querySelector(${JSON.stringify(selector)}); return button && !button.closest('.visual-hover-card')?.hidden; })()`,
+        `${actionId} contextual card visible`
+      );
+    }
     await pressEnter(selector);
     await waitFor(
       `Boolean(document.querySelector(${JSON.stringify(
         `[data-action-card-id="${actionId}"].selected, [data-visual-action-card-id="${actionId}"].selected`
-      )}))`,
+      )}) || document.querySelector('.decision-outcome'))`,
       `${actionId} selected`
     );
   }
@@ -597,6 +1079,7 @@ try {
   async function captureEvidence(name, selector, expected = {}) {
     if (!VISUAL_MODE) return;
     await waitForSelector(selector);
+    await ensureSideDrawerOpenFor(selector);
     const geometry = await evaluate(`(() => {
       const element = document.querySelector(${JSON.stringify(selector)});
       if (!element) return null;
@@ -640,6 +1123,7 @@ try {
 
   async function captureViewportEvidence(name, selector, expected = {}) {
     if (!VISUAL_MODE) return;
+    await ensureSideDrawerOpenFor(selector);
     await waitFor(
       `(() => {
         const element = document.querySelector(${JSON.stringify(selector)});
@@ -690,9 +1174,15 @@ try {
     await evaluate(`window.innerWidth <= 390`),
     'Mobile viewport override was not applied.'
   );
+  await assertJourneyLabels();
 
   await pressEnter('#start-session-button');
   await waitForSelector('.scene.briefing');
+  await assertBriefingLayout();
+  await captureViewportEvidence('briefing-mobile.png', '.mission-briefing-panel', {
+    minWidth: 320,
+    minHeight: 380
+  });
   const firstEnvelope = await evaluate(
     `JSON.parse(window.localStorage.getItem(${JSON.stringify(STORAGE_KEY)}))`
   );
@@ -704,25 +1194,44 @@ try {
   await waitForSelector('#continue-session-button');
   await pressEnter('#continue-session-button');
   await waitForSelector('.scene.briefing');
+  await assertBriefingLayout();
 
   await advanceAndWait('[data-action-id="gestionar-restos-poda"]');
   await captureEvidence(
     'territory-initial-mobile.png',
     '.visual-scene[data-visual-template="territory"] .visual-canvas',
-    { minWidth: 300, minHeight: 240 }
+    { minWidth: 300, minHeight: 180 }
   );
   await assertTerritoryLayout(true);
+  if (VISUAL_MODE) {
+    await setViewport(1280, 900, false);
+    await assertTerritoryLayout(false);
+    await captureEvidence(
+      'territory-initial-desktop.png',
+      '.scene-workspace',
+      { minWidth: 900, minHeight: 300 }
+    );
+    await setViewport(1920, 920, false);
+    await assertTerritoryLayout(false);
+    await assertWideInspectionLayout('territory');
+    await captureEvidence(
+      'territory-wide-desktop.png',
+      '.scene-workspace',
+      { minWidth: 1500, minHeight: 300 }
+    );
+    await setViewport(390, 844, true);
+  }
   await chooseWithPointer(
     'gestionar-restos-poda',
     'touch',
     true,
     'territory-card-touch-mobile.png'
   );
-  await choose('crear-discontinuidades-vegetales');
+  await chooseFromPointMenu('crear-discontinuidades-vegetales', 'keyboard', true);
   await choose('limpiar-margenes-caminos');
   assert(
     await evaluate(`(() => {
-      const counter = document.querySelector('.selection-counter strong')?.textContent.trim();
+      const counter = document.querySelector('.inspection-map-progress strong')?.textContent.trim();
       const cards = Array.from(document.querySelectorAll('[data-visual-action-card-id]'));
       return counter === '3 / 3' && cards.filter((card) => card.classList.contains('selected')).length === 3 &&
         cards.every((card) => card.querySelector('.action-button')?.disabled === true) &&
@@ -732,12 +1241,18 @@ try {
   );
 
   if (VISUAL_MODE) {
+    await assertTerritoryLayout(true);
+    await captureEvidence(
+      'territory-treated-mobile.png',
+      '.visual-scene[data-visual-template="territory"] .visual-canvas',
+      { minWidth: 300, minHeight: 180 }
+    );
     await setViewport(1280, 900, false);
     await assertTerritoryLayout(false);
     await captureEvidence(
       'territory-treated-desktop.png',
-      '.visual-scene[data-visual-template="territory"] .visual-canvas',
-      { minWidth: 700, minHeight: 300 }
+      '.scene-workspace',
+      { minWidth: 900, minHeight: 300 }
     );
     await setViewport(390, 844, true);
   }
@@ -747,15 +1262,15 @@ try {
   await captureEvidence(
     'housing-initial-mobile.png',
     '.visual-scene[data-visual-template="housing"] .visual-canvas',
-    { minWidth: 300, minHeight: 240 }
+    { minWidth: 300, minHeight: 180 }
   );
   if (VISUAL_MODE) {
     await setViewport(1280, 900, false);
     await assertHousingLayout(false);
     await captureEvidence(
       'housing-initial-desktop.png',
-      '.visual-scene[data-visual-template="housing"] .visual-canvas',
-      { minWidth: 700, minHeight: 300 }
+      '.scene-workspace',
+      { minWidth: 900, minHeight: 300 }
     );
     await setViewport(390, 844, true);
     await assertHousingLayout(true);
@@ -773,33 +1288,35 @@ try {
       const clearance = zone?.querySelector('.housing-clearance');
       const dryFuel = zone?.querySelector('.housing-dry-fuel');
       const feedback = document.querySelector('.inspection-confirmation p')?.textContent;
-      const remaining = document.querySelector('.selection-remaining')?.textContent;
+      const remaining = document.querySelector('.inspection-selection small')?.textContent;
       const selected = document.querySelectorAll('.selected-action-chip').length;
+      const worker = zone?.querySelector('.housing-clearance-worker');
       return zone?.classList.contains('state-reduced') && clearance && dryFuel &&
         getComputedStyle(clearance).display !== 'none' && getComputedStyle(dryFuel).display === 'none' &&
-        feedback?.includes('Reduce la continuidad desde el suelo hacia las copas') &&
-        remaining === 'Quedan 1' && selected === 1;
+        feedback?.includes('Al fuego le cuesta más subir a las copas') &&
+        remaining === 'Puedes elegir 1 mejora más.' && selected === 1 && worker &&
+        getComputedStyle(worker).display !== 'none' && getComputedStyle(worker).animationName !== 'none';
     })()`),
     'Housing pruning did not update the visible fuel, feedback and remaining budget.'
   );
   await captureEvidence(
     'housing-pruned-mobile.png',
     '.visual-scene[data-visual-template="housing"] .visual-canvas',
-    { minWidth: 300, minHeight: 240 }
+    { minWidth: 300, minHeight: 180 }
   );
   await captureEvidence(
     'housing-feedback-mobile.png',
     '.inspection-response',
-    { minWidth: 300, minHeight: 100 }
+    { minWidth: 300, minHeight: 60 }
   );
-  await choose('despejar-accesos');
+  await chooseFromPointMenu('despejar-accesos', 'touch', true, 'housing');
 
   assert(
     await evaluate(`(() => {
       const access = document.getElementById('housing-local-access');
       const obstructions = access?.querySelector('.housing-access-obstructions');
       const route = access?.querySelector('.housing-clear-route');
-      const counter = document.querySelector('.selection-counter strong')?.textContent.trim();
+      const counter = document.querySelector('.inspection-map-progress strong')?.textContent.trim();
       const cards = Array.from(document.querySelectorAll('[data-visual-action-card-id]'));
       return access?.classList.contains('state-clear') && obstructions && route &&
         getComputedStyle(obstructions).display === 'none' && getComputedStyle(route).display !== 'none' &&
@@ -812,6 +1329,7 @@ try {
 
   if (VISUAL_MODE) {
     await setViewport(1280, 900, false);
+    await assertJourneyLabels();
     await assertHousingLayout(false);
     await captureEvidence(
       'housing-treated-desktop.png',
@@ -822,30 +1340,29 @@ try {
 
   await waitForSelector('#advance-button');
   await pressEnter('#advance-button');
-  await waitForSelector('.prevention-area');
-  const balanceState = await evaluate(`(() => {
-      const areas = document.querySelectorAll('.prevention-area');
-      const applied = document.querySelectorAll('.prevention-area .applied-list li');
-      const pending = document.querySelectorAll('.prevention-area .pending-list li');
-      const caution = document.querySelector('.balance-caution')?.textContent;
-      return { areas: areas.length, applied: applied.length, pending: pending.length, caution };
-    })()`);
-  assert(
-    balanceState?.areas === 2 && balanceState?.applied === 5 && balanceState?.pending === 3 &&
-      balanceState?.caution?.includes('no convierten una vivienda en completamente segura'),
-    `Prevention balance did not distinguish applied decisions and pending conditions by area: ${JSON.stringify(balanceState)}`
-  );
-  await captureEvidence('prevention-balance-desktop.png', '.scene-content', {
-    minWidth: 700,
-    minHeight: 400
-  });
-  await pressEnter('#advance-button');
   await waitForSelector('[data-action-id="movilizar-y-verificar"]');
-  await chooseAndWait('movilizar-y-verificar', '#advance-button');
-  await pressEnter('#advance-button');
-  await waitForSelector('[data-action-id="autorizar-maniobra-condicionada"]');
+  assert(
+    await evaluate(`document.querySelector('.prevention-area') === null && document.querySelector('.router-mark') === null`),
+    'An explanatory interstitial interrupted the playable route.'
+  );
+  await assertDecisionControls('First alert decision');
+  await captureViewportEvidence('first-alert-desktop.png', '.decision-action-menu', {
+    minWidth: 300,
+    minHeight: 100
+  });
+  if (VISUAL_MODE) {
+    await setViewport(390, 844, true);
+    await assertDecisionControls('First alert decision on mobile');
+    await captureViewportEvidence('first-alert-mobile.png', '.decision-action-menu', {
+      minWidth: 320,
+      minHeight: 100
+    });
+    await setViewport(1280, 900, false);
+  }
+  await chooseAndWait('movilizar-y-verificar', '[data-action-id="autorizar-maniobra-condicionada"]');
 
   await assertCrisisLayout();
+  await assertGameplayFitsViewport('Prepared crisis decision');
 
   await captureEvidence(
     'crisis-prepared-desktop.png',
@@ -864,6 +1381,19 @@ try {
   }
 
   await choose('autorizar-maniobra-condicionada');
+  assert(
+    await evaluate(`(() => {
+      const feedback = document.querySelector('.decision-outcome');
+      return Boolean(feedback && !feedback.closest('.decision-action-menu') &&
+        document.querySelector('.decision-action-menu') === null &&
+        document.querySelector('.decision-advance #advance-button'));
+    })()`),
+    'The decision result is mixed into the options instead of replacing them with a separate response.'
+  );
+  await captureViewportEvidence('crisis-feedback-desktop.png', '.decision-outcome', {
+    minWidth: 300,
+    minHeight: 40
+  });
   await advanceAndWait('[data-action-id="asegurar-flancos-y-repliegue"]');
   await choose('asegurar-flancos-y-repliegue');
   await advanceAndWait('[data-action-id="defender-desde-posicion-segura"]');
@@ -873,11 +1403,28 @@ try {
   await waitForSelector('.result-contained');
   await waitForSelector('#compare-reference-button');
   await waitForSelector('#replay-button');
+  await waitForSelector('.final-prevention-review');
+  assert(
+    await evaluate(`(() => {
+      const review = document.querySelector('.final-prevention-review');
+      return Boolean(review && review.querySelectorAll('li').length >= 5 &&
+        review.textContent.includes('Mantén las mejoras realizadas') &&
+        review.textContent.includes('Prioriza lo que quedó pendiente') &&
+        review.textContent.includes('Si el incendio ya está cerca') &&
+        review.textContent.includes('nunca garantiza una protección total'));
+    })()`),
+    'The final review does not expose both completed and pending prevention work.'
+  );
+  await captureEvidence('final-prevention-review-desktop.png', '.result-contained .scene-content', {
+    minWidth: 700,
+    minHeight: 400
+  });
 
   await captureEvidence('result-desktop.png', '.result-contained .scene-content', {
     minWidth: 700,
     minHeight: 400
   });
+  await assertGameplayFitsViewport('Prepared result');
 
   await pressEnter('#compare-reference-button');
   await waitForSelector('#m4-reference-comparison');
@@ -897,6 +1444,57 @@ try {
     minWidth: 700,
     minHeight: 350
   });
+  const desktopComparisonMetrics = await evaluate(`(() => {
+    const comparison = document.getElementById('m4-reference-comparison');
+    return comparison ? {
+      fits: window.innerWidth <= 1050 || comparison.scrollHeight <= comparison.clientHeight + 8,
+      scrollHeight: comparison.scrollHeight,
+      clientHeight: comparison.clientHeight
+    } : { fits: false, scrollHeight: 0, clientHeight: 0 };
+  })()`);
+  assert(
+    desktopComparisonMetrics.fits,
+    'Desktop comparison requires internal scrolling (' + desktopComparisonMetrics.scrollHeight +
+      'px content in ' + desktopComparisonMetrics.clientHeight + 'px).'
+  );
+  await send('Input.dispatchKeyEvent', {
+    type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27
+  });
+  await send('Input.dispatchKeyEvent', {
+    type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27
+  });
+  await waitFor(`document.getElementById('m4-reference-comparison') === null`, 'comparison closed with Escape');
+  assert(
+    await evaluate(`document.activeElement === document.getElementById('compare-reference-button')`),
+    'Closing the comparison did not return focus to its trigger.'
+  );
+  await setViewport(390, 844, true);
+  assert(
+    await evaluate(`document.documentElement.scrollWidth <= window.innerWidth + 3`),
+    'Mobile result has horizontal overflow.'
+  );
+  await captureViewportEvidence('result-mobile.png', '.result-contained', {
+    minWidth: 320,
+    minHeight: 500
+  });
+  assert(
+    await evaluate(`(() => {
+      const review = document.querySelector('.final-prevention-review');
+      const grid = review?.querySelector('.final-prevention-review-grid');
+      const rect = review?.getBoundingClientRect();
+      const columns = grid ? getComputedStyle(grid).gridTemplateColumns.split(' ').length : 0;
+      return Boolean(rect && rect.left >= 0 && rect.right <= innerWidth + 1 &&
+        review.scrollWidth <= review.clientWidth + 2 && columns === 1);
+    })()`),
+    'Mobile prevention recommendations have horizontal overflow or do not collapse to one column.'
+  );
+  await captureViewportEvidence('final-prevention-review-mobile.png', '.final-prevention-review', {
+    minWidth: 320,
+    minHeight: 300
+  });
+  await setViewport(1280, 900, false);
+  await pressEnter('#compare-reference-button');
+  await waitForSelector('#m4-reference-comparison');
 
   await pressEnter('#comparison-replay-button');
   await waitForSelector('.scene.briefing');
@@ -922,6 +1520,11 @@ try {
   );
   await pressEnter('#continue-session-button');
   await waitForSelector('.scene.briefing');
+  await assertBriefingLayout();
+  await captureViewportEvidence('briefing-desktop.png', '.mission-briefing-panel', {
+    minWidth: 700,
+    minHeight: 300
+  });
 
   if (VISUAL_MODE) {
     await advanceAndWait('[data-action-id="gestionar-restos-poda"]');
@@ -932,7 +1535,22 @@ try {
       false,
       'territory-card-mouse-desktop.png'
     );
-    await choose('activar-pastoreo-preventivo');
+    await chooseFromPointMenu('activar-pastoreo-preventivo', 'mouse', false);
+    assert(
+      await evaluate(`(() => {
+        const grazing = document.getElementById('territory-grazing');
+        const herd = grazing?.querySelector('.map-grazing-flock');
+        const feedback = document.querySelector('.inspection-confirmation p')?.textContent;
+        return Boolean(grazing?.classList.contains('state-treated') && herd &&
+          getComputedStyle(herd).display !== 'none' && getComputedStyle(herd).animationName !== 'none' &&
+          feedback?.includes('menos hierba seca'));
+      })()`),
+      'Preventive grazing did not show its state-driven animated benefit.'
+    );
+    await captureViewportEvidence('territory-grazing-change-desktop.png', '.inspection-response', {
+      minWidth: 420,
+      minHeight: 60
+    });
     await choose('evaluar-quema-tecnica');
     assert(
       await evaluate(`(() => {
@@ -943,7 +1561,7 @@ try {
         return grazing?.classList.contains('state-treated') &&
           line?.classList.contains('state-evaluated') &&
           flock && getComputedStyle(flock).display !== 'none' &&
-          explanation?.textContent.includes('no significa que la maniobra se haya ejecutado');
+          explanation?.textContent.includes('No se ha quemado nada');
       })()`),
       'Pastoreo and technical evaluation did not keep their expected visual and pedagogical states.'
     );
@@ -955,7 +1573,16 @@ try {
     );
     await advanceAndWait('[data-action-id="podar-ramas-y-retirar-seco"]');
     await assertHousingLayout(false);
-    await choose('podar-ramas-y-retirar-seco');
+    await chooseFromPointMenu('podar-ramas-y-retirar-seco', 'keyboard', false, 'housing');
+    await setViewport(1920, 920, false);
+    await assertHousingLayout(false);
+    await assertWideInspectionLayout('housing');
+    await captureEvidence(
+      'housing-pruning-change-wide-desktop.png',
+      '.scene-workspace',
+      { minWidth: 1500, minHeight: 300 }
+    );
+    await setViewport(1280, 900, false);
     await chooseWithPointer(
       'separar-copas',
       'mouse',
@@ -971,7 +1598,7 @@ try {
         const feedback = document.querySelector('.inspection-confirmation p')?.textContent;
         return canopy?.classList.contains('state-broken') && connected && separated &&
           getComputedStyle(connected).display === 'none' && getComputedStyle(separated).display !== 'none' &&
-          feedback?.includes('Reduce la continuidad horizontal junto a la vivienda');
+          feedback?.includes('Al fuego le cuesta más pasar de un árbol a otro');
       })()`),
       'Housing canopy treatment did not create visible discontinuities and causal feedback.'
     );
@@ -982,14 +1609,14 @@ try {
       '.visual-scene[data-visual-template="housing"] .visual-canvas',
       { minWidth: 700, minHeight: 300 }
     );
+    await captureViewportEvidence('journey-housing-desktop.png', '.topbar', {
+      minWidth: 700,
+      minHeight: 60
+    });
     await waitForSelector('#advance-button');
     await pressEnter('#advance-button');
-    await waitForSelector('.prevention-area');
-    await pressEnter('#advance-button');
     await waitForSelector('[data-action-id="movilizar-y-verificar"]');
-    await chooseAndWait('movilizar-y-verificar', '#advance-button');
-    await pressEnter('#advance-button');
-    await waitForSelector('[data-action-id="despejar-corredor-operativo"]');
+    await chooseAndWait('movilizar-y-verificar', '[data-action-id="despejar-corredor-operativo"]');
     assert(
       await evaluate(
         `document.querySelector('.visual-scene[data-visual-template="crisis"]')?.getAttribute('data-visual-scene-id') === 'crisis-decision-access-blockage'`
@@ -1012,23 +1639,77 @@ try {
     await setViewport(1280, 900, false);
   }
 
+  await pressEnter('#restart-button');
+  await waitForSelector('.scene.briefing');
+  await advanceAndWait('[data-action-id="crear-discontinuidades-vegetales"]');
+  await choose('crear-discontinuidades-vegetales');
+  await choose('limpiar-margenes-caminos');
+  await choose('activar-pastoreo-preventivo');
+  await advanceAndWait('[data-action-id="podar-ramas-y-retirar-seco"]');
+  await choose('podar-ramas-y-retirar-seco');
+  await choose('separar-copas');
+  await waitForSelector('#advance-button');
+  await pressEnter('#advance-button');
+  await waitForSelector('[data-action-id="movilizar-y-verificar"]');
+  const boundedBalance = await evaluate(`(async () => {
+    const envelope = JSON.parse(window.localStorage.getItem(${JSON.stringify(STORAGE_KEY)}));
+    const response = await fetch('/api/game-sessions/' + encodeURIComponent(envelope.sessionId));
+    const payload = await response.json();
+    return {
+      ok: response.ok,
+      state: payload.session?.inheritedState,
+      notice: document.getElementById('notice')?.textContent.trim()
+    };
+  })()`);
+  assert(
+    boundedBalance?.ok && boundedBalance?.notice === '' &&
+      JSON.stringify(boundedBalance.state) === JSON.stringify({
+        fuelLoad: 45,
+        fuelContinuity: 0,
+        operationalAccess: 50,
+        defensibility: 40,
+        attackOpportunity: 64
+      }),
+    `The maximum fuel-continuity reduction did not produce a valid bounded balance: ${JSON.stringify(boundedBalance)}`
+  );
+  await assertJourneyLabels();
+  await captureEvidence('prevention-extreme-state-desktop.png', '.scene-content', {
+    minWidth: 700,
+    minHeight: 180
+  });
+
   assert(runtimeErrors.length === 0, `Browser console/runtime errors: ${runtimeErrors.join(' | ')}`);
 
   if (VISUAL_MODE) {
     const required = [
+      'briefing-mobile.png',
+      'briefing-desktop.png',
       'territory-initial-mobile.png',
+      'territory-initial-desktop.png',
+      'territory-wide-desktop.png',
       'territory-card-touch-mobile.png',
+      'territory-treated-mobile.png',
       'territory-treated-desktop.png',
       'territory-card-mouse-desktop.png',
+      'territory-grazing-change-desktop.png',
       'territory-grazing-evaluation-desktop.png',
       'housing-initial-mobile.png',
       'housing-treated-desktop.png',
+      'housing-pruning-change-wide-desktop.png',
+      'journey-housing-desktop.png',
+      'first-alert-desktop.png',
+      'first-alert-mobile.png',
       'crisis-prepared-desktop.png',
       'crisis-prepared-mobile.png',
+      'crisis-feedback-desktop.png',
       'crisis-vulnerable-desktop.png',
       'crisis-vulnerable-mobile.png',
       'result-desktop.png',
-      'comparison-desktop.png'
+      'result-mobile.png',
+      'final-prevention-review-desktop.png',
+      'final-prevention-review-mobile.png',
+      'comparison-desktop.png',
+      'prevention-extreme-state-desktop.png'
     ];
     assert(
       required.every((name) => evidence.some((item) => item.name === name)),

@@ -67,7 +67,7 @@ describe('M4.5 intentional replay', () => {
   it('presents replay as an intentional learning action from result and comparison', () => {
     expect(M4_PLAYER_LOOP_CLIENT).toContain('Jugar otra partida');
     expect(M4_PLAYER_LOOP_CLIENT).toContain(
-      'Prueba una preparación diferente y observa qué cambia durante la emergencia.'
+      'Elige otras mejoras y descubre qué cambia cuando llega el fuego.'
     );
     expect(M4_PLAYER_LOOP_CLIENT).toContain("makeReplayButton('replay-button')");
     expect(M4_PLAYER_LOOP_CLIENT).toContain("makeReplayButton('comparison-replay-button')");

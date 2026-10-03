@@ -16,6 +16,14 @@ describe('M5.2 territory north-star art direction', () => {
     service.advance(id);
 
     const markup = territory(service, id);
+    expect(markup).toContain('data-visual-base="territory-photo-v3"');
+    expect(markup).toContain('href="/images/territory-prevention-aerial-v1.jpg"');
+    expect(markup.match(/class="map-pin"/g)).toHaveLength(5);
+    expect(markup.match(/class="map-pin-hit-target"/g)).toHaveLength(5);
+    expect(markup.match(/class="map-pin-hit-target" r="54"/g)).toHaveLength(5);
+    expect(markup.match(/class="map-pin-disc" r="8"/g)).toHaveLength(5);
+    expect(markup.match(/class="visual-card-close"/g)).toHaveLength(5);
+    expect(markup).toContain('data-visual-action-label');
     for (const semanticId of [
       'territory-residues',
       'territory-continuity',
@@ -31,6 +39,9 @@ describe('M5.2 territory north-star art direction', () => {
     expect(markup).toContain('state-constrained');
     expect(markup).toContain('state-continuous');
     expect(markup).toContain('state-unevaluated');
+    expect(markup).toContain('class="territory-key-state-dot"');
+    expect(markup).toContain('href="/images/territory-grazing-goats-v1.png"');
+    expect(markup).toContain('href="/images/prevention-brush-worker-v1.png"');
   });
 
   it('changes treated objects through the same presenter-driven state classes', () => {
@@ -47,6 +58,7 @@ describe('M5.2 territory north-star art direction', () => {
     expect(markup).toContain('id="territory-residues" class="visual-hotspot state-treated"');
     expect(markup).toContain('id="territory-continuity" class="visual-hotspot state-broken"');
     expect(markup).toContain('id="territory-road" class="visual-hotspot state-clear"');
+    expect(markup).toMatch(/class="map-pin-label"[^>]*>Vegetación<\/text>/);
     expect(markup).toContain('data-focus-action-id="gestionar-restos-poda"');
     expect(markup).toContain('data-focus-action-id="crear-discontinuidades-vegetales"');
     expect(markup).toContain('data-focus-action-id="limpiar-margenes-caminos"');

@@ -27,7 +27,7 @@ describe('housing prevention product response', () => {
       actionQuota: 2,
       canAdvance: false,
       feedback:
-        'Vegetación baja gestionada. Reduce la continuidad desde el suelo hacia las copas.'
+        'Ramas podadas y suelo limpio. Al fuego le cuesta más subir a las copas.'
     });
     expect(first.actions.find(({ id: actionId }) => actionId === 'podar-ramas-y-retirar-seco'))
       .toMatchObject({ selected: true, available: false });
@@ -39,7 +39,7 @@ describe('housing prevention product response', () => {
       actionQuota: 2,
       canAdvance: true,
       feedback:
-        'Acceso despejado. Mejora la entrada, la maniobra y el repliegue de los equipos.'
+        'Entrada despejada. El camión de bomberos puede entrar, girar y salir mejor.'
     });
     expect(complete.actions.every(({ available }) => available === false)).toBe(true);
   });
@@ -70,7 +70,7 @@ describe('housing prevention product response', () => {
       pendingConditions: [
         expect.objectContaining({
           actionId: 'separar-copas',
-          label: 'Copas conectadas'
+          label: 'Copas de árboles unidas'
         })
       ]
     });

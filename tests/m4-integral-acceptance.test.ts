@@ -62,7 +62,7 @@ async function expectComparisonAndReplay(
   expect(comparison.statusCode).toBe(200);
   const comparisonPayload = comparison.json();
   expect(comparisonPayload).toMatchObject({
-    title: 'Tu partida y otro recorrido de referencia',
+    title: 'Tu partida y otra forma de jugar',
     current: { branch },
     reference: { branch: branch === 'prepared' ? 'vulnerable' : 'prepared' }
   });

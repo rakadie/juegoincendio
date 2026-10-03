@@ -375,7 +375,9 @@ describe('M2 integral acceptance gate', () => {
 
     const ravine = first.sceneSnapshots.get('crisis-decision-ravine-fire') as PresentedDecisionScene;
     expect(actionById(ravine, 'mantener-ataque-anclado').available).toBe(true);
-    expect(first.feedbackByScene.get('crisis-decision-ravine-fire')).toContain('se sostiene');
+    expect(first.feedbackByScene.get('crisis-decision-ravine-fire')).toContain(
+      'mantienen una salida segura'
+    );
     expect(fixture.inheritedState.attackOpportunity).toBe(66);
   });
 
@@ -396,12 +398,14 @@ describe('M2 integral acceptance gate', () => {
     ) as PresentedDecisionScene;
     expect(actionById(access, 'introducir-maquinaria-sin-repliegue')).toMatchObject({
       available: false,
-      unavailableReason: expect.stringContaining('ruta segura')
+      unavailableReason: expect.stringContaining('camino seguro')
     });
 
     const ravine = first.sceneSnapshots.get('crisis-decision-ravine-fire') as PresentedDecisionScene;
     expect(actionById(ravine, 'mantener-ataque-anclado').available).toBe(false);
-    expect(first.feedbackByScene.get('crisis-decision-ravine-fire')).toContain('no puede sostenerse');
+    expect(first.feedbackByScene.get('crisis-decision-ravine-fire')).toContain(
+      'no pueden quedarse en el barranco'
+    );
 
     const crown = first.sceneSnapshots.get('crisis-decision-crown-fire') as PresentedDecisionScene;
     expect(actionById(crown, 'sostener-ataque-directo').available).toBe(false);

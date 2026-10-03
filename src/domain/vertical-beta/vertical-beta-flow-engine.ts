@@ -133,6 +133,30 @@ const actions = new Map<string, OfficialPreventionInspectionAction>(
   )
 );
 
+export function calculatePreventionDirectState(
+  actionIds: readonly string[]
+): PreventionBalance['directState'] {
+  const direct: Record<keyof typeof BASE_STATE, number> = { ...BASE_STATE };
+  for (const actionId of actionIds) {
+    const impact = actions.get(actionId)?.inheritedStateImpact;
+    if (impact === undefined) {
+      throw new VerticalBetaFlowError(
+        'invalid-flow-state',
+        `${actionId} is not an official prevention action.`
+      );
+    }
+    for (const dimension of ['fuelLoad', 'fuelContinuity', 'operationalAccess', 'defensibility'] as const) {
+      direct[dimension] += impact[dimension] ?? 0;
+    }
+  }
+  // Several valid treatments can improve the same dimension. Canonical state
+  // saturates at its contract boundaries instead of rejecting that legal combination.
+  for (const dimension of ['fuelLoad', 'fuelContinuity', 'operationalAccess', 'defensibility'] as const) {
+    direct[dimension] = Math.max(0, Math.min(100, direct[dimension]));
+  }
+  return direct;
+}
+
 function unique(values: readonly string[]): string[] {
   return [...new Set(values)];
 }
@@ -201,13 +225,9 @@ export function calculatePreventionBalance(session: GameSession): PreventionBala
     );
   }
 
-  const direct: Record<keyof typeof BASE_STATE, number> = { ...BASE_STATE };
-  for (const decision of preventionDecisions) {
-    const impact = actions.get(decision.actionId)!.inheritedStateImpact;
-    for (const dimension of ['fuelLoad', 'fuelContinuity', 'operationalAccess', 'defensibility'] as const) {
-      direct[dimension] += impact[dimension] ?? 0;
-    }
-  }
+  const direct = calculatePreventionDirectState(
+    preventionDecisions.map(({ actionId }) => actionId)
+  );
 
   const evidenceIds = completedEvidence(session).filter((id) => id !== 'preparedness-summary-produced');
   const fuelControl = 100 - direct.fuelLoad;

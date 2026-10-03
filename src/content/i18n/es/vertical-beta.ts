@@ -10,439 +10,441 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
     'intro-briefing-mission': {
       title: 'Prepara el territorio antes del incendio',
       body:
-        'Inspecciona el territorio y las viviendas. Las cinco actuaciones elegidas cambiarán las condiciones que encontrarán los equipos durante la emergencia.',
-      advanceLabel: 'Iniciar inspección'
+        'Analiza el monte y la vivienda. Dispones de cinco actuaciones preventivas. Tus decisiones cambiarán los accesos, las zonas de trabajo y las opciones de respuesta.',
+      advanceLabel: 'Iniciar preparación'
     },
     'prevention-inspection-territory-fuel': {
-      title: 'Fincas, vegetación y gestión del combustible',
-      shortTitle: 'Territorio y combustible',
+      title: 'Cuida las fincas y el monte',
+      shortTitle: 'Fincas y monte',
       body:
-        'El fuego no siempre avanza por donde quiere. A veces avanza por donde le hemos dejado combustible.',
+        'Antes de que haya fuego, puedes quitar ramas secas, separar plantas y mejorar los caminos.',
       context:
-        'Técnicos municipales, agricultores y ganaderos muestran fincas próximas al monte con restos de poda, vegetación continua y caminos estrechos.',
+        'En la foto hay ramas secas, plantas unidas, un camino estrecho, una zona de pastoreo y un lugar que puede revisar una persona experta.',
       objective:
-        'Detecta los riesgos y elige tres actuaciones para reducir combustible, romper continuidad y conservar accesos operativos.',
-      advanceLabel: 'Continuar a viviendas',
+        'Encuentra los cinco puntos y elige tres mejoras. Mira cómo cambia el paisaje.',
+      advanceLabel: 'Ir a la vivienda',
       hotspots: {
         'restos-poda-acumulados': {
-          title: 'Restos de poda acumulados',
-          visualHint: 'Ramas secas y restos vegetales junto a muros',
+          title: 'Ramas secas amontonadas',
+          visualHint: 'Ramas secas junto a los muros',
           description:
-            'Varias fincas acumulan restos de poda y material vegetal seco junto a muros y caminos.',
+            'Hay ramas y hojas secas junto a los muros y el camino.',
           futureConsequence:
-            'Los restos acumulados permanecen disponibles para intensificar y sostener la propagación.',
+            'Si se quedan ahí, pueden arder y hacer que el fuego crezca.',
           action: {
-            label: 'Gestionar restos de poda',
-            description: 'Retirar o procesar los restos vegetales ya acumulados.',
+            label: 'Retirar las ramas secas',
+            description: 'Quitar o triturar las ramas y hojas secas.',
             feedback:
-              'Los restos se retiran o procesan y dejan de actuar como combustible acumulado.'
+              'Ramas retiradas. Ahora hay menos material que pueda arder.'
           }
         },
         'vegetacion-densa-borde-fincas': {
-          title: 'Continuidad vegetal entre fincas y monte',
-          visualHint: 'Matorral continuo conectando parcelas y ladera',
+          title: 'Vegetación unida',
+          visualHint: 'Plantas que unen las fincas con el monte',
           description:
-            'El matorral forma una conexión continua entre parcelas, monte y viviendas dispersas.',
+            'Los arbustos y árboles forman un camino seguido desde las fincas hasta el monte.',
           futureConsequence:
-            'La continuidad territorial facilita que el frente enlace sectores sin interrupciones útiles.',
+            'El fuego puede usar ese camino para pasar de una zona a otra.',
           action: {
-            label: 'Crear discontinuidades vegetales',
-            description: 'Abrir una discontinuidad estratégica y mantenible.',
+            label: 'Separar la vegetación',
+            description: 'Crear espacios sin plantas que ayuden a frenar el fuego.',
             feedback:
-              'Se crea una discontinuidad estratégica en el recorrido probable del fuego.'
+              'Vegetación separada. Ahora el fuego encuentra espacios sin plantas.'
           }
         },
         'camino-rural-invadido': {
-          title: 'Camino rural con márgenes invadidos',
-          visualHint: 'Camino estrecho con vegetación seca en los bordes',
+          title: 'Camino estrecho',
+          visualHint: 'Plantas secas en los bordes del camino',
           description:
-            'Los márgenes reducen el paso y comprometen la aproximación y la retirada de los medios.',
+            'Las plantas de los bordes dejan poco espacio para que pase un camión de bomberos.',
           futureConsequence:
-            'La aproximación territorial queda limitada aunque el acceso local esté despejado.',
+            'Los bomberos podrían tardar más en entrar o tener problemas para salir.',
           action: {
-            label: 'Limpiar márgenes de caminos rurales',
-            description: 'Recuperar la anchura útil de la vía y sus márgenes.',
+            label: 'Limpiar los bordes del camino',
+            description: 'Quitar plantas y ramas para dejar más espacio.',
             feedback:
-              'El camino recupera anchura útil para aproximación, maniobra y repliegue.'
+              'Camino despejado. Los bomberos pueden entrar, girar y salir mejor.'
           }
         },
         'pastoreo-preventivo': {
-          title: 'Pastoreo preventivo en franjas prioritarias',
-          visualHint: 'Rebaño en una franja planificada',
+          title: 'Zona de pastoreo',
+          visualHint: 'Una zona donde puede comer el ganado',
           description:
-            'La asociación ganadera puede ejecutar un programa con calendario, agua y seguimiento técnico.',
+            'Cabras u ovejas pueden comer parte de la hierba antes del verano.',
           futureConsequence:
-            'El combustible fino permanece si el programa no llega a ejecutarse antes de la crisis.',
+            'Si no pasan por aquí, queda más hierba seca que puede arder.',
           action: {
-            label: 'Ejecutar pastoreo preventivo',
-            description: 'Completar el pastoreo en las franjas prioritarias antes de la crisis.',
+            label: 'Llevar el ganado a la zona',
+            description: 'Dejar que el ganado coma la hierba de esta zona.',
             feedback:
-              'El pastoreo se completa en las franjas prioritarias y reduce combustible fino.'
+              'Pastoreo realizado. Queda menos hierba seca que pueda arder.'
           }
         },
         'quema-tecnica-profesional': {
-          title: 'Evaluación de una línea preventiva profesional',
-          visualHint: 'Técnicos forestales estudiando una posición estratégica',
+          title: 'Zona para revisar',
+          visualHint: 'Lugar que debe revisar una persona experta',
           description:
-            'Una posible línea requiere evaluación profesional, autorización y condiciones operativas compatibles.',
+            'Una persona experta puede comprobar si este lugar serviría para trabajar durante un incendio.',
           futureConsequence:
-            'No se conoce si existe una posición estratégica viable que pueda aprovecharse durante la crisis.',
+            'Sin esa revisión, los equipos no sabrán si el lugar es seguro y útil.',
           action: {
-            label: 'Solicitar evaluación profesional',
-            description: 'Evaluar técnicamente la viabilidad de una línea preventiva.',
+            label: 'Pedir una revisión experta',
+            description: 'Pedir que una persona experta revise la zona.',
             feedback:
-              'La evaluación concluye que existe una línea viable, sin sustituir el acceso ni el repliegue seguros.'
+              'Zona revisada. Esto no significa que se haya hecho una quema.'
           }
         }
       },
       outcomes: {
         alto: {
-          title: 'Territorio con margen operativo',
-          text: 'El combustible, la continuidad y los accesos ofrecen mejores condiciones de intervención.'
+          title: 'Monte mejor preparado',
+          text: 'Hay menos material seco, más espacios entre plantas y mejores caminos.'
         },
         medio: {
-          title: 'Preparación parcial',
-          text: 'Persisten condiciones territoriales que pueden limitar la intervención.'
+          title: 'Quedan cosas por mejorar',
+          text: 'Algunas zonas todavía pueden ayudar al fuego o dificultar el paso.'
         },
         bajo: {
-          title: 'Territorio vulnerable',
-          text: 'El fuego encontrará combustible continuo y una cadena de acceso insuficiente.'
+          title: 'Monte poco preparado',
+          text: 'El fuego encuentra vegetación unida y caminos difíciles.'
         }
       }
     },
     'prevention-inspection-housing-interface': {
-      title: 'Viviendas en interfaz urbano-forestal',
-      shortTitle: 'Viviendas e interfaz',
-      body: 'No hay humo todavía. Por eso este es el momento de actuar.',
+      title: 'Prepara una vivienda junto al monte',
+      shortTitle: 'Vivienda y entorno',
+      body:
+        'Todavía no hay fuego. Es el momento de revisar la vegetación, el acceso y el espacio que rodea la vivienda.',
       context:
-        'Las viviendas próximas al monte presentan continuidad vertical y horizontal de vegetación y accesos estrechos para autobombas.',
+        'En la foto hay hierba seca, ramas bajas, copas unidas y una entrada estrecha.',
       objective:
-        'Elige dos actuaciones para reducir la continuidad junto a viviendas y conservar entrada, maniobra y salida seguras.',
-      advanceLabel: 'Ver balance preventivo',
+        'Elige dos mejoras y observa qué cambia alrededor de la vivienda. Cada actuación reduce una condición de riesgo diferente.',
+      advanceLabel: 'Ver lo que has preparado',
       hotspots: {
         'ramas-bajas-vegetacion-seca': {
-          title: 'Ramas bajas y vegetación seca',
-          visualHint: 'Escalera vegetal desde el suelo a las copas',
+          title: 'Ramas bajas y hierba seca',
+          visualHint: 'Hierba y ramas que forman una escalera',
           description:
-            'Las ramas bajas conectan la vegetación seca del suelo con las copas junto a las viviendas.',
+            'El fuego puede subir desde la hierba seca hasta las ramas y las copas.',
           futureConsequence:
-            'La escalera vertical permite que un fuego de superficie gane altura e intensidad.',
+            'Si no se limpia, el fuego puede ganar intensidad junto a la vivienda y alcanzar con más facilidad las ramas superiores.',
           action: {
-            label: 'Podar ramas y gestionar la biomasa',
-            description: 'Eliminar la escalera vegetal y retirar la biomasa generada.',
+            label: 'Podar y retirar lo seco',
+            description: 'Cortar las ramas bajas y retirar la hierba y las ramas secas.',
             feedback:
-              'Vegetación baja gestionada. Reduce la continuidad desde el suelo hacia las copas.'
+              'Ramas podadas y suelo limpio. Al fuego le cuesta más subir a las copas.'
           }
         },
         'copas-tocandose': {
-          title: 'Copas conectadas',
-          visualHint: 'Continuidad horizontal entre copas',
+          title: 'Copas de árboles unidas',
+          visualHint: 'Copas que se tocan entre sí',
           description:
-            'Las copas se tocan y permiten que el fuego avance por la parte alta de la vegetación.',
+            'Las copas se tocan y el fuego podría saltar de un árbol a otro.',
           futureConsequence:
-            'La continuidad horizontal incrementa el riesgo de propagación y transición a copas.',
+            'El fuego puede avanzar por la parte alta de los árboles y acercarse a la vivienda con mayor intensidad.',
           action: {
-            label: 'Separar copas y gestionar la biomasa',
-            description: 'Romper la continuidad horizontal y gestionar el material cortado.',
+            label: 'Separar las copas',
+            description: 'Separa las copas y retira las ramas cortadas.',
             feedback:
-              'Copas separadas. Reduce la continuidad horizontal junto a la vivienda.'
+              'Copas separadas. Al fuego le cuesta más pasar de un árbol a otro.'
           }
         },
         'acceso-estrecho': {
-          title: 'Acceso estrecho para autobombas',
-          visualHint: 'Entrada con obstáculos y vegetación',
+          title: 'Entrada estrecha',
+          visualHint: 'Camino con plantas y obstáculos',
           description:
-            'La entrada local impide que una autobomba pueda acceder, maniobrar y salir con seguridad.',
+            'El camión de bomberos no tiene bastante espacio para entrar, girar y salir.',
           futureConsequence:
-            'La defensa de viviendas queda limitada aunque el camino territorial esté disponible.',
+            'Los equipos de emergencia pueden tener problemas para llegar hasta la vivienda o para retirarse si cambian las condiciones.',
           action: {
-            label: 'Despejar accesos para autobombas',
-            description: 'Recuperar entrada, maniobra y salida junto a las viviendas.',
+            label: 'Despejar la entrada',
+            description: 'Quitar obstáculos para dejar espacio al camión de bomberos.',
             feedback:
-              'Acceso despejado. Mejora la entrada, la maniobra y el repliegue de los equipos.'
+              'Entrada despejada. El camión de bomberos puede entrar, girar y salir mejor.'
           }
         }
       },
       outcomes: {
         alto: {
-          title: 'Viviendas defendibles',
-          text: 'La continuidad próxima se reduce y los medios conservan un acceso local utilizable.'
+          title: 'Vivienda mejor preparada',
+          text: 'Hay menos continuidad en la vegetación y el acceso ofrece mejores condiciones para entrar, girar y salir.'
         },
         medio: {
-          title: 'Defensa condicionada',
-          text: 'Queda una vulnerabilidad que obliga a priorizar durante la crisis.'
+          title: 'Queda algo por mejorar',
+          text: 'Una parte del entorno todavía puede dificultar la ayuda.'
         },
         bajo: {
-          title: 'Interfaz vulnerable',
-          text: 'La vegetación y los accesos limitan la capacidad de sostener la defensa.'
+          title: 'Vivienda poco preparada',
+          text: 'La vegetación y el acceso dificultan la intervención y reducen las opciones para ayudar a proteger la vivienda.'
         }
       }
     },
     'transition-summary-prevention': {
-      title: 'Balance preventivo',
-      body: 'Estas son las condiciones que heredará la respuesta durante el incendio.',
-      advanceLabel: 'Comenzar la emergencia'
+      title: 'Lo que has preparado',
+      body: 'Aquí puedes ver lo que hiciste y lo que quedó pendiente.',
+      advanceLabel: 'Empezar la emergencia'
     },
     'crisis-decision-first-alert': {
       title: 'Primer aviso de incendio',
-      body: 'El primer aviso exige movilizar recursos y verificar las condiciones reales.',
+      body: 'Se detecta humo en el monte. El primer equipo debe localizar el foco y comprobar los accesos.',
       context:
-        'El aviso es común a ambos recorridos. La rama se decidirá después desde la preparación real.',
+        'La salida inicial es igual en todas las partidas. La preparación previa determina qué opciones habrá al llegar.',
       actions: {
         'movilizar-y-verificar': {
-          label: 'Movilizar y verificar',
-          description: 'Movilizar los primeros medios y confirmar sobre el terreno las condiciones reales.',
-          feedback: 'La respuesta inicial queda movilizada y verificada.',
+          label: 'Movilizar y comprobar',
+          description: 'Enviar el primer equipo para localizar el incendio y valorar los accesos desde una posición segura.',
+          feedback: 'El primer equipo está en marcha y evalúa el incendio desde una posición segura.',
           consequences: {
-            prepared: 'La movilización aprovecha el margen preventivo disponible.',
-            vulnerable: 'La movilización confirma las restricciones heredadas sin poder repararlas.'
+            prepared: 'Los equipos encuentran accesos preparados y más espacio para intervenir.',
+            vulnerable: 'Los equipos encuentran límites que ya no pueden corregir con el fuego cerca.'
           }
         }
       }
     },
     'crisis-router-causal-map': {
-      title: 'El territorio condiciona la respuesta',
+      title: 'Tus decisiones cambian la emergencia',
       body:
-        'El recorrido se selecciona automáticamente a partir del balance preventivo. No hay una ruta que elegir.',
-      advanceLabel: 'Aplicar condiciones del territorio'
+        'El juego usa lo que preparaste para decidir qué ocurre ahora. En esta pantalla no tienes que elegir.',
+      advanceLabel: 'Ver qué ocurre'
     },
     'crisis-decision-emergency-fuel-break': {
-      title: 'Cortafuego de emergencia',
+      title: 'Frenar el avance del fuego',
       body:
-        'El frente gana velocidad y se aproxima a una zona donde una maniobra técnica podría crear una discontinuidad útil.',
+        'El fuego avanza hacia una zona desde la que podría frenarse su recorrido.',
       context:
-        'Los equipos valoran una intervención de emergencia, pero solo puede ejecutarse con acceso, posición y repliegue compatibles.',
+        'Antes de actuar deben comprobarse el acceso, la zona de trabajo y una salida segura.',
       advanceLabel: 'Continuar al barranco',
       actions: {
         'autorizar-maniobra-condicionada': {
-          label: 'Autorizar una maniobra condicionada',
+          label: 'Intervenir con condiciones seguras',
           description:
-            'Autorizar la maniobra solo con evaluación favorable, condiciones compatibles y recursos para controlarla.',
-          feedback: 'La autorización queda ligada a condiciones técnicas y de seguridad.',
+            'Intervenir tras confirmar el acceso, la posición de trabajo y la salida.',
+          feedback: 'La intervención se mantiene mientras la entrada y la salida sigan disponibles.',
           consequences: {
-            prepared: 'La maniobra aprovecha una envolvente segura y conserva el repliegue.'
+            prepared: 'Los equipos aprovechan la zona preparada y conservan una salida segura.'
           }
         },
         'mantener-evaluacion-sin-maniobra': {
-          label: 'Mantener la evaluación sin ejecutar la maniobra',
-          description: 'Conservar la línea evaluada sin ejecutarla cuando el beneficio no compensa el riesgo.',
-          feedback: 'Se conserva el margen operativo sin abrir una línea adicional.',
+          label: 'Mantener la observación',
+          description: 'Observar desde una posición segura y conservar la opción de actuar después.',
+          feedback: 'Los equipos conservan una posición segura y siguen evaluando el avance.',
           consequences: {
-            prepared: 'Se conserva el margen operativo sin abrir una línea adicional.'
+            prepared: 'Los equipos conservan sus opciones sin entrar en una zona peligrosa.'
           }
         },
         'usar-linea-profesional-no-evaluada': {
-          label: 'Usar una línea profesional no evaluada',
-          description: 'Intentar la maniobra sin una evaluación técnica válida.',
-          feedback: 'La maniobra no puede autorizarse sin evaluación y control.',
-          blockedReason: 'La maniobra exige evaluación técnica previa y condiciones compatibles.'
+          label: 'Entrar sin comprobar la zona',
+          description: 'Intervenir sin confirmar la posición ni la ruta de salida.',
+          feedback: 'La intervención se detiene porque la zona todavía no está comprobada.',
+          blockedReason: 'Falta comprobar la posición y una salida segura.'
         }
       }
     },
     'crisis-decision-access-blockage': {
-      title: 'Bloqueo de accesos',
+      title: 'Camino bloqueado',
       body:
-        'La carretera de acceso deja de ser segura y la cadena de entrada, maniobra y retirada queda comprometida.',
+        'El camino ya no permite entrar, maniobrar y salir con seguridad.',
       context:
-        'Humo, ramas y fuego en los márgenes impiden utilizar la vía como si estuviera disponible.',
+        'El humo, la vegetación de los márgenes y el fuego próximo comprometen el acceso.',
       advanceLabel: 'Continuar al barranco',
       actions: {
         'despejar-corredor-operativo': {
-          label: 'Abrir un corredor operativo limitado',
-          description: 'Verificar y habilitar un corredor temporal para movimientos imprescindibles.',
-          feedback: 'Se habilita un corredor limitado sin reparar la carencia preventiva.',
+          label: 'Habilitar un paso temporal',
+          description: 'Abrir el espacio mínimo para los movimientos prioritarios.',
+          feedback: 'El paso temporal permite movimientos limitados; el acceso sigue siendo difícil.',
           consequences: {
-            vulnerable: 'Se habilita un corredor temporal, sin reparar la cadena preventiva de acceso.'
+            vulnerable: 'Los equipos usan un paso temporal, pero no pueden arreglar ahora todo el camino.'
           }
         },
         'cerrar-acceso-y-reorganizar-medios': {
-          label: 'Cerrar el acceso y reorganizar los medios',
-          description: 'Cerrar la vía insegura y recolocar los medios en posiciones exteriores verificadas.',
-          feedback: 'El acceso inseguro queda cerrado y los medios se reorganizan.',
+          label: 'Cerrar el acceso y reubicar equipos',
+          description: 'Cerrar el camino y trasladar los equipos a posiciones seguras.',
+          feedback: 'El acceso queda cerrado y los equipos se reubican fuera de la zona expuesta.',
           consequences: {
-            vulnerable: 'El acceso inseguro queda cerrado y los medios buscan posiciones exteriores.'
+            vulnerable: 'Los equipos se quedan fuera del camino peligroso.'
           }
         },
         'introducir-maquinaria-sin-repliegue': {
-          label: 'Introducir maquinaria sin repliegue confirmado',
-          description: 'Introducir maquinaria por una vía sin salida segura confirmada.',
-          feedback: 'La entrada no puede autorizarse sin una retirada segura.',
-          blockedReason: 'No existe una ruta segura de entrada, maniobra y retirada.'
+          label: 'Introducir vehículos sin salida',
+          description: 'Enviar vehículos por un camino que el fuego puede cerrar.',
+          feedback: 'La entrada se cancela porque los vehículos no tendrían una salida segura.',
+          blockedReason: 'No hay un camino seguro para entrar, girar y salir.'
         },
         'usar-linea-profesional-sin-acceso': {
-          label: 'Usar la línea evaluada sin acceso operativo',
-          description: 'Intentar aprovechar una línea técnica sin poder llegar ni replegarse.',
-          feedback: 'La línea no es utilizable mientras la cadena de acceso siga bloqueada.',
-          blockedReason: 'Una línea evaluada no es utilizable sin acceso y retirada seguros.'
+          label: 'Usar la zona revisada sin acceso',
+          description: 'Intentar llegar a la zona revisada sin entrada ni salida seguras.',
+          feedback: 'La zona revisada no puede utilizarse mientras el acceso siga bloqueado.',
+          blockedReason: 'La zona no sirve si los equipos no pueden entrar y salir.'
         }
       }
     },
     'crisis-decision-ravine-fire': {
       title: 'Fuego en el barranco',
       body:
-        'El incendio entra en un barranco estrecho donde la pendiente, el humo y el efecto chimenea pueden cerrar las rutas de escape.',
+        'El fuego entra en el barranco y acelera al subir por la pendiente.',
       context:
-        'Los medios aéreos pueden reducir intensidad, pero las posiciones terrestres solo son válidas con observación, anclaje y repliegue.',
+        'Antes de intervenir, el equipo necesita visibilidad, una posición segura y una salida disponible.',
       advanceLabel: 'Continuar',
       actions: {
         'asegurar-flancos-y-repliegue': {
-          label: 'Asegurar flancos y repliegue',
-          description: 'Consolidar desde posiciones seguras y proteger una salida confirmada.',
-          feedback: 'Los flancos y la retirada se priorizan antes de sostener la posición.',
+          label: 'Asegurar los lados y la salida',
+          description: 'Trabajar desde los lados del incendio y mantener libre el camino de salida.',
+          feedback: 'Los equipos estabilizan los lados del incendio sin perder su salida.',
           consequences: {
-            prepared: 'La posición se sostiene y conserva una retirada segura.',
-            vulnerable: 'Los flancos protegen la retirada, pero la posición no puede sostenerse.'
+            prepared: 'Los equipos pueden seguir trabajando y mantienen una salida segura.',
+            vulnerable: 'Los equipos protegen su salida, pero no pueden quedarse en el barranco.'
           }
         },
         'mantener-ataque-anclado': {
-          label: 'Mantener un ataque anclado',
-          description: 'Mantener el ataque desde una posición con anclaje, acceso y repliegue.',
-          feedback: 'El ataque se mantiene dentro de una envolvente operativa segura.',
+          label: 'Intervenir desde un punto seguro',
+          description: 'Actuar desde una posición comprobada con entrada y salida disponibles.',
+          feedback: 'Los equipos intervienen desde una posición estable y conservan la salida.',
           consequences: {
-            prepared: 'El ataque permanece anclado mientras se conserva una salida segura.'
+            prepared: 'Los equipos actúan desde un lugar seguro y conservan la salida.'
           }
         },
         'vigilancia-y-proteccion-indirecta': {
-          label: 'Vigilar y proteger desde el exterior',
-          description: 'Limitar la exposición y trabajar desde posiciones exteriores.',
-          feedback: 'La vigilancia exterior evita fingir una posición sostenible.',
+          label: 'Mantener vigilancia exterior',
+          description: 'Observar el avance desde fuera del barranco y proteger las zonas próximas.',
+          feedback: 'Los equipos vigilan desde el exterior y evitan una posición sin salida.',
           consequences: {
-            prepared: 'Se limita la exposición manteniendo vigilancia exterior.',
-            vulnerable: 'La respuesta exterior protege equipos sin fingir una posición sostenible.'
+            prepared: 'Los equipos evitan acercarse de más y siguen vigilando.',
+            vulnerable: 'Los equipos se protegen porque dentro del barranco no hay un lugar seguro.'
           }
         },
         'ataque-directo-sin-anclaje': {
-          label: 'Atacar directamente sin anclaje',
-          description: 'Entrar al frente sin un punto de anclaje ni retirada confirmada.',
-          feedback: 'El ataque directo no es compatible con la seguridad de la posición.',
-          blockedReason: 'El efecto chimenea puede cortar la retirada en pocos minutos.'
+          label: 'Entrar sin una salida segura',
+          description: 'Acercarse al frente sin una posición estable ni un camino de salida.',
+          feedback: 'La entrada se detiene porque el equipo podría quedar sin salida.',
+          blockedReason: 'El fuego puede subir por el barranco y cortar la salida muy rápido.'
         }
       }
     },
     'crisis-decision-housing-defense': {
-      title: 'Defensa operativa del núcleo de viviendas',
+      title: 'Defensa de las viviendas',
       body:
-        'El frente se aproxima a viviendas y obliga a decidir qué posiciones pueden defenderse sin atrapar a los equipos.',
+        'El fuego se aproxima a las viviendas. Hay que priorizar posiciones que puedan defenderse sin exponer a los equipos.',
       context:
-        'La defensa requiere acceso, triaje de estructuras, control de pavesas y una vía segura de repliegue.',
+        'Antes de asignar recursos se comprueban el acceso, el espacio de trabajo y una salida segura.',
       advanceLabel: 'Ver resultado',
       actions: {
         'defender-desde-posicion-segura': {
           label: 'Defender desde una posición segura',
-          description: 'Defender únicamente estructuras priorizadas con entrada y salida seguras.',
-          feedback: 'La defensa se sostiene con prioridades y repliegue confirmado.',
+          description: 'Proteger las viviendas que permiten entrar, trabajar y salir con seguridad.',
+          feedback: 'Los equipos se sitúan donde pueden actuar sin perder la salida.',
           consequences: {
-            prepared: 'La defensa se sostiene con prioridades y una vía segura de retirada.'
+            prepared: 'Los equipos priorizan las viviendas mejor preparadas y conservan una salida disponible.'
           }
         },
         'defensa-selectiva-con-prioridades': {
-          label: 'Priorizar las viviendas defendibles',
-          description: 'Concentrar recursos en estructuras defendibles y posiciones con retirada.',
-          feedback: 'Los medios se concentran donde la defensa puede sostenerse.',
+          label: 'Priorizar viviendas defendibles',
+          description: 'Concentrar los recursos en viviendas con espacio de trabajo y salida disponible.',
+          feedback: 'Los recursos se concentran donde pueden actuar sin quedar expuestos.',
           consequences: {
-            prepared: 'Los recursos se concentran en posiciones defendibles y con retirada.'
+            prepared: 'Los equipos ayudan primero en las viviendas que ofrecen mejores condiciones de acceso y retirada.'
           }
         },
         'defensa-total-sin-repliegue': {
-          label: 'Defender todas las viviendas sin repliegue',
-          description: 'Mantener una defensa total aunque no exista una salida segura.',
-          feedback: 'La defensa total no puede justificar la exposición de los equipos.',
-          blockedReason: 'La defensa total expone a los equipos y elimina la salida segura.'
+          label: 'Intentar una defensa total',
+          description: 'Distribuir equipos también en viviendas sin espacio o salida suficientes.',
+          feedback: 'La defensa total se descarta porque dejaría equipos en posiciones inseguras.',
+          blockedReason: 'Algunas viviendas no ofrecen espacio suficiente ni una salida segura para los equipos.'
         }
       }
     },
     'crisis-decision-crown-fire': {
-      title: 'Fuego de copas',
+      title: 'Fuego en las copas',
       body:
-        'El incendio alcanza las copas, aumenta su velocidad y deja de admitir una defensa directa segura.',
+        'El fuego alcanza las copas de los árboles y aumenta con rapidez su intensidad y velocidad.',
       context:
-        'El calor radiante, las pavesas y la pérdida de rutas de escape obligan a priorizar vidas y retirada.',
+        'El ataque cercano deja de ser seguro. La prioridad pasa a proteger vidas y mantener las salidas.',
       advanceLabel: 'Ver resultado',
       actions: {
         'replegar-ante-fuego-de-copas': {
-          label: 'Replegar y priorizar vidas',
-          description: 'Retirar los medios terrestres antes de perder las rutas de escape.',
-          feedback: 'El repliegue protege a los equipos ante una propagación fuera de capacidad.',
+          label: 'Retirar equipos y proteger vidas',
+          description: 'Retirar a los equipos antes de que el fuego corte sus salidas.',
+          feedback: 'Los equipos se retiran a tiempo y mantienen abiertas sus salidas.',
           consequences: {
-            vulnerable: 'El repliegue protege a los equipos ante una propagación fuera de capacidad.'
+            vulnerable: 'Alejarse protege a los equipos de un fuego demasiado fuerte.'
           }
         },
         'ataque-indirecto-y-vigilancia': {
-          label: 'Mantener ataque indirecto y vigilancia',
-          description: 'Vigilar desde el exterior y limitar la intervención a posiciones seguras.',
-          feedback: 'La vigilancia exterior protege vidas sin exponer medios al frente de copas.',
+          label: 'Vigilar y actuar a distancia',
+          description: 'Observar el frente y trabajar únicamente desde posiciones seguras.',
+          feedback: 'Los equipos mantienen la vigilancia sin entrar en la zona de mayor intensidad.',
           consequences: {
-            vulnerable: 'La vigilancia exterior protege vidas sin exponer medios al frente de copas.'
+            vulnerable: 'Vigilar desde lejos protege vidas y evita exponer a los equipos.'
           }
         },
         'sostener-ataque-directo': {
-          label: 'Sostener el ataque directo',
-          description: 'Mantener personal frente a un fuego de copas fuera de capacidad.',
-          feedback: 'La intensidad ya no permite sostener un ataque directo.',
-          blockedReason: 'El fuego de copas supera la capacidad segura de ataque directo.'
+          label: 'Mantener el ataque cercano',
+          description: 'Mantener personal cerca de un frente que ya supera las condiciones seguras.',
+          feedback: 'El ataque cercano se cancela porque el frente supera el margen seguro.',
+          blockedReason: 'Acercarse al fuego de las copas pondría en peligro a los equipos.'
         },
         'defender-posicion-sin-salida': {
-          label: 'Defender una posición sin salida',
-          description: 'Mantener una posición sin una ruta de retirada confirmada.',
-          feedback: 'La posición no puede considerarse defendible sin salida.',
-          blockedReason: 'Una posición sin retirada confirmada no es defendible.'
+          label: 'Mantener una posición sin salida',
+          description: 'Seguir trabajando donde el fuego puede cerrar el camino de salida.',
+          feedback: 'La posición se abandona porque el equipo podría quedar aislado.',
+          blockedReason: 'Los equipos necesitan siempre una salida segura.'
         }
       }
     },
     'ending-result-causal-report': {
-      title: 'Informe causal de la partida',
-      body: 'El resultado relaciona prevención, condiciones heredadas y respuesta operativa.',
-      advanceLabel: 'Cerrar partida',
+      title: 'Así cambiaron tus decisiones la partida',
+      body:
+        'Revisa cómo la preparación previa y las decisiones tomadas durante el incendio se combinaron para producir este resultado.',
+      advanceLabel: 'Terminar la partida',
       variants: {
         contained: {
           title: 'Incendio contenido',
           summary:
-            'La preparación mantuvo acceso, repliegue y una ventana de intervención dentro de capacidad.',
+            'La preparación mantuvo accesos utilizables, salidas disponibles y zonas desde las que los equipos pudieron intervenir sin perder su vía de retirada.',
           closing:
-            'La preparación mejora las opciones, pero no garantiza el control de un incendio real.'
+            'Las actuaciones realizadas antes del incendio no apagaron el fuego por sí solas. Sí redujeron su capacidad para crecer cerca de las viviendas y dieron más tiempo y espacio para responder. El resultado es favorable, aunque ningún territorio ni ninguna vivienda quedan completamente seguros.'
         },
         overwhelmed: {
           title: 'Incendio fuera de capacidad',
           summary:
-            'Las mejoras de combustible no compensaron las restricciones críticas de acceso y posición segura.',
+            'Algunas medidas ayudaron, pero las condiciones que quedaron pendientes redujeron el tiempo, el espacio o las salidas disponibles para sostener la intervención.',
           closing:
-            'Una mejora real puede no bastar cuando otra condición crítica bloquea la respuesta.'
+            'Las mejoras aplicadas sí redujeron parte del riesgo, pero no compensaron todos los problemas que seguían presentes. El informe muestra dónde conviene actuar antes de la próxima temporada para que los equipos encuentren mejores accesos, menos vegetación continua y más opciones de retirada.'
         }
       }
     }
   },
   dimensions: {
-    fuelLoad: 'Carga de combustible',
-    fuelContinuity: 'Continuidad del combustible',
-    operationalAccess: 'Acceso operativo',
-    defensibility: 'Defensibilidad',
-    attackOpportunity: 'Oportunidad de ataque'
+    fuelLoad: 'Ramas y hierba seca',
+    fuelContinuity: 'Plantas y árboles unidos',
+    operationalAccess: 'Paso para bomberos',
+    defensibility: 'Protección de las viviendas',
+    attackOpportunity: 'Formas de apagar el fuego'
   },
   causalRelations: {
     'fuel-load': {
-      title: 'La carga de combustible condicionó la intensidad',
+      title: 'La vegetación seca hizo crecer el fuego',
       effect:
-        'La cantidad de combustible disponible se manifestó en la intensidad afrontada por los equipos.'
+        'Las ramas y la hierba secas facilitan que el fuego empiece con más intensidad y se mantenga activo. Retirarlas de forma periódica reduce el material disponible para arder, especialmente después de podas, viento o largos periodos sin lluvia.'
     },
     'fuel-continuity': {
-      title: 'La continuidad cambió la propagación',
+      title: 'La vegetación unida ayudó al fuego a avanzar',
       effect:
-        'Las discontinuidades realizadas u omitidas determinaron los puntos de anclaje disponibles.'
+        'Cuando arbustos, ramas bajas y copas forman una franja continua, el fuego puede pasar del suelo a los árboles y avanzar sin encontrar interrupciones. Crear separaciones y mantenerlas en el tiempo ayuda a ralentizar ese recorrido.'
     },
     'operational-access': {
-      title: 'El acceso decidió la capacidad de maniobra',
+      title: 'Los caminos cambiaron lo que pudieron hacer los bomberos',
       effect:
-        'La entrada, la maniobra de medios y el repliegue dependieron de la cadena de acceso preparada.'
+        'Un acceso útil debe permitir que los vehículos entren, giren y salgan incluso cuando hay humo o cambia la dirección del fuego. Despejar los bordes y evitar obstáculos mejora la llegada de ayuda y, sobre todo, conserva una vía de retirada.'
     },
     defensibility: {
-      title: 'La posición tenía límites concretos',
+      title: 'Las viviendas preparadas ofrecieron mejores condiciones',
       effect:
-        'La vegetación tratada y el acceso convirtieron —o no— el lugar en una posición sostenible.'
+        'Reducir la vegetación próxima y despejar el acceso no convierte una vivienda en un lugar completamente seguro. Sí disminuye la intensidad que puede alcanzarla y ofrece a los equipos más espacio para valorar si pueden intervenir sin quedar expuestos.'
     },
     'attack-opportunity': {
-      title: 'Las cinco condiciones formaron la oportunidad de ataque',
+      title: 'Todas las mejoras trabajaron juntas',
       effect:
-        'Combustible, continuidad, acceso y posición actuaron conjuntamente; una ventaja aislada no ocultó un veto crítico.'
+        'Ninguna actuación funciona de manera aislada. La respuesta mejora cuando coinciden menos material seco, separaciones en la vegetación, caminos utilizables y una salida disponible. Mantener ese conjunto es tan importante como realizar la mejora inicial.'
     }
   }
 } satisfies VerticalBetaI18nCatalog);

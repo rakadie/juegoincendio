@@ -26,8 +26,8 @@ describe('M5 integral visual narrative acceptance', () => {
     const preparedMarkup = renderSceneVisual(preparedVisual);
     const vulnerableMarkup = renderSceneVisual(vulnerableVisual);
 
-    expect(preparedMarkup).toContain('data-visual-base="shared-ravine-photo-v2"');
-    expect(vulnerableMarkup).toContain('data-visual-base="shared-ravine-photo-v2"');
+    expect(preparedMarkup).toContain('data-visual-base="shared-ravine-photo-v3"');
+    expect(vulnerableMarkup).toContain('data-visual-base="shared-ravine-photo-v3"');
     expect(preparedMarkup).toContain('state-sustainable');
     expect(preparedMarkup).toContain('state-viable');
     expect(vulnerableMarkup).toContain('state-unsustainable');
@@ -53,7 +53,7 @@ describe('M5 integral visual narrative acceptance', () => {
     expect(comparison.reference.dimensions).toHaveLength(5);
     expect(comparison.current.manifestations).toHaveLength(3);
     expect(comparison.reference.manifestations).toHaveLength(3);
-    expect(comparison.title).toBe('Tu partida y otro recorrido de referencia');
+    expect(comparison.title).toBe('Tu partida y otra forma de jugar');
   });
 
   it('keeps M5 visual hierarchy responsive without creating a second product surface', () => {

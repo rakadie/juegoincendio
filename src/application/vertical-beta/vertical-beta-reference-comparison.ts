@@ -86,7 +86,7 @@ export interface PresentedReferenceComparisonSide {
 }
 
 export interface PresentedReferenceComparison {
-  readonly title: 'Tu partida y otro recorrido de referencia';
+  readonly title: 'Tu partida y otra forma de jugar';
   readonly explanation: string;
   readonly current: PresentedReferenceComparisonSide;
   readonly reference: PresentedReferenceComparisonSide;
@@ -149,7 +149,7 @@ function comparisonSide(view: VerticalBetaApplicationView): PresentedReferenceCo
     }));
   return {
     branch: view.session.branch!,
-    branchLabel: view.session.branch === 'prepared' ? 'Ruta preparada' : 'Ruta vulnerable',
+    branchLabel: view.session.branch === 'prepared' ? 'Más opciones para los equipos' : 'Pocas opciones para los equipos',
     resultLabel: result.title,
     dimensions,
     manifestations
@@ -163,9 +163,9 @@ export function buildReferenceComparison(
   const opposite: CrisisBranch = currentView.session.branch === 'prepared' ? 'vulnerable' : 'prepared';
   const referenceView = runCanonicalReference(opposite);
   return {
-    title: 'Tu partida y otro recorrido de referencia',
+    title: 'Tu partida y otra forma de jugar',
     explanation:
-      'Compara tu recorrido con una referencia canónica del mismo modelo para observar cómo cambian las condiciones y la respuesta.',
+      'Compara las dos partidas y mira cómo unas mejoras distintas cambian lo que ocurre durante el incendio.',
     current: comparisonSide(currentView),
     reference: comparisonSide(referenceView)
   };

@@ -22,7 +22,7 @@ describe('M4.1 explicit product entry', () => {
     const entryMarkup = html.slice(entryStart, entryEnd);
 
     expect(entryMarkup).toContain(
-      'Cuando comiences, conocerás la misión antes de tomar tu primera decisión.'
+      'El juego te explicará cada paso antes de que elijas.'
     );
   });
 
