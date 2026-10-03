@@ -22,7 +22,7 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
         'En la foto hay ramas secas, plantas unidas, un camino estrecho, una zona de pastoreo y un lugar que puede revisar una persona experta.',
       objective:
         'Encuentra los cinco puntos y elige tres mejoras. Mira cómo cambia el paisaje.',
-      advanceLabel: 'Ir a las casas',
+      advanceLabel: 'Ir a la vivienda',
       hotspots: {
         'restos-poda-acumulados': {
           title: 'Ramas secas amontonadas',
@@ -111,13 +111,14 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
       }
     },
     'prevention-inspection-housing-interface': {
-      title: 'Cuida una casa junto al monte',
-      shortTitle: 'Casa y jardín',
-      body: 'Todavía no hay fuego. Este es el mejor momento para preparar la casa.',
+      title: 'Prepara una vivienda junto al monte',
+      shortTitle: 'Vivienda y entorno',
+      body:
+        'Todavía no hay fuego. Es el momento de revisar la vegetación, el acceso y el espacio que rodea la vivienda.',
       context:
         'En la foto hay hierba seca, ramas bajas, copas unidas y una entrada estrecha.',
       objective:
-        'Elige dos mejoras. Observa qué cambia alrededor de la casa.',
+        'Elige dos mejoras y observa qué cambia alrededor de la vivienda. Cada actuación reduce una condición de riesgo diferente.',
       advanceLabel: 'Ver lo que has preparado',
       hotspots: {
         'ramas-bajas-vegetacion-seca': {
@@ -126,7 +127,7 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
           description:
             'El fuego puede subir desde la hierba seca hasta las ramas y las copas.',
           futureConsequence:
-            'Si no se limpia, el fuego puede crecer junto a la casa.',
+            'Si no se limpia, el fuego puede ganar intensidad junto a la vivienda y alcanzar con más facilidad las ramas superiores.',
           action: {
             label: 'Podar y retirar lo seco',
             description: 'Cortar las ramas bajas y retirar la hierba y las ramas secas.',
@@ -140,7 +141,7 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
           description:
             'Las copas se tocan y el fuego podría saltar de un árbol a otro.',
           futureConsequence:
-            'El fuego puede acercarse a la casa por la parte alta de los árboles.',
+            'El fuego puede avanzar por la parte alta de los árboles y acercarse a la vivienda con mayor intensidad.',
           action: {
             label: 'Separar las copas',
             description: 'Separa las copas y retira las ramas cortadas.',
@@ -154,7 +155,7 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
           description:
             'El camión de bomberos no tiene bastante espacio para entrar, girar y salir.',
           futureConsequence:
-            'Los bomberos pueden tener problemas para llegar hasta la casa.',
+            'Los equipos de emergencia pueden tener problemas para llegar hasta la vivienda o para retirarse si cambian las condiciones.',
           action: {
             label: 'Despejar la entrada',
             description: 'Quitar obstáculos para dejar espacio al camión de bomberos.',
@@ -165,16 +166,16 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
       },
       outcomes: {
         alto: {
-          title: 'Casa mejor preparada',
-          text: 'Hay menos plantas cerca y los bomberos pueden usar la entrada.'
+          title: 'Vivienda mejor preparada',
+          text: 'Hay menos continuidad en la vegetación y el acceso ofrece mejores condiciones para entrar, girar y salir.'
         },
         medio: {
           title: 'Queda algo por mejorar',
           text: 'Una parte del entorno todavía puede dificultar la ayuda.'
         },
         bajo: {
-          title: 'Casa poco preparada',
-          text: 'La vegetación y la entrada hacen más difícil ayudar a proteger la casa.'
+          title: 'Vivienda poco preparada',
+          text: 'La vegetación y el acceso dificultan la intervención y reducen las opciones para ayudar a proteger la vivienda.'
         }
       }
     },
@@ -332,7 +333,7 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
           description: 'Proteger las viviendas que permiten entrar, trabajar y salir con seguridad.',
           feedback: 'Los equipos se sitúan donde pueden actuar sin perder la salida.',
           consequences: {
-            prepared: 'Los equipos protegen las casas preparadas y conservan una salida.'
+            prepared: 'Los equipos priorizan las viviendas mejor preparadas y conservan una salida disponible.'
           }
         },
         'defensa-selectiva-con-prioridades': {
@@ -340,14 +341,14 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
           description: 'Concentrar los recursos en viviendas con espacio de trabajo y salida disponible.',
           feedback: 'Los recursos se concentran donde pueden actuar sin quedar expuestos.',
           consequences: {
-            prepared: 'Los equipos ayudan primero en las casas mejor preparadas.'
+            prepared: 'Los equipos ayudan primero en las viviendas que ofrecen mejores condiciones de acceso y retirada.'
           }
         },
         'defensa-total-sin-repliegue': {
           label: 'Intentar una defensa total',
           description: 'Distribuir equipos también en viviendas sin espacio o salida suficientes.',
           feedback: 'La defensa total se descarta porque dejaría equipos en posiciones inseguras.',
-          blockedReason: 'Algunas casas no tienen espacio ni una salida segura para los equipos.'
+          blockedReason: 'Algunas viviendas no ofrecen espacio suficiente ni una salida segura para los equipos.'
         }
       }
     },
@@ -391,22 +392,23 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
     },
     'ending-result-causal-report': {
       title: 'Así cambiaron tus decisiones la partida',
-      body: 'Revisa la preparación, las decisiones durante el incendio y su efecto en el resultado.',
+      body:
+        'Revisa cómo la preparación previa y las decisiones tomadas durante el incendio se combinaron para producir este resultado.',
       advanceLabel: 'Terminar la partida',
       variants: {
         contained: {
           title: 'Incendio contenido',
           summary:
-            'La preparación mantuvo accesos, salidas y posiciones desde las que los equipos pudieron intervenir.',
+            'La preparación mantuvo accesos utilizables, salidas disponibles y zonas desde las que los equipos pudieron intervenir sin perder su vía de retirada.',
           closing:
-            'Las medidas redujeron el riesgo y ampliaron las opciones, pero ningún entorno queda completamente seguro.'
+            'Las actuaciones realizadas antes del incendio no apagaron el fuego por sí solas. Sí redujeron su capacidad para crecer cerca de las viviendas y dieron más tiempo y espacio para responder. El resultado es favorable, aunque ningún territorio ni ninguna vivienda quedan completamente seguros.'
         },
         overwhelmed: {
           title: 'Incendio fuera de capacidad',
           summary:
-            'Algunas medidas fueron útiles, pero los accesos o las posiciones seguras no bastaron para sostener la intervención.',
+            'Algunas medidas ayudaron, pero las condiciones que quedaron pendientes redujeron el tiempo, el espacio o las salidas disponibles para sostener la intervención.',
           closing:
-            'Las mejoras reducen parte del riesgo; las condiciones pendientes pueden limitar la respuesta durante la emergencia.'
+            'Las mejoras aplicadas sí redujeron parte del riesgo, pero no compensaron todos los problemas que seguían presentes. El informe muestra dónde conviene actuar antes de la próxima temporada para que los equipos encuentren mejores accesos, menos vegetación continua y más opciones de retirada.'
         }
       }
     }
@@ -415,34 +417,34 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
     fuelLoad: 'Ramas y hierba seca',
     fuelContinuity: 'Plantas y árboles unidos',
     operationalAccess: 'Paso para bomberos',
-    defensibility: 'Protección de las casas',
+    defensibility: 'Protección de las viviendas',
     attackOpportunity: 'Formas de apagar el fuego'
   },
   causalRelations: {
     'fuel-load': {
       title: 'La vegetación seca hizo crecer el fuego',
       effect:
-        'Cuantas más ramas y hierba seca quedaron, más fuerza pudo ganar el fuego.'
+        'Las ramas y la hierba secas facilitan que el fuego empiece con más intensidad y se mantenga activo. Retirarlas de forma periódica reduce el material disponible para arder, especialmente después de podas, viento o largos periodos sin lluvia.'
     },
     'fuel-continuity': {
       title: 'La vegetación unida ayudó al fuego a avanzar',
       effect:
-        'Los espacios sin plantas frenaron el fuego; las zonas unidas le dejaron seguir.'
+        'Cuando arbustos, ramas bajas y copas forman una franja continua, el fuego puede pasar del suelo a los árboles y avanzar sin encontrar interrupciones. Crear separaciones y mantenerlas en el tiempo ayuda a ralentizar ese recorrido.'
     },
     'operational-access': {
       title: 'Los caminos cambiaron lo que pudieron hacer los bomberos',
       effect:
-        'Los equipos necesitaron espacio para entrar, girar y salir con seguridad.'
+        'Un acceso útil debe permitir que los vehículos entren, giren y salgan incluso cuando hay humo o cambia la dirección del fuego. Despejar los bordes y evitar obstáculos mejora la llegada de ayuda y, sobre todo, conserva una vía de retirada.'
     },
     defensibility: {
-      title: 'Las casas preparadas fueron más fáciles de proteger',
+      title: 'Las viviendas preparadas ofrecieron mejores condiciones',
       effect:
-        'Quitar vegetación y despejar la entrada dio a los equipos lugares más seguros.'
+        'Reducir la vegetación próxima y despejar el acceso no convierte una vivienda en un lugar completamente seguro. Sí disminuye la intensidad que puede alcanzarla y ofrece a los equipos más espacio para valorar si pueden intervenir sin quedar expuestos.'
     },
     'attack-opportunity': {
       title: 'Todas las mejoras trabajaron juntas',
       effect:
-        'No bastó con una sola mejora: los equipos necesitaron menos vegetación, buenos caminos y una salida segura.'
+        'Ninguna actuación funciona de manera aislada. La respuesta mejora cuando coinciden menos material seco, separaciones en la vegetación, caminos utilizables y una salida disponible. Mantener ese conjunto es tan importante como realizar la mejora inicial.'
     }
   }
 } satisfies VerticalBetaI18nCatalog);

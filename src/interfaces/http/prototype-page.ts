@@ -197,8 +197,8 @@ export function renderPrototypePage(): string {
         justify-content: center;
         padding: clamp(30px, 5vw, 76px);
       }
-      .entry-copy h1 { max-width: 780px; margin-bottom: 18px; font-size: clamp(2.65rem, 4.4vw, 4rem); line-height: .98; }
-      .entry-copy .lead { max-width: 720px; font-size: clamp(1rem, 1.5vw, 1.18rem); }
+      .entry-copy h1 { max-width: 780px; margin-bottom: 16px; font-size: clamp(2.05rem, 3.2vw, 3.05rem); line-height: 1.02; }
+      .entry-copy .lead { max-width: 720px; font-size: clamp(.94rem, 1.15vw, 1.06rem); }
       .entry-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 4px; }
       .entry-meta span {
         padding: 7px 10px;
@@ -255,8 +255,8 @@ export function renderPrototypePage(): string {
       h1, h2, h3, p { margin-top: 0; }
       h1, h2, .scene-content, .visual-canvas { scroll-margin-top: 88px; }
       .scene h1:focus, .scene h2:focus { outline: none; }
-      h1 { margin-bottom: 12px; font-size: clamp(2.25rem, 6vw, 4.8rem); line-height: .96; letter-spacing: -.045em; }
-      h2 { margin-bottom: 8px; font-size: clamp(1.65rem, 3vw, 2.55rem); line-height: 1.02; letter-spacing: -.025em; }
+      h1 { margin-bottom: 12px; font-size: clamp(1.9rem, 4vw, 3.1rem); line-height: 1.02; letter-spacing: -.035em; }
+      h2 { margin-bottom: 8px; font-size: clamp(1.35rem, 2.2vw, 1.95rem); line-height: 1.08; letter-spacing: -.02em; }
       h3 { margin-bottom: 7px; }
       p { line-height: 1.5; }
       .lead { margin-bottom: 0; color: #4c5d66; font-size: 1rem; }
@@ -516,8 +516,8 @@ export function renderPrototypePage(): string {
         background: rgba(62,123,93,.24);
       }
       .scene.briefing .scene-heading-copy { max-width: 780px; }
-      .scene.briefing h1 { max-width: 760px; margin-bottom: 10px; font-size: clamp(2.15rem, 4vw, 3.35rem); }
-      .scene.briefing .lead { max-width: 760px; color: #dce7ec; font-size: clamp(.92rem, 1.3vw, 1.08rem); }
+      .scene.briefing h1 { max-width: 760px; margin-bottom: 10px; font-size: clamp(1.75rem, 3vw, 2.55rem); }
+      .scene.briefing .lead { max-width: 760px; color: #dce7ec; font-size: clamp(.88rem, 1.05vw, 1rem); }
       .scene.briefing .eyebrow { color: #f0b44b; }
       .mission-briefing-steps {
         counter-reset: mission-step;
@@ -1292,7 +1292,7 @@ export function renderPrototypePage(): string {
         border-radius: 10px;
       }
       .decision-map-hud .eyebrow { margin-bottom: 2px; color: #f5c66e; font-size: .66rem; }
-      .decision-map-hud h2 { margin: 0 0 2px; color: #fff; font-size: clamp(1.12rem, 1.65vw, 1.5rem); line-height: 1.08; }
+      .decision-map-hud h2 { margin: 0 0 2px; color: #fff; font-size: clamp(1rem, 1.3vw, 1.25rem); line-height: 1.12; }
       .decision-map-hud p { margin: 0; color: #edf4f0; font-size: .78rem; line-height: 1.32; }
       .decision-context { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; margin-top: 7px; padding-top: 7px; border-top: 1px solid rgba(255,255,255,.16); }
       .decision-context span { color: #f5c66e; font-size: .58rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
@@ -1457,8 +1457,10 @@ export function renderPrototypePage(): string {
         width: 100%;
         max-width: none;
         min-height: calc(100dvh - 62px);
+        height: calc(100dvh - 62px);
         margin: 0;
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: auto;
         border: 0;
         border-radius: 0;
         color: #f6faf7;
@@ -1489,7 +1491,7 @@ export function renderPrototypePage(): string {
         backdrop-filter: blur(12px);
       }
       .result-overwhelmed .result-hero { border-left-color: #b73228; }
-      .result-hero h2 { margin: 0 0 3px; font-size: clamp(1.45rem, 2.2vw, 2rem); }
+      .result-hero h2 { margin: 0 0 3px; font-size: clamp(1.2rem, 1.65vw, 1.55rem); }
       .result-hero p:not(.eyebrow) { margin: 0; color: #d5e1dc; font-size: .84rem; line-height: 1.35; }
       .result-screen .result-layout { grid-template-columns: minmax(0, .62fr) minmax(0, 1.38fr); margin: 0; }
       .result-conditions, .result-causes { min-width: 0; }
@@ -1501,14 +1503,19 @@ export function renderPrototypePage(): string {
       .result-screen .relation { min-height: 0; padding: 10px 10px 10px 44px; border-color: rgba(213,229,220,.22); color: #f8fbf9; background: linear-gradient(145deg, rgba(247,250,248,.96), rgba(226,235,231,.94)); box-shadow: 0 10px 26px rgba(0,0,0,.16); }
       .result-screen .relation::before { width: 24px; height: 24px; display: grid; place-items: center; left: 11px; top: 10px; content: '↘'; border: 1px solid #8aa096; border-radius: 7px; color: #315a4b; background: #eef4f0; }
       .result-screen .relation.decisive { grid-column: 1 / -1; }
-      .final-prevention-review { margin: 0; padding: 0; border: 1px solid rgba(213,229,220,.25); border-radius: 10px; color: #f4f8f5; background: rgba(4,20,29,.72); backdrop-filter: blur(12px); }
-      .final-prevention-review summary { padding: 10px 13px; color: #f5c66e; font-weight: 800; }
-      .final-prevention-review-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 4px 13px 12px; }
+      .final-prevention-review { margin: 0; padding: 12px; border: 1px solid rgba(213,229,220,.25); border-radius: 10px; color: #f4f8f5; background: rgba(4,20,29,.72); backdrop-filter: blur(12px); }
+      .final-review-heading { display: grid; grid-template-columns: minmax(220px, .7fr) minmax(0, 1.3fr); gap: 14px; align-items: end; margin-bottom: 10px; }
+      .final-review-heading h3 { margin: 0; color: #fff; font-size: .98rem; }
+      .final-review-heading > p { margin: 0; color: #d6e2dc; font-size: .76rem; line-height: 1.45; }
+      .final-prevention-review-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; padding: 0; }
       .final-prevention-review-grid section { padding: 10px; border: 1px solid rgba(255,255,255,.12); border-radius: 8px; background: rgba(255,255,255,.07); }
       .final-prevention-review-grid strong { font-size: .82rem; }
+      .final-prevention-review-grid section > p { margin: 5px 0 7px; color: #cbd8d2; font-size: .72rem; line-height: 1.4; }
       .final-prevention-review-grid ul { margin: 7px 0 0; padding-left: 20px; }
       .final-prevention-review-grid li { margin: 2px 0; font-size: .78rem; }
       .final-prevention-review-grid > p { grid-column: 1 / -1; margin: 0; color: #f1c97f; font-size: .78rem; }
+      .relation-guidance { margin-top: 6px; padding-top: 6px; border-top: 1px solid #ced9d4; color: #29473a; font-size: .72rem; line-height: 1.38; }
+      .relation-guidance strong { color: #173a30; }
       .result-screen > .scene-content > .footer-actions { margin: 0; }
 
       @media (min-width: 1051px) {
@@ -1537,7 +1544,7 @@ export function renderPrototypePage(): string {
           grid-column: 1;
           grid-row: 2;
           margin-bottom: 0;
-          font-size: clamp(1.55rem, 2.2vw, 2.15rem);
+          font-size: clamp(1.3rem, 1.65vw, 1.75rem);
         }
         .scene-with-side-panel .scene-heading-copy .lead {
           grid-column: 2;
@@ -1638,7 +1645,7 @@ export function renderPrototypePage(): string {
         main { padding: 10px 8px; }
         .entry { min-height: auto; border-radius: 10px; }
         .entry-copy { padding: 22px 18px; }
-        .entry-copy h1 { font-size: clamp(2.2rem, 10.5vw, 2.65rem); }
+        .entry-copy h1 { font-size: clamp(1.7rem, 8vw, 2.05rem); }
         .entry-visual { min-height: 220px; padding: 16px; }
         .scene { min-height: auto; border-radius: 10px; }
         .scene-content { padding: 12px; }
@@ -1646,7 +1653,7 @@ export function renderPrototypePage(): string {
         .mission-briefing-shell { gap: 8px; }
         .mission-briefing-panel { padding: 14px; border-left-width: 4px; border-radius: 9px; }
         .mission-briefing-kicker { margin-bottom: 8px; }
-        .scene.briefing h1 { margin-bottom: 7px; font-size: clamp(1.85rem, 8vw, 2.35rem); line-height: 1; }
+        .scene.briefing h1 { margin-bottom: 7px; font-size: clamp(1.5rem, 6.5vw, 1.85rem); line-height: 1.05; }
         .scene.briefing .lead { font-size: .82rem; line-height: 1.38; }
         .mission-briefing-steps { grid-template-columns: 1fr; gap: 5px; margin-top: 12px; }
         .mission-briefing-steps li { min-height: 45px; align-items: center; padding: 7px; }
@@ -1658,7 +1665,7 @@ export function renderPrototypePage(): string {
         .mission-briefing-note strong { margin-top: 3px; font-size: .86rem; }
         .mission-briefing-note p { margin-top: 4px; font-size: .69rem; }
         .scene-heading { grid-template-columns: 1fr; gap: 7px; margin-bottom: 8px; }
-        .scene-heading h2 { font-size: clamp(1.45rem, 7vw, 1.9rem); }
+        .scene-heading h2 { font-size: clamp(1.2rem, 5.6vw, 1.5rem); }
         .scene-heading .lead { font-size: .88rem; line-height: 1.35; }
         .selection-counter, .scene-state-badge { width: 100%; min-width: 0; display: flex; justify-content: space-between; align-items: center; text-align: left; }
         .selection-counter strong, .scene-state-badge strong { font-size: 1.05rem; }
@@ -1776,12 +1783,13 @@ export function renderPrototypePage(): string {
         .decision-advance { right: 8px; bottom: 8px; left: 8px; }
         .decision-advance .primary { width: 100%; }
         .result-hero { grid-template-columns: 1fr; gap: 8px; }
-        .result-screen { min-height: calc(100dvh - 112px); }
+        .result-screen { height: auto; min-height: calc(100dvh - 112px); overflow: visible; }
         .result-hero .scene-state-badge { width: 100%; }
         .result-screen .result-layout { grid-template-columns: 1fr; }
         .result-conditions .visual-dimension-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .result-causes .relations { grid-template-columns: 1fr; }
         .result-screen .relation.decisive { grid-column: auto; }
+        .final-review-heading { grid-template-columns: 1fr; gap: 5px; }
         .final-prevention-review-grid { grid-template-columns: 1fr; }
         .final-prevention-review-grid > p { grid-column: 1; }
         .inspection-scene { border-radius: 0; }
@@ -1837,7 +1845,7 @@ export function renderPrototypePage(): string {
         </div>
         <nav class="journey" aria-label="Progreso de la partida">
           <div class="stage" data-stage-id="territory"><span class="stage-dot">1</span><span class="stage-label">Monte</span></div>
-          <div class="stage" data-stage-id="housing"><span class="stage-dot">2</span><span class="stage-label">Casa</span></div>
+          <div class="stage" data-stage-id="housing"><span class="stage-dot">2</span><span class="stage-label">Vivienda</span></div>
           <div class="stage" data-stage-id="crisis"><span class="stage-dot">3</span><span class="stage-label">Incendio</span></div>
           <div class="stage" data-stage-id="result"><span class="stage-dot">4</span><span class="stage-label">Final</span></div>
         </nav>
@@ -1850,7 +1858,7 @@ export function renderPrototypePage(): string {
             <div class="entry-copy">
               <p class="eyebrow">Simulador interactivo</p>
               <h1 id="entry-title">Prepara el monte antes de que llegue el fuego</h1>
-              <p class="lead">Cuida las fincas, los caminos y una casa junto al monte. Después verás cómo tus decisiones ayudan —o dificultan— el trabajo de los bomberos.</p>
+              <p class="lead">Prepara las fincas, los caminos y una vivienda próxima al monte. Después comprobarás cómo cada decisión facilita —o limita— la respuesta de los equipos de emergencia.</p>
               <div class="entry-meta" aria-label="Información de la partida">
                 <span>Recorrido guiado</span>
                 <span id="entry-duration">Duración según recorrido</span>
@@ -1858,7 +1866,7 @@ export function renderPrototypePage(): string {
               <div class="entry-actions"><button class="primary" id="start-session-button" type="button">Comenzar partida</button></div>
               <p class="entry-note">El juego te explicará cada paso antes de que elijas.</p>
             </div>
-            <div class="entry-visual" role="img" aria-label="Monte, barranco y casas del juego">
+            <div class="entry-visual" role="img" aria-label="Monte, barranco y viviendas del juego">
               <div class="entry-visual-card"><strong>Lo que haces antes importa.</strong><p>Prepara el lugar y descubre qué cambia cuando empieza el incendio.</p></div>
             </div>
           </section>
@@ -2121,7 +2129,7 @@ export function renderPrototypePage(): string {
         const main = '<div class="summary-dashboard">' + preventionAreaReview(scene) +
           '<div class="summary-emergency"><h3 class="balance-heading">Así empieza la emergencia</h3>' + visualMarkup() + '</div></div>';
         const intro = '<div class="objective"><strong>Qué ocurre ahora:</strong> lo que hiciste antes cambia las opciones de los bomberos.</div>' +
-          '<div class="balance-caution"><strong>Importante:</strong> las mejoras reducen el peligro, pero ninguna casa queda totalmente segura.</div>';
+          '<div class="balance-caution"><strong>Importante:</strong> las mejoras reducen el peligro y amplían las opciones de respuesta, pero ninguna vivienda queda totalmente segura.</div>';
         return '<section class="scene scene-with-side-panel"><div class="scene-content">' + heading(scene, 'Tus mejoras', '') +
           sceneWorkspace(main, 'Balance preventivo', intro, advanceButton(scene), 'Ver balance y continuar') + '</div></section>';
       }
@@ -2146,19 +2154,40 @@ export function renderPrototypePage(): string {
           sceneWorkspace(visualMarkup(), 'Siguiente paso', '', advanceButton(scene), 'Ver siguiente paso') + '</div></section>';
       }
 
+      function joinRecommendations(labels) {
+        if (!labels || labels.length === 0) return '';
+        if (labels.length === 1) return labels[0];
+        return labels.slice(0, -1).join(', ') + ' y ' + labels[labels.length - 1];
+      }
+
+      function relationRecommendation(relation) {
+        const guidance = {
+          'fuel-load': 'Revisa la zona después de podas, temporales y periodos secos. Las ramas y la hierba retiradas no deben volver a acumularse junto a caminos o viviendas.',
+          'fuel-continuity': 'Comprueba cada temporada que siguen existiendo espacios entre la vegetación baja, las ramas y las copas. Una separación que se abandona puede desaparecer con el nuevo crecimiento.',
+          'operational-access': 'Mantén los bordes sin obstáculos y deja espacio para que un vehículo pueda entrar, girar y salir. Un camino abierto también debe conservar una salida alternativa cuando sea posible.',
+          defensibility: 'Revisa primero el entorno inmediato de cada vivienda: vegetación próxima, ramas bajas y acceso. Estas mejoras reducen la exposición, pero no justifican permanecer allí si se ordena evacuar.',
+          'attack-opportunity': 'Piensa en las medidas como un conjunto que necesita mantenimiento. Cuantas más condiciones favorables coincidan, más opciones tendrán los equipos para trabajar sin perder su salida.'
+        };
+        const base = guidance[relation.id] || 'Revisa esta condición antes de la época de mayor riesgo y mantén la mejora a lo largo del año.';
+        if (relation.causeType === 'Quedó pendiente' && relation.alternativeActionLabels.length > 0) {
+          return 'Para mejorar esta condición, prioriza ' + joinRecommendations(relation.alternativeActionLabels) + '. ' + base;
+        }
+        return 'La decisión ayudó en esta partida, pero necesita seguimiento. ' + base;
+      }
+
       function renderResult(scene) {
         const badge = '<div class="scene-state-badge ' + (scene.variant === 'contained' ? 'prepared' : 'vulnerable') + '"><small>Estado final</small><strong>' + (scene.variant === 'contained' ? 'Contenido' : 'Fuera de capacidad') + '</strong></div>';
         const relations = '<section class="result-causes"><p class="eyebrow">Por qué ocurrió</p><div class="relations" aria-label="Cómo influyeron tus decisiones">' + scene.relations.map(function (relation) {
           return '<article class="relation' + (relation.branchDecisive ? ' decisive' : '') + '"><h3>' + escapeHtml(relation.title) + '</h3>' +
             '<div class="cause-list">' + escapeHtml(relation.causeType) + ' → ' + relation.causeActionLabels.map(escapeHtml).join(' · ') + '</div>' +
-            '<p>' + escapeHtml(relation.effect) + '</p></article>';
+            '<p>' + escapeHtml(relation.effect) + '</p><div class="relation-guidance"><strong>Qué conviene hacer:</strong> ' + escapeHtml(relationRecommendation(relation)) + '</div></article>';
         }).join('') + '</div></section>';
         const conditions = '<section class="result-conditions"><p class="eyebrow">Así empezó la emergencia</p>' + visualMarkup() + '</section>';
         const main = '<div class="result-layout">' + conditions + relations + '</div>';
-        const hero = '<header class="result-hero"><div><p class="eyebrow">INFORME DE OPERACIÓN</p><h2>' + escapeHtml(scene.title) + '</h2><p>' + escapeHtml(scene.closing) + '</p></div>' + badge + '</header>';
-        const review = '<details class="final-prevention-review"><summary>Registro de preparación</summary><div class="final-prevention-review-grid"><section><strong>Medidas aplicadas</strong><ul>' + currentView.session.preventionReview.map(function (entry) { return '<li>' + escapeHtml(entry.label) + '</li>'; }).join('') + '</ul></section>' +
-          (currentView.session.pendingPreventionReview.length === 0 ? '' : '<section><strong>Condiciones pendientes</strong><ul>' + currentView.session.pendingPreventionReview.map(function (entry) { return '<li>' + escapeHtml(entry.label) + '</li>'; }).join('') + '</ul></section>') +
-          '<p>Las medidas reducen el riesgo, pero no lo eliminan.</p></div></details>';
+        const hero = '<header class="result-hero"><div><p class="eyebrow">BALANCE DE LA PARTIDA</p><h2>' + escapeHtml(scene.title) + '</h2><p>' + escapeHtml(scene.closing) + '</p></div>' + badge + '</header>';
+        const review = '<section class="final-prevention-review" aria-labelledby="final-recommendations-title"><header class="final-review-heading"><div><p class="eyebrow">Recomendaciones</p><h3 id="final-recommendations-title">Qué conviene mantener y revisar</h3></div><p>La prevención continúa después de esta partida. Las actuaciones deben revisarse de forma periódica porque la vegetación vuelve a crecer, los caminos pueden estrecharse y aparecen nuevos restos secos.</p></header><div class="final-prevention-review-grid"><section><strong>Mantén las mejoras realizadas</strong><p>Comprueba que siguen funcionando y repítelas cuando el entorno vuelva a cambiar.</p><ul>' + currentView.session.preventionReview.map(function (entry) { return '<li>' + escapeHtml(entry.label) + '</li>'; }).join('') + '</ul></section>' +
+          (currentView.session.pendingPreventionReview.length === 0 ? '' : '<section><strong>Prioriza lo que quedó pendiente</strong><p>Estas condiciones pueden reducir las opciones de respuesta si no se corrigen antes de la próxima época de riesgo.</p><ul>' + currentView.session.pendingPreventionReview.map(function (entry) { return '<li>' + escapeHtml(entry.label) + '</li>'; }).join('') + '</ul></section>') +
+          '<section><strong>Si el incendio ya está cerca</strong><p>No empieces a podar, retirar vegetación ni despejar caminos. Sigue los avisos oficiales, mantén libres los accesos y abandona la zona cuando lo indiquen los servicios de emergencia.</p></section><p>Preparar el entorno reduce el riesgo y mejora las condiciones de trabajo, pero nunca garantiza una protección total.</p></div></section>';
         return '<section class="scene result-screen result-' + escapeHtml(scene.variant) + '"><div class="scene-content">' + hero + main + review + advanceButton(scene) + '</div></section>';
       }
 

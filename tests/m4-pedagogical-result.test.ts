@@ -63,7 +63,7 @@ describe('M4.3 pedagogical result closure', () => {
       'Ramas y hierba seca',
       'Plantas y árboles unidos',
       'Paso para bomberos',
-      'Protección de las casas',
+      'Protección de las viviendas',
       'Formas de apagar el fuego'
     ]);
     for (const relation of scene.relations) {

@@ -259,7 +259,7 @@ function housingElements(selected: Set<string>): PresentedVisualElement[] {
       'housing-home',
       'house',
       'conditioned',
-      'Las mejoras reducen el peligro, pero ninguna casa queda totalmente segura.'
+      'Las mejoras reducen el peligro, pero ninguna vivienda queda totalmente segura.'
     )
   ];
 }
@@ -365,8 +365,8 @@ function crisisElements(session: VisualSessionSource): PresentedVisualElement[] 
             'localAccess',
             localAccessClear ? 'clear' : 'constrained',
             localAccessClear
-              ? 'El camino despejado ayuda a proteger las casas que tienen salida.'
-              : 'El camino estrecho dificulta proteger las casas.'
+              ? 'El camino despejado mejora el acceso a las viviendas que conservan una salida.'
+              : 'El camino estrecho dificulta llegar a las viviendas y conservar una salida.'
           )
         ]
       : [])
@@ -472,7 +472,7 @@ export function presentSceneVisualModel(
       templateId === 'territory'
         ? 'Mapa de fincas, vegetación y caminos.'
         : templateId === 'housing'
-          ? 'Casa junto al monte con árboles, ramas y camino de entrada.'
+          ? 'Vivienda junto al monte con árboles, ramas y camino de acceso.'
           : templateId === 'crisis'
             ? 'El incendio y las opciones que tienen los equipos.'
             : templateId === 'summary'

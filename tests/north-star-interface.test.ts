@@ -69,6 +69,12 @@ describe('M3.8 north-star interface', () => {
     expect(html).toContain(
       '.decision-action-menu:has(.actions[data-action-count="3"]) { width: min(680px, calc(100% - 56px)); }'
     );
+    const decisionCardStyle = html.slice(
+      html.indexOf('.decision-action-menu .action-card {'),
+      html.indexOf('.decision-action-menu .action-card::before')
+    );
+    expect(decisionCardStyle).toContain('overflow: hidden');
+    expect(decisionCardStyle).not.toContain('100dvh');
     expect(html).toContain('class="decision-context"');
     expect(html).toContain('class="decision-outcome"');
     expect(html).toContain('data-crisis-condition-slot');
@@ -78,7 +84,7 @@ describe('M3.8 north-star interface', () => {
     expect(html).toContain('class="result-hero"');
     expect(html).toContain('DECISIÓN OPERATIVA');
     expect(html).toContain('Resolución');
-    expect(html).toContain('INFORME DE OPERACIÓN');
+    expect(html).toContain('BALANCE DE LA PARTIDA');
     expect(html).toContain('Por qué ocurrió');
     expect(html).toContain('Así empezó la emergencia');
     expect(html).not.toContain('prepared-vs-vulnerable');
@@ -128,7 +134,7 @@ describe('M3.8 north-star interface', () => {
     const mobileSection = html.slice(html.indexOf('@media (max-width: 700px)'));
     expect(mobileSection).toContain('grid-template-columns: 1fr');
     expect(mobileSection).toContain('white-space: normal');
-    for (const label of ['Monte', 'Casa', 'Incendio', 'Final']) expect(html).toContain(`>${label}</span>`);
+    for (const label of ['Monte', 'Vivienda', 'Incendio', 'Final']) expect(html).toContain(`>${label}</span>`);
   });
 
   it('lets the prevention photograph span the scene and uses its points as the controls', () => {

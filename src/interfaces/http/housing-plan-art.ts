@@ -75,9 +75,9 @@ export function renderHousingPlanDefs(): string {
       .housing-plan .map-pin-hit-target { fill: #fff; fill-opacity: .001; stroke: none; pointer-events: all; }
       .housing-plan .map-pin-halo { fill: none; stroke: #ffe2a7; stroke-width: 1.5; opacity: 0; }
       .housing-plan .map-pin-disc { fill: #fffaf0; stroke: #765837; stroke-width: 1.5; filter: url(#housing-pin-shadow); }
-      .housing-plan .map-pin-number { fill: #67492c; font-size: 8.4px; font-weight: 750; text-anchor: middle; dominant-baseline: central; }
+      .housing-plan .map-pin-number { fill: #67492c; font-size: 7.2px; font-weight: 750; text-anchor: middle; dominant-baseline: central; }
       .housing-plan .map-pin-label-bg { fill: #fffaf0; fill-opacity: .9; stroke: #765837; stroke-opacity: .72; stroke-width: 1; filter: url(#housing-pin-shadow); }
-      .housing-plan .map-pin-label { fill: #263b31; font-size: 7.4px; font-weight: 700; dominant-baseline: central; letter-spacing: .04px; }
+      .housing-plan .map-pin-label { fill: #263b31; font-size: 6.25px; font-weight: 700; dominant-baseline: central; letter-spacing: .03px; }
       .housing-plan .map-pin-check { display: none; fill: none; stroke: #fffaf0; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
       .housing-plan .map-pin[data-applied="true"] .map-pin-disc { fill: #346755; stroke: #fffaf0; }
       .housing-plan .map-pin[data-applied="true"] .map-pin-number { fill: #fffaf0; }
@@ -92,9 +92,9 @@ export function renderHousingPlanDefs(): string {
       }
       @media (max-width: 700px) {
         .housing-plan .map-pin-label-bg, .housing-plan .map-pin-label { display: none; }
-        .housing-plan .map-pin-disc { r: 12px; stroke-width: 1.8; }
-        .housing-plan .map-pin-halo { r: 17px; }
-        .housing-plan .map-pin-number { font-size: 9.5px; }
+        .housing-plan .map-pin-disc { r: 10.5px; stroke-width: 1.7; }
+        .housing-plan .map-pin-halo { r: 15px; }
+        .housing-plan .map-pin-number { font-size: 8.4px; }
         .housing-plan .housing-place-label { font-size: 22px; letter-spacing: 1px; }
         .housing-plan .housing-scene-note { display: none; }
         .housing-plan .housing-scale-caption { display: none; }
@@ -131,15 +131,15 @@ export function renderHousingPin(
   side: HousingPinSide = 'right'
 ): string {
   const infoClass = number === 'i' ? ' map-pin-info' : '';
-  const labelX = side === 'right' ? 7 : -width - 7;
-  const textX = labelX + 9;
+  const labelX = side === 'right' ? 6.5 : -width - 6.5;
+  const textX = labelX + 8;
   return `<g class="map-pin${infoClass}" data-applied="${applied}" transform="translate(${x} ${y})" aria-hidden="true">
     <circle class="map-pin-hit-target" r="54" />
-    <rect class="map-pin-label-bg" x="${labelX}" y="-9" width="${width}" height="18" rx="4" />
+    <rect class="map-pin-label-bg" x="${labelX}" y="-8" width="${width}" height="16" rx="3.5" />
     <text class="map-pin-label" x="${textX}" y="0">${label}</text>
-    <circle class="map-pin-halo" r="14" />
-    <circle class="map-pin-disc" r="9" />
+    <circle class="map-pin-halo" r="12" />
+    <circle class="map-pin-disc" r="8" />
     <text class="map-pin-number" x="0" y="0">${number}</text>
-    <g class="map-pin-check" transform="translate(8 -8)"><circle r="4" fill="#346755" stroke-width="1" /><path d="M-1.6 0 l1.2 1.2 2.5 -2.5" stroke-width="1" /></g>
+    <g class="map-pin-check" transform="translate(7 -7)"><circle r="3.5" fill="#346755" stroke-width="1" /><path d="M-1.4 0 l1.1 1 2.2 -2.2" stroke-width=".9" /></g>
   </g>`;
 }

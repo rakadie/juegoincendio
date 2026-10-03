@@ -228,7 +228,7 @@ function housingSvg(model: PresentedSceneVisualModel): string {
           <circle cx="850" cy="440" r="5" fill="#8c572d" /><circle cx="815" cy="383" r="5" fill="#8c572d" /><circle cx="787" cy="321" r="5" fill="#8c572d" />
         </g>
       </g>
-      ${renderHousingPin(3, 718, 375, access?.label ?? 'Entrada a las casas', 96, access?.selected === true, 'left')}
+      ${renderHousingPin(3, 718, 375, access?.label ?? 'Acceso a la vivienda', 96, access?.selected === true, 'left')}
     </g>
     <g id="housing-canopy" class="visual-hotspot ${stateClass(canopy)}"${hotspotAttributes(
       canopy
@@ -264,7 +264,7 @@ function housingSvg(model: PresentedSceneVisualModel): string {
     </g>
     <g id="housing-home" class="visual-hotspot ${stateClass(house)}"${hotspotAttributes(house)}>
       ${renderHousingHome()}
-      ${renderHousingPin('i', 609, 241, house?.label ?? 'Casa junto al monte', 106, false)}
+      ${renderHousingPin('i', 609, 241, house?.label ?? 'Vivienda junto al monte', 112, false)}
     </g>
   </svg>`;
 }

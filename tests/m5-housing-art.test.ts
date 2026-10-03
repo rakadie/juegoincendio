@@ -38,7 +38,7 @@ describe('M5.3 housing and interface art direction', () => {
     expect(html.match(/class="map-pin(?: map-pin-info)?"/g)).toHaveLength(4);
     expect(html.match(/class="map-pin-hit-target"/g)).toHaveLength(4);
     expect(html.match(/class="map-pin-hit-target" r="54"/g)).toHaveLength(4);
-    expect(html.match(/class="map-pin-disc" r="9"/g)).toHaveLength(4);
+    expect(html.match(/class="map-pin-disc" r="8"/g)).toHaveLength(4);
     expect(html).not.toContain('Las distancias no son exactas');
   });
 

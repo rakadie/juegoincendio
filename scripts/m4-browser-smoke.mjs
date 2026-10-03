@@ -1403,13 +1403,15 @@ try {
   await waitForSelector('.result-contained');
   await waitForSelector('#compare-reference-button');
   await waitForSelector('#replay-button');
-  await pressEnter('.final-prevention-review summary');
+  await waitForSelector('.final-prevention-review');
   assert(
     await evaluate(`(() => {
       const review = document.querySelector('.final-prevention-review');
-      return review?.open === true && review.querySelectorAll('li').length >= 5 &&
-        review.textContent.includes('Medidas aplicadas') && review.textContent.includes('Condiciones pendientes') &&
-        review.textContent.includes('Las medidas reducen el riesgo, pero no lo eliminan');
+      return Boolean(review && review.querySelectorAll('li').length >= 5 &&
+        review.textContent.includes('Mantén las mejoras realizadas') &&
+        review.textContent.includes('Prioriza lo que quedó pendiente') &&
+        review.textContent.includes('Si el incendio ya está cerca') &&
+        review.textContent.includes('nunca garantiza una protección total'));
     })()`),
     'The final review does not expose both completed and pending prevention work.'
   );
@@ -1417,7 +1419,6 @@ try {
     minWidth: 700,
     minHeight: 400
   });
-  await pressEnter('.final-prevention-review summary');
 
   await captureEvidence('result-desktop.png', '.result-contained .scene-content', {
     minWidth: 700,
@@ -1470,20 +1471,21 @@ try {
     minWidth: 320,
     minHeight: 500
   });
-  await pressEnter('.final-prevention-review summary');
   assert(
     await evaluate(`(() => {
-      const review = document.querySelector('.final-prevention-review[open]');
+      const review = document.querySelector('.final-prevention-review');
+      const grid = review?.querySelector('.final-prevention-review-grid');
       const rect = review?.getBoundingClientRect();
-      return Boolean(rect && rect.left >= 0 && rect.top >= 0 && rect.right <= innerWidth && rect.bottom <= innerHeight);
+      const columns = grid ? getComputedStyle(grid).gridTemplateColumns.split(' ').length : 0;
+      return Boolean(rect && rect.left >= 0 && rect.right <= innerWidth + 1 &&
+        review.scrollWidth <= review.clientWidth + 2 && columns === 1);
     })()`),
-    'Mobile preparation register does not fit inside the viewport.'
+    'Mobile prevention recommendations have horizontal overflow or do not collapse to one column.'
   );
-  await captureViewportEvidence('final-prevention-review-mobile.png', '.final-prevention-review[open]', {
+  await captureViewportEvidence('final-prevention-review-mobile.png', '.final-prevention-review', {
     minWidth: 320,
     minHeight: 300
   });
-  await pressEnter('.final-prevention-review summary');
   await setViewport(1280, 900, false);
   await pressEnter('#compare-reference-button');
   await waitForSelector('#m4-reference-comparison');

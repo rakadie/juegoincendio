@@ -13,8 +13,8 @@ describe('M5.5 result and comparison visual hierarchy', () => {
     expect(M5_RESULT_VISUAL_STYLE).toContain('.scene[class*="result-"] .relation.decisive');
     expect(M5_RESULT_VISUAL_STYLE).toContain('.scene[class*="result-"] .m4-causal-steps');
     expect(M5_RESULT_VISUAL_STYLE).toContain('#m4-result-actions');
-    expect(M5_RESULT_VISUAL_STYLE).toContain('.final-prevention-review[open]');
-    expect(M5_RESULT_VISUAL_STYLE).toContain('box-shadow: 0 0 0 100vmax');
+    expect(M5_RESULT_VISUAL_STYLE).toContain('.final-prevention-review-grid section');
+    expect(M5_RESULT_VISUAL_STYLE).toContain('.final-prevention-review-grid section > p');
     expect(M5_RESULT_VISUAL_STYLE).toContain('.m4-comparison-grid');
     expect(M5_RESULT_VISUAL_STYLE).toContain('color: #17242d;');
     expect(M5_RESULT_VISUAL_STYLE).toContain('.m4-comparison-replay');
