@@ -197,11 +197,11 @@ export const M5_RESULT_VISUAL_STYLE = String.raw`
 
 .m4-comparison {
   position: fixed;
-  inset: 86px max(18px, calc((100vw - 1420px) / 2)) 18px;
+  inset: 62px max(12px, calc((100vw - 1420px) / 2)) 6px;
   z-index: 90;
   overflow: auto;
   margin: 0;
-  padding: clamp(18px, 3vw, 28px);
+  padding: 14px 18px;
   border: 2px solid #bcc8c2;
   border-radius: 13px;
   box-shadow: 0 12px 30px rgba(7,23,38,.08);
@@ -227,11 +227,11 @@ export const M5_RESULT_VISUAL_STYLE = String.raw`
 .scene[class*="result-"] .relation.decisive .m4-causal-step:nth-child(2)::after { background: #fff9ef; }
 .m4-comparison:focus { outline: 3px solid #7ca491; outline-offset: -3px; }
 .m4-comparison-close { position: sticky; top: 0; z-index: 2; float: right; min-height: 38px; padding: 7px 12px; }
-.m4-comparison > h3 { margin-bottom: 4px; font-size: clamp(1.45rem, 2.5vw, 1.9rem); }
-.m4-comparison > p { margin-bottom: 8px; font-size: .82rem; }
-.m4-comparison-grid { gap: 12px; margin-top: 10px; }
+.m4-comparison > h3 { margin-bottom: 3px; font-size: clamp(1.25rem, 2vw, 1.55rem); }
+.m4-comparison > p { margin-bottom: 5px; font-size: .8rem; }
+.m4-comparison-grid { gap: 10px; margin-top: 7px; }
 .m4-comparison-side {
-  padding: 11px;
+  padding: 9px;
   border-radius: 11px;
   border-top: 5px solid #5c7f69;
   box-shadow: 0 7px 18px rgba(7,23,38,.055);
@@ -239,17 +239,18 @@ export const M5_RESULT_VISUAL_STYLE = String.raw`
 .m4-comparison-side:nth-child(2) { border-top-color: #a95000; background: #fffaf2; }
 .m4-comparison-side h4:first-child { font-size: 1.05rem; }
 .m4-comparison-side:nth-child(2) h4:first-child { color: #824407; }
-.m4-comparison-meta { margin-bottom: 7px; }
-.m4-comparison-dimensions { gap: 4px; margin-bottom: 9px; }
-.m4-comparison-dimension { min-height: 35px; align-items: center; padding: 5px 7px; }
+.m4-comparison-meta { margin-bottom: 5px; }
+.m4-comparison-dimensions { gap: 4px; margin-bottom: 6px; }
+.m4-comparison-dimension { min-height: 32px; align-items: center; padding: 4px 7px; }
 .m4-manifestations { gap: 4px; }
-.m4-manifestation { padding: 5px 7px; border-left-width: 4px; border-radius: 0 7px 7px 0; }
-.m4-manifestation span, .m4-manifestation small { font-size: .7rem; }
+.m4-manifestation { padding: 4px 7px; border-left-width: 4px; border-radius: 0 7px 7px 0; }
+.m4-manifestation strong { font-size: .76rem; }
+.m4-manifestation span, .m4-manifestation small { font-size: .68rem; line-height: 1.28; }
 #m4-reference-comparison .m4-comparison-replay {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  margin-top: 10px;
-  padding-top: 9px;
+  margin-top: 7px;
+  padding-top: 7px;
   border-top: 2px solid #cbd4d0;
 }
 #m4-reference-comparison .m4-comparison-replay p { flex-basis: auto; margin: 0; }

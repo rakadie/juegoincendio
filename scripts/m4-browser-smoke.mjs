@@ -1444,12 +1444,18 @@ try {
     minWidth: 700,
     minHeight: 350
   });
+  const desktopComparisonMetrics = await evaluate(`(() => {
+    const comparison = document.getElementById('m4-reference-comparison');
+    return comparison ? {
+      fits: window.innerWidth <= 1050 || comparison.scrollHeight <= comparison.clientHeight + 8,
+      scrollHeight: comparison.scrollHeight,
+      clientHeight: comparison.clientHeight
+    } : { fits: false, scrollHeight: 0, clientHeight: 0 };
+  })()`);
   assert(
-    await evaluate(`(() => {
-      const comparison = document.getElementById('m4-reference-comparison');
-      return comparison && (window.innerWidth <= 1050 || comparison.scrollHeight <= comparison.clientHeight + 8);
-    })()`),
-    'Desktop comparison requires internal scrolling.'
+    desktopComparisonMetrics.fits,
+    'Desktop comparison requires internal scrolling (' + desktopComparisonMetrics.scrollHeight +
+      'px content in ' + desktopComparisonMetrics.clientHeight + 'px).'
   );
   await send('Input.dispatchKeyEvent', {
     type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27
