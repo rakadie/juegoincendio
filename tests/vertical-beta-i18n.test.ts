@@ -3,6 +3,7 @@ import { VERTICAL_BETA_I18N_ES } from '../src/content/i18n/es/vertical-beta.js';
 import { getVerticalBetaI18nCatalog } from '../src/content/i18n/vertical-beta-locale.js';
 import {
   requireVerticalBetaActionMessages,
+  requireVerticalBetaCausalRelationMessages,
   validateVerticalBetaI18nCatalog
 } from '../src/content/i18n/vertical-beta-i18n.js';
 import { OFFICIAL_SOURCE_SCENARIOS } from '../src/content/official-scenario-sources.js';
@@ -85,6 +86,16 @@ describe('Vertical Beta 1 canonical i18n', () => {
         VERTICAL_BETA_I18N_ES,
         'crisis-decision-ravine-fire',
         'accion-inexistente'
+      )
+    ).toThrowError(expect.objectContaining({ code: 'missing-translation' }));
+  });
+
+  it('rejects a missing causal variant instead of using a generic fallback', () => {
+    expect(() =>
+      requireVerticalBetaCausalRelationMessages(
+        VERTICAL_BETA_I18N_ES,
+        'defensibility',
+        'variant-inexistente'
       )
     ).toThrowError(expect.objectContaining({ code: 'missing-translation' }));
   });

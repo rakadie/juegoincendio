@@ -65,6 +65,7 @@ export type PreventionExecution = 'completed' | 'omitted';
 
 export interface CausalReportRelation {
   readonly id: string;
+  readonly messageVariant?: string;
   readonly dimension: ReportDimension;
   readonly branchDecisive: boolean;
   readonly cause: {
@@ -422,8 +423,8 @@ function bandKey(dimension: ReportDimension, value: number): string {
   return `verticalBeta.state.${dimension}.${band}`;
 }
 
-function messageKeys(id: string) {
-  const prefix = `verticalBeta.report.relation.${id}`;
+function messageKeys(id: string, variant?: string) {
+  const prefix = `verticalBeta.report.relation.${id}${variant === undefined ? '' : `.${variant}`}`;
   return {
     cause: `${prefix}.cause`,
     state: `${prefix}.state`,
@@ -491,14 +492,18 @@ const RELATION_SPECS: readonly RelationSpec[] = [
   {
     id: 'defensibility',
     dimension: 'defensibility',
-    preferredActionIds: ['separar-copas', 'despejar-accesos'],
-    omittedActionIds: ['despejar-accesos'],
+    preferredActionIds: ['separar-copas', 'despejar-accesos', 'proteger-vivienda-pavesas'],
+    omittedActionIds: ['despejar-accesos', 'proteger-vivienda-pavesas'],
     inspectionSceneId: 'prevention-inspection-housing-interface',
     preparedSceneId: 'crisis-decision-housing-defense',
     vulnerableSceneId: 'crisis-decision-ravine-fire',
     consequenceId: 'positionHoldability',
     combinationId: 'C-04',
-    alternatives: ['crear-discontinuidades-vegetales', 'despejar-accesos']
+    alternatives: [
+      'crear-discontinuidades-vegetales',
+      'despejar-accesos',
+      'proteger-vivienda-pavesas'
+    ]
   },
   {
     id: 'attack-opportunity',
@@ -551,38 +556,77 @@ function relationFromSpec(session: GameSession, spec: RelationSpec): CausalRepor
     causeEvidence.push(...omittedEvidence);
     execution = 'omitted';
   }
-  const manifestationSceneId =
-    session.crisisBranch === 'prepared' ? spec.preparedSceneId : spec.vulnerableSceneId;
+  const emberProtectionCompleted = causeEvidence.includes('home-ember-entry-points-protected');
+  const emberProtectionOmitted = causeEvidence.includes('home-ember-entry-points-exposed');
+  const emberProtectionRelevant =
+    spec.dimension === 'defensibility' && (emberProtectionCompleted || emberProtectionOmitted);
+  const reportedActionIds = emberProtectionRelevant
+    ? ['proteger-vivienda-pavesas']
+    : unique(actionIds);
+  const reportedDecisionSequences = emberProtectionRelevant
+    ? selected
+        .filter(({ actionId }) => actionId === 'proteger-vivienda-pavesas')
+        .map(({ sequence }) => sequence)
+    : decisionSequences;
+  const reportedCauseEvidence = emberProtectionRelevant
+    ? [
+        emberProtectionCompleted
+          ? 'home-ember-entry-points-protected'
+          : 'home-ember-entry-points-exposed'
+      ]
+    : unique(causeEvidence);
+  const messageVariant = emberProtectionCompleted
+    ? session.crisisBranch === 'prepared'
+      ? 'ember-protection-contained'
+      : 'ember-protection-overwhelmed'
+    : emberProtectionOmitted
+      ? 'ember-protection-omitted'
+      : undefined;
+  const manifestationSceneId = emberProtectionRelevant && session.crisisBranch === 'vulnerable'
+    ? 'crisis-decision-access-blockage'
+    : session.crisisBranch === 'prepared'
+      ? spec.preparedSceneId
+      : spec.vulnerableSceneId;
   const manifestationEvidence = completedEvidence(session, manifestationSceneId);
   if (manifestationEvidence.length === 0 || session.inheritedState === null) return undefined;
+  if (
+    emberProtectionRelevant &&
+    session.crisisBranch === 'prepared' &&
+    !manifestationEvidence.includes(
+      emberProtectionCompleted
+        ? 'housing-ember-secondary-ignition-risk-reduced'
+        : 'housing-ember-secondary-ignition-risk-present'
+    )
+  ) return undefined;
   const branchDecisive =
     spec.dimension === 'attackOpportunity' ||
     (session.crisisBranch === 'vulnerable' &&
       ['operationalAccess', 'defensibility'].includes(spec.dimension));
   return {
     id: spec.id,
+    ...(messageVariant === undefined ? {} : { messageVariant }),
     dimension: spec.dimension,
     branchDecisive,
     cause: {
       inspectionSceneId: spec.inspectionSceneId,
-      actionIds: unique(actionIds),
+      actionIds: reportedActionIds,
       execution,
-      decisionSequences,
-      evidenceIds: unique(causeEvidence)
+      decisionSequences: reportedDecisionSequences,
+      evidenceIds: reportedCauseEvidence
     },
     stateEffect: {
       bandKey: bandKey(spec.dimension, session.inheritedState[spec.dimension]),
-      evidenceIds: unique(causeEvidence)
+      evidenceIds: reportedCauseEvidence
     },
     manifestation: {
       sceneId: manifestationSceneId,
-      consequenceId: spec.consequenceId,
+      consequenceId: emberProtectionRelevant ? 'housingDefenseCapability' : spec.consequenceId,
       evidenceIds: manifestationEvidence
     },
     ...(spec.combinationId === undefined ? {} : { combinationId: spec.combinationId }),
     alternativeActionIds: spec.alternatives,
     validationClaimIds: ['validated-product-rule'],
-    messageKeys: messageKeys(spec.id)
+    messageKeys: messageKeys(spec.id, messageVariant)
   };
 }
 

@@ -31,6 +31,24 @@ async function sessionBeforeDecision(
   return replayGameSession(fixture.history.slice(0, decisionIndex) as GameSessionEvent[]);
 }
 
+function withHousingEvidence(session: GameSession, evidenceId: string): GameSession {
+  return {
+    ...session,
+    history: session.history.map((event) =>
+      event.type === 'scene-completed' &&
+      event.sceneId === 'prevention-inspection-housing-interface'
+        ? {
+            ...event,
+            evidenceIds: [
+              ...event.evidenceIds.filter((id) => !id.startsWith('home-ember-entry-points-')),
+              evidenceId
+            ]
+          }
+        : event
+    )
+  };
+}
+
 describe('official operational scene catalog', () => {
   it('publishes exactly five canonical scenes through one interactive contract', () => {
     expect(OFFICIAL_OPERATIONAL_SCENES.map(({ id }) => id)).toEqual([
@@ -177,6 +195,32 @@ describe('operational scene GameSession service', () => {
       vulnerableView.actions.find(({ id }) => id === 'asegurar-flancos-y-repliegue')
         ?.resolution?.consequence
     );
+  });
+
+  it('projects passive ember protection into a distinct housing-defense consequence', async () => {
+    const base = await sessionBeforeDecision(
+      'reference-contained.json',
+      'crisis-decision-housing-defense'
+    );
+    const protectedSession = withHousingEvidence(base, 'home-ember-entry-points-protected');
+    const exposedSession = withHousingEvidence(base, 'home-ember-entry-points-exposed');
+    const protectedView = getOperationalSceneView(protectedSession);
+    const exposedView = getOperationalSceneView(exposedSession);
+    const actionId = 'defender-desde-posicion-segura';
+    const protectedAction = protectedView.actions.find(({ id }) => id === actionId);
+    const exposedAction = exposedView.actions.find(({ id }) => id === actionId);
+
+    expect(protectedView.evidenceIds).toContain('home-ember-entry-points-protected');
+    expect(exposedView.evidenceIds).toContain('home-ember-entry-points-exposed');
+    expect(protectedAction?.resolution?.consequence).not.toBe(exposedAction?.resolution?.consequence);
+    expect(resolveOperationalDecision(protectedSession, actionId).evidenceIds).toContain(
+      'housing-ember-secondary-ignition-risk-reduced'
+    );
+    expect(resolveOperationalDecision(exposedSession, actionId).evidenceIds).toContain(
+      'housing-ember-secondary-ignition-risk-present'
+    );
+    expect(protectedSession.crisisBranch).toBe('prepared');
+    expect(exposedSession.crisisBranch).toBe('prepared');
   });
 
   it('blocks unsafe actions and prevents a second decision in the scene', async () => {

@@ -208,6 +208,18 @@ export const PREVENTION_INSPECTION_HOUSING_INTERFACE: OfficialPreventionInspecti
         evidenceIds: ['fire-engine-access-cleared']
       },
       conditionIfOmitted: 'fire-engine-access-obstructed'
+    }),
+    localizedHotspot('prevention-inspection-housing-interface', {
+      id: 'vivienda-expuesta-pavesas',
+      position: { x: 68, y: 43 },
+      action: {
+        id: 'proteger-vivienda-pavesas',
+        impact: { defensibilidadViviendas: 3, riesgoPavesas: -4 },
+        flagsOnApply: ['puntosEntradaPavesasProtegidos'],
+        inheritedStateImpact: { defensibility: 10 },
+        evidenceIds: ['home-ember-entry-points-protected']
+      },
+      conditionIfOmitted: 'home-ember-entry-points-exposed'
     })
   ],
   outcomes: localizedOutcomes('prevention-inspection-housing-interface')

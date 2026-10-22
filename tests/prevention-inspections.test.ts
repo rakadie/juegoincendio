@@ -28,7 +28,8 @@ const TERRITORY_ACTION_IDS = [
 const HOUSING_ACTION_IDS = [
   'podar-ramas-y-retirar-seco',
   'separar-copas',
-  'despejar-accesos'
+  'despejar-accesos',
+  'proteger-vivienda-pavesas'
 ];
 
 function startTerritoryInspection(id: string): GameSession {
@@ -60,7 +61,7 @@ function addImpacts(
 }
 
 describe('official prevention inspection catalog', () => {
-  it('publishes exactly the two canonical inspections with quotas 3/5 and 2/3', () => {
+  it('publishes exactly the two canonical inspections with quotas 3/5 and 2/4', () => {
     expect(OFFICIAL_PREVENTION_INSPECTIONS.map(({ id }) => id)).toEqual([
       'prevention-inspection-territory-fuel',
       'prevention-inspection-housing-interface'
@@ -97,7 +98,7 @@ describe('official prevention inspection catalog', () => {
       'riesgo-ignicion'
     ]);
     expect(payload).not.toMatch(
-      /p-003|limpiar-canalones|mallas-matachispas|preparar-edificio-publico|recomendar-vegetacion-discontinua|regular-quemas-agricolas/
+      /p-003|limpiar-canalones|preparar-edificio-publico|recomendar-vegetacion-discontinua|regular-quemas-agricolas/
     );
   });
 
@@ -149,7 +150,10 @@ describe('prevention inspection GameSession service', () => {
       defensibility: 30,
       operationalAccess: 60
     });
-    expect(housing.omittedConditionIds).toEqual(['crown-fuel-continuity-present']);
+    expect(housing.omittedConditionIds).toEqual([
+      'crown-fuel-continuity-present',
+      'home-ember-entry-points-exposed'
+    ]);
     expect(housing.session.decisions).toHaveLength(5);
     expect(housing.session.history.at(-1)).toEqual(
       expect.objectContaining({
@@ -158,7 +162,8 @@ describe('prevention inspection GameSession service', () => {
         evidenceIds: expect.arrayContaining([
           'vertical-fuel-continuity-reduced',
           'fire-engine-access-cleared',
-          'crown-fuel-continuity-present'
+          'crown-fuel-continuity-present',
+          'home-ember-entry-points-exposed'
         ])
       })
     );
@@ -189,8 +194,28 @@ describe('prevention inspection GameSession service', () => {
     expect([...territory.omittedConditionIds, ...housing.omittedConditionIds]).toEqual([
       'territorial-vegetation-continuity-present',
       'rural-road-margins-obstructed',
-      'fire-engine-access-obstructed'
+      'fire-engine-access-obstructed',
+      'home-ember-entry-points-exposed'
     ]);
+  });
+
+  it('adds passive ember protection with one defensibility effect and persistent evidence', () => {
+    let session = startTerritoryInspection('ember-protection-impact');
+    session = applyActions(session, TERRITORY_ACTION_IDS.slice(0, 3));
+    const territory = completePreventionInspection(session);
+    session = executeGameSessionCommand(territory.session, {
+      type: 'transition-scene',
+      toSceneId: 'prevention-inspection-housing-interface'
+    });
+    session = applyActions(session, ['despejar-accesos', 'proteger-vivienda-pavesas']);
+    const housing = completePreventionInspection(session);
+
+    expect(housing.inheritedStateImpact).toEqual({ operationalAccess: 30, defensibility: 30 });
+    expect(housing.evidenceIds).toContain('home-ember-entry-points-protected');
+    expect(housing.omittedConditionIds).not.toContain('home-ember-entry-points-exposed');
+    expect(housing.inheritedStateImpact).not.toHaveProperty('fuelLoad');
+    expect(housing.inheritedStateImpact).not.toHaveProperty('fuelContinuity');
+    expect(housing.inheritedStateImpact).not.toHaveProperty('attackOpportunity');
   });
 
   it('rejects excluded actions and incomplete inspections', () => {

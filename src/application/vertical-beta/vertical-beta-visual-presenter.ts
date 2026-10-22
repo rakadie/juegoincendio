@@ -3,6 +3,7 @@ import { OFFICIAL_PREVENTION_INSPECTIONS } from '../../content/official-preventi
 import { VERTICAL_BETA_DIMENSION_LABELS } from '../../content/vertical-beta-flow-content.js';
 import type {
   GameDecision,
+  GameSessionEvent,
   InheritedState
 } from '../../domain/game-session/game-session.js';
 import type {
@@ -27,6 +28,7 @@ export interface VisualSessionSource {
   readonly branch: CrisisBranch | null;
   readonly inheritedState: InheritedState | null;
   readonly decisions: readonly GameDecision[];
+  readonly history: readonly GameSessionEvent[];
 }
 
 export interface PresentedVisualElement {
@@ -120,7 +122,8 @@ const DIMENSION_ACTIONS: Readonly<Record<keyof InheritedState, readonly string[]
   defensibility: [
     'crear-discontinuidades-vegetales',
     'separar-copas',
-    'despejar-accesos'
+    'despejar-accesos',
+    'proteger-vivienda-pavesas'
   ],
   // Access omissions are intentionally first because they can cap attack opportunity.
   attackOpportunity: [
@@ -131,7 +134,8 @@ const DIMENSION_ACTIONS: Readonly<Record<keyof InheritedState, readonly string[]
     'gestionar-restos-poda',
     'activar-pastoreo-preventivo',
     'podar-ramas-y-retirar-seco',
-    'separar-copas'
+    'separar-copas',
+    'proteger-vivienda-pavesas'
   ]
 };
 
@@ -215,8 +219,8 @@ function territoryElements(selected: Set<string>): PresentedVisualElement[] {
       'professionalLine',
       preventionState(selected, 'evaluar-quema-tecnica', 'evaluated', 'unevaluated'),
       selected.has('evaluar-quema-tecnica')
-        ? 'Una persona experta ha revisado la zona. No se ha quemado nada.'
-        : 'Una persona experta aún no ha revisado esta zona.',
+        ? 'El equipo experto ha evaluado una posible quema preventiva. No se ha quemado nada.'
+        : 'La posible quema preventiva todavía no ha sido evaluada por un equipo experto.',
       'evaluar-quema-tecnica',
       selected.has('evaluar-quema-tecnica')
     )
@@ -247,27 +251,38 @@ function housingElements(selected: Set<string>): PresentedVisualElement[] {
     ),
     visualElement(
       'housing-local-access',
-      'localAccess',
+      'firewood',
       preventionState(selected, 'despejar-accesos', 'clear', 'blocked'),
       selected.has('despejar-accesos')
-        ? 'El camión de bomberos puede entrar, girar y salir mejor.'
-        : 'El camión de bomberos no tiene espacio suficiente para pasar.',
+        ? 'La leña se ha alejado de la fachada y el paso queda libre para los equipos.'
+        : 'La pila de leña puede arder junto a la vivienda y ocupa parte del paso.',
       'despejar-accesos',
       selected.has('despejar-accesos')
     ),
     visualElement(
-      'housing-home',
-      'house',
-      'conditioned',
-      'Las mejoras reducen el peligro, pero ninguna vivienda queda totalmente segura.'
+      'housing-ember-protection',
+      'emberProtection',
+      preventionState(selected, 'proteger-vivienda-pavesas', 'protected', 'exposed'),
+      selected.has('proteger-vivienda-pavesas')
+        ? 'El canalón está limpio y los respiraderos y huecos tienen protección frente a las brasas que lleva el viento.'
+        : 'Los restos secos del canalón y los huecos sin protección pueden permitir una ignición secundaria.',
+      'proteger-vivienda-pavesas',
+      selected.has('proteger-vivienda-pavesas')
     )
   ];
+}
+
+function completedEvidenceIds(session: VisualSessionSource): Set<string> {
+  return new Set(session.history.flatMap((event) =>
+    event.type === 'scene-completed' ? event.evidenceIds : []
+  ));
 }
 
 function crisisElements(session: VisualSessionSource): PresentedVisualElement[] {
   const branch = session.branch;
   const sceneId = session.currentSceneId;
   const selected = selectedIds(session);
+  const evidence = completedEvidenceIds(session);
   const prepared = branch === 'prepared';
   const crown = sceneId === 'crisis-decision-crown-fire';
 
@@ -284,6 +299,7 @@ function crisisElements(session: VisualSessionSource): PresentedVisualElement[] 
 
   const professionalLineEvaluated = selected.has('evaluar-quema-tecnica');
   const localAccessClear = selected.has('despejar-accesos');
+  const emberEntryPointsProtected = evidence.has('home-ember-entry-points-protected');
 
   return [
     visualElement(
@@ -367,6 +383,14 @@ function crisisElements(session: VisualSessionSource): PresentedVisualElement[] 
             localAccessClear
               ? 'El camino despejado mejora el acceso a las viviendas que conservan una salida.'
               : 'El camino estrecho dificulta llegar a las viviendas y conservar una salida.'
+          ),
+          visualElement(
+            'crisis-house-ember-protection',
+            'emberProtection',
+            emberEntryPointsProtected ? 'protected' : 'exposed',
+            emberEntryPointsProtected
+              ? 'Los huecos protegidos y las cubiertas limpias reducen los lugares donde puede empezar otro foco.'
+              : 'Los equipos deben vigilar cubiertas, canalones y huecos expuestos mientras defienden la vivienda.'
           )
         ]
       : [])

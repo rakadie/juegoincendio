@@ -15,8 +15,11 @@ import {
 import {
   HOUSING_ACCESS_PATH,
   HOUSING_CANOPY_ZONE_PATH,
+  HOUSING_EMBER_ZONE_PATH,
+  HOUSING_FIREWOOD_ZONE_PATH,
   HOUSING_LOW_VEGETATION_PATH,
-  renderHousingHome,
+  renderHousingEmberProtectionOverlay,
+  renderHousingFirewoodPile,
   renderHousingPin,
   renderHousingPlanBase,
   renderHousingPlanDefs
@@ -45,7 +48,7 @@ const REQUIRED_ELEMENT_IDS: Readonly<Partial<Record<VisualTemplateId, readonly s
     'housing-vertical-fuel',
     'housing-canopy',
     'housing-local-access',
-    'housing-home'
+    'housing-ember-protection'
   ],
   crisis: [
     'crisis-road',
@@ -192,7 +195,7 @@ function territorySvg(model: PresentedSceneVisualModel): string {
       line
     )}>
       <g aria-hidden="true"><path class="visual-professional-line" d="${TERRITORY_EVALUATION_PATH}" /><circle class="map-survey-point" cx="650" cy="206" r="5" /><circle class="map-survey-point" cx="826" cy="142" r="5" /></g>
-      ${renderTerritoryMapPin(5, 748, 157, line?.label ?? 'Zona para revisar', 90, line?.selected === true, 'left')}
+      ${renderTerritoryMapPin(5, 748, 157, line?.label ?? 'Quemas preventivas', 90, line?.selected === true, 'left')}
     </g>
   </svg>`;
 }
@@ -207,7 +210,7 @@ function housingSvg(model: PresentedSceneVisualModel): string {
   const vertical = byId(model, 'housing-vertical-fuel');
   const canopy = byId(model, 'housing-canopy');
   const access = byId(model, 'housing-local-access');
-  const house = byId(model, 'housing-home');
+  const emberProtection = byId(model, 'housing-ember-protection');
 
   return `<svg class="territory-svg housing-plan" viewBox="0 0 900 500" preserveAspectRatio="xMidYMid slice" role="group" aria-label="${escapeHtml(
     model.ariaLabel
@@ -215,20 +218,20 @@ function housingSvg(model: PresentedSceneVisualModel): string {
     ${renderSceneArtDefs()}
     ${renderHousingPlanDefs()}
     ${renderHousingPlanBase()}
+    <g class="state-overlays">
+      ${renderHousingEmberProtectionOverlay(emberProtection?.state === 'protected' ? 'protected' : 'exposed')}
+    </g>
     <g id="housing-local-access" class="visual-hotspot ${stateClass(access)}"${hotspotAttributes(
       access
     )}>
       <g aria-hidden="true">
+        <path class="housing-hotspot-area" d="${HOUSING_FIREWOOD_ZONE_PATH}" />
+        <path class="housing-firewood-zone" d="${HOUSING_FIREWOOD_ZONE_PATH}" />
+        ${renderHousingFirewoodPile()}
         <path class="housing-clear-route" d="${HOUSING_ACCESS_PATH}" />
-        <path class="housing-access-risk" d="${HOUSING_ACCESS_PATH}" />
-        <path class="housing-access-centre" d="${HOUSING_ACCESS_PATH}" />
         <path class="housing-clear-route-line" d="${HOUSING_ACCESS_PATH}" />
-        <g class="housing-access-obstructions">
-          <path d="M848 444 l25 -18 m-22 25 l28 -20 M814 385 l21 -16 m-18 22 l24 -18 M786 323 l17 -13 m-14 19 l21 -15" />
-          <circle cx="850" cy="440" r="5" fill="#8c572d" /><circle cx="815" cy="383" r="5" fill="#8c572d" /><circle cx="787" cy="321" r="5" fill="#8c572d" />
-        </g>
       </g>
-      ${renderHousingPin(3, 718, 375, access?.label ?? 'Acceso a la vivienda', 96, access?.selected === true, 'left')}
+      ${renderHousingPin(3, 756, 335, access?.label ?? 'Leña junto a la vivienda', 116, access?.selected === true, 'left')}
     </g>
     <g id="housing-canopy" class="visual-hotspot ${stateClass(canopy)}"${hotspotAttributes(
       canopy
@@ -262,9 +265,9 @@ function housingSvg(model: PresentedSceneVisualModel): string {
       <path class="housing-low-branches housing-risk-detail" d="M203 329 l-63 -54 m63 54 l-57 -7 m57 7 l57 -58 m-57 58 l69 2" aria-hidden="true" />
       ${renderHousingPin(1, 119, 288, vertical?.label ?? 'Ramas y hierba seca', 112, vertical?.selected === true)}
     </g>
-    <g id="housing-home" class="visual-hotspot ${stateClass(house)}"${hotspotAttributes(house)}>
-      ${renderHousingHome()}
-      ${renderHousingPin('i', 609, 241, house?.label ?? 'Vivienda junto al monte', 112, false)}
+    <g id="housing-ember-protection" class="visual-hotspot ${stateClass(emberProtection)}"${hotspotAttributes(emberProtection)}>
+      <path class="housing-hotspot-area" d="${HOUSING_EMBER_ZONE_PATH}" aria-hidden="true" />
+      ${renderHousingPin(4, 664, 222, emberProtection?.label ?? 'Protección frente a brasas', 126, emberProtection?.selected === true, 'left')}
     </g>
   </svg>`;
 }
@@ -285,6 +288,7 @@ function crisisSvg(model: PresentedSceneVisualModel): string {
   const capacity = byId(model, 'crisis-capacity');
   const professionalLine = byId(model, 'crisis-professional-line');
   const houseAccess = byId(model, 'crisis-house-access');
+  const houseEmberProtection = byId(model, 'crisis-house-ember-protection');
 
   return `<svg class="territory-svg crisis-svg crisis-photo" viewBox="0 0 900 500" role="img" aria-label="${escapeHtml(
     model.ariaLabel
@@ -318,6 +322,13 @@ function crisisSvg(model: PresentedSceneVisualModel): string {
         : `<g id="crisis-house-access" class="visual-hotspot ${stateClass(houseAccess)}"${hotspotAttributes(
             houseAccess
           )}><path class="visual-house" d="M735 297 l45 -34 48 34 v73 h-93 z" /><path class="visual-road local" d="M585 352 Q702 324 842 349" /></g>`
+    }
+    ${
+      houseEmberProtection === undefined
+        ? ''
+        : `<g id="crisis-house-ember-protection" class="visual-hotspot ${stateClass(houseEmberProtection)}"${hotspotAttributes(
+            houseEmberProtection
+          )}><circle class="crisis-ember-hit-target" cx="780" cy="289" r="28" /><g class="crisis-ember-condition" transform="translate(780 289)"><path class="crisis-ember-roof" d="M-34 4 L0 -22 34 4" /><rect class="crisis-ember-vent" x="8" y="-11" width="13" height="12" rx="2" /><path class="crisis-ember-mesh" d="M11 -9 v8 M15 -9 v8 M19 -9 v8 M9 -6 h12 M9 -3 h12" /><g class="crisis-ember-particles"><circle cx="-24" cy="-17" r="2.5" /><circle cx="-14" cy="-25" r="2" /><circle cx="-5" cy="-17" r="2.2" /></g></g></g>`
     }
   </svg>`;
 }

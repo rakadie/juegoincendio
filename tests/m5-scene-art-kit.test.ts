@@ -77,8 +77,9 @@ describe('M5.1 shared SVG scene art kit', () => {
     expect(markup).toContain('data-background-layer="photo"');
     expect(markup).toContain('class="housing-risk-zone"');
     expect(markup).toContain('class="housing-canopy-crown"');
-    expect(markup).toContain('class="housing-access-risk"');
-    expect(markup).toContain('id="housing-home"');
+    expect(markup).toContain('class="housing-firewood-pile"');
+    expect(markup).toContain('class="housing-ember-state-overlay state-exposed"');
+    expect(markup).toContain('id="housing-ember-protection"');
     expect(markup).toContain('id="housing-local-access"');
   });
 

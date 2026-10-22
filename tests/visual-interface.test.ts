@@ -78,7 +78,7 @@ describe('M3 visual presenter', () => {
     );
   });
 
-  it('keeps housing visual state aligned with the 2/3 official inspection', () => {
+  it('keeps housing visual state aligned with the 2/4 official inspection', () => {
     const service = new VerticalBetaApplicationService();
     const id = 'visual-housing';
     service.create(id);
@@ -90,12 +90,18 @@ describe('M3 visual presenter', () => {
 
     const initial = visual(service, id);
     expect(initial.templateId).toBe('housing');
-    expect(initial.elements.filter(({ actionId }) => actionId !== undefined)).toHaveLength(3);
+    expect(initial.elements.filter(({ actionId }) => actionId !== undefined)).toHaveLength(4);
     expect(initial.elements.find(({ id }) => id === 'housing-local-access')?.state).toBe('blocked');
+    expect(initial.elements.find(({ id }) => id === 'housing-ember-protection')?.state).toBe('exposed');
 
     service.applyAction(id, 'despejar-accesos');
     expect(visual(service, id).elements.find(({ id }) => id === 'housing-local-access')).toMatchObject({
       state: 'clear',
+      selected: true
+    });
+    service.applyAction(id, 'proteger-vivienda-pavesas');
+    expect(visual(service, id).elements.find(({ id }) => id === 'housing-ember-protection')).toMatchObject({
+      state: 'protected',
       selected: true
     });
   });
@@ -124,7 +130,7 @@ describe('M3 visual presenter', () => {
       state: 'favorable',
       causeActionLabels: expect.arrayContaining([
         'Limpiar los bordes del camino',
-        'Despejar la entrada'
+        'Alejar la leña y despejar el paso'
       ])
     });
   });
