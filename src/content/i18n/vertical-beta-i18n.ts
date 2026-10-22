@@ -29,7 +29,8 @@ export const VERTICAL_BETA_HOTSPOT_IDS_BY_SCENE = {
   'prevention-inspection-housing-interface': [
     'ramas-bajas-vegetacion-seca',
     'copas-tocandose',
-    'acceso-estrecho'
+    'acceso-estrecho',
+    'vivienda-expuesta-pavesas'
   ]
 } as const;
 
@@ -74,6 +75,15 @@ export interface VerticalBetaActionMessages {
   readonly feedback: string;
   readonly blockedReason?: string;
   readonly consequences?: Partial<Readonly<Record<CrisisBranch, string>>>;
+  readonly evidenceConsequences?: Readonly<Record<string, string>>;
+}
+
+export interface VerticalBetaCausalRelationMessages {
+  readonly title: string;
+  readonly effect: string;
+  readonly variants?: Readonly<
+    Record<string, { readonly title: string; readonly effect: string }>
+  >;
 }
 
 export interface VerticalBetaHotspotMessages {
@@ -118,7 +128,7 @@ export interface VerticalBetaI18nCatalog {
   readonly scenes: Readonly<Record<CanonicalSceneId, VerticalBetaSceneMessages>>;
   readonly dimensions: Readonly<Record<keyof InheritedState, string>>;
   readonly causalRelations: Readonly<
-    Record<VerticalBetaCausalRelationId, { readonly title: string; readonly effect: string }>
+    Record<VerticalBetaCausalRelationId, VerticalBetaCausalRelationMessages>
   >;
 }
 
@@ -332,4 +342,20 @@ export function requireVerticalBetaActionMessages(
     );
   }
   return action;
+}
+
+export function requireVerticalBetaCausalRelationMessages(
+  catalog: VerticalBetaI18nCatalog,
+  relationId: VerticalBetaCausalRelationId,
+  variant?: string
+): { readonly title: string; readonly effect: string } {
+  const relation = catalog.causalRelations[relationId];
+  const messages = variant === undefined ? relation : relation.variants?.[variant];
+  if (messages === undefined) {
+    throw new VerticalBetaI18nError(
+      'missing-translation',
+      `Missing official translation for causal relation ${relationId}${variant === undefined ? '' : `.${variant}`} in ${catalog.locale}.`
+    );
+  }
+  return messages;
 }

@@ -5,12 +5,12 @@ import { buildApp } from '../src/interfaces/http/app.js';
 
 const PREPARED_PREVENTION = [
   ['gestionar-restos-poda', 'crear-discontinuidades-vegetales', 'limpiar-margenes-caminos'],
-  ['podar-ramas-y-retirar-seco', 'despejar-accesos']
+  ['despejar-accesos', 'proteger-vivienda-pavesas']
 ] as const;
 
 const VULNERABLE_PREVENTION = [
   ['gestionar-restos-poda', 'activar-pastoreo-preventivo', 'evaluar-quema-tecnica'],
-  ['podar-ramas-y-retirar-seco', 'separar-copas']
+  ['podar-ramas-y-retirar-seco', 'proteger-vivienda-pavesas']
 ] as const;
 
 const OPERATIONS = {
@@ -102,7 +102,7 @@ async function play(
   expect(view.scene.type).toBe('result');
   expect(view.scene).toMatchObject({ variant: branch === 'prepared' ? 'contained' : 'overwhelmed' });
   expect(view.session.preventionReview).toHaveLength(5);
-  expect(view.session.pendingPreventionReview).toHaveLength(3);
+  expect(view.session.pendingPreventionReview).toHaveLength(4);
   return { view, visitedTypes };
 }
 

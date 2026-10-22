@@ -77,7 +77,8 @@
       "evidenceIds": [
         "vertical-fuel-continuity-reduced",
         "crown-fuel-continuity-reduced",
-        "fire-engine-access-obstructed"
+        "fire-engine-access-obstructed",
+        "home-ember-entry-points-exposed"
       ]
     },
     {
@@ -100,7 +101,8 @@
         "rural-road-margins-obstructed",
         "vertical-fuel-continuity-reduced",
         "crown-fuel-continuity-reduced",
-        "fire-engine-access-obstructed"
+        "fire-engine-access-obstructed",
+        "home-ember-entry-points-exposed"
       ]
     },
     { "sequence": 13, "type": "scene-transitioned", "fromSceneId": "prevention-inspection-housing-interface", "toSceneId": "transition-summary-prevention" },

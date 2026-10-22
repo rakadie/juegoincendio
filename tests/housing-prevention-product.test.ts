@@ -39,7 +39,7 @@ describe('housing prevention product response', () => {
       actionQuota: 2,
       canAdvance: true,
       feedback:
-        'Entrada despejada. El camión de bomberos puede entrar, girar y salir mejor.'
+        'Leña retirada y paso despejado. Hay menos combustible junto a la fachada y los equipos disponen de una entrada y una salida mejores.'
     });
     expect(complete.actions.every(({ available }) => available === false)).toBe(true);
   });
@@ -67,12 +67,16 @@ describe('housing prevention product response', () => {
         expect.objectContaining({ actionId: 'podar-ramas-y-retirar-seco' }),
         expect.objectContaining({ actionId: 'despejar-accesos' })
       ]),
-      pendingConditions: [
+      pendingConditions: expect.arrayContaining([
         expect.objectContaining({
           actionId: 'separar-copas',
           label: 'Copas de árboles unidas'
+        }),
+        expect.objectContaining({
+          actionId: 'proteger-vivienda-pavesas',
+          label: 'Vivienda expuesta a brasas'
         })
-      ]
+      ])
     });
     expect(summary.dimensions).toHaveLength(5);
   });

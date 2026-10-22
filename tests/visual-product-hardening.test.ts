@@ -112,7 +112,7 @@ describe('M3 product hardening', () => {
     expect(opportunity?.causeActionLabels).toEqual(
       expect.arrayContaining([
         'Quedó pendiente: Limpiar los bordes del camino',
-        'Quedó pendiente: Despejar la entrada'
+        'Quedó pendiente: Alejar la leña y despejar el paso'
       ])
     );
   });

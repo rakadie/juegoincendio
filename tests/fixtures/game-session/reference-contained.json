@@ -44,7 +44,8 @@
       "safe-attack-envelope",
       "ravine-position-held-with-safe-retreat",
       "conditioned-emergency-maneuver-authorized",
-      "housing-defense-sustained-selectively"
+      "housing-defense-sustained-selectively",
+      "housing-ember-secondary-ignition-risk-present"
     ]
   },
   "history": [
@@ -76,7 +77,8 @@
       "evidenceIds": [
         "vertical-fuel-continuity-reduced",
         "fire-engine-access-cleared",
-        "crown-fuel-continuity-present"
+        "crown-fuel-continuity-present",
+        "home-ember-entry-points-exposed"
       ]
     },
     {
@@ -98,7 +100,8 @@
         "strategic-area-without-assessed-line",
         "vertical-fuel-continuity-reduced",
         "fire-engine-access-cleared",
-        "crown-fuel-continuity-present"
+        "crown-fuel-continuity-present",
+        "home-ember-entry-points-exposed"
       ]
     },
     { "sequence": 13, "type": "scene-transitioned", "fromSceneId": "prevention-inspection-housing-interface", "toSceneId": "transition-summary-prevention" },
@@ -123,7 +126,7 @@
     { "sequence": 26, "type": "scene-completed", "sceneId": "crisis-decision-ravine-fire", "evidenceIds": ["ravine-position-held-with-safe-retreat"] },
     { "sequence": 27, "type": "scene-transitioned", "fromSceneId": "crisis-decision-ravine-fire", "toSceneId": "crisis-decision-housing-defense" },
     { "sequence": 28, "type": "decision-applied", "decisionSequence": 9, "sceneId": "crisis-decision-housing-defense", "actionId": "defender-desde-posicion-segura" },
-    { "sequence": 29, "type": "scene-completed", "sceneId": "crisis-decision-housing-defense", "evidenceIds": ["housing-defense-sustained-selectively"] },
+    { "sequence": 29, "type": "scene-completed", "sceneId": "crisis-decision-housing-defense", "evidenceIds": ["housing-defense-sustained-selectively", "housing-ember-secondary-ignition-risk-present"] },
     { "sequence": 30, "type": "scene-transitioned", "fromSceneId": "crisis-decision-housing-defense", "toSceneId": "ending-result-causal-report" },
     {
       "sequence": 31,
@@ -135,7 +138,8 @@
         "safe-attack-envelope",
         "ravine-position-held-with-safe-retreat",
         "conditioned-emergency-maneuver-authorized",
-        "housing-defense-sustained-selectively"
+        "housing-defense-sustained-selectively",
+        "housing-ember-secondary-ignition-risk-present"
       ]
     },
     {
@@ -149,7 +153,8 @@
           "safe-attack-envelope",
           "ravine-position-held-with-safe-retreat",
           "conditioned-emergency-maneuver-authorized",
-          "housing-defense-sustained-selectively"
+          "housing-defense-sustained-selectively",
+          "housing-ember-secondary-ignition-risk-present"
         ]
       }
     }

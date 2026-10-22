@@ -607,13 +607,15 @@ try {
       const canvas = scene?.querySelector('.visual-canvas');
       const map = canvas?.querySelector('.housing-plan');
       const key = document.querySelector('.inspection-hidden-menu .housing-map-key');
-      const accessRisk = map?.querySelector('#housing-local-access .housing-access-risk');
-      const accessCentre = map?.querySelector('#housing-local-access .housing-access-centre');
+      const firewood = map?.querySelector('#housing-local-access .housing-firewood-pile');
+      const firewoodZone = map?.querySelector('#housing-local-access .housing-firewood-zone');
+      const emberOverlay = map?.querySelector('.housing-ember-state-overlay');
       const canopyLink = map?.querySelector('#housing-canopy .housing-canopy-link');
       const canopyCrown = map?.querySelector('#housing-canopy .housing-canopy-crown');
-      if (!canvas || !map || !key || !accessRisk || !accessCentre || !canopyLink || !canopyCrown) return null;
+      if (!canvas || !map || !key || !firewood || !firewoodZone || !emberOverlay || !canopyLink || !canopyCrown) return null;
       const canvasRect = canvas.getBoundingClientRect();
       const mapRect = map.getBoundingClientRect();
+      const firewoodRect = firewood.getBoundingClientRect();
       const visiblePinParts = Array.from(map.querySelectorAll('.map-pin')).flatMap((pin, pinIndex) =>
         Array.from(pin.querySelectorAll('.map-pin-disc, .map-pin-label-bg')).flatMap((element) => {
           const rect = element.getBoundingClientRect();
@@ -681,12 +683,17 @@ try {
           return rect.width > 0 && rect.height > 0;
         }).length,
         directControls: map.querySelectorAll('.visual-hotspot[tabindex="0"]').length,
+        firewood: {
+          width: firewoodRect.width,
+          height: firewoodRect.height,
+          logCount: firewood.querySelectorAll('.housing-log-body').length
+        },
+        emberState: emberOverlay.classList.contains('state-protected') ? 'protected' : 'exposed',
         pinParts: visiblePinParts,
         overlaps,
         pins,
         strokes: {
-          accessRisk: Number.parseFloat(getComputedStyle(accessRisk).strokeWidth),
-          accessCentre: Number.parseFloat(getComputedStyle(accessCentre).strokeWidth),
+          firewoodZone: Number.parseFloat(getComputedStyle(firewoodZone).strokeWidth),
           canopyLink: Number.parseFloat(getComputedStyle(canopyLink).strokeWidth),
           canopyCrown: Number.parseFloat(getComputedStyle(canopyCrown).strokeWidth)
         }
@@ -722,7 +729,9 @@ try {
         `A housing label is oversized or escapes its compact background: ${JSON.stringify(layout.pins)}.`
       );
     }
-    assert(layout.strokes.accessRisk <= 8 && layout.strokes.accessCentre <= 1.7, 'Housing access overlay is visually too heavy.');
+    assert(layout.firewood.logCount === 9, 'Housing firewood must use a structured nine-log pile.');
+    assert(layout.firewood.width < layout.map.width * .24 && layout.firewood.height < layout.map.height * .24, 'Housing firewood pile is disproportionate to the dwelling.');
+    assert(layout.strokes.firewoodZone <= 1.7, 'Housing firewood area is visually too heavy.');
     assert(layout.strokes.canopyLink <= 5 && layout.strokes.canopyCrown <= 1.6, 'Housing canopy overlay is visually too heavy.');
     if (!expectedMobile) await assertGameplayFitsViewport('Housing inspection');
   }
@@ -1203,6 +1212,15 @@ try {
     { minWidth: 300, minHeight: 180 }
   );
   await assertTerritoryLayout(true);
+  assert(
+    await evaluate(`(() => {
+      const point = document.getElementById('territory-professional-line');
+      const scene = document.querySelector('.inspection-scene');
+      return point?.textContent.includes('Quemas preventivas') &&
+        !scene?.textContent.includes('Zona para revisar');
+    })()`),
+    'The fifth territory point does not use the requested Quemas preventivas label.'
+  );
   if (VISUAL_MODE) {
     await setViewport(1280, 900, false);
     await assertTerritoryLayout(false);
@@ -1260,7 +1278,7 @@ try {
   await advanceAndWait('[data-action-id="podar-ramas-y-retirar-seco"]');
   await assertHousingLayout(true);
   await captureEvidence(
-    'housing-initial-mobile.png',
+    'housing-ember-protection-initial-mobile.png',
     '.visual-scene[data-visual-template="housing"] .visual-canvas',
     { minWidth: 300, minHeight: 180 }
   );
@@ -1268,7 +1286,7 @@ try {
     await setViewport(1280, 900, false);
     await assertHousingLayout(false);
     await captureEvidence(
-      'housing-initial-desktop.png',
+      'housing-ember-protection-initial-desktop.png',
       '.scene-workspace',
       { minWidth: 900, minHeight: 300 }
     );
@@ -1276,31 +1294,33 @@ try {
     await assertHousingLayout(true);
   }
   await chooseWithPointer(
-    'podar-ramas-y-retirar-seco',
+    'proteger-vivienda-pavesas',
     'touch',
     true,
-    'housing-card-touch-mobile.png',
+    'housing-ember-card-touch-mobile.png',
     'housing'
   );
   assert(
     await evaluate(`(() => {
-      const zone = document.getElementById('housing-vertical-fuel');
-      const clearance = zone?.querySelector('.housing-clearance');
-      const dryFuel = zone?.querySelector('.housing-dry-fuel');
+      const zone = document.getElementById('housing-ember-protection');
+      const overlay = document.querySelector('.housing-ember-state-overlay');
+      const vulnerable = overlay?.querySelector('.housing-ember-vulnerable');
+      const treated = overlay?.querySelector('.housing-ember-treated');
       const feedback = document.querySelector('.inspection-confirmation p')?.textContent;
       const remaining = document.querySelector('.inspection-selection small')?.textContent;
       const selected = document.querySelectorAll('.selected-action-chip').length;
-      const worker = zone?.querySelector('.housing-clearance-worker');
-      return zone?.classList.contains('state-reduced') && clearance && dryFuel &&
-        getComputedStyle(clearance).display !== 'none' && getComputedStyle(dryFuel).display === 'none' &&
-        feedback?.includes('Al fuego le cuesta más subir a las copas') &&
-        remaining === 'Puedes elegir 1 mejora más.' && selected === 1 && worker &&
-        getComputedStyle(worker).display !== 'none' && getComputedStyle(worker).animationName !== 'none';
+      return zone?.classList.contains('state-protected') && overlay?.classList.contains('state-protected') &&
+        vulnerable && treated &&
+        getComputedStyle(vulnerable).animationName === 'housing-ember-debris-clear' &&
+        getComputedStyle(treated).animationName === 'housing-ember-protection-install' &&
+        feedback?.includes('menos lugares donde una brasa pueda entrar') &&
+        remaining === 'Puedes elegir 1 mejora más.' && selected === 1;
     })()`),
-    'Housing pruning did not update the visible fuel, feedback and remaining budget.'
+    'Passive ember protection did not start its visible treatment and feedback.'
   );
+  await sleep(1_050);
   await captureEvidence(
-    'housing-pruned-mobile.png',
+    'housing-ember-protection-treated-mobile.png',
     '.visual-scene[data-visual-template="housing"] .visual-canvas',
     { minWidth: 300, minHeight: 180 }
   );
@@ -1309,30 +1329,45 @@ try {
     '.inspection-response',
     { minWidth: 300, minHeight: 60 }
   );
-  await chooseFromPointMenu('despejar-accesos', 'touch', true, 'housing');
+  await send('Emulation.setEmulatedMedia', {
+    features: [{ name: 'prefers-reduced-motion', value: 'reduce' }]
+  });
+  assert(
+    await evaluate(`(() => {
+      const overlay = document.querySelector('.housing-ember-state-overlay.state-protected');
+      const vulnerable = overlay?.querySelector('.housing-ember-vulnerable');
+      const treated = overlay?.querySelector('.housing-ember-treated');
+      return vulnerable && treated && getComputedStyle(vulnerable).display === 'none' &&
+        getComputedStyle(treated).opacity === '1' && getComputedStyle(treated).animationName === 'none';
+    })()`),
+    'Passive ember protection does not expose an immediate stable reduced-motion state.'
+  );
+  await send('Emulation.setEmulatedMedia', { features: [] });
+  await chooseFromPointMenu('despejar-accesos', 'keyboard', true, 'housing');
 
   assert(
     await evaluate(`(() => {
       const access = document.getElementById('housing-local-access');
-      const obstructions = access?.querySelector('.housing-access-obstructions');
+      const firewood = access?.querySelector('.housing-firewood-pile');
       const route = access?.querySelector('.housing-clear-route');
       const counter = document.querySelector('.inspection-map-progress strong')?.textContent.trim();
       const cards = Array.from(document.querySelectorAll('[data-visual-action-card-id]'));
-      return access?.classList.contains('state-clear') && obstructions && route &&
-        getComputedStyle(obstructions).display === 'none' && getComputedStyle(route).display !== 'none' &&
+      return access?.classList.contains('state-clear') && firewood && route &&
+        getComputedStyle(firewood).animationName === 'housing-firewood-remove' && getComputedStyle(route).display !== 'none' &&
         counter === '2 / 2' && cards.filter((card) => card.classList.contains('selected')).length === 2 &&
         cards.every((card) => card.querySelector('.action-button')?.disabled === true) &&
         Boolean(document.getElementById('advance-button'));
     })()`),
     'Housing inspection did not show the clear corridor or enforce its two-action limit.'
   );
+  await sleep(900);
 
   if (VISUAL_MODE) {
     await setViewport(1280, 900, false);
     await assertJourneyLabels();
     await assertHousingLayout(false);
     await captureEvidence(
-      'housing-treated-desktop.png',
+      'housing-ember-protection-treated-desktop.png',
       '.visual-scene[data-visual-template="housing"] .visual-canvas',
       { minWidth: 700, minHeight: 300 }
     );
@@ -1398,12 +1433,26 @@ try {
   await choose('asegurar-flancos-y-repliegue');
   await advanceAndWait('[data-action-id="defender-desde-posicion-segura"]');
   await choose('defender-desde-posicion-segura');
+  assert(
+    await evaluate(`document.querySelector('.decision-outcome')?.textContent.includes('otro foco') === true`),
+    'Housing defense did not explain the reduced secondary-ignition risk from passive protection.'
+  );
   await waitForSelector('#advance-button');
   await pressEnter('#advance-button');
   await waitForSelector('.result-contained');
   await waitForSelector('#compare-reference-button');
   await waitForSelector('#replay-button');
   await waitForSelector('.final-prevention-review');
+  assert(
+    await evaluate(`(() => {
+      const relations = Array.from(document.querySelectorAll('.relation'));
+      return relations.some((relation) =>
+        relation.textContent.includes('La defensa pasiva redujo los puntos vulnerables a las brasas') &&
+        relation.textContent.includes('Proteger la vivienda de las brasas')
+      );
+    })()`),
+    'Final report did not render the traceable passive-defense causal relation.'
+  );
   assert(
     await evaluate(`(() => {
       const review = document.querySelector('.final-prevention-review');
@@ -1584,28 +1633,28 @@ try {
     );
     await setViewport(1280, 900, false);
     await chooseWithPointer(
-      'separar-copas',
+      'proteger-vivienda-pavesas',
       'mouse',
       false,
-      'housing-card-mouse-desktop.png',
+      'housing-ember-card-mouse-desktop.png',
       'housing'
     );
     assert(
       await evaluate(`(() => {
-        const canopy = document.getElementById('housing-canopy');
-        const connected = canopy?.querySelector('.housing-canopy-connected');
-        const separated = canopy?.querySelector('.housing-canopy-separated');
+        const hotspot = document.getElementById('housing-ember-protection');
+        const overlay = document.querySelector('.housing-ember-state-overlay');
+        const treated = overlay?.querySelector('.housing-ember-treated');
         const feedback = document.querySelector('.inspection-confirmation p')?.textContent;
-        return canopy?.classList.contains('state-broken') && connected && separated &&
-          getComputedStyle(connected).display === 'none' && getComputedStyle(separated).display !== 'none' &&
-          feedback?.includes('Al fuego le cuesta más pasar de un árbol a otro');
+        return hotspot?.classList.contains('state-protected') && overlay?.classList.contains('state-protected') && treated &&
+          getComputedStyle(treated).animationName === 'housing-ember-protection-install' &&
+          feedback?.includes('menos lugares donde una brasa pueda entrar');
       })()`),
-      'Housing canopy treatment did not create visible discontinuities and causal feedback.'
+      'Vulnerable reference did not preserve the visible passive-defense improvement.'
     );
     await movePointerAway();
     await assertHousingLayout(false);
     await captureEvidence(
-      'housing-canopy-separated-desktop.png',
+      'housing-ember-protection-vulnerable-desktop.png',
       '.visual-scene[data-visual-template="housing"] .visual-canvas',
       { minWidth: 700, minHeight: 300 }
     );
@@ -1693,9 +1742,12 @@ try {
       'territory-card-mouse-desktop.png',
       'territory-grazing-change-desktop.png',
       'territory-grazing-evaluation-desktop.png',
-      'housing-initial-mobile.png',
-      'housing-treated-desktop.png',
+      'housing-ember-protection-initial-mobile.png',
+      'housing-ember-protection-treated-mobile.png',
+      'housing-ember-protection-initial-desktop.png',
+      'housing-ember-protection-treated-desktop.png',
       'housing-pruning-change-wide-desktop.png',
+      'housing-ember-protection-vulnerable-desktop.png',
       'journey-housing-desktop.png',
       'first-alert-desktop.png',
       'first-alert-mobile.png',

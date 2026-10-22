@@ -18,19 +18,22 @@ function markup(service: VerticalBetaApplicationService, id: string): string {
 }
 
 describe('M5.3 housing and interface art direction', () => {
-  it('keeps one conditioned house with three official treatment zones', () => {
+  it('keeps four official treatment zones over one photographic housing scene', () => {
     const service = new VerticalBetaApplicationService();
     const id = 'm5-housing-initial';
     reachHousing(service, id);
 
     const html = markup(service, id);
-    expect(html).toContain('id="housing-home" class="visual-hotspot state-conditioned"');
+    expect(html).toContain('id="housing-ember-protection" class="visual-hotspot state-exposed"');
     expect(html).toContain('id="housing-vertical-fuel" class="visual-hotspot state-continuous"');
     expect(html).toContain('id="housing-canopy" class="visual-hotspot state-continuous"');
     expect(html).toContain('id="housing-local-access" class="visual-hotspot state-blocked"');
     expect(html).toContain('data-focus-action-id="podar-ramas-y-retirar-seco"');
     expect(html).toContain('data-focus-action-id="separar-copas"');
     expect(html).toContain('data-focus-action-id="despejar-accesos"');
+    expect(html).toContain('data-focus-action-id="proteger-vivienda-pavesas"');
+    expect(html).toContain('class="housing-firewood-pile"');
+    expect(html).toContain('class="housing-ember-state-overlay state-exposed"');
     expect(html).toContain('data-visual-base="housing-photo-v3"');
     expect(html).toContain('data-background-layer="photo"');
     expect(html).toContain('href="/images/housing-prevention-aerial-v2.jpg"');
@@ -42,27 +45,36 @@ describe('M5.3 housing and interface art direction', () => {
     expect(html).not.toContain('Las distancias no son exactas');
   });
 
-  it('changes the physical treatment state while the house remains conditioned', () => {
+  it('changes the firewood and ember-protection structures without mutating the session', () => {
     const service = new VerticalBetaApplicationService();
     const id = 'm5-housing-treated';
     reachHousing(service, id);
 
-    service.applyAction(id, 'separar-copas');
+    const before = structuredClone(service.view(id).session);
+    service.applyAction(id, 'proteger-vivienda-pavesas');
     service.applyAction(id, 'despejar-accesos');
 
     const html = markup(service, id);
-    expect(html).toContain('id="housing-home" class="visual-hotspot state-conditioned"');
-    expect(html).toContain('id="housing-canopy" class="visual-hotspot state-broken"');
+    expect(html).toContain('id="housing-ember-protection" class="visual-hotspot state-protected"');
+    expect(html).toContain('class="housing-ember-state-overlay state-protected"');
+    expect(html).toContain('id="housing-canopy" class="visual-hotspot state-continuous"');
     expect(html).toContain('id="housing-local-access" class="visual-hotspot state-clear"');
+    expect(before.decisions).toHaveLength(3);
+    expect(service.view(id).session.decisions).toHaveLength(5);
   });
 
-  it('defines geometric and material differences for vertical fuel, canopy and access', () => {
+  it('defines one-shot structural animations and a stable reduced-motion result', () => {
     const defs = renderHousingPlanDefs();
     expect(defs).toContain('#housing-vertical-fuel.state-reduced .housing-dry-fuel');
     expect(defs).toContain('#housing-vertical-fuel.state-reduced .housing-clearance');
     expect(defs).toContain('#housing-canopy.state-broken .housing-canopy-connected');
     expect(defs).toContain('#housing-canopy.state-broken .housing-canopy-separated');
-    expect(defs).toContain('#housing-local-access.state-clear .housing-access-obstructions');
+    expect(defs).toContain('@keyframes housing-firewood-remove');
+    expect(defs).toContain('@keyframes housing-ember-debris-clear');
+    expect(defs).toContain('@keyframes housing-ember-protection-install');
+    expect(defs).toContain('@media (prefers-reduced-motion: reduce)');
+    expect(defs).toContain('#housing-local-access.state-clear .housing-firewood-pile');
     expect(defs).toContain('#housing-local-access.state-clear .housing-clear-route');
+    expect(defs).toContain('.housing-ember-state-overlay.state-protected');
   });
 });

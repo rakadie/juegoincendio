@@ -12,8 +12,8 @@ const preparedCommands: readonly VerticalBetaResumeCommand[] = [
   { type: 'action', actionId: 'crear-discontinuidades-vegetales' },
   { type: 'action', actionId: 'limpiar-margenes-caminos' },
   { type: 'advance' },
-  { type: 'action', actionId: 'podar-ramas-y-retirar-seco' },
   { type: 'action', actionId: 'despejar-accesos' },
+  { type: 'action', actionId: 'proteger-vivienda-pavesas' },
   { type: 'advance' },
   { type: 'advance' },
   { type: 'action', actionId: 'movilizar-y-verificar' },
@@ -33,7 +33,7 @@ const vulnerableCommands: readonly VerticalBetaResumeCommand[] = [
   { type: 'action', actionId: 'evaluar-quema-tecnica' },
   { type: 'advance' },
   { type: 'action', actionId: 'podar-ramas-y-retirar-seco' },
-  { type: 'action', actionId: 'separar-copas' },
+  { type: 'action', actionId: 'proteger-vivienda-pavesas' },
   { type: 'advance' },
   { type: 'advance' },
   { type: 'action', actionId: 'movilizar-y-verificar' },
@@ -73,6 +73,11 @@ describe('M4.3 pedagogical result closure', () => {
       expect(relation.manifestationLabel.length).toBeGreaterThan(0);
       expect(relation.effect.length).toBeGreaterThan(0);
     }
+    expect(scene.relations.find(({ dimensionLabel }) => dimensionLabel === 'Protección de las viviendas')).toMatchObject({
+      title: 'La defensa pasiva redujo los puntos vulnerables a las brasas',
+      causeActionLabels: ['Proteger la vivienda de las brasas'],
+      manifestationLabel: 'Defensa de las viviendas'
+    });
   });
 
   it('preserves relevant omissions in the vulnerable result', () => {
@@ -87,6 +92,11 @@ describe('M4.3 pedagogical result closure', () => {
       manifestationLabel: 'Camino bloqueado'
     });
     expect(access?.causeActionLabels).toEqual(['Limpiar los bordes del camino']);
+    expect(scene.relations.find(({ dimensionLabel }) => dimensionLabel === 'Protección de las viviendas')).toMatchObject({
+      title: 'La vivienda estaba mejor protegida, pero el acceso seguía limitando la respuesta',
+      causeActionLabels: ['Proteger la vivienda de las brasas'],
+      manifestationLabel: 'Camino bloqueado'
+    });
   });
 
   it('uses the same information structure for contained and overwhelmed', () => {

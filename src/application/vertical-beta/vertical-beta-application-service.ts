@@ -1,5 +1,9 @@
 import { VERTICAL_BETA_I18N_ES } from '../../content/i18n/es/vertical-beta.js';
-import { requireVerticalBetaSceneMessages } from '../../content/i18n/vertical-beta-i18n.js';
+import {
+  requireVerticalBetaCausalRelationMessages,
+  requireVerticalBetaSceneMessages,
+  type VerticalBetaCausalRelationId
+} from '../../content/i18n/vertical-beta-i18n.js';
 import {
   getOfficialPreventionInspection,
   OFFICIAL_PREVENTION_INSPECTIONS,
@@ -8,7 +12,6 @@ import {
 import { OFFICIAL_OPERATIONAL_SCENES } from '../../content/official-operational-scenes.js';
 import {
   VERTICAL_BETA_BRIEFING,
-  VERTICAL_BETA_CAUSAL_RELATION_CONTENT,
   VERTICAL_BETA_CAUSAL_ROUTER,
   VERTICAL_BETA_DIMENSION_LABELS,
   VERTICAL_BETA_FIRST_ALERT,
@@ -343,7 +346,8 @@ function presentResult(session: GameSession): PresentedResultScene {
       currentSceneId: session.progress.currentSceneId,
       branch: session.crisisBranch,
       inheritedState: session.inheritedState,
-      decisions: session.decisions
+      decisions: session.decisions,
+      history: session.history
     }).dimensions.map((dimension) => [dimension.id, dimension] as const)
   );
   return {
@@ -354,9 +358,11 @@ function presentResult(session: GameSession): PresentedResultScene {
     variant: report.variant,
     closing: content.closing,
     relations: report.relations.map((relation) => {
-      const copy = VERTICAL_BETA_CAUSAL_RELATION_CONTENT[
-        relation.id as keyof typeof VERTICAL_BETA_CAUSAL_RELATION_CONTENT
-      ];
+      const copy = requireVerticalBetaCausalRelationMessages(
+        VERTICAL_BETA_I18N_ES,
+        relation.id as VerticalBetaCausalRelationId,
+        relation.messageVariant
+      );
       const dimension = visualDimensions.get(relation.dimension);
       if (dimension === undefined) {
         throw new VerticalBetaApplicationError(

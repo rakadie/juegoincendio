@@ -31,12 +31,12 @@ import { buildApp } from '../src/interfaces/http/app.js';
 
 const PREPARED_PREVENTION = [
   ['gestionar-restos-poda', 'crear-discontinuidades-vegetales', 'limpiar-margenes-caminos'],
-  ['podar-ramas-y-retirar-seco', 'despejar-accesos']
+  ['despejar-accesos', 'proteger-vivienda-pavesas']
 ] as const;
 
 const VULNERABLE_PREVENTION = [
   ['gestionar-restos-poda', 'activar-pastoreo-preventivo', 'evaluar-quema-tecnica'],
-  ['podar-ramas-y-retirar-seco', 'separar-copas']
+  ['podar-ramas-y-retirar-seco', 'proteger-vivienda-pavesas']
 ] as const;
 
 const ALL_TERRITORY_ACTIONS = [
@@ -50,7 +50,8 @@ const ALL_TERRITORY_ACTIONS = [
 const ALL_HOUSING_ACTIONS = [
   'podar-ramas-y-retirar-seco',
   'separar-copas',
-  'despejar-accesos'
+  'despejar-accesos',
+  'proteger-vivienda-pavesas'
 ] as const;
 
 function combinations<T>(values: readonly T[], size: number): T[][] {
@@ -113,7 +114,7 @@ function playReference(
 }
 
 describe('Vertical Beta 1 complete domain flow', () => {
-  it('bounds all 30 legal prevention combinations and records the limiting one', () => {
+  it('bounds all 60 legal prevention combinations and records the limiting one', () => {
     let sequence = 0;
     for (const territoryActions of combinations(ALL_TERRITORY_ACTIONS, 3)) {
       for (const housingActions of combinations(ALL_HOUSING_ACTIONS, 2)) {
@@ -139,7 +140,7 @@ describe('Vertical Beta 1 complete domain flow', () => {
         }
       }
     }
-    expect(sequence).toBe(30);
+    expect(sequence).toBe(60);
 
     let session = completeBriefing(createGameSession('bounded-prevention-limit'));
     for (const actionId of [
@@ -175,15 +176,15 @@ describe('Vertical Beta 1 complete domain flow', () => {
     );
 
     expect(balance.state).toEqual({
-      fuelLoad: 45,
-      fuelContinuity: 25,
+      fuelLoad: 55,
+      fuelContinuity: 45,
       operationalAccess: 80,
-      defensibility: 50,
-      attackOpportunity: 66
+      defensibility: 60,
+      attackOpportunity: 61
     });
     expect(balance.calculation).toMatchObject({
       strategicModifier: 0,
-      rawAttackOpportunity: 66,
+      rawAttackOpportunity: 61,
       accessCriticalCapApplied: false
     });
     expect(session.status).toBe('completed');
@@ -214,6 +215,10 @@ describe('Vertical Beta 1 complete domain flow', () => {
       'movilizar-y-verificar',
       ...OPERATIONAL_ACTIONS.prepared
     ]);
+    expect(report.relations.find(({ dimension }) => dimension === 'defensibility')).toMatchObject({
+      cause: { actionIds: expect.arrayContaining(['proteger-vivienda-pavesas']) },
+      manifestation: { sceneId: 'crisis-decision-housing-defense' }
+    });
   });
 
   it('reproduces the vulnerable route, keeps its real improvements and explains overwhelmed', () => {
@@ -225,14 +230,14 @@ describe('Vertical Beta 1 complete domain flow', () => {
 
     expect(balance.state).toEqual({
       fuelLoad: 25,
-      fuelContinuity: 35,
+      fuelContinuity: 55,
       operationalAccess: 20,
       defensibility: 30,
       attackOpportunity: 24
     });
     expect(balance.calculation).toMatchObject({
       strategicModifier: 10,
-      rawAttackOpportunity: 55,
+      rawAttackOpportunity: 49,
       accessCriticalCapApplied: true
     });
     expect(session.status).toBe('completed');
@@ -249,6 +254,10 @@ describe('Vertical Beta 1 complete domain flow', () => {
     expect(report.relations.find(({ id }) => id === 'operational-access')).toMatchObject({
       branchDecisive: true,
       cause: { execution: 'omitted' },
+      manifestation: { sceneId: 'crisis-decision-access-blockage' }
+    });
+    expect(report.relations.find(({ dimension }) => dimension === 'defensibility')).toMatchObject({
+      cause: { actionIds: expect.arrayContaining(['proteger-vivienda-pavesas']) },
       manifestation: { sceneId: 'crisis-decision-access-blockage' }
     });
   });

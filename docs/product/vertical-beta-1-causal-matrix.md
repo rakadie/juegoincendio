@@ -148,6 +148,28 @@ La correspondencia es normativa para el contexto estándar de la Vertical Beta 1
 
 Cada consecuencia principal de #36 tiene al menos una causa preventiva identificada. Las relaciones de combinación quedan visibles en lugar de ocultarse dentro de una puntuación global.
 
+### 6.1 Enmienda de producto — novena actuación oficial (22 de octubre de 2026)
+
+La matriz original de ocho actuaciones permanece como registro histórico. El catálogo vigente incorpora esta novena cadena:
+
+| Actuación | Resultado o condición causal | Impacto y rango | Consecuencias afectadas | Escena canónica | Manifestación observable | Explicación causal breve |
+|---|---|---|---|---|---|---|
+| `proteger-vivienda-pavesas` | Completada: `home-ember-entry-points-protected`.<br>Omitida: `home-ember-entry-points-exposed`. | `defensibility +10`; sin impacto directo en las otras dimensiones | `housingDefenseCapability`; derivadas `positionHoldability`, `attackCapability` y `extinctionCapacityState` | `crisis-decision-housing-defense`; en rama vulnerable se explica junto a `crisis-decision-access-blockage` | Con protección aparecen menos puntos vulnerables a focos secundarios por brasas. Sin protección, los equipos deben reservar recursos para vigilar cubierta, canalones y huecos. | La defensa pasiva reduce una vulnerabilidad real, pero su utilidad está limitada por acceso, maniobra, repliegue y comportamiento del fuego. |
+
+La cobertura inversa de `housingDefenseCapability` incluye ahora `proteger-vivienda-pavesas`. `attackCapability`, `emergencyLineViability` y `extinctionCapacityState` dependen de las **nueve** actuaciones mediante las dimensiones existentes; la acción nueva no crea una consecuencia ni una puntuación paralelas.
+
+Cadena verificable:
+
+```text
+proteger-vivienda-pavesas
+→ home-ember-entry-points-protected
+→ defensibility +10
+→ crisis-decision-housing-defense
+→ housing-ember-secondary-ignition-risk-reduced
+→ housingDefenseCapability mejora
+→ relación defensibility en ending-result-causal-report
+```
+
 ## 7. Cobertura por escena
 
 | Escena | Cadenas mínimas que debe manifestar |

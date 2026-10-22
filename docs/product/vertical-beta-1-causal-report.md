@@ -359,3 +359,13 @@ Esta entrega no:
 - #45 y #46 fijan las partidas canónicas en [`vertical-beta-1-reference-prepared.md`](vertical-beta-1-reference-prepared.md) y [`vertical-beta-1-reference-vulnerable.md`](vertical-beta-1-reference-vulnerable.md);
 - #47 comparará ambas sesiones y preparará fixtures de aceptación;
 - #72 implementará el generador del informe y #75 su cobertura i18n estricta.
+
+## 14. Enmienda de informe — defensa frente a brasas (22 de octubre de 2026)
+
+La relación `defensibility` puede seleccionar mensajes específicos cuando existe evidencia sobre los puntos de entrada de brasas:
+
+- `ember-protection-contained`: explica que la limpieza y las protecciones redujeron focos secundarios y permitieron concentrar recursos en posiciones prioritarias;
+- `ember-protection-overwhelmed`: conserva la mejora real, pero explica que un acceso crítico impidió aprovecharla plenamente;
+- `ember-protection-omitted`: identifica canalones, respiraderos y huecos pendientes y propone revisarlos antes de la época de riesgo.
+
+La relación solo se construye con evidencia real de la sesión. Usa la misma estructura existente —actuación, estado heredado, manifestación, efecto y recomendación—, permanece bajo `defensibility` y no altera el límite de tres a cinco relaciones.

@@ -66,17 +66,23 @@ function describeCondition(condition: OperationalStateCondition): string {
   return `${condition.dimension} must be ${condition.operator} ${condition.value}.`;
 }
 
+function completedEvidenceIds(session: GameSession): string[] {
+  return [...new Set(session.history.flatMap((event) =>
+    event.type === 'scene-completed' ? event.evidenceIds : []
+  ))];
+}
+
 function resolveAction(
   action: OperationalAction,
   session: GameSession,
   state: InheritedState
 ): ResolvedOperationalAction {
   const branch = session.crisisBranch!;
-  const resolution = action.resolutions[branch];
+  const baseResolution = action.resolutions[branch];
   if (action.blockedReason !== undefined) {
     return { ...action, available: false, unavailableReason: action.blockedReason };
   }
-  if (resolution === undefined) {
+  if (baseResolution === undefined) {
     return {
       ...action,
       available: false,
@@ -92,7 +98,7 @@ function resolveAction(
       ...action,
       available: false,
       unavailableReason: describeCondition(failedCondition),
-      resolution
+      resolution: baseResolution
     };
   }
 
@@ -105,9 +111,20 @@ function resolveAction(
       ...action,
       available: false,
       unavailableReason: `Prior action ${missingPriorAction} is required.`,
-      resolution
+      resolution: baseResolution
     };
   }
+
+  const evidence = new Set(completedEvidenceIds(session));
+  const evidenceVariant = baseResolution.evidenceVariants?.find(({ requiredEvidenceId }) =>
+    evidence.has(requiredEvidenceId)
+  );
+  const resolution = evidenceVariant === undefined
+    ? baseResolution
+    : {
+        evidenceIds: [...baseResolution.evidenceIds, ...evidenceVariant.evidenceIds],
+        consequence: evidenceVariant.consequence
+      };
 
   return { ...action, available: true, resolution };
 }
@@ -144,6 +161,7 @@ export function getOperationalSceneView(session: GameSession): OperationalSceneV
     branch: session.crisisBranch,
     difficulty: scene.difficultyByBranch?.[session.crisisBranch] ?? scene.difficulty,
     inheritedState: structuredClone(session.inheritedState),
+    evidenceIds: completedEvidenceIds(session),
     actions: scene.actions.map((action) =>
       resolveAction(action, session, session.inheritedState!)
     )

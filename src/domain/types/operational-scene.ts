@@ -32,6 +32,13 @@ export interface OperationalActionRequirements {
 export interface OperationalActionResolution {
   readonly evidenceIds: readonly string[];
   readonly consequence: string;
+  readonly evidenceVariants?: readonly OperationalEvidenceResolutionVariant[];
+}
+
+export interface OperationalEvidenceResolutionVariant {
+  readonly requiredEvidenceId: string;
+  readonly evidenceIds: readonly string[];
+  readonly consequence: string;
 }
 
 export interface OperationalAction {
@@ -74,5 +81,6 @@ export interface OperationalSceneView {
   readonly branch: CrisisBranch;
   readonly difficulty: ScenarioDifficulty;
   readonly inheritedState: InheritedState;
+  readonly evidenceIds: readonly string[];
   readonly actions: readonly ResolvedOperationalAction[];
 }

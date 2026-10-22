@@ -81,17 +81,17 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
           }
         },
         'quema-tecnica-profesional': {
-          title: 'Zona para revisar',
-          visualHint: 'Lugar que debe revisar una persona experta',
+          title: 'Quemas preventivas',
+          visualHint: 'Zona donde un equipo experto valora una posible quema preventiva',
           description:
-            'Una persona experta puede comprobar si este lugar serviría para trabajar durante un incendio.',
+            'Un equipo experto estudia el terreno, la vegetación y el tiempo para decidir si una quema preventiva sería adecuada.',
           futureConsequence:
-            'Sin esa revisión, los equipos no sabrán si el lugar es seguro y útil.',
+            'La evaluación deja preparada una opción de trabajo. No significa que la quema se haya realizado.',
           action: {
-            label: 'Pedir una revisión experta',
-            description: 'Pedir que una persona experta revise la zona.',
+            label: 'Evaluar una quema preventiva',
+            description: 'Pedir a un equipo experto que valore si la zona, el tiempo y los medios permiten planificarla.',
             feedback:
-              'Zona revisada. Esto no significa que se haya hecho una quema.'
+              'Evaluación completada. La quema preventiva no se ha ejecutado: solo se ha estudiado y planificado.'
           }
         }
       },
@@ -116,7 +116,7 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
       body:
         'Todavía no hay fuego. Es el momento de revisar la vegetación, el acceso y el espacio que rodea la vivienda.',
       context:
-        'En la foto hay hierba seca, ramas bajas, copas unidas y una entrada estrecha.',
+        'En la foto hay hierba seca, ramas bajas y copas unidas. También hay leña junto a la vivienda y huecos por donde pueden entrar brasas llevadas por el viento.',
       objective:
         'Elige dos mejoras y observa qué cambia alrededor de la vivienda. Cada actuación reduce una condición de riesgo diferente.',
       advanceLabel: 'Ver lo que has preparado',
@@ -150,17 +150,32 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
           }
         },
         'acceso-estrecho': {
-          title: 'Entrada estrecha',
-          visualHint: 'Camino con plantas y obstáculos',
+          title: 'Leña junto a la vivienda',
+          visualHint: 'Pila de leña pegada a la fachada y junto al paso',
           description:
-            'El camión de bomberos no tiene bastante espacio para entrar, girar y salir.',
+            'La leña apilada junto a la fachada puede arder con facilidad. También ocupa parte del espacio necesario para entrar, trabajar y salir.',
           futureConsequence:
-            'Los equipos de emergencia pueden tener problemas para llegar hasta la vivienda o para retirarse si cambian las condiciones.',
+            'Alejar la leña reduce el combustible pegado a la vivienda y mantiene libre el paso para los equipos de emergencia.',
           action: {
-            label: 'Despejar la entrada',
-            description: 'Quitar obstáculos para dejar espacio al camión de bomberos.',
+            label: 'Alejar la leña y despejar el paso',
+            description: 'Trasladar la leña a un lugar separado y dejar espacio para que los equipos puedan entrar, trabajar y salir.',
             feedback:
-              'Entrada despejada. El camión de bomberos puede entrar, girar y salir mejor.'
+              'Leña retirada y paso despejado. Hay menos combustible junto a la fachada y los equipos disponen de una entrada y una salida mejores.'
+          }
+        },
+        'vivienda-expuesta-pavesas': {
+          title: 'Vivienda expuesta a brasas',
+          visualHint: 'Canalón con restos secos y respiradero sin protección',
+          description:
+            'El canalón y la cubierta acumulan restos secos. Algunos respiraderos y huecos no tienen protección. Una brasa llevada por el viento podría iniciar otro foco.',
+          futureConsequence:
+            'Preparar estos puntos reduce la posibilidad de nuevos focos. No vuelve invulnerable la vivienda ni sustituye un acceso y una salida seguros.',
+          action: {
+            label: 'Proteger la vivienda de las brasas',
+            description:
+              'Limpia la cubierta, la terraza y los canalones. Retira material seco, protege respiraderos y chimeneas con mallas, sella huecos y aleja materiales inflamables.',
+            feedback:
+              'Puntos vulnerables protegidos. Hay menos lugares donde una brasa pueda entrar o encender restos secos. La vivienda todavía depende del fuego y de un acceso seguro.'
           }
         }
       },
@@ -334,6 +349,10 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
           feedback: 'Los equipos se sitúan donde pueden actuar sin perder la salida.',
           consequences: {
             prepared: 'Los equipos priorizan las viviendas mejor preparadas y conservan una salida disponible.'
+          },
+          evidenceConsequences: {
+            'home-ember-entry-points-protected': 'La limpieza de cubiertas y la protección de huecos reducen los lugares donde una brasa puede iniciar otro foco. Los equipos pueden concentrarse en la defensa exterior.',
+            'home-ember-entry-points-exposed': 'Los equipos deben vigilar canalones, respiraderos y restos secos porque una brasa podría iniciar otro foco. La defensa sigue siendo posible, pero exige más recursos.'
           }
         },
         'defensa-selectiva-con-prioridades': {
@@ -342,6 +361,10 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
           feedback: 'Los recursos se concentran donde pueden actuar sin quedar expuestos.',
           consequences: {
             prepared: 'Los equipos ayudan primero en las viviendas que ofrecen mejores condiciones de acceso y retirada.'
+          },
+          evidenceConsequences: {
+            'home-ember-entry-points-protected': 'La defensa pasiva reduce los puntos por donde pueden entrar brasas. Los recursos pueden priorizar la protección exterior sin dejar de vigilar posibles focos.',
+            'home-ember-entry-points-exposed': 'La selección de prioridades debe reservar recursos para revisar cubiertas, huecos y restos secos expuestos. Esta vulnerabilidad reduce el margen para la defensa exterior.'
           }
         },
         'defensa-total-sin-repliegue': {
@@ -439,7 +462,24 @@ export const VERTICAL_BETA_I18N_ES = assertVerticalBetaI18nCatalog({
     defensibility: {
       title: 'Las viviendas preparadas ofrecieron mejores condiciones',
       effect:
-        'Reducir la vegetación próxima y despejar el acceso no convierte una vivienda en un lugar completamente seguro. Sí disminuye la intensidad que puede alcanzarla y ofrece a los equipos más espacio para valorar si pueden intervenir sin quedar expuestos.'
+        'Reducir la vegetación próxima y despejar el acceso no convierte una vivienda en un lugar completamente seguro. Sí disminuye la intensidad que puede alcanzarla y ofrece a los equipos más espacio para valorar si pueden intervenir sin quedar expuestos.',
+      variants: {
+        'ember-protection-contained': {
+          title: 'La defensa pasiva redujo los puntos vulnerables a las brasas',
+          effect:
+            'Antes del incendio limpiaste cubiertas y canalones y protegiste los huecos. Cuando el fuego llegó, había menos lugares donde podía comenzar otro foco. Los equipos pudieron concentrarse en las posiciones prioritarias. Esta mejora necesita mantenimiento y no elimina el riesgo.'
+        },
+        'ember-protection-overwhelmed': {
+          title: 'La vivienda estaba mejor protegida, pero el acceso seguía limitando la respuesta',
+          effect:
+            'La defensa pasiva redujo vulnerabilidades reales frente a las brasas, pero no pudo compensar un acceso crítico. Sin entrada, maniobra y salida seguras, los equipos no podían aprovechar plenamente esa mejora.'
+        },
+        'ember-protection-omitted': {
+          title: 'Quedaron puntos por donde podían entrar brasas',
+          effect:
+            'Los canalones con restos, los respiraderos sin protección y otros huecos vulnerables mantuvieron la posibilidad de focos secundarios. Conviene limpiar y revisar estos puntos antes de la época de riesgo, sin esperar a que el incendio esté cerca.'
+        }
+      }
     },
     'attack-opportunity': {
       title: 'Todas las mejoras trabajaron juntas',

@@ -205,3 +205,36 @@ actionId
 ```
 
 sin ampliar el conjunto de actuaciones ni inventar nuevas consecuencias principales.
+
+## 11. Enmienda de producto — defensa pasiva de la vivienda (22 de octubre de 2026)
+
+Esta sección conserva la fotografía histórica de ocho actuaciones documentada arriba y registra su evolución. El catálogo oficial vigente pasa a tener **nueve actuaciones preventivas**:
+
+```text
+s-036-defensa-pasiva-vivienda
+→ biblioteca candidata
+→ revisión humana
+→ recuperada
+→ adaptada
+→ integrada en prevention-inspection-housing-interface
+```
+
+La inspección de vivienda mantiene dos selecciones, pero amplía sus candidatas de tres a cuatro.
+
+| Condición observada estable | Actuación oficial | Función causal | Evidencia favorable | Condición si se omite | Fuente vigente |
+|---|---|---|---|---|---|
+| `home-ember-entry-points-exposed` | `proteger-vivienda-pavesas` | Mejora `defensibility` en 10 puntos. No modifica directamente carga, continuidad, acceso ni oportunidad de ataque. | `home-ember-entry-points-protected` | `home-ember-entry-points-exposed` | `PREVENTION_INSPECTION_HOUSING_INTERFACE`; hotspot `vivienda-expuesta-pavesas` |
+
+La actuación agrupa limpieza de cubiertas, terrazas y canalones; retirada de restos secos; protección de respiraderos y chimeneas; sellado de huecos vulnerables y separación de materiales inflamables. En la crisis, la misma evidencia cambia la consecuencia de `crisis-decision-housing-defense`: reduce los lugares donde una brasa puede iniciar un foco secundario, pero no garantiza la defensa ni anula un acceso crítico.
+
+La interfaz territorial denomina ahora el quinto punto **«Quemas preventivas»**. Su acción continúa siendo una evaluación profesional: no representa una quema ejecutada ni añade un delta directo.
+
+### Aceptación de la enmienda
+
+| Criterio | Evidencia | Estado |
+|---|---|---|
+| Nueve actuaciones oficiales | Cinco territoriales + cuatro de vivienda | Cumplido |
+| Vivienda conserva el presupuesto | Cuatro candidatas / dos selecciones | Cumplido |
+| Cadena causal completa | Acción → evidencia → `defensibility` → crisis → informe | Cumplido |
+| Restricción crítica prioritaria | El acceso crítico mantiene la rama `vulnerable` | Cumplido |
+| Sin dimensión, nodo ni ruta nuevos | Cinco dimensiones y 12 nodos canónicos | Cumplido |

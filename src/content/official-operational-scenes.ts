@@ -20,7 +20,13 @@ interface OperationalActionContract {
   readonly flags: OperationalAction['flags'];
   readonly requirements?: OperationalAction['requirements'];
   readonly resolutions: Partial<
-    Readonly<Record<CrisisBranch, { readonly evidenceIds: readonly string[] }>>
+    Readonly<Record<CrisisBranch, {
+      readonly evidenceIds: readonly string[];
+      readonly evidenceVariants?: readonly {
+        readonly requiredEvidenceId: string;
+        readonly evidenceIds: readonly string[];
+      }[];
+    }>>
   >;
 }
 
@@ -44,7 +50,20 @@ function localizedAction(
     }
     resolutions[branch] = {
       evidenceIds: resolution.evidenceIds,
-      consequence
+      consequence,
+      ...(resolution.evidenceVariants === undefined
+        ? {}
+        : {
+            evidenceVariants: resolution.evidenceVariants.map((variant) => {
+              const variantConsequence = copy.evidenceConsequences?.[variant.requiredEvidenceId];
+              if (variantConsequence === undefined) {
+                throw new Error(
+                  `Missing evidence consequence translation for ${sceneId}.${actionId}.${variant.requiredEvidenceId}.`
+                );
+              }
+              return { ...variant, consequence: variantConsequence };
+            })
+          })
     };
   }
 
@@ -175,7 +194,19 @@ const housingDefense: OperationalScene = {
         ]
       },
       resolutions: {
-        prepared: { evidenceIds: ['housing-defense-sustained-selectively'] }
+        prepared: {
+          evidenceIds: ['housing-defense-sustained-selectively'],
+          evidenceVariants: [
+            {
+              requiredEvidenceId: 'home-ember-entry-points-protected',
+              evidenceIds: ['housing-ember-secondary-ignition-risk-reduced']
+            },
+            {
+              requiredEvidenceId: 'home-ember-entry-points-exposed',
+              evidenceIds: ['housing-ember-secondary-ignition-risk-present']
+            }
+          ]
+        }
       }
     }),
     localizedAction('crisis-decision-housing-defense', 'defensa-selectiva-con-prioridades', {
@@ -194,7 +225,19 @@ const housingDefense: OperationalScene = {
         ]
       },
       resolutions: {
-        prepared: { evidenceIds: ['housing-defense-priorities-established'] }
+        prepared: {
+          evidenceIds: ['housing-defense-priorities-established'],
+          evidenceVariants: [
+            {
+              requiredEvidenceId: 'home-ember-entry-points-protected',
+              evidenceIds: ['housing-ember-secondary-ignition-risk-reduced']
+            },
+            {
+              requiredEvidenceId: 'home-ember-entry-points-exposed',
+              evidenceIds: ['housing-ember-secondary-ignition-risk-present']
+            }
+          ]
+        }
       }
     }),
     localizedAction('crisis-decision-housing-defense', 'defensa-total-sin-repliegue', {

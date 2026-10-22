@@ -79,6 +79,13 @@ export function renderCrisisRavineDefs(): string {
       .crisis-photo #crisis-pressure .visual-fire-photo { opacity: .96; transform: none; filter: none; }
       .crisis-photo #crisis-pressure.state-surface .visual-fire-photo { opacity: .78; }
       .crisis-photo .crisis-capacity-hit-target { fill: #fff; fill-opacity: .001; stroke: none; pointer-events: all; }
+      .crisis-photo .crisis-ember-hit-target { fill: #fff; fill-opacity: .001; stroke: none; pointer-events: none; }
+      .crisis-photo .crisis-ember-roof { fill: none; stroke: #fff1d2; stroke-width: 2; }
+      .crisis-photo .crisis-ember-vent { fill: #eee7d8; stroke: #31463d; stroke-width: 1; }
+      .crisis-photo .crisis-ember-mesh { fill: none; stroke: #2f6650; stroke-width: .8; }
+      .crisis-photo .crisis-ember-particles { fill: #f1a548; filter: url(#crisis-overlay-shadow); }
+      .crisis-photo #crisis-house-ember-protection.state-protected .crisis-ember-particles { display: none; }
+      .crisis-photo #crisis-house-ember-protection.state-exposed .crisis-ember-mesh { display: none; }
       .crisis-photo .visual-label-group text { font-size: 15px; }
     </style>
   </defs>`;
